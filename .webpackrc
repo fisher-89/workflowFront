@@ -1,0 +1,33 @@
+{
+    "entry": "src/index.js",
+    "extraBabelPlugins": [
+        "transform-decorators-legacy", ["import", { "libraryName": "antd-mobile", "libraryDirectory": "es", "style": true }]
+    ],
+    "env": {
+        "development": {
+            "extraBabelPlugins": [
+                "dva-hmr"
+            ],
+            "define": {
+                "OA_PATH": "http://192.168.20.238:8003/",
+                "OA_CLIENT_ID": "6",
+                "OA_CLIENT_SECRET": "lcBIS0l1eW038wqUgDf6qsNyUl3L69Ck8YxHXKGh"
+            }
+        },
+        "production": {
+            "define": {
+                "OA_PATH": "http://192.168.20.238:8003/",
+                "OA_CLIENT_ID": "6",
+                "OA_CLIENT_SECRET": "lcBIS0l1eW038wqUgDf6qsNyUl3L69Ck8YxHXKGi"
+            }
+        }
+    },
+    "ignoreMomentLocale": true,
+    "theme": "./src/configs/theme.config.js",
+    "publicPath": "/",
+    "disableDynamicImport": true,
+    "html": {
+        "template": "./src/index.ejs"
+    },
+    "hash": true
+}
