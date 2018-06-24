@@ -11,6 +11,7 @@ import {
   Modal,
   Grid,
   Carousel,
+  TextareaItem,
 } from 'antd-mobile';
 import {
   connect,
@@ -199,7 +200,6 @@ class CreateForm extends Component {
     return showForm.map((item, idx) => {
       const i = idx;
       const itemkey = formdata.find(its => item.key === its.key);
-      console.log('itemkey', itemkey);
       let itemValue = [];
       if (itemkey && item.type === 'file') {
         itemValue = (itemkey.value || []).map((its) => {
@@ -251,6 +251,10 @@ class CreateForm extends Component {
               {item.name}{newFormData[item.key]}
             </List.Item>
           );
+        } else if (item.type === 'text' && item.max > 10) {
+          return (
+            <p>{item.value}</p>
+          );
         }
         return (
           <List.Item
@@ -260,7 +264,8 @@ class CreateForm extends Component {
           >
             {item.name}
           </List.Item>);
-      } // 可改
+      }
+      // 可改
       if (isEdit) {
         if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
           if (item.type === 'array') {
@@ -287,6 +292,29 @@ class CreateForm extends Component {
             );
           }
         } else if (item.type === 'text' || item.type === 'int') {
+          if (item.max > 10) {
+            return (
+              <div>
+                <p style={{
+                  paddingLeft: '15px',
+                 fontSize: '16px',
+                 color: '#666',
+                  height: '35px',
+                 lineHeight: '35px' }}
+                >{item.description}
+                </p>
+                <TextareaItem
+                  autoHeight
+                  key={i}
+                  placeholder={item.description}
+                  error={itemkey.hasError}
+                  onErrorClick={() => this.onErrorClick(item)}
+                  onChange={e => this.onChange(e, item)}
+                  value={itemkey.value}
+                />
+              </div>
+            );
+          }
           return (
             <InputItem
               key={i}
