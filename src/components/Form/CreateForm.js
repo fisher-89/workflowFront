@@ -61,7 +61,7 @@ class CreateForm extends Component {
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {
         editableForm.map((item) => {
-          const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'hh:mm' : item.type === 'datetime' ? 'YYYY-MM-DD hh:mm:ss' : '';
+          const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM' : '';
           const value = newFormData[item.key] ? newFormData[item.key]
             : item.type === 'date' || item.type === 'time' || item.type === 'datetime' ? moment(new Date()).format(formatStr)
               : newFormData[item.key];
@@ -94,6 +94,7 @@ class CreateForm extends Component {
   }
 
   onChange = (v, item) => {
+    console.log('v', v);
     const {
       formdata,
     } = this.state;
@@ -198,6 +199,7 @@ class CreateForm extends Component {
     return showForm.map((item, idx) => {
       const i = idx;
       const itemkey = formdata.find(its => item.key === its.key);
+      console.log('itemkey', itemkey);
       let itemValue = [];
       if (itemkey && item.type === 'file') {
         itemValue = (itemkey.value || []).map((its) => {
@@ -221,7 +223,7 @@ class CreateForm extends Component {
                     src={`http://192.168.20.16:8009${its}`}
                     key={x}
                     alt="图片"
-                    onClick={() => this.reviewReadImg(newFormData[item.key])}
+                    onClick={() => this.reviewReadImg(x, newFormData[item.key])}
                   />
                 );
                 })}
@@ -300,7 +302,8 @@ class CreateForm extends Component {
           return (
             <DatePicker
               key={i}
-              mode={item.type}
+              // format={format}
+              // mode="datetime"
               onChange={e => this.timeChange(e, item)}
               value={new Date(itemkey.value)}
             >
@@ -316,7 +319,7 @@ class CreateForm extends Component {
                   // key={item.key}
                   files={itemValue}
                   onChange={(file, type, index) => this.filesOnchange(file, type, index, item)}
-                  onImageClick={() => this.reviewImg(itemValue)}
+                  onImageClick={e => this.reviewImg(e, itemValue)}
                   selectable={itemValue ? itemValue.length < 5 : true}
                   accept="image/gif,image/jpeg,image/jpg,image/png"
                 />
@@ -329,7 +332,8 @@ class CreateForm extends Component {
     });
   }
   timeChange = (v, item) => { // 时间改变事件
-    const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'hh:mm' : item.type === 'datetime' ? 'YYYY-MM-DD hh:mm:ss' : '';
+    console.log(v);
+    const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM' : '';
     const {
       formdata,
     } = this.state;
@@ -482,21 +486,23 @@ class CreateForm extends Component {
       refresh: [...newStatus],
     });
   }
-  reviewImg = (img) => {
+  reviewImg = (i, img) => {
     const imgs = img.map((item) => {
       return reAgainImg(item.url, '_thumb');
     });
+    const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
     this.setState({
-      reviewImg: imgs,
+      reviewImg: newImgs,
       preview: true,
     });
   }
-  reviewReadImg = (img) => {
+  reviewReadImg = (i, img) => {
     const imgs = (img || []).map((item) => {
       return `http://192.168.20.16:8009${item}`;
     });
+    const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
     this.setState({
-      reviewImg: imgs,
+      reviewImg: newImgs,
       preview: true,
     });
   }

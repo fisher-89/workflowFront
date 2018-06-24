@@ -49,7 +49,7 @@ class FormDetail extends Component {
                   src={`http://192.168.20.16:8009${dealThumbImg(its, '_thumb')}`}
                   key={ix}
                   alt="图片"
-                  onClick={() => this.reviewImg(formData[item.key])}
+                  onClick={() => this.reviewImg(ix, formData[item.key])}
                 />);
 })}
             </div>
@@ -103,12 +103,13 @@ class FormDetail extends Component {
       );
     });
   }
-  reviewImg = (img) => {
+  reviewImg = (i, img) => {
     const imgs = (img || []).map((item) => {
       return `http://192.168.20.16:8009${item}`;
     });
+    const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
     this.setState({
-      reviewImg: imgs,
+      reviewImg: newImgs,
       preview: true,
     });
   }

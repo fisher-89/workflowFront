@@ -10,11 +10,12 @@ import {
   connect,
 } from 'dva';
 import {
-  CreateForm,
+  CreateForm, FormDetail,
 } from '../../components';
 import {
   analyzePath,
 } from '../../utils/util';
+
 import style from './index.less';
 import styles from '../common.less';
 
@@ -59,7 +60,7 @@ class ApproveDetail extends Component {
           arrow="horizontal"
           thumb={item.icon}
           multipleLine
-          onClick={() => this.toEditGrid(`/approve_grid/${key}/${i}`)}
+          onClick={() => this.toEditGrid(key, idx)}
         >
           {item.value} <List.Item.Brief key={idx}>{item.text}</List.Item.Brief>
         </List.Item>
@@ -103,15 +104,23 @@ class ApproveDetail extends Component {
   }
 
 
-  toEditGrid = (url) => {
+  toEditGrid = (key, i) => {
     const {
-      history,
+      approve, history,
     } = this.props;
-    this.childComp.saveData();
+    const {
+      startflow,
+    } = approve;
+    let url = `/approve_grid/${key}/${i}`;
+    if (startflow.step_run.action_type === 0) {
+      this.childComp.saveData();
+      url = `/approve_grid_edit/${key}/${i}`;
+    }
     history.push(url);
   }
   // 保存到modal
   saveData = (formdata) => {
+    console.log('formdata', formdata);
     const {
       dispatch,
     } = this.props;
@@ -122,6 +131,28 @@ class ApproveDetail extends Component {
         value: formdata,
       },
     });
+    return formdata;
+  }
+  submitStep =(v, data) => {
+    const { dispatch, history } = this.props;
+    const params = {
+      step_run_id: data.step_run_id,
+      timestamp: data.timestamp,
+      next_step: [],
+    };
+    dispatch({
+      type: 'approve/getThrough',
+      payload: {
+        data: {
+          ...params,
+          remark: v,
+        },
+        id: data.flow_id,
+        cb: () => {
+          history.replace('/approvelist');
+        },
+      },
+    });
   }
   // 提交数据
   submitData = (e) => {
@@ -130,58 +161,72 @@ class ApproveDetail extends Component {
       flowId,
     } = this.state;
     const {
-      dispatch,
-      history,
+      dispatch, history,
     } = this.props;
     this.childComp.saveData();
-    const {
-      approve,
-    } = this.props;
-    const {
-      formdata,
-      gridformdata,
-      startflow,
-    } = approve;
-    // 整理formdata数据
-    const flowRun = startflow.flow_run;
-    const formObj = {};
-    formdata.map((item) => {
-      formObj[item.key] = item.value;
-      return item;
-    });
-    // 整理列表控件数据
-    const formgridObj = {};
-    gridformdata.map((item) => {
-      const { fields } = item;
-      const forgridArr = fields.map((its) => {
-        const obj = {};
-        its.map((it) => {
-          obj[it.key] = it.value;
-          return true;
-        });
-        return obj;
+    setTimeout(() => {
+      const {
+        approve,
+      } = this.props;
+      const {
+        formdata,
+        gridformdata,
+        startflow,
+      } = approve;
+      // 整理formdata数据
+      const flowRun = startflow.flow_run;
+      const formObj = {};
+      formdata.map((item) => {
+        formObj[item.key] = item.value;
+        return item;
       });
-      formgridObj[item.key] = [...forgridArr];
-      return item;
-    });
-    const newformData = {
-      ...formObj,
-      ...formgridObj,
-    };
-    dispatch({
-      type: 'start/preSet',
-      payload: {
-        data: {
-          form_data: newformData,
-          step_run_id: flowId,
+      // 整理列表控件数据
+      const formgridObj = {};
+      gridformdata.map((item) => {
+        const { fields } = item;
+        const forgridArr = fields.map((its) => {
+          const obj = {};
+          its.map((it) => {
+            obj[it.key] = it.value;
+            return true;
+          });
+          return obj;
+        });
+        formgridObj[item.key] = [...forgridArr];
+        return item;
+      });
+      const newformData = {
+        ...formObj,
+        ...formgridObj,
+      };
+      dispatch({
+        type: 'start/preSet',
+        payload: {
+          data: {
+            form_data: newformData,
+            step_run_id: flowId,
+          },
+          id: flowRun.flow_id,
+          preType: 'approve',
+          cb: (data) => {
+            if (data.step_end === 1) { // 不选步骤
+              prompt('填写备注', '',
+                [
+                  {
+                    text: '取消',
+                  },
+                  {
+                    text: '确定',
+                    onPress: v => this.submitStep(v, data),
+                  },
+                ], 'default', null, ['请输入备注']);
+            } else {
+              history.push('/select_step');
+            }
+          },
         },
-        id: flowRun.flow_id,
-        preType: 'approve',
-        cb: () => {
-          history.push('/select_step');
-        },
-      },
-    });
+      });
+    }, 500);
   }
 
   fillRemark = () => {
@@ -207,17 +252,6 @@ class ApproveDetail extends Component {
         remark: v,
       },
     });
-  }
-  addGridList = (key) => {
-    const {
-      history,
-      dispatch,
-    } = this.props;
-    this.childComp.saveData();
-    dispatch({
-      type: 'approve/refreshModal',
-    });
-    history.push(`/addgridlist/${key}/-1`);
   }
   doDeliver = () => { // 转交
     const { dispatch } = this.props;
@@ -259,23 +293,32 @@ class ApproveDetail extends Component {
     const showForm = form.filter(item => !startflow.step.hidden_fields.includes(item.key));
 
     // 可编辑的
-    const editableForm = showForm.filter(item =>
-      startflow.step.editable_fields.includes(item.key)
+    const editableForm = form.filter((item) => {
+      return startflow.step.editable_fields.includes(item.key);
+    }
     );
 
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>
-          <CreateForm
-            startflow={startflow}
-            formdata={formdata}
-            evtClick={this.saveData}
-            dispatch={dispatch}
-            show_form={showForm}
-            editable_form={editableForm}
-            form_data={newFormData}
-            onRef={(comp) => { this.childComp = comp; }}
-          />
+          {startflow.step_run.action_type === 0 ? (
+            <CreateForm
+              startflow={startflow}
+              formdata={formdata}
+              evtClick={this.saveData}
+              dispatch={dispatch}
+              show_form={showForm}
+              editable_form={editableForm}
+              form_data={newFormData}
+              onRef={(comp) => { this.childComp = comp; }}
+            />
+) : (
+  <FormDetail
+    form_data={newFormData}
+    show_form={showForm}
+  />
+)}
+
           {this.getGridList()}
         </div>
         <div className={styles.footer}>

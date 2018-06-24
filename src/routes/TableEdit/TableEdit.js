@@ -220,7 +220,7 @@ class TableEdit extends Component {
     } = startflow;
     // 可编辑的form
     const showForm = form.filter(item => !startflow.step.hidden_fields.includes(item.key));
-    const editableForm = showForm.filter(item => startflow.step.editable_fields.includes(item.key));
+    const editableForm = form.filter(item => startflow.step.editable_fields.includes(item.key));
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>

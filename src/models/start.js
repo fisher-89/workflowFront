@@ -127,7 +127,7 @@ export default {
           type: 'resetStart', // 重置发起表单
         });
         if (payload.cb) {
-          payload.cb();
+          payload.cb(data);
         }
       }
     },

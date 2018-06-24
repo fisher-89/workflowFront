@@ -225,13 +225,12 @@ class SelectStep extends Component {
               [
                 {
                   text: '取消',
-                  onPress: this.submitStep,
                 },
                 {
                   text: '确定',
                   onPress: this.submitStep,
                 },
-              ], 'default', null, ['input your name'])}
+              ], 'default', null, ['请输入备注'])}
               >提交
               </Button>
 )}
