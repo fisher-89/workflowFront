@@ -85,7 +85,7 @@ const proxy = {
             "deleted_at": null,
             "bill": [],
             "arrtype": ['1', '2'],
-            "type": '1',
+            "type": '飞机',
             "type2": ['1', '2'],
             "type3": '1',
             "img": ['https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png', 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png', 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png', 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png', 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png'],
@@ -132,31 +132,7 @@ const proxy = {
                 "min": "",
                 "max": "100",
                 "scale": 0,
-                "options": [{
-                    name: '火车',
-                    value: '1'
-                }, {
-                    name: '飞机',
-                    value: '2'
-                }, {
-                    name: '火箭',
-                    value: '3'
-                }, {
-                    name: '坦克',
-                    value: '4'
-                }, {
-                    name: '坦克',
-                    value: '5'
-                }, {
-                    name: '飞机',
-                    value: '6'
-                }, {
-                    name: '火箭',
-                    value: '7'
-                }, {
-                    name: '坦克',
-                    value: '8'
-                }, ]
+                "options": ['火车','飞机']
             }, {
                 "key": "type3",
                 "name": "单选展示",
@@ -761,7 +737,7 @@ const proxy = {
         "total": 1
     }
 }
-export default !noProxy ? {
+export default noProxy ? {
     // 'POST /api/approval/(.*)': 'http://192.168.20.144:8002/api/approval',
     'GET /api/(.*)': 'http://192.168.20.16:8009/api/',
     'POST /api/(.*)': 'http://192.168.20.16:8009/api/',

@@ -329,7 +329,7 @@ class ApproveDetail extends Component {
               <span>通过</span>
             </a>
 ) : ''}
-          {startflow.step_run.action_type === 2 ? (
+          {startflow.step_run.action_type === 0 ? (
             <a
               onClick={this.doDeliver}
             >

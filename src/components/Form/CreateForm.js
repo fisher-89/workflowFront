@@ -12,6 +12,7 @@ import {
   Grid,
   Carousel,
   TextareaItem,
+  Picker,
 } from 'antd-mobile';
 import {
   connect,
@@ -241,16 +242,17 @@ class CreateForm extends Component {
               />
             </WingBlank>
           );
-        } else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
-          return (
-            <List.Item
-              key={i}
-              extra={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
-              size="small"
-            >
-              {item.name}{newFormData[item.key]}
-            </List.Item>
-          );
+        // } else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
+        //   return (
+        //     <List.Item
+        //       key={i}
+        //       extra={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
+        //       size="small"
+        //     >
+        //       {item.name}{newFormData[item.key]}
+        //     </List.Item>
+        //   );
+        // }
         } else if (item.type === 'text' && item.max > 10) {
           return (
             <p>{item.value}</p>
@@ -281,14 +283,29 @@ class CreateForm extends Component {
               </WingBlank>
             );
           } else {
+            const data = item.options.map((its) => {
+              const obj = {};
+              obj.label = its;
+              obj.value = its;
+              return obj;
+            });
             return (
-              <List.Item
-                key={i}
-                arrow="horizontal"
-                extra={itemkey && itemkey.value ? itemkey.value : '请选择'}
-                onClick={() => this.choseItem(item)}
-              >{item.name}
-              </List.Item>
+              // <List.Item
+              //   key={i}
+              //   arrow="horizontal"
+              //   extra={itemkey && itemkey.value ? itemkey.value : '请选择'}
+              //   onClick={() => this.choseItem(item)}
+              // >{item.name}
+              // </List.Item>
+              <Picker
+                data={data}
+                cols={1}
+                value={[itemkey.value]}
+                onChange={e => this.onChange(e[0], item)}
+              >
+                <List.Item arrow="horizontal" onClick={this.onClick}>{item.name}</List.Item>
+              </Picker>
+
             );
           }
         } else if (item.type === 'text' || item.type === 'int') {
@@ -360,7 +377,6 @@ class CreateForm extends Component {
     });
   }
   timeChange = (v, item) => { // 时间改变事件
-    console.log(v);
     const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM' : '';
     const {
       formdata,

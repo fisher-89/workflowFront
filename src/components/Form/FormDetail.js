@@ -66,17 +66,21 @@ class FormDetail extends Component {
             />
           </WingBlank>
         );
-      } else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
-        return (
-          <List.Item
-            key={idx}
-            extra={formData && formData[item.key] && (item.options || []).find(its => its.value === formData[item.key]) ? (item.options || []).find(its => its.value === formData[item.key]).name : '暂无'}
-            size="small"
-          >
-            {item.name}{formData[item.key]}
-          </List.Item>
-        );
       }
+      // else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
+      //   return (
+      //     <List.Item
+      //       key={idx}
+      //       extra={
+      //   formData && formData[item.key]
+      // && (item.options || []).find(its => its.value === formData[item.key]) ?
+      // (item.options || []).find(its => its.value === formData[item.key]).name : '暂无'}
+      //       size="small"
+      //     >
+      //       {item.name}{formData[item.key]}
+      //     </List.Item>
+      //   );
+      // }
       return (
         <List.Item
           key={idx}
