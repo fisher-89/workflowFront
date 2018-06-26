@@ -737,7 +737,7 @@ const proxy = {
         "total": 1
     }
 }
-export default noProxy ? {
+export default !noProxy ? {
     // 'POST /api/approval/(.*)': 'http://192.168.20.144:8002/api/approval',
     'GET /api/(.*)': 'http://192.168.20.16:8009/api/',
     'POST /api/(.*)': 'http://192.168.20.16:8009/api/',
