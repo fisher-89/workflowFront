@@ -67,7 +67,8 @@ const proxy = {
                 "bill",
                 "arrtype",
                 "type",
-                "date"
+                "date",
+                "datetime"
             ],
             "required_fields": [
                 "expense.*.is_approverd",
@@ -88,6 +89,7 @@ const proxy = {
             "type": '飞机',
             "type2": ['1', '2'],
             "type3": '1',
+            datetime:null,
             "img": ['https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png', 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png', 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png', 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png', 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png'],
             "date": '2017-8-12',
             "expense": [{
@@ -125,6 +127,15 @@ const proxy = {
                 "max": "100",
                 "scale": 0,
             }, {
+                "key": "datetime",
+                "name": "datetime",
+                "description": "报销描述",
+                "type": "datetime",
+                "min": "",
+                "max": "100",
+                "scale": 0,
+            },  
+            {
                 "key": "type",
                 "name": "分类",
                 "description": "分类",

@@ -63,7 +63,7 @@ class CreateForm extends Component {
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {
         editableForm.map((item) => {
-          const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM' : '';
+          const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM:ss' : '';
           const value = newFormData[item.key] ? newFormData[item.key]
             : item.type === 'date' || item.type === 'time' || item.type === 'datetime' ? moment(new Date()).format(formatStr)
               : newFormData[item.key];
@@ -96,7 +96,6 @@ class CreateForm extends Component {
   }
 
   onChange = (v, item) => {
-    console.log('v', v);
     const {
       formdata,
     } = this.state;
@@ -255,13 +254,13 @@ class CreateForm extends Component {
         // }
         } else if (item.type === 'text' && item.max > 10) {
           return (
-            <p>{item.value}</p>
+            <p style={{ color: '#999' }}>{item.value}</p>
           );
         }
         return (
           <List.Item
             key={i}
-            extra={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
+            extra={<span style={{ color: '#999' }}>{newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}</span>}
             size="small"
           >
             {item.name}
@@ -347,8 +346,8 @@ class CreateForm extends Component {
           return (
             <DatePicker
               key={i}
-              // format={format}
-              // mode="datetime"
+              // format={item.type}
+              mode={item.type}
               onChange={e => this.timeChange(e, item)}
               value={new Date(itemkey.value)}
             >
@@ -377,7 +376,7 @@ class CreateForm extends Component {
     });
   }
   timeChange = (v, item) => { // 时间改变事件
-    const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM' : '';
+    const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM:ss' : '';
     const {
       formdata,
     } = this.state;
