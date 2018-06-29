@@ -45,9 +45,11 @@ class TableEdit extends Component {
     const dataList = (gridItem ? gridItem.fields : []).map((item) => {
       const fieldsItem = item;
       const newObj = {};
-      fieldsItem.map((its, i) => { // 取前三干字段
-        if (i < 3 && its.type !== 'file' && its.type !== 'array') {
-          newObj[`value_${i}`] = its.value;
+      let num = 0;
+      fieldsItem.map((its) => { // 取前三个字段
+        if (num < 3 && its.type !== 'file' && its.type !== 'array') {
+          newObj[`value_${num}`] = its.value;
+          num += 1;
         }
         return true;
       });
@@ -64,7 +66,9 @@ class TableEdit extends Component {
           multipleLine
           onClick={() => this.toEditGrid(`/addgridlist/${key}/${i}`)}
         >
-          {item.value_0} <List.Item.Brief>{item.value_1}</List.Item.Brief>
+          {item.value_0}
+          <List.Item.Brief>{item.value_1}</List.Item.Brief>
+          <List.Item.Brief>{item.value_2}</List.Item.Brief>
         </List.Item>
       );
     });
