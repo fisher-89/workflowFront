@@ -120,7 +120,6 @@ class ApproveDetail extends Component {
   }
   // 保存到modal
   saveData = (formdata) => {
-    console.log('formdata', formdata);
     const {
       dispatch,
     } = this.props;

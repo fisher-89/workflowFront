@@ -23,7 +23,7 @@ class App extends React.Component {
   componentWillMount() {
     if (localStorage.getItem('OA_access_token') &&
       localStorage.getItem('OA_access_token_expires_in') > new Date().getTime()) {
-      console.log('验证成功');
+      // console.log('验证成功');
     } else if (localStorage.getItem('OA_refresh_token')) {
       this.props.dispatch({
         type: 'oauth/refreshAccessToken',

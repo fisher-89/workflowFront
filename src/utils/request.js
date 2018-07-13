@@ -20,7 +20,7 @@ const fetch = (url, options) => {
     headers,
   });
 
-  console.log('url', url, 'options', options);
+  // console.log('url', url, 'options', options);
   const newMethod = method.toLowerCase();
   switch (true) {
     case newMethod === 'get':
@@ -98,7 +98,7 @@ export default function request(uri, params) {
   return fetch(urlParam, newOptions)
     .then(checkStatus)
     .then((response) => {
-      console.log('response', response);
+      // console.log('response', response);
       if (newOptions.method === 'DELETE' && response.status === 204) {
         const obj = { status: '204', message: '删除成功' };
         // return Promise.resolve({ ...obj });
