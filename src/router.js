@@ -26,7 +26,9 @@ function RouterConfig({
     models: () => [],
     component: () =>
       import('./routes/login/IndexPage'),
-  }, {
+  },
+    // 发起表单
+  {
     path: '/table_edit/:id',
     models: () => [
       import('./models/start'),

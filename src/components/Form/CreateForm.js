@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import {
   List,
   InputItem,
@@ -14,9 +12,7 @@ import {
   TextareaItem,
   Picker,
 } from 'antd-mobile';
-import {
-  connect,
-} from 'dva';
+import { connect } from 'dva';
 import moment from 'moment';
 import {
   dealThumbImg,
@@ -24,9 +20,7 @@ import {
   rebackImg,
 } from '../../utils/convert';
 import style from './index.less';
-import {
-  CheckBoxs,
-} from '../../components/index';
+import { CheckBoxs } from '../../components/index';
 
 class CreateForm extends Component {
   state = {
