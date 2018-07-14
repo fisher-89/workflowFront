@@ -6,22 +6,21 @@ import {
 } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
-import { analyzePath } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
 class TableEdit extends Component {
-  componentWillMount() {
-    const {
-      dispatch,
-    } = this.props;
-    const id = analyzePath(this.props.location.pathname, 1);
-    this.setState({
-      flowId: id,
-    });
-    dispatch({
+  constructor(props) {
+    super(props);
+    this.state = {
+      flowId: props.match.params.id, // 发起的流程ID
+    };
+  }
+  componentDidMount() {
+    // 获取流程发起的数据
+    this.props.dispatch({
       type: 'start/getStartFlow',
-      payload: id,
+      payload: this.state.flowId,
     });
   }
 

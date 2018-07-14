@@ -60,6 +60,9 @@ export default {
         });
       }
     },
+    /*
+     * 请求获取发起数据
+     */
     * getStartFlow({ payload }, { call, put, select }) {
       const data = yield call(c.getStartFlow, payload);
       const {
@@ -213,6 +216,9 @@ export default {
         ...state, ...newState,
       };
     },
+    /*
+    * 保存请求时获取的流程数据
+     */
     saveFlow(state, action) {
       const newFormData = {
         ...action.payload.form_data,

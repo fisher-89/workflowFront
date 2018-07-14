@@ -211,7 +211,7 @@ class CreateForm extends Component {
               <p className={style.title}>{item.name}</p>
               <div className={style.show_img}>
                 {(newFormData[item.key] || []).map((its, ix) => {
-                  const x = ix;
+                  const x = item.key + ix;
                 return (
                   <img
                     src={`http://192.168.20.16:8009${its}`}
@@ -291,6 +291,7 @@ class CreateForm extends Component {
               // >{item.name}
               // </List.Item>
               <Picker
+                key={i}
                 data={data}
                 cols={1}
                 value={[itemkey.value]}
@@ -304,18 +305,17 @@ class CreateForm extends Component {
         } else if (item.type === 'text' || item.type === 'int') {
           if (item.max > 10) {
             return (
-              <div>
+              <div key={i}>
                 <p style={{
                   paddingLeft: '15px',
                  fontSize: '16px',
                  color: '#666',
                   height: '35px',
                  lineHeight: '35px' }}
-                >{item.description}
+                >{item.name}
                 </p>
                 <TextareaItem
                   autoHeight
-                  key={i}
                   placeholder={item.description}
                   error={itemkey.hasError}
                   onErrorClick={() => this.onErrorClick(item)}
