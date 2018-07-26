@@ -1,7 +1,7 @@
 
 import request from '../utils/request';
 
-// 公共数据
+// 可发起的流程
 export function getFlowList() {
   return request('/api/list');
 }

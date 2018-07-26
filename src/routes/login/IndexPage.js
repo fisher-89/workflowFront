@@ -1,13 +1,13 @@
 import React from 'react';
-import {
-  connect,
-} from 'dva';
+import { connect } from 'dva';
 import {
   Grid,
 } from 'antd-mobile';
+import style from './index.less';
+import listIcon from '../../../src/assets/img/icon.png';
 
 class IndexPage extends React.Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.dispatch({
       type: 'common/getFlowList',
     });
@@ -19,35 +19,48 @@ class IndexPage extends React.Component {
     });
   }
   render() {
-    const {
-      common,
-      history,
-    } = this.props;
-    const {
-      flowList,
-    } = common;
-    const indexGrid = [...flowList];
-    const startList = {
-      name: '申请列表',
-      id: '-1',
-      description: '这是申请列表',
-    };
-    indexGrid.unshift(startList);
-    const data = indexGrid.map((item) => {
-      const obj = {};
-      obj.icon = 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png';
-      obj.text = item.name;
-      obj.id = item.id;
-      obj.description = item.description;
-      return obj;
-    });
+    const { common, history } = this.props;
+    const flowListData = [...common.flowList];// 可发起的流程列表数据
+    const startList = [
+      {
+        text: '我发起的',
+        icon: listIcon,
+        id: '-1',
+        description: '这是发起的列表',
+      },
+    ];
     return (
       <div>
         <Grid
-          data={data}
-          onClick={el => history.push(el.id === '-1' ? '/start_list' : `/table_edit/${el.id}`)}
-          activeStyle={{ background: '#f5f5f5' }}
+          // 我发起的
+          data={startList}
+          hasLine={false}
+          onClick={() => history.push('/start_list')}
         />
+        {
+          // 可发起的流程
+          flowListData.map((item) => {
+            const data = item.flow.map((i) => {
+              const obj = {};
+              obj.icon = listIcon;
+              obj.text = i.name;
+              obj.id = i.id;
+              obj.description = i.description;
+              return obj;
+            });
+            return (
+              <div key={item.id}>
+                <div className={style.subTitle}>{item.name}</div>
+                <Grid
+                  data={data}
+                  onClick={el => history.push(`/table_edit/${el.id}`)}
+                  activeStyle={{ background: '#f5f5f5' }}
+                  hasLine={false}
+                />
+              </div>
+            );
+          })
+        }
       </div>
     );
   }
@@ -55,8 +68,6 @@ class IndexPage extends React.Component {
 
 IndexPage.propTypes = {};
 
-export default connect(({
-  common,
-}) => ({
+export default connect(({ common }) => ({
   common,
 }))(IndexPage);

@@ -47,12 +47,7 @@ export default {
   },
 
   effects: {
-    * getStartList({
-      payload,
-    }, {
-      call,
-      put,
-    }) {
+    * getStartList({ payload }, { call, put }) {
       const data = yield call(c.getStartList, payload.parms);
       if (data && !data.error) {
         yield put({
@@ -65,13 +60,10 @@ export default {
         });
       }
     },
-    * getStartFlow({
-      payload,
-    }, {
-      call,
-      put,
-      select,
-    }) {
+    /*
+     * 请求获取发起数据
+     */
+    * getStartFlow({ payload }, { call, put, select }) {
       const data = yield call(c.getStartFlow, payload);
       const {
         gridformdata,
@@ -89,23 +81,14 @@ export default {
         });
       }
     },
-    * fileUpload({
-      payload,
-    }, {
-      call,
-    }) {
+    * fileUpload({ payload }, { call }) {
       const data = yield call(c.fileUpload, payload.data);
       if (data && !data.error) {
         payload.cb(data);
       }
     },
     // 预提交
-    * preSet({
-      payload,
-    }, {
-      call,
-      put,
-    }) {
+    * preSet({ payload }, { call, put }) {
       const data = yield call(c.preSet, payload);
       if (data && !data.error) {
         yield put({
@@ -131,22 +114,13 @@ export default {
         }
       }
     },
-    * stepStart({
-      payload,
-    }, {
-      call,
-    }) {
+    * stepStart({ payload }, { call }) {
       const data = yield call(c.stepStart, payload);
       if (data && !data.error) {
         payload.cb();
       }
     },
-    * getStartDetail({
-      payload,
-    }, {
-      call,
-      put, select,
-    }) {
+    * getStartDetail({ payload }, { call, put, select }) {
       const data = yield call(c.startDetail, payload);
       const {
         // gridformdata,
@@ -168,12 +142,7 @@ export default {
         });
       }
     },
-    * doWithDraw({
-      payload,
-    }, {
-      call,
-      put,
-    }) {
+    * doWithDraw({ payload }, { call, put }) {
       const data = yield call(c.doWithdraw, payload);
       if (data && !data.error) {
         yield put(routerRedux.push('/start_list'));
@@ -247,6 +216,9 @@ export default {
         ...state, ...newState,
       };
     },
+    /*
+    * 保存请求时获取的流程数据
+     */
     saveFlow(state, action) {
       const newFormData = {
         ...action.payload.form_data,

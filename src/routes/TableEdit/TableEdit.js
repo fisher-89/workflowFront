@@ -1,35 +1,26 @@
 // 发起页面
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import {
   List,
   Button,
 } from 'antd-mobile';
-import {
-  connect,
-} from 'dva';
-import {
-  CreateForm,
-} from '../../components';
-import {
-  analyzePath,
-} from '../../utils/util';
+import { connect } from 'dva';
+import { CreateForm } from '../../components';
 import style from './index.less';
 import styles from '../common.less';
 
 class TableEdit extends Component {
-  componentWillMount() {
-    const {
-      dispatch,
-    } = this.props;
-    const id = analyzePath(this.props.location.pathname, 1);
-    this.setState({
-      flowId: id,
-    });
-    dispatch({
+  constructor(props) {
+    super(props);
+    this.state = {
+      flowId: props.match.params.id, // 发起的流程ID
+    };
+  }
+  componentDidMount() {
+    // 获取流程发起的数据
+    this.props.dispatch({
       type: 'start/getStartFlow',
-      payload: id,
+      payload: this.state.flowId,
     });
   }
 
@@ -128,7 +119,7 @@ class TableEdit extends Component {
       type: 'start/refreshModal',
     });
     history.push(`/addgridlist/${key}/-1`);
-  }
+  };
   // 每次跳页面保存到modal
   saveData = (formdata) => {
     const {
@@ -142,7 +133,7 @@ class TableEdit extends Component {
       },
     });
     return formdata;
-  }
+  };
   // 提交数据
   submitData = (e) => {
     e.preventDefault();
@@ -204,13 +195,10 @@ class TableEdit extends Component {
         },
       });
     }, 500);
-  }
+  };
 
   render() {
-    const {
-      start,
-      dispatch,
-    } = this.props;
+    const { start, dispatch } = this.props;
     const {
       startflow,
       formdata,
@@ -240,8 +228,8 @@ class TableEdit extends Component {
           />
           {this.getGridList()}
         </div>
-        <div className={styles.footer}>
-          <a onClick={this.submitData} ><span>确定</span></a>
+        <div>
+          <Button type="primary" size="small" onClick={this.submitData}>确定</Button>
         </div>
       </div>
     );
