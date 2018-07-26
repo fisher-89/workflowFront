@@ -10,7 +10,8 @@ import {
   connect,
 } from 'dva';
 import {
-  CreateForm, FormDetail,
+  CreateForm,
+  FormDetail,
 } from '../../components';
 import {
   analyzePath,
@@ -19,7 +20,9 @@ import {
 import style from './index.less';
 import styles from '../common.less';
 
-const { prompt } = Modal;
+const {
+  prompt,
+} = Modal;
 class ApproveDetail extends Component {
   state = {
     flowId: '',
@@ -68,11 +71,17 @@ class ApproveDetail extends Component {
     });
   }
   getThrough = () => {
-    const { dispatch } = this.props;
-    const { flowId } = this.state;
+    const {
+      dispatch,
+    } = this.props;
+    const {
+      flowId,
+    } = this.state;
     dispatch({
       type: 'approve/getThrough',
-      payload: { flow_id: flowId },
+      payload: {
+        flow_id: flowId,
+      },
     });
   }
   getGridList = () => {
@@ -106,7 +115,8 @@ class ApproveDetail extends Component {
 
   toEditGrid = (key, i) => {
     const {
-      approve, history,
+      approve,
+      history,
     } = this.props;
     const {
       startflow,
@@ -133,8 +143,11 @@ class ApproveDetail extends Component {
     });
     return formdata;
   }
-  submitStep =(v, data) => {
-    const { dispatch, history } = this.props;
+  submitStep = (v, data) => {
+    const {
+      dispatch,
+      history,
+    } = this.props;
     const params = {
       step_run_id: data.step_run_id,
       timestamp: data.timestamp,
@@ -161,7 +174,8 @@ class ApproveDetail extends Component {
       flowId,
     } = this.state;
     const {
-      dispatch, history,
+      dispatch,
+      history,
     } = this.props;
     this.childComp.saveData();
     setTimeout(() => {
@@ -183,7 +197,9 @@ class ApproveDetail extends Component {
       // 整理列表控件数据
       const formgridObj = {};
       gridformdata.map((item) => {
-        const { fields } = item;
+        const {
+          fields,
+        } = item;
         const forgridArr = fields.map((its) => {
           const obj = {};
           its.map((it) => {
@@ -210,16 +226,12 @@ class ApproveDetail extends Component {
           preType: 'approve',
           cb: (data) => {
             if (data.step_end === 1) { // 不选步骤
-              prompt('填写备注', '',
-                [
-                  {
-                    text: '取消',
-                  },
-                  {
-                    text: '确定',
-                    onPress: v => this.submitStep(v, data),
-                  },
-                ], 'default', null, ['请输入备注']);
+              prompt('填写备注', '', [{
+                text: '取消',
+              }, {
+                text: '确定',
+                onPress: v => this.submitStep(v, data),
+              }], 'default', null, ['请输入备注']);
             } else {
               history.push('/select_step');
             }
@@ -230,21 +242,21 @@ class ApproveDetail extends Component {
   }
 
   fillRemark = () => {
-    prompt('填写备注', '',
-      [
-        {
-          text: '取消',
-          // onPress: this.submitStep
-        },
-        {
-          text: '确定',
-          onPress: this.doReject,
-        },
-      ], 'default', null, ['input your name']);
+    prompt('填写备注', '', [{
+      text: '取消',
+      // onPress: this.submitStep
+    }, {
+      text: '确定',
+      onPress: this.doReject,
+    }], 'default', null, ['input your name']);
   }
   doReject = (v) => {
-    const { dispatch } = this.props;
-    const { flowId } = this.state;
+    const {
+      dispatch,
+    } = this.props;
+    const {
+      flowId,
+    } = this.state;
     dispatch({
       type: 'approve/doReject',
       payload: {
@@ -254,7 +266,9 @@ class ApproveDetail extends Component {
     });
   }
   doDeliver = () => { // 转交
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+    } = this.props;
     const {
       flowId,
     } = this.state;
@@ -265,8 +279,7 @@ class ApproveDetail extends Component {
         deliver: [{
           approver_sn: 110103,
           approver_name: '刘勇01',
-        },
-        {
+        }, {
           approver_sn: 110105,
           approver_name: '张博涵',
         }],
@@ -295,8 +308,7 @@ class ApproveDetail extends Component {
     // 可编辑的
     const editableForm = form.filter((item) => {
       return startflow.step.editable_fields.includes(item.key);
-    }
-    );
+    });
 
     return (
       <div className={styles.con}>
@@ -349,7 +361,9 @@ class ApproveDetail extends Component {
   }
 }
 export default connect(({
-  approve, start,
+  approve,
+  start,
 }) => ({
-  approve, start,
+  approve,
+  start,
 }))(ApproveDetail);
