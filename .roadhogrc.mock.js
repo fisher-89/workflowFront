@@ -750,12 +750,14 @@ const proxy = {
 }
 export default !noProxy ? {
     // 'POST /api/approval/(.*)': 'http://192.168.20.144:8002/api/approval',
-    'GET /api/(.*)': 'http://192.168.20.16:8009/api/',
-    'POST /api/(.*)': 'http://192.168.20.16:8009/api/',
-    'PATCH /api/(.*)': 'http://192.168.20.16:8009/api/',
+    'GET /api/oa/(.*)': 'http://112.74.177.132:8002/api/',
+    'GET /api/(.*)': 'http://112.74.177.132:8006/api/',
+    'POST /api/(.*)': 'http://112.74.177.132:8006/api/',
+    'PATCH /api/(.*)': 'http://112.74.177.132:8006/api/',
     
-    'PUT /api/(.*)': 'http://192.168.20.16:8009/api/',
-    'DELETE /api/(.*)': 'http://192.168.20.16:8009/api/',
+    'PUT /api/(.*)': 'http://112.74.177.132:8006/api/',
+    'DELETE /api/(.*)': 'http://112.74.177.132:8006/api/',
     // 'POST /oauth/(.*)': 'http://localhost.oaupdate.org/oauth/',
-    'POST /oauth/(.*)': 'http://192.168.20.238:8003/oauth/'
+    'POST /oauth/(.*)': 'http://112.74.177.132:8002/oauth/',
+
 } : delay(proxy, 1000)

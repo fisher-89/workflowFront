@@ -1,0 +1,36 @@
+
+@import '../../../utils/var.less';
+.check_status {
+  display: flex;
+  flex-wrap: wrap;
+  .s_item {
+    height: 60/75rem;
+    line-height: 60/75rem;
+    padding: 0 30/75rem;
+    margin-right: 20/75rem;
+    border-radius: 10/75rem;
+    color: rgb(199, 199, 199);
+    margin-bottom: 20/75rem;
+    font-size: 14px;
+    background: #fff;
+    border: 1px solid rgb(199, 199, 199);
+    &.active {
+      // background: #e6f7ff;
+      color: rgb(24, 116, 208);
+      border: 1px solid rgb(24, 116, 208);
+    }
+  }
+}
+.state {
+  .base(rgb(137,
+  137,
+  137),
+  16px);
+  &.active {
+    .stateLabel(@tab-text-color,
+    @tab-text-size,
+    30/75rem,
+    @base-color);
+  }
+  padding: 8/75rem 30/75rem;
+}

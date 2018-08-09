@@ -1,0 +1,103 @@
+@import '../../utils/var';
+.filter_item {
+  padding: 0 40/75rem;
+  :global {
+    .am-list-item:not(:last-child) .am-list-line {
+      border-bottom: none;
+    }
+  }
+  .title {
+    font-size: 12px;
+    color: rgb(150, 150, 150);
+    height: 80/75rem;
+    line-height: 80/75rem;
+  }
+  .some_time {
+    text-align: center;
+    height: 60/75rem;
+    line-height: 60/75rem;
+    color: rgb(155, 155, 155);
+    font-size: 12px;
+    background: rgb(239, 239, 239);
+    border-radius: 4/75rem;
+  }
+  &.range {
+    :global {
+      .am-list-item.am-input-item {
+        height: 60/75rem;
+        min-height: auto;
+        padding-left: 0;
+        background: rgb(239, 239, 239);
+      }
+      .am-flexbox-item {
+        margin-left: 8px!important;
+      }
+      .am-list-item .am-list-line {
+        padding-right: 0;
+      }
+      .am-list-line::after {
+        content: none !important;
+      }
+      .am-list-item .am-input-control input {
+        color: rgb(155, 155, 155);
+        font-size: 12px;
+        text-align: center;
+      }
+    }
+    .rg {
+      margin: 0 6/75rem;
+    }
+  }
+}
+
+.filter_con {
+  // border-bottom: 1px solid #dcdcdc;
+  :global {
+    .am-flexbox .am-flexbox-item {
+      flex: none;
+    }
+  }
+  .dosort,
+  .filter {
+    height: 88/75rem;
+    padding-right: 50/75rem;
+    line-height: 88/75rem;
+    .base(12px, rgb(0, 0, 0));
+    &.active {
+      color: rgb(24, 116, 208);
+    }
+  }
+  .dosort {
+    background: url('../../assets/filter/sort.png') no-repeat right center;
+    background-size: 30/75rem;
+  }
+  .filter {
+    cursor: pointer;
+    background: url('../../assets/filter/unscreen.svg') no-repeat right center;
+    background-size: 30/75rem;
+    &.active {
+      background: url('../../assets/filter/screen.png') no-repeat right center;
+      background-size: 30/75rem;
+    }
+  }
+}
+
+.state {
+  .base(rgb(137,
+  137,
+  137),
+  16px);
+  &.active {
+    .stateLabel(@tab-text-color,
+    @tab-text-size,
+    30/75rem,
+    @base-color);
+  }
+  padding: 8/75rem 30/75rem;
+}
+
+.sort_item {
+  padding: 26/75rem 0;
+  .base(#000,
+  12px);
+}

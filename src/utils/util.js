@@ -1,76 +1,6 @@
 import {
   Toast,
 } from 'antd-mobile';
-import config from '../configs/config';
-
-
-export function env() {
-  const host = window.location.hostname;
-  if (host.indexOf(config.develepDomain) >= 0) {
-    return 'development';
-  } else if (host.indexOf(config.testingDomain) >= 0) {
-    return 'testing';
-  }
-  return 'production';
-}
-
-export function log(...m) {
-  // 只在开发环境写log
-  if (env() === 'development') {
-    console.log(...m);
-  }
-}
-
-export function apiPrefix() {
-  const myEnv = env();
-  if (myEnv === 'production') {
-    return config.apiPrefix.production;
-  } else if (myEnv === 'testing') {
-    return config.apiPrefix.testing;
-  }
-  return config.apiPrefix.development;
-}
-
-export function OA_PATH() {
-  const myEnv = env();
-  if (myEnv === 'production') {
-    return config.OA_PATH.production;
-  } else if (myEnv === 'testing') {
-    return config.OA_PATH.testing;
-  }
-  return config.OA_PATH.development;
-}
-
-export function OA_CLIENT_ID() {
-  const myEnv = env();
-  if (myEnv === 'production') {
-    return config.OA_CLIENT_ID.production;
-  } else if (myEnv === 'testing') {
-    return config.OA_CLIENT_ID.testing;
-  }
-  return config.OA_CLIENT_ID.development;
-}
-
-export function OA_CLIENT_SECRET() {
-  const myEnv = env();
-  if (myEnv === 'production') {
-    return config.OA_CLIENT_SECRET.production;
-  } else if (myEnv === 'testing') {
-    return config.OA_CLIENT_SECRET.testing;
-  }
-  return config.OA_CLIENT_SECRET.development;
-}
-
-export function domain() {
-  const myEnv = env();
-  if (myEnv === 'production') {
-    return config.domain.production;
-  } else if (myEnv === 'testing') {
-    return config.domain.testing;
-  }
-  return config.domain.development;
-}
-
 
 const codeMessage = {
   200: '服务器成功返回请求的数据',
@@ -133,4 +63,39 @@ export function analyzePath(pathname, i) {
   const routes = path.split('/');
 
   return routes[i];
+}
+
+export function userStorage(key) {
+  const info = localStorage[key];
+  const newInfo = JSON.parse(info === undefined ? '{}' : info);
+  return newInfo;
+}
+
+export function dealFlowTypeOptions(list) {
+  const option = list.map((item) => {
+    const obj = {};
+    obj.label = item.name;
+    obj.value = item.id;
+    return obj;
+  });
+  return option;
+}
+
+export function parseParams(url) {
+  const keyValue = url.split('&');
+  const obj = {};
+  keyValue.forEach((item) => {
+    const arr = [];
+    const i = item.indexOf('=');
+    if (i > -1 && i < item.length - 1) {
+      arr[0] = item.slice(0, i);
+      arr[1] = item.slice(i + 1);
+    }
+
+    if (arr && arr.length === 2) {
+      const [key, value] = arr;
+      obj[key] = value;
+    }
+  });
+  return obj;
 }

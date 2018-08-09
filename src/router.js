@@ -92,13 +92,23 @@ function RouterConfig({
     models: () => [],
     component: () =>
       import('./routes/TableEdit/SelectApprover'),
-  }, {
+  },
+  {
     path: '/start_list',
     models: () => [
       import('./models/start'),
     ],
     component: () =>
       import('./routes/TableEdit/StartList'),
+  },
+  {
+    path: '/start_list2',
+    models: () => [
+      import('./models/start'),
+      import('./models/list'),
+    ],
+    component: () =>
+      import('./routes/TableEdit/StartList2'),
   },
   {
     path: '/start_detail/:id',
@@ -115,6 +125,12 @@ function RouterConfig({
     ],
     component: () =>
       import('./routes/TableEdit/StartDetail'),
+  },
+  {
+    path: '/my',
+    models: () => [],
+    component: () =>
+      import('./routes/My/my'),
   },
   ];
   const speRoutes = [{

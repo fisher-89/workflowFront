@@ -3,9 +3,6 @@ import {
   Toast,
 } from 'antd-mobile';
 import {
-  log,
-  OA_PATH,
-  OA_CLIENT_ID,
   dealErrorData,
 } from './util';
 
@@ -57,8 +54,6 @@ export default function request(uri, params) {
   const defaultOptions = {
     credentials: 'include',
   };
-  log('request:', params);
-
   if (uri.match(/\/api\//)) {
     if (localStorage.getItem('OA_access_token') &&
       localStorage.getItem('OA_access_token_expires_in') > new Date().getTime()) {
@@ -66,7 +61,8 @@ export default function request(uri, params) {
         Authorization: `Bearer ${localStorage.getItem('OA_access_token')}`,
       };
     } else {
-      window.location.href = `${OA_PATH()}/oauth/authorize?client_id=${OA_CLIENT_ID()}&response_type=code`;
+      window.location.href =
+    `${OA_PATH}/oauth/authorize?client_id=${OA_CLIENT_ID}&response_type=code`;
     }
   }
   const newOptions = {
@@ -98,33 +94,28 @@ export default function request(uri, params) {
   return fetch(urlParam, newOptions)
     .then(checkStatus)
     .then((response) => {
-      // console.log('response', response);
       if (newOptions.method === 'DELETE' && response.status === 204) {
         const obj = { status: '204', message: '删除成功' };
-        // return Promise.resolve({ ...obj });
         return { ...obj };
       }
       const {
         data,
       } = response;
-      // return Promise.resolve(data);
       return data;
     }).catch((error) => {
       const {
         response,
       } = error;
-      log('response exception', error, response);
+      console.log('response exception', error, response);
       if (response) {
         const {
           data,
           status,
         } = response;
-        // return Promise.reject({ error: true, message: dealErrorData(data, status) });
         return {
           error: true, message: dealErrorData(data, status),
         };
       } else {
-        // return Promise.reject({ error: true, message: '网络错误' });
         return {
           error: true, message: '网络错误',
         };

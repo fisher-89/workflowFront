@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import {
-  Grid,
+  Grid, WhiteSpace, WingBlank,
 } from 'antd-mobile';
 import style from './index.less';
 import listIcon from '../../../src/assets/img/icon.png';
@@ -31,12 +31,17 @@ class IndexPage extends React.Component {
     ];
     return (
       <div>
-        <Grid
+        <WhiteSpace size="md" />
+        <WingBlank>
+          <div className={style.entrance}>
+            <Grid
           // 我发起的
-          data={startList}
-          hasLine={false}
-          onClick={() => history.push('/start_list')}
-        />
+              data={startList}
+              hasLine={false}
+              onClick={() => history.push('/start_list')}
+            />
+          </div>
+        </WingBlank>
         {
           // 可发起的流程
           flowListData.map((item) => {
@@ -50,13 +55,18 @@ class IndexPage extends React.Component {
             });
             return (
               <div key={item.id}>
-                <div className={style.subTitle}>{item.name}</div>
-                <Grid
-                  data={data}
-                  onClick={el => history.push(`/table_edit/${el.id}`)}
-                  activeStyle={{ background: '#f5f5f5' }}
-                  hasLine={false}
-                />
+                <WhiteSpace size="md" />
+                <WingBlank>
+                  <div className={style.entrance}>
+                    <div className={style.title}>{item.name}</div>
+                    <Grid
+                      data={data}
+                      onClick={el => history.push(`/table_edit/${el.id}`)}
+                      activeStyle={{ background: '#f5f5f5' }}
+                      hasLine={false}
+                    />
+                  </div>
+                </WingBlank>
               </div>
             );
           })

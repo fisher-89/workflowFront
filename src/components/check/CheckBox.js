@@ -27,12 +27,12 @@ class CheckBox extends React.Component {
     return (
       <div className={style.check_status}>
         {options.map((item, i) => {
-                    const checked = (value || []).includes(item.value);
+                    const checked = (value || []).indexOf(item.value) > -1 && !readonly;
                     return (
                       <div
                         key={item.value}
-                        className={[style.s_item, checked ? style.active : null].join(' ')}
-                        style={{ display: readonly && !checked ? 'none' : '' }}
+                        className={[style.s_item, checked ? style.active : null, readonly ? style.readonly : null].join(' ')}
+                        // style={{ display: readonly ? 'none' : '' }}
                         onClick={() => (checkStatus ? checkStatus(i, item.value, nameKey) : null)}
                       >
                         {item.name}

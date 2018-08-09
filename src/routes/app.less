@@ -1,27 +1,97 @@
-
-.container{
+@import '../utils/var.less';
+.container {
   height: 100%;
   display: flex;
   flex-direction: column;
-  .content{  
-    flex-grow:1; 
-    overflow:auto;  
-    display:flex;
-    flex-direction:column;
+  .content {
+    flex-grow: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
   }
-  .footer{
-    flex-grow:0;
-    flex-shrink:0;
+  .footer {
+    flex-grow: 0;
+    flex-shrink: 0;
   }
 }
 
 .textOver {
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
-.demo_content{
+
+.demo_content {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
+}
+
+:global {
+  .container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  .am-textarea-label {
+    align-self: center !important;
+  }
+  .am-list .am-list-item.am-textarea-item::after {
+    background-color: transparent !important;
+  }
+  .am-list-line::after {
+    background-color: @base-bg-color  !important;
+  }
+  .am-list-body::after {
+    background-color: #fff !important;
+  }
+  .am-list-line {
+    border-bottom-color: @base-bg-color  !important;
+  }
+  .am-list-body {
+    background-color: #fff !important;
+    border-bottom-color: @base-bg-color  !important;
+    border-top-color: @base-bg-color  !important;
+  }
+  .am-whitespace.am-whitespace-md {
+    height: 20/75rem !important;
+  }
+  .am-wingblank.am-wingblank-lg {
+    margin-left: 24/75rem !important;
+    margin-right: 24/75rem !important;
+    border-radius: @radius;
+    background: #fff;
+  }
+  .am-search-input {
+    height: 64/75rem !important;
+    line-height: 64/75rem !important;
+  }
+  .am-search-input .am-search-synthetic-ph {
+    height: 64/75rem !important;
+    line-height: 64/75rem !important;
+  }
+  .am-search-input input[type="search"] {
+    height: 64/75rem !important;
+  }
+  .am-search {
+    background-color: @base-bg-color  !important;
+    height: 110/75rem !important;
+    padding: 0 24/75rem !important;
+  }
+  .am-tabs-default-bar-tab-active {
+    color: #1874d0;
+  }
+  .am-flexbox .am-flexbox-item {
+    margin-left: none !important;
+  }
+  .am-list-item .am-list-line .am-list-content {
+    font-size: 16px !important;
+  }
+  .am-list-item .am-list-line .am-list-extra {
+    flex-basis: 50% !important;
+  }
+  .am-list-body::before {
+    background-color: @base-bg-color  !important;
+  }
 }

@@ -12,10 +12,6 @@ import Loader from '../components/General/Loader/Loader';
 import {
   openPages,
 } from '../configs/config';
-import {
-  OA_PATH,
-  OA_CLIENT_ID,
-} from '../utils/util';
 
 import style from './app.less';
 
@@ -23,22 +19,26 @@ class App extends React.Component {
   componentWillMount() {
     if (localStorage.getItem('OA_access_token') &&
       localStorage.getItem('OA_access_token_expires_in') > new Date().getTime()) {
-      // console.log('验证成功');
+      this.props.dispatch({
+        type: 'common/getUserInfo',
+      });
     } else if (localStorage.getItem('OA_refresh_token')) {
       this.props.dispatch({
         type: 'oauth/refreshAccessToken',
       });
     } else {
-      window.location.href = `${OA_PATH()}/oauth/authorize?client_id=${OA_CLIENT_ID()}&response_type=code`;
+      window.location.href =
+     `${OA_PATH}/oauth/authorize?client_id=${OA_CLIENT_ID}&response_type=code`;
     }
-    // document.body.style.margin = "0px";
-    // // 这是防止页面被拖拽
-    // document.body.addEventListener('touchmove', (ev) => {
-    //   ev.preventDefault();
-    // });
+
+    document.body.style.margin = '0px';
+    // 这是防止页面被拖拽
+    document.body.addEventListener('touchmove', (ev) => {
+      ev.preventDefault();
+    });
     // this.props.dispatch({
-    //   type: 'common/getFlowList'
-    // })
+    //   type: 'common/getFlowList',
+    // });
   }
 
   render() {

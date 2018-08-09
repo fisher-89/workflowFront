@@ -1,16 +1,7 @@
 import React, { Component } from 'react';
 import {
-  List,
-  InputItem,
-  Toast,
-  DatePicker,
-  ImagePicker,
-  WingBlank,
-  Modal,
-  Grid,
-  Carousel,
-  TextareaItem,
-  Picker,
+  List, InputItem, Toast, DatePicker, ImagePicker, Modal, Grid,
+  Carousel, TextareaItem, Picker,
 } from 'antd-mobile';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -69,26 +60,39 @@ class CreateForm extends Component {
           };
           tempFormdata.push(obj);
           this.setState({
-            [item.key]: { ...obj,
+            [item.key]: {
+              ...obj,
             },
           });
           return true;
         });
       }
+      const obj = {};
+      formdata.forEach((item) => {
+        obj[item.key] = { ...item };
+      });
       this.setState({
         init: true,
         editableForm,
         showForm,
         newFormData,
-        // required_form,
-        // editable_grid,
-        // show_grid,
-        // required_grid,
         formdata: tempFormdata,
+        ...obj,
       });
     }
   }
-
+  onHandleToFixed = (value, floatNumber) => {
+    const a = value;
+    const b = Number(a);
+    let newValue = b;
+    if (floatNumber !== undefined) {
+      const c = b.toFixed(floatNumber);
+      if (Math.floor(c) === Number(c)) {
+        newValue = Number(c);
+      }
+    }
+    return newValue;
+  }
   onChange = (v, item) => {
     const {
       formdata,
@@ -102,16 +106,25 @@ class CreateForm extends Component {
     };
     // 验证正则
     if (item.type === 'int') {
-      // if (!/^\d+(?=\.{0,1}\d+$|$)/.test(v)) {
-      if (!/^(-?\d+)(\.\d+)?$/.test(v)) {
-        obj.hasError = true;
-        obj.msg = '请输入数字';
+      // let newValue = v;
+      const { max, min } = item;
+      let newValue = this.onHandleToFixed(v, item.scale);
+      if (parseFloat(newValue) < min) {
+        newValue = min;
       }
+      if (parseFloat(newValue) > max) {
+        newValue = max;
+      }
+      obj.value = Number(newValue);
     }
     if (item.type === 'text') {
-      if (!(v.length > item.min && v.length < item.max)) {
-        obj.hasError = true;
+      if (item.min !== '' && v.length < item.min) {
         obj.msg = `字符长度在${item.min ? item.min : '0'}~${item.max}之间`;
+      }
+      if (v.length > item.max) {
+        let newValue = v;
+        newValue = newValue.length > item.max ? newValue.slice(0, item.max) : newValue;
+        obj.value = newValue;
       }
     }
     const data = formdata.map((its) => {
@@ -124,11 +137,38 @@ class CreateForm extends Component {
 
     this.setState({
       formdata: data,
-      [key]: { ...obj,
+      [key]: {
+        ...obj,
       },
     });
   }
 
+  onhandleSingleChange = (v, item) => {
+    const {
+      formdata,
+    } = this.state;
+    const { key } = item;
+    const obj = {
+      key,
+      value: v,
+      hasError: false,
+      msg: '',
+    };
+    const data = formdata.map((its) => {
+      if (its.key === item.key) {
+        return obj;
+      } else {
+        return its;
+      }
+    });
+
+    this.setState({
+      formdata: data,
+      [key]: {
+        ...obj,
+      },
+    });
+  }
 
   onErrorClick = (item) => {
     const {
@@ -161,7 +201,8 @@ class CreateForm extends Component {
     this.setState({
       visible: false,
       formdata: data,
-      [key]: { ...obj,
+      [key]: {
+        ...obj,
       },
     });
   }
@@ -193,68 +234,67 @@ class CreateForm extends Component {
     });
     return showForm.map((item, idx) => {
       const i = idx;
-      const itemkey = formdata.find(its => item.key === its.key);
+      const [itemkey] = formdata.filter(its => item.key === its.key);
       let itemValue = [];
       if (itemkey && item.type === 'file') {
         itemValue = (itemkey.value || []).map((its) => {
           return {
-            url: `http://192.168.20.16:8009${dealThumbImg(its, '_thumb')}`,
+            url: `${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}`,
           };
         });
         // itemkey.value = [...imgs]
       }
-      const isEdit = editKey.includes(item.key);
+      const isEdit = editKey.indexOf(item.key) > -1;
       if (!isEdit) { // 只读
         if (item.type === 'file') { // 文件
           return (
-            <WingBlank key={i}>
+            <React.Fragment key={i}>
               <p className={style.title}>{item.name}</p>
               <div className={style.show_img}>
                 {(newFormData[item.key] || []).map((its, ix) => {
                   const x = item.key + ix;
-                return (
-                  <img
-                    src={`http://192.168.20.16:8009${its}`}
-                    key={x}
-                    alt="图片"
-                    onClick={() => this.reviewReadImg(x, newFormData[item.key])}
-                  />
-                );
+                  return (
+                    <img
+                      src={`${its}`}
+                      key={x}
+                      alt="图片"
+                      onClick={() => this.reviewReadImg(x, newFormData[item.key])}
+                    />
+                  );
                 })}
               </div>
-            </WingBlank>
+            </React.Fragment>
           );
         } else if (item.type === 'array') { // 数组
           return (
-            <WingBlank key={i}>
+            <React.Fragment key={i}>
               <p className={style.title}>{item.name}</p>
-              <CheckBoxs
-                option={item.options}
-                value={newFormData[item.key]}
-                readonly
-              />
-            </WingBlank>
+              <div className={style.picker_container}>
+                <CheckBoxs
+                  option={item.options}
+                  value={newFormData[item.key]}
+                  readonly
+                />
+              </div>
+            </React.Fragment>
+
           );
-        // } else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
-        //   return (
-        //     <List.Item
-        //       key={i}
-        //       extra={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
-        //       size="small"
-        //     >
-        //       {item.name}{newFormData[item.key]}
-        //     </List.Item>
-        //   );
-        // }
-        } else if (item.type === 'text' && item.max > 10) {
-          return (
-            <p style={{ color: '#999' }}>{item.value}</p>
-          );
+          // } else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
+          //   return (
+          //     <List.Item
+          //       key={i}
+          //       extra={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
+          //       size="small"
+          //     >
+          //       {item.name}{newFormData[item.key]}
+          //     </List.Item>
+          //   );
+          // }
         }
         return (
           <List.Item
             key={i}
-            extra={<span style={{ color: '#999' }}>{newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}</span>}
+            extra={<span style={{ color: '#ccc' }}>{newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}</span>}
             size="small"
           >
             {item.name}
@@ -265,15 +305,17 @@ class CreateForm extends Component {
         if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
           if (item.type === 'array') {
             return (
-              <WingBlank key={i}>
+              <React.Fragment key={i}>
                 <p className={style.title}>{item.name}</p>
-                <CheckBoxs
-                  option={item.options}
-                  nameKey={item.key}
-                  checkStatus={this.checkStatus}
-                  value={itemkey && itemkey.value}
-                />
-              </WingBlank>
+                <div className={style.picker_container}>
+                  <CheckBoxs
+                    option={item.options}
+                    nameKey={item.key}
+                    checkStatus={this.checkStatus}
+                    value={itemkey && itemkey.value}
+                  />
+                </div>
+              </React.Fragment>
             );
           } else {
             const data = item.options.map((its) => {
@@ -295,41 +337,48 @@ class CreateForm extends Component {
                 data={data}
                 cols={1}
                 value={[itemkey.value]}
-                onChange={e => this.onChange(e[0], item)}
+                // onChange={e => this.onChange(e[0], item)}
+                onChange={e => this.onhandleSingleChange(e[0], item)}
               >
                 <List.Item arrow="horizontal" onClick={this.onClick}>{item.name}</List.Item>
               </Picker>
-
             );
           }
-        } else if (item.type === 'text' || item.type === 'int') {
+        } else if (item.type === 'text') {
           if (item.max > 10) {
             return (
-              <div key={i}>
-                <p style={{
-                  paddingLeft: '15px',
-                 fontSize: '16px',
-                 color: '#666',
-                  height: '35px',
-                 lineHeight: '35px' }}
-                >{item.name}
-                </p>
-                <TextareaItem
-                  autoHeight
-                  placeholder={item.description}
-                  error={itemkey.hasError}
-                  onErrorClick={() => this.onErrorClick(item)}
-                  onChange={e => this.onChange(e, item)}
-                  value={itemkey.value}
-                />
-              </div>
+              <TextareaItem
+                key={i}
+                title={item.name}
+                autoHeight
+                placeholder={item.description}
+                error={itemkey.hasError}
+                onErrorClick={() => this.onErrorClick(item)}
+                onChange={e => this.onChange(e, item)}
+                value={itemkey.value}
+              />
+            );
+          } else {
+            return (
+              <InputItem
+                key={i}
+                placeholder={item.description}
+                error={itemkey.hasError}
+                onErrorClick={() => this.onErrorClick(item)}
+                onChange={e => this.onChange(e, item)}
+                value={itemkey.value}
+              // onBlur={e=>this.onhandleBlur(e,item)}
+              >{item.name}
+              </InputItem>
             );
           }
+        } else if (item.type === 'int') {
           return (
             <InputItem
               key={i}
               placeholder={item.description}
               error={itemkey.hasError}
+              type="digit"
               onErrorClick={() => this.onErrorClick(item)}
               onChange={e => this.onChange(e, item)}
               value={itemkey.value}
@@ -350,9 +399,9 @@ class CreateForm extends Component {
           );
         } else if (item.type === 'file') {
           return (
-            <WingBlank key={i}>
+            <React.Fragment key={i}>
               <p className={style.title}>{item.name}</p>
-              <div>
+              <div className={style.picker_container}>
                 <ImagePicker
                   // key={item.key}
                   files={itemValue}
@@ -362,7 +411,8 @@ class CreateForm extends Component {
                   accept="image/gif,image/jpeg,image/jpg,image/png"
                 />
               </div>
-            </WingBlank>
+            </React.Fragment>
+
           );
         }
       }
@@ -391,14 +441,16 @@ class CreateForm extends Component {
 
     this.setState({
       formdata: data,
-      [key]: { ...obj,
+      [key]: {
+        ...obj,
       },
     });
   }
   choseItem = (item) => { // 弹出单选
     const option = item.options;
     const choseItem = option.map((its) => {
-      const obj = { ...item,
+      const obj = {
+        ...item,
         text: its,
         icon: 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
       };
@@ -430,11 +482,9 @@ class CreateForm extends Component {
       formdata,
     } = this.state;
     const { key } = item;
-
     const newFiles = files.map((its) => {
-      return rebackImg(its.url, 'http://192.168.20.16:8009', '_thumb');
+      return rebackImg(its.url, `${UPLOAD_PATH}`, '_thumb');
     });
-
     const obj = {
       key,
       hasError: false,
@@ -455,7 +505,8 @@ class CreateForm extends Component {
       this.setState({
         files: [...newFiles],
         formdata: [...data],
-        [key]: { ...obj,
+        [key]: {
+          ...obj,
         },
       });
     }
@@ -470,7 +521,7 @@ class CreateForm extends Component {
         payload: {
           data: imgformData,
           cb: (f) => {
-            newFiles[newFiles.length - 1] = f;
+            newFiles[newFiles.length - 1] = f.path;
             obj.value = [...newFiles];
             const data = formdata.map((its) => {
               if (its.key === item.key) {
@@ -482,7 +533,8 @@ class CreateForm extends Component {
             this.setState({
               files: [...newFiles],
               formdata: [...data],
-              [key]: { ...obj,
+              [key]: {
+                ...obj,
               },
             });
           },
@@ -518,7 +570,8 @@ class CreateForm extends Component {
     });
     this.setState({
       formdata: data,
-      [key]: { ...obj,
+      [key]: {
+        ...obj,
       },
       refresh: [...newStatus],
     });
@@ -535,7 +588,8 @@ class CreateForm extends Component {
   }
   reviewReadImg = (i, img) => {
     const imgs = (img || []).map((item) => {
-      return `http://192.168.20.16:8009${item}`;
+      // return `http://192.168.20.16:8009${item}`;
+      return `${UPLOAD_PATH}${item}`;
     });
     const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
     this.setState({
@@ -565,7 +619,7 @@ class CreateForm extends Component {
     } = this.state;
     if (!startflow) return null;
     return (
-      <div>
+      <div style={{ background: '#fff' }}>
         <List renderHeader={() => '基本信息'}>
           {this.getFormList()}
         </List>
@@ -601,18 +655,18 @@ class CreateForm extends Component {
               >
                 {(reviewImg || []).map((val, i) => {
                   const idx = i;
-                return (
-                  <img
-                    src={val}
-                    key={idx}
-                    alt="carousel"
-                    style={{ width: '100%', verticalAlign: 'top' }}
-                    onLoad={() => {
-                      window.dispatchEvent(new Event('resize'));
-                    }}
-                  />
-                );
-                  })}
+                  return (
+                    <img
+                      src={val}
+                      key={idx}
+                      alt="carousel"
+                      style={{ width: '100%', verticalAlign: 'top' }}
+                      onLoad={() => {
+                        window.dispatchEvent(new Event('resize'));
+                      }}
+                    />
+                  );
+                })}
               </Carousel>
             </div>
           </div>

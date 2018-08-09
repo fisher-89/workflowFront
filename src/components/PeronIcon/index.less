@@ -1,0 +1,50 @@
+@import '../../utils/var';
+.person_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 126/75rem;
+  margin-bottom: 32/75rem;
+  flex-shrink: 0;
+}
+
+.user_info {
+  width: 100%;
+  margin-top: 10/75rem;
+  text-align: center;
+  font-size: 12px;
+  line-height: 18px;
+  .textLineOverFlow()
+}
+
+.person_icon {
+  width: 100/75rem;
+  height: 100/75rem; // margin-right: 26/75rem;
+  // margin-bottom: 32/75rem;
+  border-radius: 50%;
+  border: 1px solid rgb(24, 116, 207);
+  flex-shrink: 0;
+  text-align: center;
+  line-height: 100/75rem;
+  background: #fff;
+  color: rgb(24, 116, 207);
+  .name {
+    position: relative;
+    font-size: 12px;
+    img {
+      width: 100%;
+    }
+    span {
+      position: absolute;
+      top: -10/75rem;
+      right: -10/75rem;
+      width: 44/75rem;
+      height: 44/75rem;
+      background: url(../../assets/delete.png) no-repeat center center;
+      background-size: 22/75rem 22/75rem;
+    }
+  }
+  &.spe {
+    border: none;
+  }
+}

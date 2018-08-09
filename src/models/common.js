@@ -1,12 +1,12 @@
+import { Toast } from 'antd-mobile';
 import * as c from '../services/start';
 
 export default {
-
   namespace: 'common',
-
   state: {
     flowList: [], // 可发起的列表
     footStyle: {},
+    userInfo: {},
   },
 
   subscriptions: {
@@ -20,6 +20,9 @@ export default {
       put,
       select,
     }) {
+      if (localStorage.flowList) {
+        return;
+      }
       const {
         flowList,
       } = yield select(_ => _.common);
@@ -36,6 +39,25 @@ export default {
             value: newFlowlist,
           },
         });
+        localStorage.flowList = JSON.stringify(data);
+      }
+    },
+    *getUserInfo(_, { call, put }) {
+      if (localStorage.userInfo) {
+        return;
+      }
+      const response = yield call(c.getUserInfo);
+      if (response && !response.error) {
+        yield put({
+          type: 'save',
+          payload: {
+            store: 'userInfo',
+            data: response,
+          },
+        });
+        localStorage.userInfo = JSON.stringify(response);
+      } else {
+        Toast.fail(response.message);
       }
     },
   },

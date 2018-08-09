@@ -12,7 +12,7 @@ export function getStartFlow(id) {
 
 // 上传图片
 export function fileUpload(data) {
-  return request('http://192.168.20.16:8009/api/files', {
+  return request(`${UPLOAD_PATH}/api/files`, {
     method: 'POST',
     body: data,
   });
@@ -50,4 +50,8 @@ export function doWithdraw(data) {
     method: 'PATCH',
     body: data,
   });
+}
+
+export async function getUserInfo() {
+  return request('/api/oa/current-user');
 }

@@ -1,0 +1,51 @@
+// 字体规范
+@title-size: 18px;
+@tab-text-size: 16px;
+@list-title-size: 16px;
+@list-categray-size: 14px;
+@list-text-size: 12px;
+@detail-title-size: 14px;
+@detail-describe-size: 14px;
+@title-color: #fff;
+@tab-text-color: #fff;
+@tab-text-color-unchecked: #9b9b9b;
+@list-title-color: #000;
+@list-categray-color: #4a4a4a;
+@list-text-color: #9b9b9b;
+@detail-title-color: #000;
+@detail-describe-color: #9b9b9b;
+@content-padding: 24/75rem;
+@base-color: rgb(24, 116, 207);
+@base-text-color: rgb(74, 74, 74);
+@base-bg-color: rgb(245, 245, 245);
+@radius:4px;
+.base(@color, @size) {
+  font-size: @size;
+  color: @color;
+}
+
+.stateLabel(@color, @size, @r, @bg, ) {
+  .base(@color, @size);
+  border-radius: @r;
+  background-color: @bg;
+}
+
+.label(@color, @size, @r, @bg, ) {
+  .base(@color, @size);
+  border-radius: @r;
+  border: 1px solid @color;
+  background-color: @bg;
+}
+
+.textLineOverFlow() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-overflow (@line : 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

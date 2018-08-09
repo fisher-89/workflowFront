@@ -46,12 +46,12 @@ class FormDetail extends Component {
                 const ix = x;
               return (
                 <img
-                  src={`http://192.168.20.16:8009${dealThumbImg(its, '_thumb')}`}
+                  src={`${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}`}
                   key={ix}
                   alt="图片"
                   onClick={() => this.reviewImg(ix, formData[item.key])}
                 />);
-})}
+          })}
             </div>
           </WingBlank>
         );
@@ -87,7 +87,7 @@ class FormDetail extends Component {
           extra={formData && formData[item.key] ? formData[item.key] : '暂无'}
           size="small"
         >
-          {item.name}
+          <span style={{ color: '#ccc' }}>{item.name}</span>
         </List.Item>);
     });
   }
@@ -109,7 +109,7 @@ class FormDetail extends Component {
   }
   reviewImg = (i, img) => {
     const imgs = (img || []).map((item) => {
-      return `http://192.168.20.16:8009${item}`;
+      return `${UPLOAD_PATH}${item}`;
     });
     const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
     this.setState({

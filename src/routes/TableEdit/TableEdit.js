@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import {
   List,
-  Button,
+  Button, WhiteSpace,
 } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
@@ -87,7 +87,7 @@ class TableEdit extends Component {
             <span>{item.name}</span>
             <Button
               size="small"
-              type="primary"
+              type="ghost"
               onClick={() => this.addGridList(item.key)}
             >添加{item.name}
             </Button>
@@ -226,10 +226,11 @@ class TableEdit extends Component {
             form_data={formData}
             onRef={(comp) => { this.childComp = comp; }}
           />
+          <WhiteSpace />
           {this.getGridList()}
         </div>
         <div>
-          <Button type="primary" size="small" onClick={this.submitData}>确定</Button>
+          <Button type="primary" onClick={this.submitData}>确定</Button>
         </div>
       </div>
     );

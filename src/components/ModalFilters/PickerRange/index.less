@@ -1,0 +1,34 @@
+.range_time {
+  :global {
+    .am-flexbox .am-flexbox-item {
+      margin-left: 0;
+    }
+  }
+}
+
+.pickerange {
+  :global {
+    .am-flexbox .am-flexbox-item {
+      flex: 1 1;
+    }
+  }
+  .am-picker-popup-item .am-picker-popup-title {
+    padding: 0 15px !important;
+  }
+}
+
+.item {
+  text-align: center;
+  font-size: 16px;
+  &.middle {
+    width: 20px;
+    color: #000;
+  }
+  span {
+    display: inline-block;
+    height: 100%;
+    &.active {
+      border-bottom: 2px solid rgb(0, 114, 215);
+    }
+  }
+}
