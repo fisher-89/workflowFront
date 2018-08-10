@@ -4,6 +4,7 @@ import {
   Grid, WhiteSpace, WingBlank,
 } from 'antd-mobile';
 import style from './index.less';
+import { userStorage } from '../../utils/util';
 import listIcon from '../../../src/assets/img/icon.png';
 
 class IndexPage extends React.Component {
@@ -19,8 +20,9 @@ class IndexPage extends React.Component {
     });
   }
   render() {
-    const { common, history } = this.props;
-    const flowListData = [...common.flowList];// 可发起的流程列表数据
+    const { history } = this.props;
+    const flowList = userStorage('flowList');
+    const flowListData = [...flowList];// 可发起的流程列表数据
     const startList = [
       {
         text: '我发起的',

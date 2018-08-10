@@ -22,6 +22,9 @@ class App extends React.Component {
       this.props.dispatch({
         type: 'common/getUserInfo',
       });
+      this.props.dispatch({
+        type: 'common/getFlowList',
+      });
     } else if (localStorage.getItem('OA_refresh_token')) {
       this.props.dispatch({
         type: 'oauth/refreshAccessToken',

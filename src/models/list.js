@@ -1,25 +1,41 @@
 import * as c from '../services/start';
 // import defaultReducers from './reducers/default';
-
+const initDatas = {
+  page: 1,
+  totalpage: 1,
+  data: [],
+};
+const initLists = {
+  '/start_list2_all': {
+    type: 'all',
+    url: 'type=all&page=1&totalpage=10',
+    datas: { ...initDatas },
+  },
+  '/start_list2_finished': {
+    type: 'finished',
+    url: 'type=finished&page=1&totalpage=10',
+    datas: { ...initDatas },
+  },
+  '/start_list2_rejected': {
+    type: 'rejected',
+    url: 'type=rejected&page=1&totalpage=10',
+    datas: { ...initDatas },
+  },
+  '/start_list2_withdraw': {
+    type: 'withdraw',
+    url: 'type=withdraw&page=1&totalpage=10',
+    datas: { ...initDatas },
+  },
+  '/start_list2_processing': {
+    type: 'processing',
+    url: 'type=processing&page=1&totalpage=10',
+    datas: { ...initDatas },
+  },
+};
 export default {
   namespace: 'list',
   state: {
-    lists: {
-      start_list2_all: {
-        type: 'all',
-        url: 'type=all',
-        datas: {
-
-        },
-      },
-      start_list2_finished: {
-        type: 'finished',
-        url: 'type=finished',
-        datas: {
-
-        },
-      },
-    },
+    lists: { ...initLists },
   },
 
   subscriptions: {
@@ -49,7 +65,7 @@ export default {
       const { data, type, path } = current;
       const { lists } = state;
       const lastObj = lists[`${path}_${type}`];
-      const { datas } = lastObj;
+      const { datas, url } = lastObj;
       const page = data.current_page;
       const totalpage = data.last_page;
       const currentList = data.data;
@@ -66,15 +82,34 @@ export default {
       newDatas.data = [...newList];
       const newObj = {
         type,
-        path,
+        url,
         datas: newDatas,
       };
-      console.log('newDatas', newDatas, newObj);
       return {
         ...state,
         lists: {
           ...lists,
           [`${path}_${type}`]: newObj,
+        },
+      };
+    },
+    resetModal(state) {
+      return {
+        ...state,
+        lists: { ...initLists },
+      };
+    },
+    saveFilterTerm(state, action) {
+      const { payload } = action;
+      const { key, value } = payload;
+      const { lists } = state;
+      const current = { ...lists[key] };
+      current.url = value;
+      return {
+        ...state,
+        lists: {
+          ...lists,
+          [key]: current,
         },
       };
     },

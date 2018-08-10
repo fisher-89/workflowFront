@@ -5,16 +5,27 @@ class CheckBox extends React.PureComponent {
   constructor(props) {
     super(props);
     const { value, multiple } = props;
-    const newValue = value || (multiple ? [] : []);
+    let newValue = [];
+    if (!(value instanceof Array) && multiple) {
+      newValue = [value];
+    } else {
+      newValue = value || (multiple ? [] : []);
+    }
     this.state = {
       value: newValue,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    const { value } = nextProps;
+    const { value, multiple } = nextProps;
     if (JSON.stringify(value) !== JSON.stringify(this.props.value)) {
-      this.setState({ value });
+      let newValue = [];
+      if (!(value instanceof Array) && multiple) {
+        newValue = [value];
+      } else {
+        newValue = value || (multiple ? [] : []);
+      }
+      this.setState({ value: newValue });
     }
   }
 

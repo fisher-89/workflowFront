@@ -99,3 +99,149 @@ export function parseParams(url) {
   });
   return obj;
 }
+
+export function makerFilters(params) {
+  const { filters } = { ...params };
+  let newFilters = '';
+  newFilters = dotWheresValue(filters);
+  return {
+    ...params,
+    filters: newFilters,
+  };
+}
+
+const whereConfig = {
+  like: '~',
+  min: '>=',
+  max: '<=',
+  lt: '<',
+  gt: '>',
+  in: '=',
+};
+
+export function dotWheresValue(fields) {
+  let fieldsWhere = '';
+  Object.keys(fields || {}).forEach((key) => {
+    const name = key;
+    if (typeof fields[key] === 'object') {
+      Object.keys(fields[key]).forEach((i) => {
+        let value = fields[key][i];
+        if (Array.isArray(value) && value.length > 0) {
+          value = value.length > 1 ? `[${value}]` : value[0];
+        }
+        if ((value && value.length) || (typeof value === 'number')) {
+          fieldsWhere += `${name}${whereConfig[i]}${value};`;
+        }
+      });
+    } else if (fields[key]) {
+      fieldsWhere += `${name}=${fields[key]};`;
+    }
+  });
+  return fieldsWhere;
+}
+
+export function doConditionValue(str = '') {
+  // const str = 'point_a>=1;point_a<=10;point_b>=1;
+  // point_b<=10;changed_at>=2018-07-25;changed_at<=2018-07;';
+  let arr = (str || '').split(';');
+  console.log('str', str);
+  const obj = {};
+
+  for (let i = 0; i < arr.length; i += 1) {
+    const item = arr[i];
+    const keys = Object.keys(whereConfig);
+    for (let j = 0; j < keys.length; j += 1) {
+      const key = keys[j];
+      const name = whereConfig[key];
+      if (item.indexOf(name) > -1) {
+        const itemArr = item.split(name);
+        if (itemArr.length === 2) {
+          const objValue = {};
+          const [a, b] = itemArr;
+          objValue[key] = JSON.parse(b);
+          obj[a] = { ...obj[a] || {}, ...objValue };
+          console.log('obj[a]', a, b, obj[a], objValue);
+          if (i === arr.length) {
+            arr = [...arr.slice(1)];
+          }
+          break;
+        }
+      }
+    }
+  }
+  console.log('obj', obj);
+  return obj;
+}
+
+export function getUrlParams(url) {
+  const d = decodeURIComponent;
+  let queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+  const obj = {};
+  if (queryString) {
+    queryString = queryString.split('#')[0]; // eslint-disable-line
+    const arr = queryString.split('&');
+    for (let i = 0; i < arr.length; i += 1) {
+      const a = arr[i].split('=');
+      let paramNum;
+      const paramName = a[0].replace(/\[\d*\]/, (v) => {
+        paramNum = v.slice(1, -1);
+        return '';
+      });
+      const paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+      if (obj[paramName]) {
+        if (typeof obj[paramName] === 'string') {
+          obj[paramName] = d([obj[paramName]]);
+        }
+        if (typeof paramNum === 'undefined') {
+          obj[paramName].push(d(paramValue));
+        } else {
+          obj[paramName][paramNum] = d(paramValue);
+        }
+      } else {
+        obj[paramName] = d(paramValue);
+      }
+    }
+  }
+  return obj;
+}
+
+/**
+* 获取url参数对象
+* @param {参数名称} name
+*/
+export function getUrlString(name, url) {
+  const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i');
+  const r = (url || window.location.search.substr(1)).match(reg);
+  if (r != null) return unescape(r[2]);
+  return null;
+}
+
+export function parseParamsToUrl(params) {
+  let url = '';
+  const strArr = [];
+  Object.keys(params).forEach((key) => {
+    const str = `${key}=${params[key]}`;
+    strArr.push(str);
+  });
+  url = strArr.join('&');
+  return url;
+}
+
+
+// 找到相应元素的下标
+export const findInitIndex = (arr, key, value) => {
+  let index = 0;
+  for (let j = 0; j < arr.length; j += 1) {
+    if (arr[j][key] === value) {
+      index = j;
+      break;
+    }
+  }
+  return index;
+};
+
+export function evil(fn) {
+  const Fn = Function; // 一个变量指向Function，防止有些前端编译工具报错
+
+  return new Fn(`return ${fn}`)();
+}

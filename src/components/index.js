@@ -6,6 +6,7 @@ import CreateForm from './Form/CreateForm';
 import FormDetail from './Form/FormDetail';
 import Nothing from './Nothing/Nothing';
 import ListFilter from './Filter/ListFilter';
+import ListSort from './Filter2/ListSort';
 
 export {
   General, // 通用组件
@@ -16,4 +17,5 @@ export {
   Nothing,
   ListView,
   ListFilter,
+  ListSort,
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import ListFilter from '../Filter/ListFilter';
+import ListFilter from '../Filter2/ListFilter';
 import { makerFilters } from '../../utils/util';
 import InputRange from './InputRange';
 import CheckBox from './CheckBox';
