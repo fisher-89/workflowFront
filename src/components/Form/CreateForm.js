@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   List, InputItem, Toast, DatePicker, ImagePicker, Modal, Grid,
-  Carousel, TextareaItem, Picker,
+  Carousel, TextareaItem, Picker, WhiteSpace,
 } from 'antd-mobile';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -97,7 +97,7 @@ class CreateForm extends Component {
     const {
       formdata,
     } = this.state;
-    const { key } = item;
+    const { key, max, min } = item;
     const obj = {
       key,
       value: v,
@@ -107,23 +107,22 @@ class CreateForm extends Component {
     // 验证正则
     if (item.type === 'int') {
       // let newValue = v;
-      const { max, min } = item;
       let newValue = this.onHandleToFixed(v, item.scale);
-      if (parseFloat(newValue) < min) {
+      if (min !== '' && parseFloat(newValue) < min) {
         newValue = min;
       }
-      if (parseFloat(newValue) > max) {
+      if (max !== '' && parseFloat(newValue) > max) {
         newValue = max;
       }
       obj.value = Number(newValue);
     }
     if (item.type === 'text') {
-      if (item.min !== '' && v.length < item.min) {
-        obj.msg = `字符长度在${item.min ? item.min : '0'}~${item.max}之间`;
+      if (min !== '' && v.length < min) {
+        obj.msg = `字符长度在${min || '0'}~${max}之间`;
       }
-      if (v.length > item.max) {
+      if (max !== '' && v.length > max) {
         let newValue = v;
-        newValue = newValue.length > item.max ? newValue.slice(0, item.max) : newValue;
+        newValue = newValue.length > max ? newValue.slice(0, max) : newValue;
         obj.value = newValue;
       }
     }
@@ -263,6 +262,7 @@ class CreateForm extends Component {
                   );
                 })}
               </div>
+              <WhiteSpace />
             </React.Fragment>
           );
         } else if (item.type === 'array') { // 数组
@@ -276,6 +276,7 @@ class CreateForm extends Component {
                   readonly
                 />
               </div>
+              <WhiteSpace />
             </React.Fragment>
 
           );
@@ -315,6 +316,8 @@ class CreateForm extends Component {
                     value={itemkey && itemkey.value}
                   />
                 </div>
+                <WhiteSpace />
+
               </React.Fragment>
             );
           } else {
@@ -332,70 +335,86 @@ class CreateForm extends Component {
               //   onClick={() => this.choseItem(item)}
               // >{item.name}
               // </List.Item>
-              <Picker
-                key={i}
-                data={data}
-                cols={1}
-                value={[itemkey.value]}
+              <React.Fragment>
+                <Picker
+                  key={i}
+                  data={data}
+                  cols={1}
+                  value={[itemkey.value]}
                 // onChange={e => this.onChange(e[0], item)}
-                onChange={e => this.onhandleSingleChange(e[0], item)}
-              >
-                <List.Item arrow="horizontal" onClick={this.onClick}>{item.name}</List.Item>
-              </Picker>
+                  onChange={e => this.onhandleSingleChange(e[0], item)}
+                >
+                  <List.Item arrow="horizontal" onClick={this.onClick}>{item.name}</List.Item>
+                </Picker>
+                <WhiteSpace />
+              </React.Fragment>
             );
           }
         } else if (item.type === 'text') {
           if (item.max > 10) {
             return (
-              <TextareaItem
-                key={i}
-                title={item.name}
-                autoHeight
-                placeholder={item.description}
-                error={itemkey.hasError}
-                onErrorClick={() => this.onErrorClick(item)}
-                onChange={e => this.onChange(e, item)}
-                value={itemkey.value}
-              />
+              <React.Fragment>
+                <TextareaItem
+                  key={i}
+                  title={item.name}
+                  autoHeight
+                  placeholder={item.description}
+                  error={itemkey.hasError}
+                  onErrorClick={() => this.onErrorClick(item)}
+                  onChange={e => this.onChange(e, item)}
+                  value={itemkey.value}
+                />
+                <WhiteSpace />
+              </React.Fragment>
             );
           } else {
             return (
-              <InputItem
-                key={i}
-                placeholder={item.description}
-                error={itemkey.hasError}
-                onErrorClick={() => this.onErrorClick(item)}
-                onChange={e => this.onChange(e, item)}
-                value={itemkey.value}
-              // onBlur={e=>this.onhandleBlur(e,item)}
-              >{item.name}
-              </InputItem>
+              <React.Fragment>
+
+                <InputItem
+                  key={i}
+                  placeholder={item.description}
+                  error={itemkey.hasError}
+                  onErrorClick={() => this.onErrorClick(item)}
+                  onChange={e => this.onChange(e, item)}
+                  value={itemkey.value}
+                >{item.name}
+                </InputItem>
+                <WhiteSpace />
+              </React.Fragment>
             );
           }
         } else if (item.type === 'int') {
           return (
-            <InputItem
-              key={i}
-              placeholder={item.description}
-              error={itemkey.hasError}
-              type="digit"
-              onErrorClick={() => this.onErrorClick(item)}
-              onChange={e => this.onChange(e, item)}
-              value={itemkey.value}
-            >{item.name}
-            </InputItem>
+            <React.Fragment>
+
+              <InputItem
+                key={i}
+                placeholder={item.description}
+                error={itemkey.hasError}
+                type="digit"
+                onErrorClick={() => this.onErrorClick(item)}
+                onChange={e => this.onChange(e, item)}
+                value={itemkey.value}
+              >{item.name}
+              </InputItem>
+              <WhiteSpace />
+            </React.Fragment>
           );
         } else if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
           return (
-            <DatePicker
-              key={i}
+            <React.Fragment>
+              <DatePicker
+                key={i}
               // format={item.type}
-              mode={item.type}
-              onChange={e => this.timeChange(e, item)}
-              value={new Date(itemkey.value)}
-            >
-              <List.Item arrow="horizontal">{item.name}</List.Item>
-            </DatePicker>
+                mode={item.type}
+                onChange={e => this.timeChange(e, item)}
+                value={new Date(itemkey.value)}
+              >
+                <List.Item arrow="horizontal">{item.name}</List.Item>
+              </DatePicker>
+              <WhiteSpace />
+            </React.Fragment>
           );
         } else if (item.type === 'file') {
           return (
@@ -411,6 +430,7 @@ class CreateForm extends Component {
                   accept="image/gif,image/jpeg,image/jpg,image/png"
                 />
               </div>
+              <WhiteSpace />
             </React.Fragment>
 
           );
@@ -620,7 +640,7 @@ class CreateForm extends Component {
     if (!startflow) return null;
     return (
       <div style={{ background: '#fff' }}>
-        <List renderHeader={() => '基本信息'}>
+        <List>
           {this.getFormList()}
         </List>
         <Modal

@@ -20,11 +20,7 @@ class CheckBox extends React.PureComponent {
     const { value, multiple } = nextProps;
     if (JSON.stringify(value) !== JSON.stringify(this.props.value)) {
       let newValue = [];
-      if (!(value instanceof Array) && multiple) {
-        newValue = [value];
-      } else {
-        newValue = value || (multiple ? [] : []);
-      }
+      newValue = value || (multiple ? [] : '');
       this.setState({ value: newValue });
     }
   }
@@ -35,14 +31,14 @@ class CheckBox extends React.PureComponent {
       let newValue = [...this.state.value];
       let pushAble = true;
       newValue.forEach((item) => {
-        if (changeValue === item) {
+        if (`${changeValue}` === `${item}`) {
           pushAble = false;
         }
       });
       if (pushAble) {
         newValue.push(changeValue);
       } else {
-        newValue = newValue.filter(item => changeValue !== item);
+        newValue = newValue.filter(item => `${changeValue}` !== `${item}`);
       }
       onChange(newValue);
       return;

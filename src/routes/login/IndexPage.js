@@ -21,7 +21,10 @@ class IndexPage extends React.Component {
   }
   render() {
     const { history } = this.props;
-    const flowList = userStorage('flowList');
+    let flowList = userStorage('flowList');
+    if (!(flowList instanceof Array)) {
+      flowList = [];
+    }
     const flowListData = [...flowList];// 可发起的流程列表数据
     const startList = [
       {

@@ -133,7 +133,7 @@ class FormDetail extends Component {
     } = this.state;
     return (
       <div>
-        <List renderHeader={() => '基本信息'}>
+        <List >
           {this.getFormList()}
         </List>
         <Modal

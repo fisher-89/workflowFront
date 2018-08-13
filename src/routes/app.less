@@ -46,16 +46,30 @@
   .am-list-body::after {
     background-color: #fff !important;
   }
+  .am-list-item .am-input-label.am-input-label-5{
+    width:96px!important;
+  }
   .am-list-line {
     border-bottom-color: @base-bg-color  !important;
   }
   .am-list-body {
-    background-color: #fff !important;
+    background-color: @base-bg-color !important;
     border-bottom-color: @base-bg-color  !important;
     border-top-color: @base-bg-color  !important;
   }
   .am-whitespace.am-whitespace-md {
     height: 20/75rem !important;
+  }
+  .am-list-item .am-list-line .am-list-content {
+    width: 85px !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    flex-basis: auto !important;
+    margin-right: 5px !important
+  }
+  .am-list-extra {
+    flex-grow: 1 !important;
+    text-align: left !important;
   }
   .am-wingblank.am-wingblank-lg {
     margin-left: 24/75rem !important;

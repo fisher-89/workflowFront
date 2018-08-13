@@ -137,10 +137,11 @@ class ModalFilters extends React.Component {
     const { name } = props;
     const keyValue = this.state.filters[name];
     const checkValue = keyValue ? keyValue.in : '';
+    const newValue = checkValue;
     return (
       <CheckBox
         {...props}
-        value={checkValue || []}
+        value={newValue || []}
         onChange={value => this.handleFiltersOnChange(name, { in: value })}
       />
     );

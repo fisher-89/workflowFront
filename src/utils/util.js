@@ -1,3 +1,6 @@
+
+
+/* eslint-disable */
 import {
   Toast,
 } from 'antd-mobile';
@@ -144,7 +147,6 @@ export function doConditionValue(str = '') {
   // const str = 'point_a>=1;point_a<=10;point_b>=1;
   // point_b<=10;changed_at>=2018-07-25;changed_at<=2018-07;';
   let arr = (str || '').split(';');
-  console.log('str', str);
   const obj = {};
 
   for (let i = 0; i < arr.length; i += 1) {
@@ -158,9 +160,13 @@ export function doConditionValue(str = '') {
         if (itemArr.length === 2) {
           const objValue = {};
           const [a, b] = itemArr;
-          objValue[key] = JSON.parse(b);
+          const reg = /^\[.*\]$/;
+          if (reg.test(b)) {
+            objValue[key] = JSON.parse(b);
+          } else {
+            objValue[key] = b;
+          }
           obj[a] = { ...obj[a] || {}, ...objValue };
-          console.log('obj[a]', a, b, obj[a], objValue);
           if (i === arr.length) {
             arr = [...arr.slice(1)];
           }
@@ -169,7 +175,6 @@ export function doConditionValue(str = '') {
       }
     }
   }
-  console.log('obj', obj);
   return obj;
 }
 
@@ -244,4 +249,13 @@ export function evil(fn) {
   const Fn = Function; // 一个变量指向Function，防止有些前端编译工具报错
 
   return new Fn(`return ${fn}`)();
+}
+
+
+export function excludeSpecial(s) {
+  // 去掉转义字符
+  let str = s.replace(/[\'\"\\\/\b\f\n\r\t]/g, '');
+  // 去掉特殊字符
+  str = str.replace(/[\@\#\$\%\^\&\*\(\)\{\}\:\"\L\<\>\?\[\]]/);
+  return str;
 }

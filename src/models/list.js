@@ -6,29 +6,95 @@ const initDatas = {
   data: [],
 };
 const initLists = {
+  '/testlist_all': {
+    type: 'all',
+    url: {
+      type: 'all',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
+  '/testlist_rejected': {
+    type: 'rejected',
+    url: {
+      type: 'rejected',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
+  '/testlist_withdraw': {
+    type: 'withdraw',
+    url: {
+      type: 'finished',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
+
+  '/testlist_finished': {
+    type: 'finished',
+    url: {
+      type: 'finished',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
+  '/testlist_processing': {
+    type: 'processing',
+    url: {
+      type: 'processing',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
   '/start_list2_all': {
     type: 'all',
-    url: 'type=all&page=1&totalpage=10',
+    url: {
+      type: 'all',
+      page: 1,
+      totalpage: 10,
+    },
     datas: { ...initDatas },
   },
   '/start_list2_finished': {
     type: 'finished',
-    url: 'type=finished&page=1&totalpage=10',
+    url: {
+      type: 'finished',
+      page: 1,
+      totalpage: 10,
+    },
     datas: { ...initDatas },
   },
   '/start_list2_rejected': {
     type: 'rejected',
-    url: 'type=rejected&page=1&totalpage=10',
+    url: {
+      type: 'rejected',
+      page: 1,
+      totalpage: 10,
+    },
     datas: { ...initDatas },
   },
   '/start_list2_withdraw': {
     type: 'withdraw',
-    url: 'type=withdraw&page=1&totalpage=10',
+    url: {
+      type: 'finished',
+      page: 1,
+      totalpage: 10,
+    },
     datas: { ...initDatas },
   },
   '/start_list2_processing': {
     type: 'processing',
-    url: 'type=processing&page=1&totalpage=10',
+    url: {
+      type: 'processing',
+      page: 1,
+      totalpage: 10,
+    },
     datas: { ...initDatas },
   },
 };

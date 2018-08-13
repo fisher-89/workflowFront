@@ -6,13 +6,14 @@ import { Tabs, SearchBar } from 'antd-mobile';
 import filterImg from '../../assets/filter.svg';
 import { startState } from '../../utils/convert';
 import {
-  userStorage, dealFlowTypeOptions, findInitIndex, excludeSpecial,
+  userStorage, dealFlowTypeOptions, findInitIndex,
   getUrlParams, getUrlString, doConditionValue, parseParamsToUrl, makerFilters,
 } from '../../utils/util';
 
 import styles from '../common.less';
 import style from './index.less';
 import './reset.less';
+import { Start } from '../../common/ListView';
 import ModalFilters from '../../components/ModalFilters';
 
 const flowList = userStorage('flowList');
@@ -74,6 +75,10 @@ const tabs = {
     ],
   },
 };
+const searchColumns = {
+  name: 'name',
+  defaultValue: '',
+};
 @connect(({ loading, list, common }) => ({
   loading,
   common,
@@ -81,6 +86,8 @@ const tabs = {
 }))
 export default class StartList extends Component {
   state = {
+    page: 1,
+    totalpage: 10,
     type: 'all',
     visible: false,
     model: 'filters',
@@ -89,36 +96,31 @@ export default class StartList extends Component {
   }
 
   componentWillMount() {
-    const { lists, location: { pathname, search }, history } = this.props;
+    const { lists, location: { pathname, search } } = this.props;
     const urlParams = getUrlParams();
     this.filterUrl = getUrlString('filters', search ? search.slice(1) : '');
-    const { type = 'all', page = 1 } = urlParams;
+    const { type = 'all' } = urlParams;
     const current = lists[`${pathname}_${type}`];
     const { url } = current;
-    const currentPage = url.page;
-    if (`${currentPage}` !== `${page || 1}`) {
-      const params = { ...urlParams };
-      params.page = 1;
-      const paramsUrl = parseParamsToUrl(params);
-      const newUrl = paramsUrl ? `?${paramsUrl}` : '';
-      history.replace(`${pathname}${newUrl}`);
-    }
 
     this.setState({
       type,
       searchValue: this.fetchSearchValue(),
     }, () => {
       this.currentFilter(search ? search.slice(1) : parseParamsToUrl(url));
-      this.fetchDataSource({ ...urlParams, ...url, filters: this.filterUrl });
+      this.fetchDataSource({ ...urlParams, filters: this.filterUrl });
     });
   }
 
   componentWillReceiveProps(props) {
-    const { location: { search } } = props;
+    const { location: { search, pathname }, lists } = props;
     const currentParams = getUrlParams(search);
     const { type = 'all' } = currentParams;
+    const lastList = lists[`${pathname}_${type}`];
+    const lastDatas = lastList.datas;
+    const { page, totalpage } = lastDatas;
     this.setState({
-      type,
+      page, totalpage, type,
     });
     if (search !== this.props.location.search) {
       this.currentFilter(search ? search.slice(1) : '');
@@ -145,19 +147,26 @@ export default class StartList extends Component {
   }
 
   fetchSearchValue = () => {
-    const { searchColumns } = this.props;
     const filterParams = doConditionValue(this.filterUrl);
     const searchName = searchColumns.name;
     const searchInfo = filterParams[searchName];
     const searchValue = searchInfo ? searchInfo.like : '';
     return searchValue;
   }
-
   fetchDataSource = (params) => {
     const {
-      handleFetchDataSource,
+      dispatch,
+      location: { pathname },
     } = this.props;
-    handleFetchDataSource(params);
+    dispatch({
+      type: 'list/getStartList',
+      payload: {
+        parms: {
+          ...params,
+        },
+        path: pathname,
+      },
+    });
   }
 
   statusChange = (tab) => { // tab切换
@@ -194,11 +203,15 @@ export default class StartList extends Component {
     const current = lists[`${pathname}_${type}`];
     const { url } = current;
     const lastParams = url;
-    const newParams = { ...lastParams, ...params, page: 1 };
-    const paramsUrl = parseParamsToUrl(newParams);
-    const newParamsUrl = paramsUrl ? `?${paramsUrl}` : '';
-    this.handleChangeFilter(newParams);
-    history.replace(`${pathname}${newParamsUrl}`);
+    this.setState({
+      page: 1,
+    }, () => {
+      const newParams = { ...lastParams, ...params, page: 1 };
+      const paramsUrl = parseParamsToUrl(newParams);
+      const newParamsUrl = paramsUrl ? `?${paramsUrl}` : '';
+      this.handleChangeFilter(newParams);
+      history.replace(`${pathname}${newParamsUrl}`);
+    });
   }
 
   handleChangeFilter = (params) => {
@@ -249,9 +262,19 @@ export default class StartList extends Component {
     });
   }
 
+  renderContent = () => {
+    const { lists, location: { pathname } } = this.props;
+    const { type, page, totalpage } = this.state;
+    const currentDatas = lists[`${pathname}_${type}`].datas;
+    const { data } = currentDatas;
+    return (
+      <Start dataSource={data} page={page} totalpage={totalpage} />
+    );
+  }
+
   render() {
-    const { children, tab, filterColumns, searchColumns } = this.props;
     const { type, searchValue } = this.state;
+    const { filterColumns } = tabs[type];
     const initIndex = findInitIndex(startState, 'type', type);
     const searchName = searchColumns.name;
     return (
@@ -263,7 +286,7 @@ export default class StartList extends Component {
             onChange={value => this.searchOnchange(searchName, value)}
           />
           <Tabs
-            tabs={tab}
+            tabs={startState}
             renderTabBar={props => (
               <Tabs.DefaultTabBar
                 {...props}
@@ -273,7 +296,7 @@ export default class StartList extends Component {
             onChange={this.statusChange}
             initialPage={initIndex}
           >
-            {children}
+            {this.renderContent(type)}
           </Tabs>
           <div className={style.img} style={{ top: '1.46666667rem' }}>
             <i />
@@ -301,10 +324,3 @@ export default class StartList extends Component {
   }
 }
 
-StartList.defaultProps = {
-  searchColumns: {
-    name: 'name',
-    defaultValue: '',
-  },
-  handleFetchDataSource: () => { },
-};

@@ -111,6 +111,15 @@ function RouterConfig({
       import('./routes/TableEdit/StartList2'),
   },
   {
+    path: '/testlist',
+    models: () => [
+      import('./models/start'),
+      import('./models/list'),
+    ],
+    component: () =>
+      import('./routes/TableEdit/testList'),
+  },
+  {
     path: '/start_detail/:id',
     models: () => [
       import('./models/start'),
