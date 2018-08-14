@@ -70,12 +70,11 @@ class SelectStep extends Component {
             className={[style.appro_item, item.checked ? style.appro_active : null].join(' ')}
           />
           <div className={style.list_item}>
-            <List.Item
-              key={i}
-              extra={its.department_full_name}
-            >
-              {its.realname} <List.Item.Brief>{its.position_name}</List.Item.Brief>
-            </List.Item>
+            <div className={style.list_title}>
+              <div>{its.realname}</div>
+              <div>{its.department_full_name}</div>
+            </div>
+            <div className={style.list_desc}>{its.position_name}</div>
           </div>
         </div>
       );
@@ -92,7 +91,7 @@ class SelectStep extends Component {
     }
     const reasult = [];
     searchList.map((item) => {
-      if (!reasult.includes(item.department_id)) {
+      if (reasult.indexOf(item.department_id) === -1) {
         reasult.push(item.department_id);
       }
       return item;
@@ -103,17 +102,19 @@ class SelectStep extends Component {
       };
       const group = searchList.filter(its => its.department_id === item);
       obj.data = group;
-      obj.department_name = group[0].department_name;
+      console.log('group', group);
+      obj.department_name = group[0].department_full_name;
       return obj;
     });
     return groupList.map((item, idx) => {
       const i = idx;
+      console.log(item.department_name);
       return (
         <div
           className={style.appro_list}
           key={i}
         >
-          <List renderHeader={item.department_name}>
+          <List renderHeader={() => item.department_name}>
             {this.getGoupList(item)}
           </List>
         </div>

@@ -2,8 +2,7 @@ import React, {
   Component,
 } from 'react';
 import {
-  List,
-  WingBlank,
+  List, WhiteSpace,
   Modal,
   Carousel,
 } from 'antd-mobile';
@@ -39,56 +38,58 @@ class FormDetail extends Component {
       const idx = i;
       if (item.type === 'file') { // 文件
         return (
-          <WingBlank key={idx}>
-            <p className={style.title}>{item.name}</p>
-            <div className={style.show_img}>
-              {(formData[item.key] || []).map((its, x) => {
-                const ix = x;
-              return (
-                <img
-                  src={`${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}`}
-                  key={ix}
-                  alt="图片"
-                  onClick={() => this.reviewImg(ix, formData[item.key])}
-                />);
-          })}
+          <React.Fragment>
+            <WhiteSpace />
+            <div key={idx} className={style.file}>
+              <p className={style.title}>{item.name}</p>
+              <div className={style.array_container}>
+                <div className={style.show_img}>
+                  {(formData[item.key] || []).map((its, x) => {
+              const ix = x;
+            return (
+              <img
+                src={`${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}`}
+                key={ix}
+                alt="图片"
+                onClick={() => this.reviewImg(ix, formData[item.key])}
+              />);
+        })}
+                </div>
+              </div>
             </div>
-          </WingBlank>
+          </React.Fragment>
+
         );
       } else if (item.type === 'array') { // 数组
         return (
-          <WingBlank key={idx}>
-            <p className={style.title}>{item.name}</p>
-            <CheckBoxs
-              option={item.options}
-              value={formData[item.key]}
-              readonly
-            />
-          </WingBlank>
+          <React.Fragment>
+            <WhiteSpace />
+            <div key={idx} className={style.file}>
+              <p className={style.title}>{item.name}</p>
+              <div className={style.array_container}>
+                <CheckBoxs
+                  option={item.options}
+                  value={formData[item.key]}
+                  readonly
+                />
+              </div>
+            </div>
+          </React.Fragment>
+
         );
       }
-      // else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
-      //   return (
-      //     <List.Item
-      //       key={idx}
-      //       extra={
-      //   formData && formData[item.key]
-      // && (item.options || []).find(its => its.value === formData[item.key]) ?
-      // (item.options || []).find(its => its.value === formData[item.key]).name : '暂无'}
-      //       size="small"
-      //     >
-      //       {item.name}{formData[item.key]}
-      //     </List.Item>
-      //   );
-      // }
       return (
-        <List.Item
-          key={idx}
-          extra={formData && formData[item.key] ? formData[item.key] : '暂无'}
-          size="small"
-        >
-          <span style={{ color: '#ccc' }}>{item.name}</span>
-        </List.Item>);
+        <React.Fragment>
+          <WhiteSpace />
+          <List.Item
+            key={idx}
+            extra={formData && formData[item.key] ? formData[item.key] : '暂无'}
+            size="small"
+          >
+            <span style={{ color: '#ccc' }}>{item.name}</span>
+          </List.Item>
+        </React.Fragment>
+      );
     });
   }
 

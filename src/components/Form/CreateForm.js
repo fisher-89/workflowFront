@@ -247,10 +247,13 @@ class CreateForm extends Component {
       if (!isEdit) { // 只读
         if (item.type === 'file') { // 文件
           return (
-            <React.Fragment key={i}>
-              <p className={style.title}>{item.name}</p>
-              <div className={style.show_img}>
-                {(newFormData[item.key] || []).map((its, ix) => {
+            <React.Fragment>
+              <WhiteSpace />
+              <div key={i} className={style.file}>
+                <p className={style.title}>{item.name}</p>
+                <div className={style.array_container}>
+                  <div className={style.show_img}>
+                    {(newFormData[item.key] || []).map((its, ix) => {
                   const x = item.key + ix;
                   return (
                     <img
@@ -261,22 +264,26 @@ class CreateForm extends Component {
                     />
                   );
                 })}
+                  </div>
+                </div>
               </div>
-              <WhiteSpace />
             </React.Fragment>
+
           );
         } else if (item.type === 'array') { // 数组
           return (
-            <React.Fragment key={i}>
-              <p className={style.title}>{item.name}</p>
-              <div className={style.picker_container}>
-                <CheckBoxs
-                  option={item.options}
-                  value={newFormData[item.key]}
-                  readonly
-                />
-              </div>
+            <React.Fragment>
               <WhiteSpace />
+              <div key={i} className={style.file}>
+                <p className={style.title}>{item.name}</p>
+                <div className={style.array_container}>
+                  <CheckBoxs
+                    option={item.options}
+                    value={newFormData[item.key]}
+                    readonly
+                  />
+                </div>
+              </div>
             </React.Fragment>
 
           );
@@ -293,31 +300,35 @@ class CreateForm extends Component {
           // }
         }
         return (
-          <List.Item
-            key={i}
-            extra={<span style={{ color: '#ccc' }}>{newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}</span>}
-            size="small"
-          >
-            {item.name}
-          </List.Item>);
+          <React.Fragment key={i}>
+            <WhiteSpace />
+            <List.Item
+              extra={<span style={{ color: '#ccc' }}>{newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}</span>}
+              size="small"
+            >
+              {item.name}
+            </List.Item>
+          </React.Fragment>
+        );
       }
       // 可改
       if (isEdit) {
         if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
           if (item.type === 'array') {
             return (
-              <React.Fragment key={i}>
-                <p className={style.title}>{item.name}</p>
-                <div className={style.picker_container}>
-                  <CheckBoxs
-                    option={item.options}
-                    nameKey={item.key}
-                    checkStatus={this.checkStatus}
-                    value={itemkey && itemkey.value}
-                  />
-                </div>
+              <React.Fragment>
                 <WhiteSpace />
-
+                <div key={i} className={style.file}>
+                  <p className={style.title}>{item.name}</p>
+                  <div className={style.array_container}>
+                    <CheckBoxs
+                      option={item.options}
+                      nameKey={item.key}
+                      checkStatus={this.checkStatus}
+                      value={itemkey && itemkey.value}
+                    />
+                  </div>
+                </div>
               </React.Fragment>
             );
           } else {
@@ -336,6 +347,7 @@ class CreateForm extends Component {
               // >{item.name}
               // </List.Item>
               <React.Fragment>
+                <WhiteSpace />
                 <Picker
                   key={i}
                   data={data}
@@ -346,7 +358,6 @@ class CreateForm extends Component {
                 >
                   <List.Item arrow="horizontal" onClick={this.onClick}>{item.name}</List.Item>
                 </Picker>
-                <WhiteSpace />
               </React.Fragment>
             );
           }
@@ -354,6 +365,7 @@ class CreateForm extends Component {
           if (item.max > 10) {
             return (
               <React.Fragment>
+                <WhiteSpace />
                 <TextareaItem
                   key={i}
                   title={item.name}
@@ -364,13 +376,12 @@ class CreateForm extends Component {
                   onChange={e => this.onChange(e, item)}
                   value={itemkey.value}
                 />
-                <WhiteSpace />
               </React.Fragment>
             );
           } else {
             return (
               <React.Fragment>
-
+                <WhiteSpace />
                 <InputItem
                   key={i}
                   placeholder={item.description}
@@ -380,14 +391,13 @@ class CreateForm extends Component {
                   value={itemkey.value}
                 >{item.name}
                 </InputItem>
-                <WhiteSpace />
               </React.Fragment>
             );
           }
         } else if (item.type === 'int') {
           return (
             <React.Fragment>
-
+              <WhiteSpace />
               <InputItem
                 key={i}
                 placeholder={item.description}
@@ -398,12 +408,12 @@ class CreateForm extends Component {
                 value={itemkey.value}
               >{item.name}
               </InputItem>
-              <WhiteSpace />
             </React.Fragment>
           );
         } else if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
           return (
             <React.Fragment>
+              <WhiteSpace />
               <DatePicker
                 key={i}
               // format={item.type}
@@ -413,24 +423,26 @@ class CreateForm extends Component {
               >
                 <List.Item arrow="horizontal">{item.name}</List.Item>
               </DatePicker>
-              <WhiteSpace />
             </React.Fragment>
           );
         } else if (item.type === 'file') {
           return (
-            <React.Fragment key={i}>
-              <p className={style.title}>{item.name}</p>
-              <div className={style.picker_container}>
-                <ImagePicker
-                  // key={item.key}
-                  files={itemValue}
-                  onChange={(file, type, index) => this.filesOnchange(file, type, index, item)}
-                  onImageClick={e => this.reviewImg(e, itemValue)}
-                  selectable={itemValue ? itemValue.length < 5 : true}
-                  accept="image/gif,image/jpeg,image/jpg,image/png"
-                />
-              </div>
+            <React.Fragment>
               <WhiteSpace />
+              <div key={i} className={style.file}>
+                <p className={style.title}>{item.name}</p>
+                <div className={style.picker_container}>
+                  <ImagePicker
+                  // key={item.key}
+                  // style={{ width: '78px', height: '78px' }}
+                    files={itemValue}
+                    onChange={(file, type, index) => this.filesOnchange(file, type, index, item)}
+                    onImageClick={e => this.reviewImg(e, itemValue)}
+                    selectable={itemValue ? itemValue.length < 5 : true}
+                    accept="image/gif,image/jpeg,image/jpg,image/png"
+                  />
+                </div>
+              </div>
             </React.Fragment>
 
           );
@@ -607,10 +619,7 @@ class CreateForm extends Component {
     });
   }
   reviewReadImg = (i, img) => {
-    const imgs = (img || []).map((item) => {
-      // return `http://192.168.20.16:8009${item}`;
-      return `${UPLOAD_PATH}${item}`;
-    });
+    const imgs = [...img];
     const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
     this.setState({
       reviewImg: newImgs,

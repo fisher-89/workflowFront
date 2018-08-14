@@ -65,6 +65,7 @@ class SelectStep extends Component {
         <div
           className={style.step}
           key={idx}
+          onClick={() => this.choseItem(item)}
         >
           <span
             className={[style.step_item, item.checked ? style.step_active : null].join(' ')}
@@ -76,7 +77,14 @@ class SelectStep extends Component {
               arrow="horizontal"
               onClick={() => this.choseApprover(item)}
             >
-              {item.name}
+              <div
+                style={{ padding: '7px 0' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  this.choseItem(item);
+              }}
+              >{item.name}
+              </div>
             </List.Item>
           </div>
         </div>
@@ -211,7 +219,7 @@ class SelectStep extends Component {
     const info = preStepData ? (preStepData.concurrent_type === 0 ? '（请任选一个步骤）' : preStepData.concurrent_type === 2 ? '（请选择全部步骤）' : '') : '';
     return (
       <div className={styles.con}>
-        <div className={styles.con_content}>
+        <div className={[styles.con_content, style.con_step].join(' ')} >
           <List renderHeader={() => <span>执行步骤<a style={{ color: 'red' }}>{info}</a></span>}>
             {this.getSteps()}
           </List>
