@@ -102,13 +102,11 @@ class SelectStep extends Component {
       };
       const group = searchList.filter(its => its.department_id === item);
       obj.data = group;
-      console.log('group', group);
       obj.department_name = group[0].department_full_name;
       return obj;
     });
     return groupList.map((item, idx) => {
       const i = idx;
-      console.log(item.department_name);
       return (
         <div
           className={style.appro_list}

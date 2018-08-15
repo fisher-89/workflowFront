@@ -3,9 +3,6 @@ import React, {
   Component,
 } from 'react';
 import {
-  List,
-} from 'antd-mobile';
-import {
   connect,
 } from 'dva';
 import {
@@ -36,23 +33,35 @@ class StartDetail extends Component {
     const {
       gridformdata,
     } = start;
-    const gridItem = gridformdata.find(item => item.key === key);
+    const [gridItem] = gridformdata.filter(item => item.key === key);
     const dataList = (gridItem ? gridItem.fields : []).map((item) => {
-      return item.find(its => its.key === 'description');
+      // const [obj] = item.filter(its => its.key === 'description');
+      // return obj;
+      const fieldsItem = item;
+      const newObj = {};
+      let num = 0;
+      fieldsItem.map((its) => { // 取前三个字段
+        if (num < 3 && its.type !== 'file' && its.type !== 'array') {
+          newObj[`value_${num}`] = its.value;
+          num += 1;
+        }
+        return true;
+      });
+      return newObj;
     });
 
     return dataList.map((item, i) => {
       const idx = i;
       return (
-        <List.Item
+        <div
           key={idx}
-          arrow="horizontal"
-          thumb={item.icon}
-          multipleLine
+          className={style.grid_list_item}
           onClick={() => this.toEditGrid(`/start_grid/${key}/${i}`)}
         >
-          {item.value} <List.Item.Brief>{item.text}</List.Item.Brief>
-        </List.Item>
+          <div className={style.main_info}>{item.value_0}</div>
+          <div className={style.desc}>{item.value_1}</div>
+          <div className={style.desc}>{item.value_2}</div>
+        </div>
       );
     });
   }
@@ -72,13 +81,11 @@ class StartDetail extends Component {
     return grid.map((item, i) => {
       const idx = i;
       return (
-        <div key={idx}>
-          <p className={style.title}>
+        <div key={idx} className={style.grid_item}>
+          <p className={style.grid_opt}>
             <span>{item.name}</span>
           </p>
-          <List key={item.key}>
-            {this.getGridItem(item.key)}
-          </List>
+          {this.getGridItem(item.key)}
         </div>
 
       );

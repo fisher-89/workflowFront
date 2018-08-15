@@ -1,7 +1,6 @@
 // 发起页面
 import React, { Component } from 'react';
 import {
-  List,
   Button, WhiteSpace,
 } from 'antd-mobile';
 import { connect } from 'dva';
@@ -32,7 +31,7 @@ class TableEdit extends Component {
     const {
       gridformdata,
     } = start;
-    const gridItem = gridformdata.find(item => item.key === key);
+    const [gridItem] = gridformdata.filter(item => item.key === key);
     const dataList = (gridItem ? gridItem.fields : []).map((item) => {
       const fieldsItem = item;
       const newObj = {};
@@ -50,17 +49,15 @@ class TableEdit extends Component {
     return dataList.map((item, i) => {
       const idx = i;
       return (
-        <List.Item
+        <div
+          className={style.grid_list_item}
           key={idx}
-          arrow="horizontal"
-          thumb={item.icon}
-          multipleLine
           onClick={() => this.toEditGrid(`/addgridlist/${key}/${i}`)}
         >
-          {item.value_0}
-          <List.Item.Brief>{item.value_1}</List.Item.Brief>
-          <List.Item.Brief>{item.value_2}</List.Item.Brief>
-        </List.Item>
+          <div className={style.main_info}>{item.value_0}</div>
+          <div className={style.desc}>{item.value_1}</div>
+          <div className={style.desc}>{item.value_2}</div>
+        </div>
       );
     });
   }
@@ -82,21 +79,16 @@ class TableEdit extends Component {
     // const editable_grid = getGridFilter(grid, 'editable_fields', startflow.step)
     return grid.map((item) => {
       return (
-        <div key={item.key}>
-          <p className={style.title}>
+        <div key={item.key} className={style.grid_item}>
+          <p className={style.grid_opt}>
             <span>{item.name}</span>
-            <Button
-              size="small"
-              type="ghost"
+            <a
               onClick={() => this.addGridList(item.key)}
-            >添加{item.name}
-            </Button>
+            >+添加{item.name}
+            </a>
           </p>
-          <List key={item.key}>
-            {this.getGridItem(item.key)}
-          </List>
+          {this.getGridItem(item.key)}
         </div>
-
       );
     });
   }
@@ -215,7 +207,7 @@ class TableEdit extends Component {
     const editableForm = form.filter(item => startflow.step.editable_fields.includes(item.key));
     return (
       <div className={styles.con}>
-        <div className={styles.con_content}>
+        <div className={styles.con_content} style={{ paddingBottom: '20px' }}>
           <CreateForm
             startflow={startflow}
             formdata={formdata}

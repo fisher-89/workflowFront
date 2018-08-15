@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import Animate from 'rc-animate';
 import style from './index.less';
-import styles from '../../routes/common.less';
+// import styles from '../../routes/common.less';
 
 class ListFilter extends Component {
   state = {
@@ -22,17 +22,13 @@ class ListFilter extends Component {
   render() {
     const {
       children,
-      onOk,
       onCancel,
       onResetForm,
       visible,
       filterKey,
       contentStyle,
     } = this.props;
-    const conStyle = {
-      display: visible ? 'block' : 'none',
-      ...contentStyle,
-    };
+    const conStyle = { display: visible ? 'block' : 'none', ...contentStyle };
     return (
       <Animate
         component=""
@@ -43,29 +39,35 @@ class ListFilter extends Component {
       >
         <div
           style={conStyle}
-          onClick={e => onCancel(e, filterKey)}
+          onClick={(e) => { onCancel(e, filterKey); }}
         >
           <div className={style.filter_con}>
-            <div className={styles.con}>
-              <div className={styles.header}>
-                <p className={style.title}>筛选</p>
-              </div>
-              <div
-                className={styles.con_content}
-                onClick={(e) => { e.stopPropagation(); return false; }}
-              >
-                {children}
-              </div>
-              <div
-                className={styles.footer}
-                style={{ background: '#f8f6f6' }}
-              >
-                <a onClick={() => { onResetForm(); }}><span> 重置</span></a>
+            <div className={style.header}>
+              <p className={style.title}>筛选</p>
+            </div>
+            <div
+              className={style.con_content}
+              onClick={(e) => { e.stopPropagation(); return false; }}
+            >
+              {children}
+            </div>
+            <div
+              className={style.footer}
+              style={{ background: '#f8f6f6' }}
+            >
+              <div className={style.footer_opt}>
                 <a
-                  onClick={() => {
-                    onOk(filterKey);
-                  }}
-                ><span>确定</span>
+                  onClick={(e) => { e.stopPropagation(); onResetForm(); return false; }}
+                  style={{ color: 'rgb(24,116,208)' }}
+                >
+                  重置
+                </a>
+                <a
+                  style={{ color: '#fff' }}
+                  // onClick={() =>
+                  //   onOk(filterKey)
+                  // }
+                >确定
                 </a>
               </div>
             </div>

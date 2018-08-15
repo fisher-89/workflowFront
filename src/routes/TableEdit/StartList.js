@@ -17,7 +17,7 @@ import {
 } from '../../components/index';
 import {
   ListView,
-} from '../../components/ListView/index.js';
+} from '../../components/ListView1/index.js';
 import nothing from '../../assets/nothing.png';
 import filterImg from '../../assets/filter.svg';
 import {

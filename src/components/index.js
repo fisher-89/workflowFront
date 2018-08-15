@@ -5,8 +5,10 @@ import CheckBoxs from './check/CheckBox.js';
 import CreateForm from './Form/CreateForm';
 import FormDetail from './Form/FormDetail';
 import Nothing from './Nothing/Nothing';
-import ListFilter from './Filter/ListFilter';
-import ListSort from './Filter2/ListSort';
+import ListFilter from './Filter1/ListFilter';
+import ListSort from './Filter/ListSort';
+import SearchList from './Search/SeachList';
+import PersonIcon from './PeronIcon/PersonIcon';
 
 export {
   General, // 通用组件
@@ -18,4 +20,6 @@ export {
   ListView,
   ListFilter,
   ListSort,
+  SearchList,
+  PersonIcon,
 };

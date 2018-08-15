@@ -56,7 +56,17 @@ function RouterConfig({
     ],
     component: () =>
       import('./routes/Approved/ApproveList'),
-  }, {
+  },
+  {
+    path: '/approvelist2',
+    models: () => [
+      import('./models/approve'),
+      import('./models/list'),
+    ],
+    component: () =>
+      import('./routes/Approved/ApproveList2'),
+  },
+  {
     path: '/approve/:id',
     models: () => [
       import('./models/approve'),
@@ -111,15 +121,6 @@ function RouterConfig({
       import('./routes/TableEdit/StartList2'),
   },
   {
-    path: '/testlist',
-    models: () => [
-      import('./models/start'),
-      import('./models/list'),
-    ],
-    component: () =>
-      import('./routes/TableEdit/testList'),
-  },
-  {
     path: '/start_detail/:id',
     models: () => [
       import('./models/start'),
@@ -134,6 +135,14 @@ function RouterConfig({
     ],
     component: () =>
       import('./routes/TableEdit/StartDetail'),
+  },
+  {
+    path: '/sel_person/:key/:type/:modal',
+    models: () => [
+      import('./models/searchStaff'),
+    ],
+    component: () =>
+      import('./routes/SelectPlugins/SelPerson'),
   },
   {
     path: '/my',

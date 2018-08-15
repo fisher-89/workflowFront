@@ -64,14 +64,15 @@ export default {
      * 请求获取发起数据
      */
     * getStartFlow({ payload }, { call, put, select }) {
-      const data = yield call(c.getStartFlow, payload);
       const {
         gridformdata,
         startflow,
       } = yield select(_ => _.start);
-      if ((gridformdata && gridformdata.length) || (startflow && startflow.step.id === payload)) {
+      if ((gridformdata && gridformdata.length) || (startflow && `${startflow.step.flow_id}` === `${payload}`)) {
         return;
       }
+      const data = yield call(c.getStartFlow, payload);
+
       if (data && !data.error) {
         yield put({
           type: 'saveFlow',

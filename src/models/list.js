@@ -1,4 +1,6 @@
 import * as c from '../services/start';
+import * as a from '../services/approve';
+
 // import defaultReducers from './reducers/default';
 const initDatas = {
   page: 1,
@@ -6,7 +8,7 @@ const initDatas = {
   data: [],
 };
 const initLists = {
-  '/testlist_all': {
+  '/approvelist2_all': {
     type: 'all',
     url: {
       type: 'all',
@@ -15,38 +17,37 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/testlist_rejected': {
-    type: 'rejected',
-    url: {
-      type: 'rejected',
-      page: 1,
-      totalpage: 10,
-    },
-    datas: { ...initDatas },
-  },
-  '/testlist_withdraw': {
-    type: 'withdraw',
-    url: {
-      type: 'finished',
-      page: 1,
-      totalpage: 10,
-    },
-    datas: { ...initDatas },
-  },
-
-  '/testlist_finished': {
-    type: 'finished',
-    url: {
-      type: 'finished',
-      page: 1,
-      totalpage: 10,
-    },
-    datas: { ...initDatas },
-  },
-  '/testlist_processing': {
+  '/approvelist2_processing': {
     type: 'processing',
     url: {
       type: 'processing',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
+  '/approvelist2_approved': {
+    type: 'approved',
+    url: {
+      type: 'approved',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
+  '/approvelist2_deliver': {
+    type: 'deliver',
+    url: {
+      type: 'deliver',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
+  '/approvelist2_rejected': {
+    type: 'rejected',
+    url: {
+      type: 'rejected',
       page: 1,
       totalpage: 10,
     },
@@ -56,15 +57,6 @@ const initLists = {
     type: 'all',
     url: {
       type: 'all',
-      page: 1,
-      totalpage: 10,
-    },
-    datas: { ...initDatas },
-  },
-  '/start_list2_finished': {
-    type: 'finished',
-    url: {
-      type: 'finished',
       page: 1,
       totalpage: 10,
     },
@@ -81,6 +73,16 @@ const initLists = {
   },
   '/start_list2_withdraw': {
     type: 'withdraw',
+    url: {
+      type: 'finished',
+      page: 1,
+      totalpage: 10,
+    },
+    datas: { ...initDatas },
+  },
+
+  '/start_list2_finished': {
+    type: 'finished',
     url: {
       type: 'finished',
       page: 1,
@@ -122,6 +124,20 @@ export default {
         });
       }
     },
+    * getApproList({ payload }, { call, put }) {
+      const data = yield call(a.getApproList, payload.parms);
+      if (data && !data.error) {
+        yield put({
+          type: 'saveList',
+          payload: {
+            data,
+            type: payload.parms.type,
+            path: payload.path,
+          },
+        });
+      }
+    },
+
   },
 
   reducers: {

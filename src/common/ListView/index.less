@@ -8,15 +8,48 @@
   }
 }
 
-.title {
-  display: flex;
-  height: 100/75rem;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 30/75rem;
-  color: #888;
-  font-size: 14px;
+
+.item {
+  background: #fff;
+  padding:10px @aside-distance;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
 }
+.label_title {
+  display: flex;
+}
+.title {
+  line-height: 24px;
+  color: @title-color;
+  font-size: @middle-size;
+  .textLineOverFlow();
+}
+.title_name {
+  display: inline-block;
+  line-height: 24px;
+  margin-left: 5px;
+  width: 7rem;
+  color: @title-color;
+  font-size: @middle-size;
+  flex-shrink: 0;
+  .textLineOverFlow();
+}
+.desc {
+  margin-top: 5px;
+  line-height: 22px;
+  color: @extra-color;
+  font-size: @little-size;
+  .textLineOverFlow()
+}
+
+// .title {
+//   display: flex;
+//   height: 100/75rem;
+//   justify-content: space-between;
+//   align-items: center;
+//   padding: 0 30/75rem;
+//   color: #888;
+//   font-size: 14px;
+// }
 
 .appro_item {
   color: #666;
@@ -278,6 +311,25 @@
   .textLineOverFlow();
 }
 
+.department_title {
+  span {
+    display: inline-block;
+    padding-left: 36/75rem;
+    width: 84/75rem;
+    .textLineOverFlow();
+  }
+  span + span {
+    margin-left: 5/75rem;
+  }
+  span:first-child {
+    background: url('../../assets/icon-初@2x.png') no-repeat left center;
+    background-size: 32/75rem;
+  }
+  span:last-child {
+    background: url('../../assets/icon-终@2x.png') no-repeat left center;
+    background-size: 32/75rem;
+  }
+}
 
 // 事件列表样式
 .event_item {

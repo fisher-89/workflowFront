@@ -1,22 +1,33 @@
 import React, { Component } from 'react';
-import ListView from '../../components/ListView2';
+import ListView from '../../components/ListView';
+import { Label } from '../../components/General';
+import { getStartState } from '../../utils/convert.js';
 import style from './index.less';
 
 @ListView
-export default class Buckle extends Component {
+export default class Start extends Component {
   render() {
-    // const {
-    //   value,
-    // } = this.props;
-
+    const {
+      value,
+      onHandleClick,
+    } = this.props;
     return (
-      <div className={style.event_item}>
-        <div
-          className={style.main_info}
-          // onClick={() => handleClick(value)}
-        >
-          测试
+      <div
+        className={style.item}
+        onClick={() => onHandleClick(value)}
+      >
+        <div className={style.label_title}>
+          <Label
+            content="已完成"
+            styles={{
+            borderRadius: '0.05333rem',
+            margin: 0,
+           }}
+          />
+          <span className={style.title_name}>{value.name}</span>
         </div>
+        <div className={style.desc}>{getStartState(value.status)}</div>
+        <div className={style.desc}>{value.created_at}</div>
       </div>
     );
   }

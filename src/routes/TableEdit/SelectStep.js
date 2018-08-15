@@ -191,7 +191,7 @@ class SelectStep extends Component {
           },
           id: preStepData.flow_id,
           cb: () => {
-            history.replace('/start_list');
+            history.replace('/start_list2');
           },
         },
       });

@@ -74,6 +74,10 @@ export function userStorage(key) {
   return newInfo;
 }
 
+export function isArray(o) {
+  return Object.prototype.toString.call(o) === '[object Array]';
+}
+
 export function dealFlowTypeOptions(list) {
   const option = list.map((item) => {
     const obj = {};
