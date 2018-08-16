@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import { startState } from '../../utils/convert';
 import ListControl from '../../components/ListView/ListControl';
 import {
-  userStorage, dealFlowTypeOptions,
+  userStorage, dealFlowTypeOptions, getUrlParams,
 } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
@@ -15,10 +15,32 @@ import { Start } from '../../common/ListView';
 const flowList = userStorage('flowList');
 const flowTypeOptions = dealFlowTypeOptions(flowList);
 const tabs = {
+  rejected: {
+    filterColumns: [
+      {
+        name: 'flow_type_id',
+        type: 'checkBox',
+        multiple: true,
+        title: '审核环节',
+        options: flowTypeOptions,
+      },
+    ],
+  },
+  withdraw: {
+    filterColumns: [
+      {
+        name: 'flow_type_id',
+        type: 'checkBox',
+        multiple: true,
+        title: '审核环节',
+        options: flowTypeOptions,
+      },
+    ],
+  },
   processing: {
     filterColumns: [
       {
-        name: 'status_id',
+        name: 'flow_type_id',
         type: 'checkBox',
         multiple: true,
         title: '审核环节',
@@ -29,7 +51,7 @@ const tabs = {
   finished: {
     filterColumns: [
       {
-        name: 'status_id',
+        name: 'flow_type_id',
         type: 'checkBox',
         title: '审核环节',
         multiple: true,
@@ -40,7 +62,7 @@ const tabs = {
   all: {
     filterColumns: [
       {
-        name: 'status_id',
+        name: 'flow_type_id',
         type: 'checkBox',
         title: '审核环节',
         multiple: true,
@@ -49,6 +71,11 @@ const tabs = {
     ],
   },
 };
+const sortList = [
+  { name: '记录时间升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
+  { name: '记录时间降序', value: 'created_at-desc', icon: import('../../assets/filter/desc.svg') },
+
+];
 const searchColumns = {
   name: 'name',
   defaultValue: '',
@@ -60,16 +87,28 @@ const searchColumns = {
 }))
 export default class StartList extends Component {
   state = {
-    page: 1,
-    totalpage: 10,
     type: 'all',
     // shortModal: false,
   }
 
-  // onRefresh = () => {
-  //   const { history, location: { pathname, search } } = this.props;
-  //   history.replace();
-  // }
+  componentWillMount() {
+    const { location: { search } } = this.props;
+    const urlParams = getUrlParams(search);
+    const { type = 'all' } = urlParams;
+    this.setState({
+      type,
+    });
+  }
+  componentWillReceiveProps(nextProps) {
+    const { location: { search } } = nextProps;
+    if (search !== this.props.search) {
+      const urlParams = getUrlParams(search || '?type=all');
+      const { type } = urlParams;
+      this.setState({
+        type,
+      });
+    }
+  }
 
   fetchDataSource = (params) => {
     const {
@@ -95,16 +134,23 @@ export default class StartList extends Component {
   }
 
   renderContent = () => {
-    const { lists, location: { pathname } } = this.props;
-    const { type, page, totalpage } = this.state;
+    const { lists, location, history } = this.props;
+    const { pathname } = location;
+    const { type } = this.state;
     const currentDatas = lists[`${pathname}_${type}`].datas;
     const { data } = currentDatas;
+    const someProps = {
+      location,
+      history,
+    };
     return (
       <Start
         dataSource={data}
         // onRefresh={this.onRefresh}
-        page={page}
-        totalpage={totalpage}
+        {...someProps}
+        type={type}
+        onPageChange={this.onPageChange}
+
         onHandleClick={this.redirectTo}
       />
     );
@@ -123,6 +169,7 @@ export default class StartList extends Component {
         <div className={style.con_list}>
           <ListControl
             tab={startState}
+            sortList={sortList}
             {...someProps}
             filterColumns={filterColumns}
             searchColumns={searchColumns}

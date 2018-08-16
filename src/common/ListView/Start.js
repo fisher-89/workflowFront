@@ -18,7 +18,7 @@ export default class Start extends Component {
       >
         <div className={style.label_title}>
           <Label
-            content="已完成"
+            content={getStartState(value.status)}
             styles={{
             borderRadius: '0.05333rem',
             margin: 0,
@@ -26,7 +26,7 @@ export default class Start extends Component {
           />
           <span className={style.title_name}>{value.name}</span>
         </div>
-        <div className={style.desc}>{getStartState(value.status)}</div>
+        <div className={style.desc}>{value.name}</div>
         <div className={style.desc}>{value.created_at}</div>
       </div>
     );

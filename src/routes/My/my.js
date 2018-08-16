@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, WhiteSpace, WingBlank, Flex, List } from 'antd-mobile';
 import PersonInfo from '../../components/PersonInfo';
 import style from './index.less';
+import styles from '../TableEdit/index.less';
+
 
 class My extends React.Component {
   toExit = (e) => {
@@ -23,10 +25,10 @@ class My extends React.Component {
             <PersonInfo />
           </WingBlank>
           <WhiteSpace size="md" />
-          <WingBlank size="lg">
+          <WingBlank size="lg" className={styles.con_step}>
             <List>
-              <List.Item arrow="horizontal" onClick={() => this.redirectTo('/point_statistic')}>我的积分</List.Item>
-              <List.Item arrow="horizontal" onClick={() => this.redirectTo('/ranking_group')}>积分排名</List.Item>
+              <List.Item arrow="horizontal" onClick={() => this.redirectTo('/start_list2?type=all')}>我发起的</List.Item>
+              <List.Item arrow="horizontal" onClick={() => this.redirectTo('/approvelist2?type=all')}>审批列表</List.Item>
             </List>
           </WingBlank>
           <WhiteSpace size="md" />

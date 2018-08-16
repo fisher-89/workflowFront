@@ -18,7 +18,7 @@ export default class Approve extends Component {
       >
         <div className={style.label_title}>
           <Label
-            content="已完成"
+            content={getApprState(value ? value.flow_run.status : '')}
             styles={{
             borderRadius: '0.05333rem',
             margin: 0,
@@ -26,7 +26,7 @@ export default class Approve extends Component {
           />
           <span className={style.title_name}>{value.flow_name}</span>
         </div>
-        <div className={style.desc}>{getApprState(value.status_id)}</div>
+        <div className={style.desc}>{value ? value.flow_run.name : ''}</div>
         <div className={style.desc}>{value.created_at}</div>
       </div>
     );

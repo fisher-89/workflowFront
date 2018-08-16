@@ -161,7 +161,7 @@ class ApproveDetail extends Component {
         },
         id: data.flow_id,
         cb: () => {
-          history.replace('/approvelist');
+          history.goBack(-1);
         },
       },
     });

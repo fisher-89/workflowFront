@@ -7,8 +7,9 @@ import QueueAnim from 'rc-queue-anim';
 import {
   withRouter,
 } from 'dva/router';
+import spin, { Loader } from '../components/General/Loader';
+
 import Footer from '../components/Footer/Footer';
-import Loader from '../components/General/Loader/Loader';
 import {
   openPages,
 } from '../configs/config';
@@ -44,26 +45,31 @@ class App extends React.Component {
     // });
   }
 
+  componentWillReceiveProps(props) {
+    const { location: { pathname }, loading } = props;
+    if (this.props.location.pathname !== pathname) {
+      spin(loading);
+    }
+  }
   render() {
     const {
       children,
-      loading,
       location,
-      common,
+      common, loading,
     } = this.props;
     let {
       pathname,
     } = location;
+    const loadings = loading.global;
     const {
       footStyle,
     } = common;
     pathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
+    console.log(loadings);
+    spin(loadings);
     return (
       <div className={style.container}>
-        <Loader
-          fullScreen
-          spinning={loading.global}
-        />
+        <Loader />
         <div
           className={style.content}
           key={pathname}

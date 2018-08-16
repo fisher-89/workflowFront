@@ -5,12 +5,12 @@ import { connect } from 'dva';
 import { approvalState } from '../../utils/convert';
 import ListControl from '../../components/ListView/ListControl';
 import {
-  userStorage, dealFlowTypeOptions,
+  userStorage, getUrlParams, dealFlowTypeOptions,
 } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 import './reset.less';
-import { Start } from '../../common/ListView';
+import { Approve } from '../../common/ListView';
 
 const flowList = userStorage('flowList');
 const flowTypeOptions = dealFlowTypeOptions(flowList);
@@ -18,7 +18,7 @@ const tabs = {
   all: {
     filterColumns: [
       {
-        name: 'status_id',
+        name: 'flow_type_id',
         type: 'checkBox',
         multiple: true,
         title: '审核环节',
@@ -29,7 +29,7 @@ const tabs = {
   processing: {
     filterColumns: [
       {
-        name: 'status_id',
+        name: 'flow_type_id',
         type: 'checkBox',
         multiple: true,
         title: '审核环节',
@@ -40,7 +40,7 @@ const tabs = {
   approved: {
     filterColumns: [
       {
-        name: 'status_id',
+        name: 'flow_type_id',
         type: 'checkBox',
         title: '审核环节',
         multiple: true,
@@ -51,7 +51,7 @@ const tabs = {
   deliver: {
     filterColumns: [
       {
-        name: 'status_id',
+        name: 'flow_type_id',
         type: 'checkBox',
         title: '审核环节',
         multiple: true,
@@ -62,7 +62,7 @@ const tabs = {
   rejected: {
     filterColumns: [
       {
-        name: 'status_id',
+        name: 'flow_type_id',
         type: 'checkBox',
         title: '审核环节',
         multiple: true,
@@ -82,10 +82,18 @@ const searchColumns = {
 }))
 export default class StartList extends Component {
   state = {
-    page: 1,
-    totalpage: 10,
     type: 'all',
     // shortModal: false,
+  }
+  componentWillReceiveProps(nextProps) {
+    const { location: { search } } = nextProps;
+    if (search !== this.props.search) {
+      const urlParams = getUrlParams(search);
+      const { type = 'all' } = urlParams;
+      this.setState({
+        type,
+      });
+    }
   }
 
   fetchDataSource = (params) => {
@@ -110,15 +118,20 @@ export default class StartList extends Component {
   }
 
   renderContent = () => {
-    const { lists, location: { pathname } } = this.props;
-    const { type, page, totalpage } = this.state;
+    const { lists, location, history } = this.props;
+    const { pathname } = location;
+    const { type } = this.state;
     const currentDatas = lists[`${pathname}_${type}`].datas;
     const { data } = currentDatas;
+    const someProps = {
+      location,
+      history,
+    };
     return (
-      <Start
+      <Approve
         dataSource={data}
-        page={page}
-        totalpage={totalpage}
+        type={type}
+        {...someProps}
         onHandleClick={value => this.redirectTo(value)}
       />
     );
@@ -127,6 +140,7 @@ export default class StartList extends Component {
   render() {
     const { location, history } = this.props;
     const { type } = this.state;
+    console.log('type', type);
     const { filterColumns } = tabs[type];
     const someProps = {
       location,
@@ -138,6 +152,7 @@ export default class StartList extends Component {
           <ListControl
             tab={approvalState}
             {...someProps}
+            type={type}
             filterColumns={filterColumns}
             searchColumns={searchColumns}
             handleFetchDataSource={this.fetchDataSource}

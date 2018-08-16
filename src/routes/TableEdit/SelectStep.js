@@ -191,7 +191,7 @@ class SelectStep extends Component {
           },
           id: preStepData.flow_id,
           cb: () => {
-            history.replace('/start_list2');
+            history.replace('/start_list2?type=all');
           },
         },
       });
@@ -205,7 +205,7 @@ class SelectStep extends Component {
           },
           id: preStepData.flow_id,
           cb: () => {
-            history.replace('/approvelist');
+            history.replace('/approvelist2?type=all');
           },
         },
       });

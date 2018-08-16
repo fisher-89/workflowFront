@@ -7,7 +7,7 @@ export function getStartFlow(data) {
 // 审批列表
 export function getApproList(data) {
   return request('/api/approval', {
-    method: 'POST',
+    method: 'GET',
     body: data,
   });
 }

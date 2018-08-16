@@ -3,6 +3,10 @@ import {
     delay
 } from 'roadhog-api-doc';
 
+const localIp= 'http://192.168.20.16:8006'
+const test= 'http://112.74.177.132:8006'
+const host= test;
+
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
 const proxy = {
@@ -750,13 +754,12 @@ const proxy = {
 }
 export default !noProxy ? {
     // 'POST /api/approval/(.*)': 'http://192.168.20.144:8002/api/approval',
-    'GET /api/oa/(.*)': 'http://112.74.177.132:8002/api/',
-    'GET /api/(.*)': 'http://112.74.177.132:8006/api/',
-    'POST /api/(.*)': 'http://112.74.177.132:8006/api/',
-    'PATCH /api/(.*)': 'http://112.74.177.132:8006/api/',
-    
-    'PUT /api/(.*)': 'http://112.74.177.132:8006/api/',
-    'DELETE /api/(.*)': 'http://112.74.177.132:8006/api/',
+    'GET /api/oa/(.*)': `http://112.74.177.132:8002/api/`,
+    'GET /api/(.*)': `${host}/api/`,
+    'POST /api/(.*)': `${host}/api/`,
+    'PATCH /api/(.*)': `${host}/api/`,
+    'PUT /api/(.*)': `${host}/api/`,
+    'DELETE /api/(.*)': `${host}/api/`,
     // 'POST /oauth/(.*)': 'http://localhost.oaupdate.org/oauth/',
     'POST /oauth/(.*)': 'http://112.74.177.132:8002/oauth/',
 

@@ -10,9 +10,6 @@ import listIcon from '../../../src/assets/img/icon.png';
 class IndexPage extends React.Component {
   componentDidMount() {
     this.props.dispatch({
-      type: 'common/getFlowList',
-    });
-    this.props.dispatch({
       type: 'start/resetStart',
     });
     this.props.dispatch({
@@ -43,7 +40,7 @@ class IndexPage extends React.Component {
           // 我发起的
               data={startList}
               hasLine={false}
-              onClick={() => history.push('/start_list')}
+              onClick={() => history.push('/start_list2?type=all')}
             />
           </div>
         </WingBlank>

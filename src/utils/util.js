@@ -110,7 +110,9 @@ export function parseParams(url) {
 export function makerFilters(params) {
   const { filters } = { ...params };
   let newFilters = '';
-  newFilters = dotWheresValue(filters);
+  if(filters){
+    newFilters = dotWheresValue(filters);
+  }
   return {
     ...params,
     filters: newFilters,
@@ -221,7 +223,7 @@ export function getUrlParams(url) {
 export function getUrlString(name, url) {
   const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i');
   const r = (url || window.location.search.substr(1)).match(reg);
-  if (r != null) return unescape(r[2]);
+  if (r != null) return decodeURIComponent(r[2]);
   return null;
 }
 

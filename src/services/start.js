@@ -17,10 +17,10 @@ export function fileUpload(data) {
     body: data,
   });
 }
-// 审批列表
+// 法强1列表
 export function getStartList(data) {
   return request('/api/sponsor', {
-    method: 'POST',
+    method: 'GET',
     body: data,
   });
 }

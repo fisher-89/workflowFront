@@ -18,20 +18,11 @@ export default {
     * getFlowList(payload, {
       call,
       put,
-      select,
     }) {
-      if (localStorage.flowList) {
-        return;
-      }
-      const {
-        flowList,
-      } = yield select(_ => _.common);
-      if (flowList && flowList.length) {
-        return;
-      }
       const data = yield call(c.getFlowList);
       if (data && !data.error) {
         const newFlowlist = [...data];
+        localStorage.flowList = JSON.stringify(data);
         yield put({
           type: 'save',
           payload: {
@@ -39,7 +30,6 @@ export default {
             value: newFlowlist,
           },
         });
-        localStorage.flowList = JSON.stringify(data);
       }
     },
     *getUserInfo(_, { call, put }) {
@@ -48,6 +38,7 @@ export default {
       }
       const response = yield call(c.getUserInfo);
       if (response && !response.error) {
+        localStorage.userInfo = JSON.stringify(response);
         yield put({
           type: 'save',
           payload: {
@@ -55,7 +46,6 @@ export default {
             data: response,
           },
         });
-        localStorage.userInfo = JSON.stringify(response);
       } else {
         Toast.fail(response.message);
       }

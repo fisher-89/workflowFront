@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import nothing from '../../assets/nothing.png';
 import SmallLoader from '../General/Loader/SmallLoader';
 import spin from '../General/Loader';
-
+import { getUrlParams, parseParamsToUrl } from '../../utils/util';
 import { Nothing } from '../index';
 
 let startX;
@@ -21,7 +21,7 @@ onChange   选中回调函数
 multiple   false 是否多选
 name       require
  */
-@connect(({ loading }) => ({ loading }))
+@connect(({ loading, list }) => ({ loading, lists: list.lists }))
 export default function ListView(ListItem) {
   class NewItem extends PureComponent {
     state = {
@@ -47,6 +47,12 @@ export default function ListView(ListItem) {
           muti: [...nextProps.selected],
         });
       }
+    }
+
+    onRefresh = () => {
+      const { history, location: { pathname }, type } = this.props;
+      const url = `${pathname}?type=${type}&page=1&totalpage=10`;
+      history.replace(url);
     }
     // 返回角度
     GetSlideAngle = (dx, dy) => {
@@ -80,15 +86,25 @@ export default function ListView(ListItem) {
 
       return result;
     }
+
     doLoadMore = (str) => {
-      const { page, totalpage, onPageChange } = this.props;
-      if (page === totalpage) {
+      const { history, lists, location: { pathname }, type } = this.props;
+      const currentDatas = lists[`${pathname}_${type}`].datas;
+      const { page, totalpage } = currentDatas;
+      if (!(page < totalpage)) {
         // console.log('已加载完');
         return false;
       }
       if (str === 'up') {
         // console.log('加载更多');
-        onPageChange();
+        const urlParams = getUrlParams();
+        const newUrlParams = {
+          ...urlParams,
+          page: page + 1,
+        };
+        const url = parseParamsToUrl(newUrlParams);
+        history.replace(`${pathname}?${url}`);
+        // onPageChange();
       }
     }
     handleStart = (ev) => {
@@ -157,13 +173,12 @@ export default function ListView(ListItem) {
       return response;
     }
 
-
     pullDownToRefresh = () => {
-      const { onRefresh, offsetBottom } = this.props;
+      const { offsetBottom } = this.props;
       const height = this.state.height - (offsetBottom || 0);
       return (
         <PullToRefresh
-          onRefresh={onRefresh}
+          onRefresh={this.onRefresh}
           style={{ overflow: 'auto', height }}
         >
           {this.renderList()}
@@ -171,16 +186,19 @@ export default function ListView(ListItem) {
       );
     }
 
-
     renderList = () => {
-      const { dataSource, page, offsetBottom, heightNone,
-        loading, totalpage, onRefresh } = this.props;
+      const { dataSource, offsetBottom, heightNone, type,
+        loading, onRefresh, lists, location: { pathname } } = this.props;
+      const urlParams = getUrlParams();
+      const { page = 1 } = urlParams;
+      const currentDatas = lists[`${pathname}_${type}`].datas;
+      const { totalpage } = currentDatas;
       const height = this.state.height - (offsetBottom || 0);
       const style = !heightNone ? { style: { minHeight: height } } : null;
       const nothingAble = !heightNone &&
         (!loading.global && ((dataSource && !dataSource.length) || !dataSource));
       const loader = (((!dataSource) || (dataSource && !dataSource.length)
-       || (page === 1))
+       || (`${page}` === '1'))
        && loading.global);
       spin(loader);
       return (
@@ -228,6 +246,9 @@ export default function ListView(ListItem) {
       );
     }
 }
+NewItem.defaultProps = {
+  onRefresh: () => {},
+};
 return NewItem;
 }
 
