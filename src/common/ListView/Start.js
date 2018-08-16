@@ -9,6 +9,7 @@ export default class Start extends Component {
   render() {
     const {
       value,
+      timeKey,
       onHandleClick,
     } = this.props;
     return (
@@ -27,7 +28,7 @@ export default class Start extends Component {
           <span className={style.title_name}>{value.name}</span>
         </div>
         <div className={style.desc}>{value.name}</div>
-        <div className={style.desc}>{value.created_at}</div>
+        <div className={style.desc}>{value[timeKey]}</div>
       </div>
     );
   }

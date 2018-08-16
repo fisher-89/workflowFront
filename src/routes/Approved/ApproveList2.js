@@ -14,18 +14,8 @@ import { Approve } from '../../common/ListView';
 
 const flowList = userStorage('flowList');
 const flowTypeOptions = dealFlowTypeOptions(flowList);
+const defaultType = 'processing';
 const tabs = {
-  all: {
-    filterColumns: [
-      {
-        name: 'flow_type_id',
-        type: 'checkBox',
-        multiple: true,
-        title: '审核环节',
-        options: flowTypeOptions,
-      },
-    ],
-  },
   processing: {
     filterColumns: [
       {
@@ -71,6 +61,10 @@ const tabs = {
     ],
   },
 };
+const sortList = [
+  { name: '记录时间升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
+  { name: '记录时间降序', value: 'created_at-desc', icon: import('../../assets/filter/desc.svg') },
+];
 const searchColumns = {
   name: 'name',
   defaultValue: '',
@@ -82,14 +76,14 @@ const searchColumns = {
 }))
 export default class StartList extends Component {
   state = {
-    type: 'all',
+    type: defaultType,
     // shortModal: false,
   }
   componentWillReceiveProps(nextProps) {
     const { location: { search } } = nextProps;
     if (search !== this.props.search) {
       const urlParams = getUrlParams(search);
-      const { type = 'all' } = urlParams;
+      const { type = defaultType } = urlParams;
       this.setState({
         type,
       });
@@ -140,7 +134,6 @@ export default class StartList extends Component {
   render() {
     const { location, history } = this.props;
     const { type } = this.state;
-    console.log('type', type);
     const { filterColumns } = tabs[type];
     const someProps = {
       location,
@@ -153,6 +146,8 @@ export default class StartList extends Component {
             tab={approvalState}
             {...someProps}
             type={type}
+            defaultType={defaultType}
+            sortList={sortList}
             filterColumns={filterColumns}
             searchColumns={searchColumns}
             handleFetchDataSource={this.fetchDataSource}

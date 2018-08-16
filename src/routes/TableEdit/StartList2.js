@@ -25,6 +25,12 @@ const tabs = {
         options: flowTypeOptions,
       },
     ],
+    sortList: [
+      { name: '驳回时间升序', value: 'end_at-asc', icon: import('../../assets/filter/asc.svg') },
+      { name: '驳回时间降序', value: 'end_at-desc', icon: import('../../assets/filter/desc.svg') },
+    ],
+    defaultSort: 'end_at-asc',
+    showTime: 'end_at',
   },
   withdraw: {
     filterColumns: [
@@ -36,6 +42,13 @@ const tabs = {
         options: flowTypeOptions,
       },
     ],
+    sortList: [
+      { name: '撤回时间升序', value: 'updated_at-asc', icon: import('../../assets/filter/asc.svg') },
+      { name: '撤回时间降序', value: 'updated_at-desc', icon: import('../../assets/filter/desc.svg') },
+    ],
+    defaultSort: 'updated_at-asc',
+    showTime: 'updated_at',
+
   },
   processing: {
     filterColumns: [
@@ -47,6 +60,13 @@ const tabs = {
         options: flowTypeOptions,
       },
     ],
+    sortList: [
+      { name: '发起升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
+      { name: '发起降序', value: 'created_at-desc', icon: import('../../assets/filter/desc.svg') },
+    ],
+    defaultSort: 'created_at-asc',
+    showTime: 'created_at',
+
   },
   finished: {
     filterColumns: [
@@ -58,28 +78,21 @@ const tabs = {
         options: flowTypeOptions,
       },
     ],
-  },
-  all: {
-    filterColumns: [
-      {
-        name: 'flow_type_id',
-        type: 'checkBox',
-        title: '审核环节',
-        multiple: true,
-        options: flowTypeOptions,
-      },
+    sortList: [
+      { name: '完成时间升序', value: 'end_at-asc', icon: import('../../assets/filter/asc.svg') },
+      { name: '完成时间降序', value: 'end_at-desc', icon: import('../../assets/filter/desc.svg') },
     ],
+    defaultSort: 'end_at-asc',
+    showTime: 'end_at',
   },
-};
-const sortList = [
-  { name: '记录时间升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
-  { name: '记录时间降序', value: 'created_at-desc', icon: import('../../assets/filter/desc.svg') },
 
-];
+};
+
 const searchColumns = {
   name: 'name',
   defaultValue: '',
 };
+const defaultType = 'processing';
 @connect(({ loading, list, common }) => ({
   loading,
   common,
@@ -87,14 +100,14 @@ const searchColumns = {
 }))
 export default class StartList extends Component {
   state = {
-    type: 'all',
+    type: defaultType,
     // shortModal: false,
   }
 
   componentWillMount() {
     const { location: { search } } = this.props;
     const urlParams = getUrlParams(search);
-    const { type = 'all' } = urlParams;
+    const { type = defaultType } = urlParams;
     this.setState({
       type,
     });
@@ -102,10 +115,10 @@ export default class StartList extends Component {
   componentWillReceiveProps(nextProps) {
     const { location: { search } } = nextProps;
     if (search !== this.props.search) {
-      const urlParams = getUrlParams(search || '?type=all');
+      const urlParams = getUrlParams(search);
       const { type } = urlParams;
       this.setState({
-        type,
+        type: type || defaultType,
       });
     }
   }
@@ -137,6 +150,7 @@ export default class StartList extends Component {
     const { lists, location, history } = this.props;
     const { pathname } = location;
     const { type } = this.state;
+    const { showTime } = tabs[type];
     const currentDatas = lists[`${pathname}_${type}`].datas;
     const { data } = currentDatas;
     const someProps = {
@@ -149,8 +163,8 @@ export default class StartList extends Component {
         // onRefresh={this.onRefresh}
         {...someProps}
         type={type}
+        timeKey={showTime}
         onPageChange={this.onPageChange}
-
         onHandleClick={this.redirectTo}
       />
     );
@@ -159,7 +173,8 @@ export default class StartList extends Component {
   render() {
     const { location, history } = this.props;
     const { type } = this.state;
-    const { filterColumns } = tabs[type];
+    const { filterColumns, sortList, defaultSort } = tabs[type];
+
     const someProps = {
       location,
       history,
@@ -170,6 +185,8 @@ export default class StartList extends Component {
           <ListControl
             tab={startState}
             sortList={sortList}
+            defaultType="processing"
+            defaultSort={defaultSort}
             {...someProps}
             filterColumns={filterColumns}
             searchColumns={searchColumns}

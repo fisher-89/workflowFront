@@ -74,7 +74,7 @@ const initLists = {
   '/start_list2_withdraw': {
     type: 'withdraw',
     url: {
-      type: 'finished',
+      type: 'withdraw',
       page: 1,
       // totalpage: 10,
     },

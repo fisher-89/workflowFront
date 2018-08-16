@@ -19,19 +19,22 @@ import ModalFilters from '../../components/ModalFilters';
   lists: list.lists,
 }))
 export default class ListControl extends Component {
-  state = {
-    type: 'all',
-    visible: false,
-    model: 'filters',
-    searchValue: '',
-    // shortModal: false,
+  constructor(props) {
+    super(props);
+    const { defaultType } = props;
+    this.state = {
+      type: defaultType,
+      visible: false,
+      model: 'filters',
+      searchValue: '',
+    };
   }
 
   componentWillMount() {
-    const { lists, location: { pathname, search }, history } = this.props;
+    const { lists, location: { pathname, search }, history, defaultType } = this.props;
     const urlParams = getUrlParams();
     this.filterUrl = getUrlString('filters', search ? search.slice(1) : '');
-    const { type = 'all', page = 1 } = urlParams;
+    const { type = defaultType, page = 1 } = urlParams;
     const newParams = {
       ...urlParams,
       filters: this.filterUrl || '',
@@ -64,9 +67,9 @@ export default class ListControl extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const { location: { search, pathname }, lists } = props;
+    const { location: { search, pathname }, lists, defaultType } = props;
     const currentParams = getUrlParams(search);
-    const { type = 'all' } = currentParams;
+    const { type = defaultType } = currentParams;
     this.setState({
       type,
     });
@@ -96,9 +99,9 @@ export default class ListControl extends Component {
   }
 
   onResetForm = () => {
-    const { location: { search, pathname }, history } = this.props;
+    const { location: { search, pathname }, history, defaultType } = this.props;
     const currentParams = getUrlParams(search);
-    const { type = 'all' } = currentParams;
+    const { type = defaultType } = currentParams;
     const url = `${pathname}?type=${type}&page=1`;
     history.replace(url);
   }
@@ -166,7 +169,8 @@ export default class ListControl extends Component {
   }
 
   handleChangeFilter = (params) => {
-    const { type = 'all' } = params;
+    const { defaultType } = this.props;
+    const { type = defaultType } = params;
     const { dispatch, location: { pathname } } = this.props;
     dispatch({
       type: 'list/saveFilterTerm',
@@ -243,6 +247,7 @@ export default class ListControl extends Component {
         </div>
         <Tabs
           tabs={tab}
+          swipeable={false}
           renderTabBar={props => (
             <Tabs.DefaultTabBar
               {...props}
@@ -257,7 +262,6 @@ export default class ListControl extends Component {
               <div
                 className={[style.dosort].join(' ')}
                 onClick={() => this.handleVisible(true, 'sort')}
-
               >
                 {sortItem.name}
                 <span style={{

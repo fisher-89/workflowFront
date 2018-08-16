@@ -65,7 +65,6 @@ class App extends React.Component {
       footStyle,
     } = common;
     pathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
-    console.log(loadings);
     spin(loadings);
     return (
       <div className={style.container}>

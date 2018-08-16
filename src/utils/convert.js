@@ -38,7 +38,7 @@ export const tabbar = [{
 }, {
   title: '审批',
   key: 'approval',
-  to: '/approvelist2?type=all',
+  to: '/approvelist2?type=processing&page=1',
   icon: appro_,
   selIcon: appro,
 }, {
@@ -73,9 +73,8 @@ export const indexMenu = [{
 
 // 发起状态
 export const startState = [
-  { title: '全部', type: 'all' },
-  { title: '已完成', type: 'finished' },
   { title: '处理中', type: 'processing' },
+  { title: '已完成', type: 'finished' },
   { title: '被驳回', type: 'rejected' },
   { title: '撤回', type: 'withdraw' },
 ];
@@ -96,7 +95,6 @@ export const getStartState = (state) => {
 };
 // 审批状态
 export const approvalState = [
-  { title: '全部', type: 'all' },
   { title: '待审批', type: 'processing' },
   { title: '已通过', type: 'approved' },
   { title: '已转交', type: 'deliver' },

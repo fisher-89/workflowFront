@@ -40,7 +40,7 @@ class IndexPage extends React.Component {
           // 我发起的
               data={startList}
               hasLine={false}
-              onClick={() => history.push('/start_list2?type=all')}
+              onClick={() => history.push('/start_list2?type=processing&page=1')}
             />
           </div>
         </WingBlank>
