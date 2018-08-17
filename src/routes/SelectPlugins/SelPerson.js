@@ -235,7 +235,7 @@ export default class SelPerson extends Component {
   }
 
   selectOk = () => {
-    const { dispatch, history, match: { params } } = this.props;
+    const { dispatch, match: { params } } = this.props;
     const { modal } = params;
     const { selected, key, type } = this.state;
     const newSelectstaff = selected.data;
@@ -247,7 +247,8 @@ export default class SelPerson extends Component {
         value: newSelectstaff,
       },
     });
-    history.goBack(-1);
+
+    // history.goBack(-1);
   }
 
   render() {
@@ -256,13 +257,18 @@ export default class SelPerson extends Component {
       staff, searStaff,
       breadCrumb, loading1,
       loading2, loading3,
+      history, location,
     } = this.props;
+    const someProps = {
+      location,
+      history,
+    };
     const { selected, type, search, key } = this.state;
     const isFinal = key === 'final';
     const { page, totalpage, data = [] } = searStaff;
     const tempFinal = this.onFinalSearch(search);
     return (
-      <div className={styles.con}>
+      <div className={[styles.con, style.sel_person].join(' ')}>
         <SearchList
           multiple={type !== '1'}
           name={isFinal ? 'staff_name' : 'realname'}
@@ -306,6 +312,8 @@ export default class SelPerson extends Component {
             ) : null}
             {search && !isFinal ? (
               <SeStaff
+                {...someProps}
+                type={key}
                 link=""
                 heightNone
                 isFinal={isFinal}

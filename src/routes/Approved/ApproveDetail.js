@@ -13,11 +13,13 @@ import {
   CreateForm,
   FormDetail,
 } from '../../components';
+import spin from '../../components/General/Loader';
+
 import {
   analyzePath,
 } from '../../utils/util';
 
-import style from './index.less';
+import style from '../TableEdit/index.less';
 import styles from '../common.less';
 
 const {
@@ -35,6 +37,7 @@ class ApproveDetail extends Component {
     this.setState({
       flowId,
     });
+    localStorage.flowId = flowId;
     // const step_id = analyzePath(this.props.location.pathname, 2)
     dispatch({
       type: 'approve/getStartFlow',
@@ -45,28 +48,45 @@ class ApproveDetail extends Component {
   }
   getGridItem = (key) => {
     const {
-      approve,
+      approve: { gridformdata, startflow },
     } = this.props;
     const {
-      gridformdata,
-    } = approve;
-    const gridItem = gridformdata.find(item => item.key === key);
-    const dataList = (gridItem ? gridItem.fields : []).map((item) => {
-      return item.find(its => its.key === 'description');
-    });
+      fields: {
+        grid,
+      },
+    } = startflow;
 
+    const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
+    const gridFields = gridItem.fields;
+    const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
+    const dataList = (currentGridData ? currentGridData.fields : []).map((item) => {
+      const newObj = {
+        value_0: `${gridItem.name}1`,
+      };
+      let num = 0;
+      item.map((its) => { // 取前三个字段
+        const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
+        const { type } = fieldsItem;
+        if (num < 3 && type !== 'file' && type !== 'array') {
+          newObj[`value_${num}`] = its.value;
+          num += 1;
+        }
+        return true;
+      });
+
+      return newObj;
+    });
     return dataList.map((item, i) => {
       const idx = i;
       return (
-        <List.Item
+        <div
           key={idx}
-          arrow="horizontal"
-          thumb={item.icon}
-          multipleLine
           onClick={() => this.toEditGrid(key, idx)}
         >
-          {item.value} <List.Item.Brief key={idx}>{item.text}</List.Item.Brief>
-        </List.Item>
+          {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
+          {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
+          {item.value_2 && <div className={style.desc}>{item.value_2}</div>}
+        </div>
       );
     });
   }
@@ -264,37 +284,26 @@ class ApproveDetail extends Component {
       },
     });
   }
+
   doDeliver = () => { // 转交
     const {
-      dispatch,
+      history,
     } = this.props;
-    const {
-      flowId,
-    } = this.state;
-    dispatch({
-      type: 'approve/doDeliver',
-      payload: {
-        step_run_id: flowId,
-        deliver: [{
-          approver_sn: 110103,
-          approver_name: '刘勇01',
-        }, {
-          approver_sn: 110105,
-          approver_name: '张博涵',
-        }],
-      },
-    });
+
+    history.push('/sel_person/deliver/2/approve');
   }
   render() {
     const {
       approve,
-      dispatch,
+      dispatch, loading,
     } = this.props;
     const {
       startflow,
       formdata,
     } = approve;
     const newFormData = approve.form_data;
+    spin(loading);
+
     if (!startflow) return null;
     const {
       fields: {
@@ -362,7 +371,9 @@ class ApproveDetail extends Component {
 export default connect(({
   approve,
   start,
+  loading,
 }) => ({
   approve,
   start,
+  loading: loading.global,
 }))(ApproveDetail);

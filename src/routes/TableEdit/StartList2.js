@@ -148,11 +148,13 @@ export default class StartList extends Component {
 
   renderContent = () => {
     const { lists, location, history } = this.props;
+    const urlParams = getUrlParams();
+    const { page = 1 } = urlParams;
     const { pathname } = location;
     const { type } = this.state;
     const { showTime } = tabs[type];
     const currentDatas = lists[`${pathname}_${type}`].datas;
-    const { data } = currentDatas;
+    const { totalpage, data } = currentDatas;
     const someProps = {
       location,
       history,
@@ -160,7 +162,9 @@ export default class StartList extends Component {
     return (
       <Start
         dataSource={data}
+        totalpage={totalpage}
         // onRefresh={this.onRefresh}
+        page={page}
         {...someProps}
         type={type}
         timeKey={showTime}

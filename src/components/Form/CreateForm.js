@@ -173,7 +173,7 @@ class CreateForm extends Component {
     const {
       formdata,
     } = this.state;
-    const itemkey = formdata.find(its => item.key === its.key);
+    const [itemkey] = formdata.filter(its => item.key === its.key);
     if (itemkey.hasError) {
       Toast.info(itemkey.msg);
     }
@@ -411,12 +411,15 @@ class CreateForm extends Component {
             </React.Fragment>
           );
         } else if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
+          // const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ?
+          //   'HH:MM:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM:ss' : '';
+
           return (
             <React.Fragment>
               <WhiteSpace />
               <DatePicker
                 key={i}
-              // format={item.type}
+                // format={formatStr}
                 mode={item.type}
                 onChange={e => this.timeChange(e, item)}
                 value={new Date(itemkey.value)}
@@ -452,6 +455,7 @@ class CreateForm extends Component {
     });
   }
   timeChange = (v, item) => { // 时间改变事件
+    console.log(v);
     const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM:ss' : '';
     const {
       formdata,
@@ -459,7 +463,7 @@ class CreateForm extends Component {
     const { key } = item;
     const obj = {
       key,
-      value: moment(v).format(formatStr),
+      value: item.type === 'time' ? moment(v).format(formatStr) : v,
       hasError: false,
       msg: '',
     };

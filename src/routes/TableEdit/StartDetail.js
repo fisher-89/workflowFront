@@ -28,25 +28,32 @@ class StartDetail extends Component {
   }
   getGridItem = (key) => {
     const {
-      start,
+      start: { gridformdata, startflow },
     } = this.props;
     const {
-      gridformdata,
-    } = start;
-    const [gridItem] = gridformdata.filter(item => item.key === key);
-    const dataList = (gridItem ? gridItem.fields : []).map((item) => {
-      // const [obj] = item.filter(its => its.key === 'description');
-      // return obj;
-      const fieldsItem = item;
-      const newObj = {};
+      fields: {
+        grid,
+      },
+    } = startflow;
+
+    const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
+    const gridFields = gridItem.fields;
+    const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
+    const dataList = (currentGridData ? currentGridData.fields : []).map((item) => {
+      const newObj = {
+        value_0: `${gridItem.name}1`,
+      };
       let num = 0;
-      fieldsItem.map((its) => { // 取前三个字段
-        if (num < 3 && its.type !== 'file' && its.type !== 'array') {
+      item.map((its) => { // 取前三个字段
+        const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
+        const { type } = fieldsItem;
+        if (num < 3 && type !== 'file' && type !== 'array') {
           newObj[`value_${num}`] = its.value;
           num += 1;
         }
         return true;
       });
+
       return newObj;
     });
 
@@ -58,9 +65,9 @@ class StartDetail extends Component {
           className={style.grid_list_item}
           onClick={() => this.toEditGrid(`/start_grid/${key}/${i}`)}
         >
-          <div className={style.main_info}>{item.value_0}</div>
-          <div className={style.desc}>{item.value_1}</div>
-          <div className={style.desc}>{item.value_2}</div>
+          {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
+          {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
+          {item.value_2 && <div className={style.desc}>{item.value_2}</div>}
         </div>
       );
     });

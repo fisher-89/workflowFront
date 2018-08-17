@@ -37,7 +37,10 @@ export default {
         current_page: 1,
       },
     },
-
+    form: {
+      1: {},
+    },
+    delever: [],
   },
 
   subscriptions: {
@@ -50,8 +53,8 @@ export default {
     }) {
       const data = yield call(a.doDeliver, payload);
       if (data && !data.error) {
-        yield put(routerRedux.push('/approvelist'));
-        Toast.success('转交成功');
+        yield put(routerRedux.goBack(-2));
+        // Toast.success('转交成功');
       }
     },
     * doReject({ payload }, {
@@ -60,7 +63,7 @@ export default {
     }) {
       const data = yield call(a.doReject, payload);
       if (data && !data.error) {
-        yield put(routerRedux.push('/approvelist'));
+        yield put(routerRedux.goBack(-1));
         Toast.success('操作成功');
       }
     },
@@ -172,6 +175,24 @@ export default {
         //   payload.cb()
         // }
       }
+    },
+
+    *saveStaff({ payload }, { put }) {
+      const { value } = payload;
+      const { flowId } = localStorage;
+      const newStaff = value.map((item) => {
+        const obj = {};
+        obj.approver_sn = item.staff_sn;
+        obj.approver_name = item.realname || item.staff_name;
+        return obj;
+      });
+      yield put({
+        type: 'doDeliver',
+        payload: {
+          step_run_id: flowId,
+          deliver: newStaff,
+        },
+      });
     },
   },
 

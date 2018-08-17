@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import {
   withRouter,
 } from 'dva/router';
-import spin, { Loader } from '../components/General/Loader';
+import { Loader } from '../components/General/Loader';
 
 import Footer from '../components/Footer/Footer';
 import {
@@ -45,34 +45,35 @@ class App extends React.Component {
     // });
   }
 
-  componentWillReceiveProps(props) {
-    const { location: { pathname }, loading } = props;
-    if (this.props.location.pathname !== pathname) {
-      spin(loading);
-    }
-  }
+  // componentWillReceiveProps(props) {
+  //   const { location: { pathname }, loading } = props;
+  //   if (this.props.location.pathname !== pathname) {
+  //     spin(loading);
+  //   }
+  // }
   render() {
     const {
       children,
       location,
-      common, loading,
+      common,
+      // loading,
     } = this.props;
     let {
       pathname,
     } = location;
-    const loadings = loading.global;
+    // const loadings = loading.global;
     const {
       footStyle,
     } = common;
     pathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
-    spin(loadings);
+    // spin(loadings);
     return (
       <div className={style.container}>
-        <Loader />
         <div
           className={style.content}
           key={pathname}
         >
+          <Loader />
           <QueueAnim
             className={style.demo_content}
             type={['left', 'right']}

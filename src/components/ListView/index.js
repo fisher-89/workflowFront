@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import nothing from '../../assets/nothing.png';
 import SmallLoader from '../General/Loader/SmallLoader';
 import spin from '../General/Loader';
-import { getUrlParams, parseParamsToUrl } from '../../utils/util';
+import { parseParamsToUrl } from '../../utils/util';
 import { Nothing } from '../index';
 
 let startX;
@@ -21,7 +21,7 @@ onChange   选中回调函数
 multiple   false 是否多选
 name       require
  */
-@connect(({ loading, list }) => ({ loading, lists: list.lists }))
+@connect(({ loading }) => ({ loading }))
 export default function ListView(ListItem) {
   class NewItem extends PureComponent {
     state = {
@@ -50,9 +50,13 @@ export default function ListView(ListItem) {
     }
 
     onRefresh = () => {
-      const { history, location: { pathname }, type } = this.props;
-      const url = `${pathname}?type=${type}&page=1&totalpage=10`;
-      history.replace(url);
+      const { history, location: { pathname }, type, onRefresh } = this.props;
+      if (onRefresh) {
+        onRefresh();
+      } else {
+        const url = `${pathname}?type=${type}&page=1&totalpage=10`;
+        history.replace(url);
+      }
     }
     // 返回角度
     GetSlideAngle = (dx, dy) => {
@@ -88,23 +92,21 @@ export default function ListView(ListItem) {
     }
 
     doLoadMore = (str) => {
-      const { history, lists, location: { pathname }, type } = this.props;
-      const currentDatas = lists[`${pathname}_${type}`].datas;
-      const { page, totalpage } = currentDatas;
+      const { history, location: { pathname }, totalpage, page, onPageChange } = this.props;
       if (!(page < totalpage)) {
-        // console.log('已加载完');
         return false;
       }
       if (str === 'up') {
-        // console.log('加载更多');
-        const urlParams = getUrlParams();
-        const newUrlParams = {
-          ...urlParams,
-          page: page + 1,
-        };
-        const url = parseParamsToUrl(newUrlParams);
-        history.replace(`${pathname}?${url}`);
-        // onPageChange();
+        if (onPageChange) {
+          onPageChange();
+        } else {
+          const newUrlParams = {
+            ...urlParams,
+            page: (page - 0) + 1,
+          };
+          const url = parseParamsToUrl(newUrlParams);
+          history.replace(`${pathname}?${url}`);
+        }
       }
     }
     handleStart = (ev) => {
@@ -187,12 +189,8 @@ export default function ListView(ListItem) {
     }
 
     renderList = () => {
-      const { dataSource, offsetBottom, heightNone, type,
-        loading, onRefresh, lists, location: { pathname } } = this.props;
-      const urlParams = getUrlParams();
-      const { page = 1 } = urlParams;
-      const currentDatas = lists[`${pathname}_${type}`].datas;
-      const { totalpage } = currentDatas;
+      const { dataSource, offsetBottom, heightNone,
+        loading, onRefresh, totalpage, page = 1 } = this.props;
       const height = this.state.height - (offsetBottom || 0);
       const style = !heightNone ? { style: { minHeight: height } } : null;
       const nothingAble = !heightNone &&
@@ -246,9 +244,6 @@ export default function ListView(ListItem) {
       );
     }
 }
-NewItem.defaultProps = {
-  onRefresh: () => {},
-};
 return NewItem;
 }
 
