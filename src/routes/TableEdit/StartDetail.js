@@ -5,12 +5,9 @@ import React, {
 import {
   connect,
 } from 'dva';
-import {
-  FormDetail,
-} from '../../components';
-import {
-  analyzePath,
-} from '../../utils/util';
+import { FormDetail } from '../../components';
+import spin from '../../components/General/Loader';
+import { analyzePath } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
@@ -39,15 +36,15 @@ class StartDetail extends Component {
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
     const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
-    const dataList = (currentGridData ? currentGridData.fields : []).map((item) => {
+    const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
       const newObj = {
-        value_0: `${gridItem.name}1`,
+        value_0: `${gridItem.name}${i + 1}`,
       };
       let num = 0;
       item.map((its) => { // 取前三个字段
         const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
-        const { type } = fieldsItem;
-        if (num < 3 && type !== 'file' && type !== 'array') {
+        const { type } = fieldsItem || {};
+        if (num < 3 && type && type !== 'file' && type !== 'array') {
           newObj[`value_${num}`] = its.value;
           num += 1;
         }
@@ -142,12 +139,13 @@ class StartDetail extends Component {
   }
   render() {
     const {
-      start,
+      start, loading,
     } = this.props;
     const {
       startflow,
     } = start;
     const formData = start.form_data;
+    spin(loading);
     if (!startflow) return null;
     const {
       fields: {
@@ -187,7 +185,7 @@ class StartDetail extends Component {
   }
 }
 export default connect(({
-  start,
+  start, loading,
 }) => ({
-  start,
+  start, loading: loading.global,
 }))(StartDetail);

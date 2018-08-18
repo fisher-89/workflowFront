@@ -140,7 +140,8 @@ function RouterConfig({
     path: '/sel_person/:key/:type/:modal',
     models: () => [
       import('./models/searchStaff'),
-      import('./models/list'),
+      import('./models/approve'),
+      import('./models/start'),
     ],
     component: () =>
       import('./routes/SelectPlugins/SelPerson'),

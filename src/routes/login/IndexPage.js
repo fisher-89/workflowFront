@@ -38,6 +38,7 @@ class IndexPage extends React.Component {
           <div className={style.entrance}>
             <Grid
           // 我发起的
+              square={false}
               data={startList}
               hasLine={false}
               onClick={() => history.push('/start_list2?type=processing&page=1')}
@@ -63,6 +64,7 @@ class IndexPage extends React.Component {
                     <div className={style.title}>{item.name}</div>
                     <Grid
                       data={data}
+                      square={false}
                       onClick={el => history.push(`/table_edit/${el.id}`)}
                       activeStyle={{ background: '#f5f5f5' }}
                       hasLine={false}

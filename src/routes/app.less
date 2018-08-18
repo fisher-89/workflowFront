@@ -41,8 +41,14 @@
     height:86/75rem;
     line-height: 86/75rem;
   }
-  .am-list-item {
-    box-shadow: @list-shadow;
+  .am-list-item.am-input-item.am-list-item-middle{
+    height: @common-height;
+  }
+  .am-list-item.am-textarea-item{
+    height: @common-height;
+  }
+  .am-list-item.am-list-item-middle{
+    height: @common-height;
   }
   .am-textarea-label {
     align-self: center !important;
@@ -53,11 +59,21 @@
   .am-list .am-list-item.am-textarea-item::after {
     background-color: transparent !important;
   }
+  .am-image-picker-list{
+    padding-left: 0 !important;
+  }
   .am-list-line::after {
     background-color: @base-bg-color  !important;
   }
   .am-list-body::after {
     background-color: #fff !important;
+  }
+  .am-grid .am-flexbox .am-flexbox-item .am-grid-item-content .am-grid-item-inner-content .am-grid-text {
+    max-height: 30px !important;
+    overflow: hidden;
+  }
+  .am-textarea-label.am-textarea-label-5 {
+    width:96px!important;
   }
   .am-list-item .am-input-label.am-input-label-5{
     width:96px!important;

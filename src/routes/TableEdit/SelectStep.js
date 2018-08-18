@@ -1,14 +1,10 @@
 import React, {
   Component,
 } from 'react';
-import {
-  connect,
-} from 'dva';
-import {
-  List,
-  Toast,
-  Button, Modal,
-} from 'antd-mobile';
+import { connect } from 'dva';
+import { List, Toast, Button, Modal } from 'antd-mobile';
+import spin from '../../components/General/Loader';
+
 import style from './index.less';
 import styles from '../common.less';
 
@@ -191,7 +187,7 @@ class SelectStep extends Component {
           },
           id: preStepData.flow_id,
           cb: () => {
-            history.replace('/start_list2?type=approcessing');
+            history.replace('/start_list2?type=processing&page=1');
           },
         },
       });
@@ -205,7 +201,7 @@ class SelectStep extends Component {
           },
           id: preStepData.flow_id,
           cb: () => {
-            history.replace('/approvelist2?type=all');
+            history.replace('/approvelist2?type=processing&page=1');
           },
         },
       });
@@ -215,8 +211,9 @@ class SelectStep extends Component {
     const {
       preStepData,
     } = this.state;
-    const { start: { preType } } = this.props;
+    const { start: { preType }, loading } = this.props;
     const info = preStepData ? (preStepData.concurrent_type === 0 ? '（请任选一个步骤）' : preStepData.concurrent_type === 2 ? '（请选择全部步骤）' : '') : '';
+    spin(loading);
     return (
       <div className={styles.con}>
         <div className={[styles.con_content, style.con_step].join(' ')} >
@@ -253,5 +250,5 @@ export default connect(({
   loading,
 }) => ({
   start,
-  loading,
+  loading: loading.global,
 }))(SelectStep);

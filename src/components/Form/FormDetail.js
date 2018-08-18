@@ -1,18 +1,12 @@
 import React, {
   Component,
 } from 'react';
-import {
-  List, WhiteSpace,
-  Modal,
-  Carousel,
-} from 'antd-mobile';
+import { List, Modal, Carousel } from 'antd-mobile';
 import {
   connect,
 } from 'dva';
 import style from './index.less';
-import {
-  CheckBoxs,
-} from '../../components/index';
+import CheckBoxs from '../../components/ModalFilters/CheckBox';
 import { dealThumbImg } from '../../utils/convert';
 
 class FormDetail extends Component {
@@ -39,7 +33,6 @@ class FormDetail extends Component {
       if (item.type === 'file') { // 文件
         return (
           <React.Fragment>
-            <WhiteSpace />
             <div key={idx} className={style.file}>
               <p className={style.title}>{item.name}</p>
               <div className={style.array_container}>
@@ -61,15 +54,22 @@ class FormDetail extends Component {
 
         );
       } else if (item.type === 'array') { // 数组
+        const currentValue = JSON.parse(formData[item.key]);
+        const options = (item.options || []).map((its) => {
+          const obj = {};
+          obj.label = its;
+          obj.value = its;
+          return obj;
+        });
         return (
           <React.Fragment>
-            <WhiteSpace />
             <div key={idx} className={style.file}>
               <p className={style.title}>{item.name}</p>
               <div className={style.array_container}>
                 <CheckBoxs
-                  option={item.options}
-                  value={formData[item.key]}
+                  options={options}
+                  style={{ marginBottom: '10px' }}
+                  value={currentValue}
                   readonly
                 />
               </div>
@@ -80,7 +80,6 @@ class FormDetail extends Component {
       }
       return (
         <React.Fragment>
-          <WhiteSpace />
           <List.Item
             key={idx}
             extra={formData && formData[item.key] ? formData[item.key] : '暂无'}
@@ -133,7 +132,7 @@ class FormDetail extends Component {
       reviewImg,
     } = this.state;
     return (
-      <div>
+      <div className={style.form}>
         <List >
           {this.getFormList()}
         </List>

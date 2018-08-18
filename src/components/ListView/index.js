@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import nothing from '../../assets/nothing.png';
 import SmallLoader from '../General/Loader/SmallLoader';
 import spin from '../General/Loader';
-import { parseParamsToUrl } from '../../utils/util';
+import { parseParamsToUrl, getUrlParams } from '../../utils/util';
 import { Nothing } from '../index';
 
 let startX;
@@ -51,12 +51,11 @@ export default function ListView(ListItem) {
 
     onRefresh = () => {
       const { history, location: { pathname }, type, onRefresh } = this.props;
-      if (onRefresh) {
-        onRefresh();
-      } else {
+      if (type) {
         const url = `${pathname}?type=${type}&page=1&totalpage=10`;
         history.replace(url);
       }
+      onRefresh();
     }
     // 返回角度
     GetSlideAngle = (dx, dy) => {
@@ -92,7 +91,7 @@ export default function ListView(ListItem) {
     }
 
     doLoadMore = (str) => {
-      const { history, location: { pathname }, totalpage, page, onPageChange } = this.props;
+      const { history, totalpage, page, onPageChange } = this.props;
       if (!(page < totalpage)) {
         return false;
       }
@@ -100,15 +99,18 @@ export default function ListView(ListItem) {
         if (onPageChange) {
           onPageChange();
         } else {
+          const urlParams = getUrlParams();
           const newUrlParams = {
             ...urlParams,
             page: (page - 0) + 1,
           };
+          const { location: { pathname } } = this.props;
           const url = parseParamsToUrl(newUrlParams);
           history.replace(`${pathname}?${url}`);
         }
       }
     }
+
     handleStart = (ev) => {
       startX = ev.touches[0].pageX;
       startY = ev.touches[0].pageY;
@@ -138,6 +140,7 @@ export default function ListView(ListItem) {
         default:
       }
     }
+
     handlesMultiple = (item) => { // 多选
       const { muti } = this.state;
       const { onChange, name } = this.props;
@@ -244,6 +247,9 @@ export default function ListView(ListItem) {
       );
     }
 }
+NewItem.defaultProps = {
+  onRefresh: () => {},
+};
 return NewItem;
 }
 

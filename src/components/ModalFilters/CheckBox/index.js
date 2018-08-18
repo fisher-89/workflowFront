@@ -54,7 +54,6 @@ class CheckBox extends React.PureComponent {
       multiple,
     } = this.props;
     const { value } = this.state;
-    const itemStyle = { display: readonly && !checked ? 'none' : '', ...style };
     return (
       <div className={Styles.check_status}>
         {options.map((option) => {
@@ -65,7 +64,8 @@ class CheckBox extends React.PureComponent {
           } else {
             checked = value === checkValue;
           }
-          const className = [Styles.s_item, checked ? Styles.active : null].join(' ');
+          const className = [Styles.s_item, checked ? Styles.active : null, readonly ? Styles.readonly : null].join(' ');
+          const itemStyle = { display: readonly && !checked ? 'none' : '', ...style };
           return (
             <div
               key={option.value}

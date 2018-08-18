@@ -146,7 +146,7 @@ export default {
     * doWithDraw({ payload }, { call, put }) {
       const data = yield call(c.doWithdraw, payload);
       if (data && !data.error) {
-        yield put(routerRedux.push('/start_list'));
+        yield put(routerRedux.push('/start_list2?type=withdraw&page=1'));
       }
     },
 

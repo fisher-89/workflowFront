@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   List, InputItem, Toast, DatePicker, ImagePicker, Modal, Grid,
-  Carousel, TextareaItem, Picker, WhiteSpace,
+  Carousel, TextareaItem, Picker,
 } from 'antd-mobile';
 import { connect } from 'dva';
 import moment from 'moment';
@@ -10,9 +10,14 @@ import {
   reAgainImg,
   rebackImg,
 } from '../../utils/convert';
-import style from './index.less';
-import { CheckBoxs } from '../../components/index';
 
+import { formatDate } from '../../utils/util';
+import style from './index.less';
+import CheckBoxs from '../../components/ModalFilters/CheckBox';
+
+// const dateTypeCol = [
+//   'time', 'datetime', 'date',
+// ];
 class CreateForm extends Component {
   state = {
     init: false,
@@ -48,10 +53,27 @@ class CreateForm extends Component {
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {
         editableForm.map((item) => {
-          const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM:ss' : '';
-          const value = newFormData[item.key] ? newFormData[item.key]
-            : item.type === 'date' || item.type === 'time' || item.type === 'datetime' ? moment(new Date()).format(formatStr)
-              : newFormData[item.key];
+          const formatStr = formatDate(item.type);
+          let currentValue = newFormData[item.key];
+          let value = currentValue;
+          if (item.type === 'array') {
+            const reg = /^\[|\]$/g;
+            if (typeof (currentValue) === 'string') {
+              const str = currentValue.replace(reg, '');
+              currentValue = str.split(',');
+            }
+            value = currentValue;
+          }
+          if (item.type === 'time') {
+            value = moment(`2018/1/1 ${currentValue}`).format(formatStr);
+          }
+          if (item.type === 'date' || item.type === 'datetime') {
+            if (currentValue) {
+              value = moment(currentValue).format(formatStr);
+            } else {
+              value = moment().format(formatStr);
+            }
+          }
           const obj = {
             key: item.key,
             value,
@@ -85,14 +107,13 @@ class CreateForm extends Component {
     const a = value;
     const b = Number(a);
     let newValue = b;
-    if (floatNumber !== undefined) {
+    if (floatNumber) {
       const c = b.toFixed(floatNumber);
-      if (Math.floor(c) === Number(c)) {
-        newValue = Number(c);
-      }
+      newValue = Number(c);
     }
     return newValue;
   }
+
   onChange = (v, item) => {
     const {
       formdata,
@@ -247,23 +268,22 @@ class CreateForm extends Component {
       if (!isEdit) { // 只读
         if (item.type === 'file') { // 文件
           return (
-            <React.Fragment>
-              <WhiteSpace />
-              <div key={i} className={style.file}>
+            <React.Fragment key={i}>
+              <div className={style.file}>
                 <p className={style.title}>{item.name}</p>
                 <div className={style.array_container}>
                   <div className={style.show_img}>
                     {(newFormData[item.key] || []).map((its, ix) => {
-                  const x = item.key + ix;
-                  return (
-                    <img
-                      src={`${its}`}
-                      key={x}
-                      alt="图片"
-                      onClick={() => this.reviewReadImg(x, newFormData[item.key])}
-                    />
-                  );
-                })}
+                      const x = item.key + ix;
+                      return (
+                        <img
+                          src={`${its}`}
+                          key={x}
+                          alt="图片"
+                          onClick={() => this.reviewReadImg(x, newFormData[item.key])}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -271,21 +291,32 @@ class CreateForm extends Component {
 
           );
         } else if (item.type === 'array') { // 数组
+          let currentValue = newFormData[item.key];
+          const reg = /^\[|\]$/g;
+          if (typeof (currentValue) === 'string') {
+            const str = currentValue.replace(reg, '');
+            currentValue = str.split(',');
+          }
+          const options = (item.options || []).map((its) => {
+            const obj = {};
+            obj.label = its;
+            obj.value = its;
+            return obj;
+          });
           return (
-            <React.Fragment>
-              <WhiteSpace />
-              <div key={i} className={style.file}>
+            <React.Fragment key={i} >
+              <div className={style.file}>
                 <p className={style.title}>{item.name}</p>
                 <div className={style.array_container}>
                   <CheckBoxs
-                    option={item.options}
-                    value={newFormData[item.key]}
+                    style={{ marginBottom: '10px' }}
+                    options={options}
+                    value={currentValue}
                     readonly
                   />
                 </div>
               </div>
             </React.Fragment>
-
           );
           // } else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
           //   return (
@@ -301,7 +332,6 @@ class CreateForm extends Component {
         }
         return (
           <React.Fragment key={i}>
-            <WhiteSpace />
             <List.Item
               extra={<span style={{ color: '#ccc' }}>{newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}</span>}
               size="small"
@@ -315,17 +345,28 @@ class CreateForm extends Component {
       if (isEdit) {
         if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
           if (item.type === 'array') {
+            let currentValue = itemkey.value;
+            const reg = /^\[|\]$/g;
+            if (typeof (currentValue) === 'string') {
+              const str = currentValue.replace(reg, '');
+              currentValue = str.split(',');
+            }
+            const options = (item.options || []).map((its) => {
+              const obj = {};
+              obj.label = its;
+              obj.value = its;
+              return obj;
+            });
             return (
-              <React.Fragment>
-                <WhiteSpace />
-                <div key={i} className={style.file}>
+              <React.Fragment key={i}>
+                <div className={style.file}>
                   <p className={style.title}>{item.name}</p>
                   <div className={style.array_container}>
                     <CheckBoxs
-                      option={item.options}
-                      nameKey={item.key}
-                      checkStatus={this.checkStatus}
-                      value={itemkey && itemkey.value}
+                      style={{ marginBottom: '10px' }}
+                      options={options}
+                      value={currentValue}
+                      onChange={v => this.onChange(v, item)}
                     />
                   </div>
                 </div>
@@ -339,21 +380,12 @@ class CreateForm extends Component {
               return obj;
             });
             return (
-              // <List.Item
-              //   key={i}
-              //   arrow="horizontal"
-              //   extra={itemkey && itemkey.value ? itemkey.value : '请选择'}
-              //   onClick={() => this.choseItem(item)}
-              // >{item.name}
-              // </List.Item>
-              <React.Fragment>
-                <WhiteSpace />
+              <React.Fragment key={i}>
                 <Picker
-                  key={i}
                   data={data}
                   cols={1}
                   value={[itemkey.value]}
-                // onChange={e => this.onChange(e[0], item)}
+                  // onChange={e => this.onChange(e[0], item)}
                   onChange={e => this.onhandleSingleChange(e[0], item)}
                 >
                   <List.Item arrow="horizontal" onClick={this.onClick}>{item.name}</List.Item>
@@ -364,10 +396,8 @@ class CreateForm extends Component {
         } else if (item.type === 'text') {
           if (item.max > 10) {
             return (
-              <React.Fragment>
-                <WhiteSpace />
+              <React.Fragment key={i}>
                 <TextareaItem
-                  key={i}
                   title={item.name}
                   autoHeight
                   placeholder={item.description}
@@ -380,10 +410,8 @@ class CreateForm extends Component {
             );
           } else {
             return (
-              <React.Fragment>
-                <WhiteSpace />
+              <React.Fragment key={i}>
                 <InputItem
-                  key={i}
                   placeholder={item.description}
                   error={itemkey.hasError}
                   onErrorClick={() => this.onErrorClick(item)}
@@ -396,10 +424,8 @@ class CreateForm extends Component {
           }
         } else if (item.type === 'int') {
           return (
-            <React.Fragment>
-              <WhiteSpace />
+            <React.Fragment key={i}>
               <InputItem
-                key={i}
                 placeholder={item.description}
                 error={itemkey.hasError}
                 type="digit"
@@ -411,18 +437,13 @@ class CreateForm extends Component {
             </React.Fragment>
           );
         } else if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
-          // const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ?
-          //   'HH:MM:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM:ss' : '';
-
           return (
             <React.Fragment>
-              <WhiteSpace />
               <DatePicker
                 key={i}
-                // format={formatStr}
                 mode={item.type}
                 onChange={e => this.timeChange(e, item)}
-                value={new Date(itemkey.value)}
+                value={item.type === 'time' ? new Date(`2018/8/1 ${itemkey.value}`) : new Date(itemkey.value)}
               >
                 <List.Item arrow="horizontal">{item.name}</List.Item>
               </DatePicker>
@@ -430,14 +451,11 @@ class CreateForm extends Component {
           );
         } else if (item.type === 'file') {
           return (
-            <React.Fragment>
-              <WhiteSpace />
-              <div key={i} className={style.file}>
+            <React.Fragment key={i}>
+              <div className={style.file}>
                 <p className={style.title}>{item.name}</p>
                 <div className={style.picker_container}>
                   <ImagePicker
-                  // key={item.key}
-                  // style={{ width: '78px', height: '78px' }}
                     files={itemValue}
                     onChange={(file, type, index) => this.filesOnchange(file, type, index, item)}
                     onImageClick={e => this.reviewImg(e, itemValue)}
@@ -455,15 +473,14 @@ class CreateForm extends Component {
     });
   }
   timeChange = (v, item) => { // 时间改变事件
-    console.log(v);
-    const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:MM:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:MM:ss' : '';
+    const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:mm:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : '';
     const {
       formdata,
     } = this.state;
     const { key } = item;
     const obj = {
       key,
-      value: item.type === 'time' ? moment(v).format(formatStr) : v,
+      value: moment(v).format(formatStr),
       hasError: false,
       msg: '',
     };
@@ -652,7 +669,7 @@ class CreateForm extends Component {
     } = this.state;
     if (!startflow) return null;
     return (
-      <div style={{ background: '#fff' }}>
+      <div className={style.form} style={{ background: '#fff' }}>
         <List>
           {this.getFormList()}
         </List>

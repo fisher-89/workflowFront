@@ -110,7 +110,7 @@ export function parseParams(url) {
 export function makerFilters(params) {
   const { filters } = { ...params };
   let newFilters = '';
-  if(filters){
+  if (filters) {
     newFilters = dotWheresValue(filters);
   }
   return {
@@ -264,4 +264,13 @@ export function excludeSpecial(s) {
   // 去掉特殊字符
   str = str.replace(/[\@\#\$\%\^\&\*\(\)\{\}\:\"\L\<\>\?\[\]]/);
   return str;
+}
+
+export function formatDate(type) {
+  switch (type) {
+    case 'date': return 'YYYY-MM-DD';
+    case 'time': return 'HH:mm:ss';
+    case 'datetime': return 'YYYY-MM-DD HH:mm:ss';
+    default: return 'YYYY-MM-DD'
+  }
 }

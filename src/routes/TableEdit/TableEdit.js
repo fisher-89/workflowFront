@@ -40,7 +40,7 @@ class TableEdit extends Component {
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
     const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
       const newObj = {
-        value_0: `${gridItem.name}${i}`,
+        value_0: `${gridItem.name}${i + 1}`,
       };
       let num = 0;
       item.map((its) => { // 取前三个字段
