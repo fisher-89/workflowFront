@@ -28,7 +28,6 @@ class CheckBox extends React.Component {
       <div className={style.check_status}>
         {options.map((item, i) => {
                     const checked = (value || []).indexOf(item.value) > -1 && !readonly;
-                    console.log('value', value);
                     return (
                       <div
                         key={item.value}

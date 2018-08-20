@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Tabs, SearchBar } from 'antd-mobile';
 // import filterImg from '../../assets/filter.svg';
-import { startState } from '../../utils/convert';
 import { findInitIndex, excludeSpecial,
   getUrlParams, getUrlString, doConditionValue, parseParamsToUrl, makerFilters,
 } from '../../utils/util';
@@ -31,12 +30,13 @@ export default class ListControl extends Component {
   }
 
   componentWillMount() {
-    const { lists, location: { pathname, search }, history, defaultType } = this.props;
+    const { lists, location: { pathname, search }, history, defaultType, defaultSort } = this.props;
     const urlParams = getUrlParams();
     this.filterUrl = getUrlString('filters', search ? search.slice(1) : '');
     const { type = defaultType, page = 1 } = urlParams;
     const newParams = {
       ...urlParams,
+      sort: urlParams.sort || defaultSort,
       filters: this.filterUrl || '',
     };
     const current = lists[`${pathname}_${type}`];
@@ -46,7 +46,7 @@ export default class ListControl extends Component {
       type,
       searchValue: this.fetchSearchValue(),
     }, () => {
-      this.sorter = newParams.sort || 'create_at-desc';
+      this.sorter = newParams.sort;
       this.handleChangeFilter(newParams);
       this.currentFilter(search ? search.slice(1) : parseParamsToUrl(url));
       if (!data || (data && data.length)) { // 有数据，不调接口
@@ -67,7 +67,7 @@ export default class ListControl extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const { location: { search, pathname }, lists, defaultType } = props;
+    const { location: { search, pathname }, lists, defaultType, defaultSort } = props;
     const currentParams = getUrlParams(search);
     const { type = defaultType } = currentParams;
     this.setState({
@@ -82,9 +82,10 @@ export default class ListControl extends Component {
       });
       const newParams = {
         ...params,
+        sort: params.sort || defaultSort,
         filters: this.filterUrl || '',
       };
-      this.sorter = newParams.sort || 'create_at-desc';
+      this.sorter = newParams.sort;
       this.handleChangeFilter(newParams);
       this.fetchSearchValue();
       const current = lists[`${pathname}_${type}`];
@@ -93,7 +94,6 @@ export default class ListControl extends Component {
         (JSON.stringify(url) === JSON.stringify(newParams))) { // 有数据，不调接口
         return;
       }
-
       this.fetchDataSource(newParams);
     }
   }
@@ -226,9 +226,9 @@ export default class ListControl extends Component {
   }
 
   render() {
-    const { children, tab, filterColumns, searchColumns, sortList = [], top = '3.813333rem' } = this.props;
+    const { children, tab, filterColumns, searchColumns, defaultSort, sortList = [], top = '3.813333rem' } = this.props;
     const { type, searchValue } = this.state;
-    const initIndex = findInitIndex(startState, 'type', type);
+    const initIndex = findInitIndex(tab, 'type', type);
     const searchName = searchColumns.name;
     let [sortItem] = sortList.filter(item => item.value === this.sorter);
     if (!sortItem) {
@@ -287,7 +287,7 @@ export default class ListControl extends Component {
           model={this.state.model}
           filters={this.filters}
           top={top}
-            // sorter={this.sorter}
+          sorter={this.sorter || defaultSort}
           onResetForm={this.onResetForm}
           filterColumns={filterColumns}
           sorterData={sortList}

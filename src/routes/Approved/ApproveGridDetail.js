@@ -10,9 +10,6 @@ import {
   FormDetail,
 } from '../../components';
 import {
-  analyzePath,
-} from '../../utils/util';
-import {
   getGridFilter,
 } from '../../utils/convert';
 import styles from '../common.less';
@@ -33,7 +30,8 @@ class ApproveGridDetail extends Component {
   }
   componentWillReceiveProps(nextprops) {
     const {
-      location,
+      match: { params },
+
     } = nextprops;
     const {
       flag,
@@ -41,10 +39,12 @@ class ApproveGridDetail extends Component {
     } = this.state;
 
     if (!key && flag) {
-      const newKey = analyzePath(location.pathname, 1);
-      const index = analyzePath(location.pathname, 2);
+      const { type, index } = params;
+
+      // const newKey = analyzePath(location.pathname, 1);
+      // const index = analyzePath(location.pathname, 2);
       this.setState({
-        key: newKey,
+        key: type,
         index,
         flag: false,
       });

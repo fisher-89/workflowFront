@@ -15,10 +15,6 @@ import {
 } from '../../components';
 import spin from '../../components/General/Loader';
 
-import {
-  analyzePath,
-} from '../../utils/util';
-
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
 
@@ -32,17 +28,17 @@ class ApproveDetail extends Component {
   componentWillMount() {
     const {
       dispatch,
+      match: { params },
     } = this.props;
-    const flowId = analyzePath(this.props.location.pathname, 1);
+    const { id } = params;
     this.setState({
-      flowId,
+      flowId: id,
     });
-    localStorage.flowId = flowId;
-    // const step_id = analyzePath(this.props.location.pathname, 2)
+    localStorage.flowId = id;
     dispatch({
       type: 'approve/getStartFlow',
       payload: {
-        flow_id: flowId,
+        flow_id: id,
       },
     });
   }
@@ -59,7 +55,7 @@ class ApproveDetail extends Component {
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
     const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
-    const dataList = (currentGridData ? currentGridData.fields : []).map((item) => {
+    const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
       const newObj = {
         value_0: `${gridItem.name}${i + 1}`,
       };
@@ -80,6 +76,7 @@ class ApproveDetail extends Component {
       const idx = i;
       return (
         <div
+          className={style.grid_list_item}
           key={idx}
           onClick={() => this.toEditGrid(key, idx)}
         >
@@ -180,193 +177,199 @@ class ApproveDetail extends Component {
           remark: v,
         },
         id: data.flow_id,
-        cb: () => {
+        cb: (datas) => {
+          dispatch({
+            type: 'list/updateLists',
+            payload: {
+              data: datas,
+              start: '/approvelist_processing',
+              end: '/approvelist_approved',
+            },
+          });
           history.goBack(-1);
         },
       },
     });
   }
-  // 提交数据
-  submitData = (e) => {
-    e.preventDefault();
-    const {
-      flowId,
-    } = this.state;
-    const {
-      dispatch,
-      history,
-    } = this.props;
-    this.childComp.saveData();
-    setTimeout(() => {
-      const {
-        approve,
-      } = this.props;
-      const {
-        formdata,
-        gridformdata,
-        startflow,
-      } = approve;
-      // 整理formdata数据
-      const flowRun = startflow.flow_run;
-      const formObj = {};
-      formdata.map((item) => {
-        formObj[item.key] = item.value;
-        return item;
-      });
-      // 整理列表控件数据
-      const formgridObj = {};
-      gridformdata.map((item) => {
-        const {
-          fields,
-        } = item;
-        const forgridArr = fields.map((its) => {
-          const obj = {};
-          its.map((it) => {
-            obj[it.key] = it.value;
-            return true;
-          });
-          return obj;
-        });
-        formgridObj[item.key] = [...forgridArr];
-        return item;
-      });
-      const newformData = {
-        ...formObj,
-        ...formgridObj,
-      };
-      dispatch({
-        type: 'start/preSet',
-        payload: {
-          data: {
-            form_data: newformData,
-            step_run_id: flowId,
-          },
-          id: flowRun.flow_id,
-          preType: 'approve',
-          cb: (data) => {
-            if (data.step_end === 1) { // 不选步骤
-              prompt('填写备注', '', [{
-                text: '取消',
-              }, {
-                text: '确定',
-                onPress: v => this.submitStep(v, data),
-              }], 'default', null, ['请输入备注']);
-            } else {
-              history.push('/select_step');
-            }
-          },
-        },
-      });
-    }, 500);
-  }
-
-  fillRemark = () => {
-    prompt('填写备注', '', [{
-      text: '取消',
-      // onPress: this.submitStep
-    }, {
-      text: '确定',
-      onPress: this.doReject,
-    }], 'default', null, ['input your name']);
-  }
-  doReject = (v) => {
-    const {
-      dispatch,
-    } = this.props;
-    const {
-      flowId,
-    } = this.state;
-    dispatch({
-      type: 'approve/doReject',
-      payload: {
-        step_run_id: flowId,
-        remark: v,
-      },
-    });
-  }
-
-  doDeliver = () => { // 转交
-    const {
-      history,
-    } = this.props;
-
-    history.push('/sel_person/deliver/2/approve');
-  }
-  render() {
+// 提交数据
+submitData = (e) => {
+  e.preventDefault();
+  const {
+    flowId,
+  } = this.state;
+  const {
+    dispatch,
+    history,
+  } = this.props;
+  this.childComp.saveData();
+  setTimeout(() => {
     const {
       approve,
-      dispatch, loading,
     } = this.props;
     const {
-      startflow,
       formdata,
+      gridformdata,
+      startflow,
     } = approve;
-    const newFormData = approve.form_data;
-    spin(loading);
-
-    if (!startflow) return null;
-    const {
-      fields: {
-        form,
-      },
-    } = startflow;
-    // 只需要展示的（不包括可编辑的）
-    const showForm = form.filter(item => !startflow.step.hidden_fields.includes(item.key));
-
-    // 可编辑的
-    const editableForm = form.filter((item) => {
-      return startflow.step.editable_fields.includes(item.key);
+    // 整理formdata数据
+    const flowRun = startflow.flow_run;
+    const formObj = {};
+    formdata.map((item) => {
+      formObj[item.key] = item.value;
+      return item;
     });
+    // 整理列表控件数据
+    const formgridObj = {};
+    gridformdata.map((item) => {
+      const {
+        fields,
+      } = item;
+      const forgridArr = fields.map((its) => {
+        const obj = {};
+        its.map((it) => {
+          obj[it.key] = it.value;
+          return true;
+        });
+        return obj;
+      });
+      formgridObj[item.key] = [...forgridArr];
+      return item;
+    });
+    const newformData = {
+      ...formObj,
+      ...formgridObj,
+    };
+    dispatch({
+      type: 'start/preSet',
+      payload: {
+        data: {
+          form_data: newformData,
+          step_run_id: flowId,
+        },
+        id: flowRun.flow_id,
+        preType: 'approve',
+        cb: (data) => {
+          if (data.step_end === 1) { // 不选步骤
+            prompt('填写备注', '', [{
+              text: '取消',
+            }, {
+              text: '确定',
+              onPress: v => this.submitStep(v, data),
+            }], 'default', null, ['请输入备注']);
+          } else {
+            history.push('/select_step');
+          }
+        },
+      },
+    });
+  }, 500);
+}
 
-    return (
-      <div className={styles.con}>
-        <div className={styles.con_content}>
-          {startflow.step_run.action_type === 0 ? (
-            <CreateForm
-              startflow={startflow}
-              formdata={formdata}
-              evtClick={this.saveData}
-              dispatch={dispatch}
-              show_form={showForm}
-              editable_form={editableForm}
-              form_data={newFormData}
-              onRef={(comp) => { this.childComp = comp; }}
-            />
-) : (
-  <FormDetail
-    form_data={newFormData}
-    show_form={showForm}
-  />
-)}
+fillRemark = () => {
+  prompt('填写备注', '', [{
+    text: '取消',
+    // onPress: this.submitStep
+  }, {
+    text: '确定',
+    onPress: this.doReject,
+  }], 'default', null, ['input your name']);
+}
+doReject = (v) => {
+  const {
+    dispatch,
+  } = this.props;
+  const {
+    flowId,
+  } = this.state;
+  dispatch({
+    type: 'approve/doReject',
+    payload: {
+      step_run_id: flowId,
+      remark: v,
+    },
+  });
+}
 
-          {this.getGridList()}
-        </div>
-        <div className={styles.footer}>
-          {startflow.step_run.action_type === 0 ? (
-            <a
-              onClick={this.submitData}
-            >
-              <span>通过</span>
-            </a>
-) : ''}
-          {startflow.step_run.action_type === 0 ? (
-            <a
-              onClick={this.doDeliver}
-            >
-              <span>转交</span>
-            </a>
-) : ''}
-          {startflow.step.reject_type !== 0 && startflow.step_run.action_type === 0 ? (
-            <a
-              onClick={this.fillRemark}
-            >
-              <span>驳回</span>
-            </a>
-) : ''}
-        </div>
+doDeliver = () => { // 转交
+  const {
+    history,
+  } = this.props;
+  history.push('/sel_person/deliver/2/approve');
+}
+render() {
+  const {
+    approve,
+    dispatch, loading,
+  } = this.props;
+  const {
+    startflow,
+    formdata,
+  } = approve;
+  const newFormData = approve.form_data;
+  spin(loading);
+  if (!startflow) return null;
+  const {
+    fields: {
+      form,
+    },
+  } = startflow;
+  // 只需要展示的（不包括可编辑的）
+  const showForm = form.filter(item => !startflow.step.hidden_fields.includes(item.key));
+
+  // 可编辑的
+  const editableForm = form.filter((item) => {
+    return startflow.step.editable_fields.includes(item.key);
+  });
+
+  return (
+    <div className={styles.con}>
+      <div className={styles.con_content}>
+        {startflow.step_run.action_type === 0 ? (
+          <CreateForm
+            startflow={startflow}
+            formdata={formdata}
+            evtClick={this.saveData}
+            dispatch={dispatch}
+            show_form={showForm}
+            editable_form={editableForm}
+            form_data={newFormData}
+            onRef={(comp) => { this.childComp = comp; }}
+          />
+        ) : (
+          <FormDetail
+            form_data={newFormData}
+            show_form={showForm}
+          />
+          )}
+
+        {this.getGridList()}
       </div>
-    );
-  }
+      <div className={styles.footer}>
+        {startflow.step_run.action_type === 0 ? (
+          <a
+            onClick={this.submitData}
+          >
+            <span>通过</span>
+          </a>
+        ) : ''}
+        {startflow.step_run.action_type === 0 ? (
+          <a
+            onClick={this.doDeliver}
+          >
+            <span>转交</span>
+          </a>
+        ) : ''}
+        {startflow.step.reject_type !== 0 && startflow.step_run.action_type === 0 ? (
+          <a
+            onClick={this.fillRemark}
+          >
+            <span>驳回</span>
+          </a>
+        ) : ''}
+      </div>
+    </div>
+  );
+}
 }
 export default connect(({
   approve,

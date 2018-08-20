@@ -34,7 +34,7 @@ class FormDetail extends Component {
         return (
           <React.Fragment>
             <div key={idx} className={style.file}>
-              <p className={style.title}>{item.name}</p>
+              <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
               <div className={style.array_container}>
                 <div className={style.show_img}>
                   {(formData[item.key] || []).map((its, x) => {
@@ -54,7 +54,12 @@ class FormDetail extends Component {
 
         );
       } else if (item.type === 'array') { // 数组
-        const currentValue = JSON.parse(formData[item.key]);
+        let currentValue = formData[item.key];
+        const reg = /^\[|\]$/g;
+        if (typeof (currentValue) === 'string') {
+          const str = currentValue.replace(reg, '');
+          currentValue = str.split(',');
+        }
         const options = (item.options || []).map((its) => {
           const obj = {};
           obj.label = its;
@@ -64,7 +69,7 @@ class FormDetail extends Component {
         return (
           <React.Fragment>
             <div key={idx} className={style.file}>
-              <p className={style.title}>{item.name}</p>
+              <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
               <div className={style.array_container}>
                 <CheckBoxs
                   options={options}

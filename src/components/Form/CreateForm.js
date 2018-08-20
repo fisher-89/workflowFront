@@ -270,7 +270,7 @@ class CreateForm extends Component {
           return (
             <React.Fragment key={i}>
               <div className={style.file}>
-                <p className={style.title}>{item.name}</p>
+                <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
                 <div className={style.array_container}>
                   <div className={style.show_img}>
                     {(newFormData[item.key] || []).map((its, ix) => {
@@ -306,7 +306,7 @@ class CreateForm extends Component {
           return (
             <React.Fragment key={i} >
               <div className={style.file}>
-                <p className={style.title}>{item.name}</p>
+                <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
                 <div className={style.array_container}>
                   <CheckBoxs
                     style={{ marginBottom: '10px' }}

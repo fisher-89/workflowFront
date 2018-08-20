@@ -13,7 +13,7 @@ export default {
     gridformdata: [], // 列表控件里表单的数据
     form_data: null, // 表单默认值
     steps: [],
-    preType: 'approve', // 预提交的类型，是审批的还是发起的
+    preType: '', // 预提交的类型，是审批的还是发起的
     statusData: { // 审批各状态下数据
       all: {
         data: [],
@@ -92,6 +92,11 @@ export default {
     * preSet({ payload }, { call, put }) {
       const data = yield call(c.preSet, payload);
       if (data && !data.error) {
+        if ((data.step_end === 1 && data.available_steps.length)
+               || (data.step_end === 0 && !data.available_steps.length)) {
+          Toast.info('后台配置错误');
+          return;
+        }
         yield put({
           type: 'save',
           payload: {
@@ -106,7 +111,6 @@ export default {
             value: payload.preType,
           },
         });
-
         yield put({
           type: 'resetStart', // 重置发起表单
         });
@@ -121,19 +125,11 @@ export default {
         payload.cb();
       }
     },
-    * getStartDetail({ payload }, { call, put, select }) {
+    * getStartDetail({ payload }, { call, put }) {
+      yield put({
+        type: 'resetStart',
+      });
       const data = yield call(c.startDetail, payload);
-      const {
-        // gridformdata,
-        startflow,
-      } = yield select(_ => _.start);
-      // if ((gridformdata && gridformdata.length)
-      //  || (startflow && startflow.step.id === payload)) {
-      //   return;
-      // }
-      if (JSON.stringify(startflow) === JSON.stringify(data)) {
-        return;
-      }
       if (data && !data.error) {
         yield put({
           type: 'saveFlow',
@@ -146,7 +142,7 @@ export default {
     * doWithDraw({ payload }, { call, put }) {
       const data = yield call(c.doWithdraw, payload);
       if (data && !data.error) {
-        yield put(routerRedux.push('/start_list2?type=withdraw&page=1'));
+        yield put(routerRedux.push('/start_list?type=withdraw&page=1'));
       }
     },
 

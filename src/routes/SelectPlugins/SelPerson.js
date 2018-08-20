@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { SearchList, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff, FinalStaff } from '../../common/ListView/index.js';
-import { analyzePath, userStorage, isArray } from '../../utils/util';
+import { userStorage, isArray } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -33,8 +33,10 @@ export default class SelPerson extends Component {
   };
 
   componentWillMount() {
-    const key = analyzePath(this.props.location.pathname, 1);
-    const type = analyzePath(this.props.location.pathname, 2);
+    const { match: { params } } = this.props;
+    const { key, type } = params;
+    // const key = analyzePath(this.props.location.pathname, 1);
+    // const type = analyzePath(this.props.location.pathname, 2);
     if (key === 'final') { // 终审人
       this.getFinalStaff();
     } else {

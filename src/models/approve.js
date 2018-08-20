@@ -105,18 +105,22 @@ export default {
     }, {
       call,
       put,
-      select,
+      // select,
     }) {
+      yield put({
+        type: 'resetStart',
+      });
       const data = yield call(a.getStartFlow, payload);
-      const {
-        startflow,
-      } = yield select(_ => _.approve);
+      // const {
+      //   startflow,
+      // } = yield select(_ => _.approve);
       // if (gridformdata && gridformdata.length)//填写了列表控件信息而返回的
       //   return;
       // }
-      if (JSON.stringify(startflow) === JSON.stringify(data)) {
-        return;
-      }
+      // if (JSON.stringify(startflow) === JSON.stringify(data)) {
+      //   return;
+      // }
+
       if (data && !data.error) {
         yield put({
           type: 'saveFlow',
@@ -149,7 +153,7 @@ export default {
           type: 'resetStart',
         });
         Toast.success('操作成功');
-        payload.cb();
+        payload.cb(data);
       }
     },
     // 预提交

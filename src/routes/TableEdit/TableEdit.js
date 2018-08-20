@@ -45,8 +45,8 @@ class TableEdit extends Component {
       let num = 0;
       item.map((its) => { // 取前三个字段
         const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
-        const { type } = fieldsItem;
-        if (num < 3 && type !== 'file' && type !== 'array') {
+        const { type } = fieldsItem || {};
+        if (num < 3 && type && type !== 'file' && type !== 'array') {
           newObj[`value_${num}`] = its.value;
           num += 1;
         }

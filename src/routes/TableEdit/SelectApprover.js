@@ -9,9 +9,6 @@ import {
   SearchBar,
 } from 'antd-mobile';
 import {
-  analyzePath,
-} from '../../utils/util';
-import {
   Nothing,
 } from '../../components/index';
 import nothing from '../../assets/nothing.png';
@@ -26,21 +23,28 @@ class SelectStep extends Component {
     approverList: [],
     searchList: [],
   }
+
   componentWillMount() {
-    this.props.dispatch({
-      type: 'start/refreshModal',
-    });
+    const { start: { preType }, history, dispatch } = this.props;
+    if (!preType) {
+      history.goBack(-2);
+    } else {
+      dispatch({
+        type: 'start/refreshModal',
+      });
+    }
   }
+
   componentWillReceiveProps(nextprops) {
     const {
-      location,
       start,
+      match: { params },
     } = nextprops;
-    const id = analyzePath(location.pathname, 1);
+    const { id } = params;
     const {
       preStepData,
     } = start;
-    const step = preStepData.available_steps.find(item => item.id === Number(id));
+    const [step] = (preStepData.available_steps || []).filter(item => `${item.id}` === `${id}`);
     const approverList = step ? step.approvers : [];
 
     const {

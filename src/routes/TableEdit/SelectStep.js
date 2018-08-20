@@ -16,9 +16,15 @@ class SelectStep extends Component {
     init: false,
   }
   componentWillMount() {
-    this.props.dispatch({
-      type: 'start/refreshModal',
-    });
+    const { start: { preType }, history, dispatch } = this.props;
+    console.log('preType', preType);
+    if (preType) {
+      dispatch({
+        type: 'start/refreshModal',
+      });
+    } else {
+      history.goBack(-1);
+    }
   }
 
   componentWillReceiveProps(nextprops) {
@@ -187,7 +193,7 @@ class SelectStep extends Component {
           },
           id: preStepData.flow_id,
           cb: () => {
-            history.replace('/start_list2?type=processing&page=1');
+            history.replace('/start_list?type=processing&page=1');
           },
         },
       });
@@ -200,8 +206,16 @@ class SelectStep extends Component {
             remark: v,
           },
           id: preStepData.flow_id,
-          cb: () => {
-            history.replace('/approvelist2?type=processing&page=1');
+          cb: (data) => {
+            dispatch({
+              type: 'list/updateLists',
+              payload: {
+                data,
+                start: '/approvelist_processing',
+                end: '/approvelist_approved',
+              },
+            });
+            history.goBack(-2);
           },
         },
       });

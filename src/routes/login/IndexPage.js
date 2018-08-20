@@ -15,6 +15,9 @@ class IndexPage extends React.Component {
     this.props.dispatch({
       type: 'approve/resetStart',
     });
+    this.props.dispatch({
+      type: 'list/resetModal',
+    });
   }
   render() {
     const { history } = this.props;
@@ -41,7 +44,7 @@ class IndexPage extends React.Component {
               square={false}
               data={startList}
               hasLine={false}
-              onClick={() => history.push('/start_list2?type=processing&page=1')}
+              onClick={() => history.push('/start_list?type=processing&page=1')}
             />
           </div>
         </WingBlank>

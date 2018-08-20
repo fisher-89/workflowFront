@@ -8,7 +8,7 @@ const initDatas = {
   data: [],
 };
 const initLists = {
-  '/approvelist2_all': {
+  '/approvelist_all': {
     type: 'all',
     url: {
       type: 'all',
@@ -17,7 +17,7 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/approvelist2_processing': {
+  '/approvelist_processing': {
     type: 'processing',
     url: {
       type: 'processing',
@@ -26,7 +26,7 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/approvelist2_approved': {
+  '/approvelist_approved': {
     type: 'approved',
     url: {
       type: 'approved',
@@ -35,7 +35,7 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/approvelist2_deliver': {
+  '/approvelist_deliver': {
     type: 'deliver',
     url: {
       type: 'deliver',
@@ -44,7 +44,7 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/approvelist2_rejected': {
+  '/approvelist_rejected': {
     type: 'rejected',
     url: {
       type: 'rejected',
@@ -53,7 +53,7 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/start_list2_all': {
+  '/start_list_all': {
     type: 'all',
     url: {
       type: 'all',
@@ -62,7 +62,7 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/start_list2_rejected': {
+  '/start_list_rejected': {
     type: 'rejected',
     url: {
       type: 'rejected',
@@ -71,7 +71,7 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/start_list2_withdraw': {
+  '/start_list_withdraw': {
     type: 'withdraw',
     url: {
       type: 'withdraw',
@@ -81,7 +81,7 @@ const initLists = {
     datas: { ...initDatas },
   },
 
-  '/start_list2_finished': {
+  '/start_list_finished': {
     type: 'finished',
     url: {
       type: 'finished',
@@ -90,7 +90,7 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
-  '/start_list2_processing': {
+  '/start_list_processing': {
     type: 'processing',
     url: {
       type: 'processing',
@@ -142,6 +142,27 @@ export default {
 
   reducers: {
     // ...defaultReducers,
+    updateLists(state, action) {
+      const { data, start, end } = action.payload;
+      const { lists } = state;
+      const fromA = lists[start];
+      const datasA = fromA.datas;
+      const dataA = datasA.data;
+      const fromB = lists[end];
+      const datasB = fromB.datas;
+      const dataB = datasB.data;
+      const newDataA = dataA.filter(item => `${item.id}` !== `${data.id}`);
+      dataB.push(data);
+      return {
+        ...state,
+        lists: {
+          ...lists,
+          [start]: { ...fromA, datas: { ...datasA, data: newDataA } },
+          [end]: { ...fromB, datas: { ...datasB, data: dataB } },
+        },
+
+      };
+    },
     saveList(state, action) {
       const current = action.payload;
       const { data, type, path } = current;

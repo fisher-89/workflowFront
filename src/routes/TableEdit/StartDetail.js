@@ -7,7 +7,6 @@ import {
 } from 'dva';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
-import { analyzePath } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
@@ -15,12 +14,14 @@ class StartDetail extends Component {
   componentWillMount() {
     const {
       dispatch,
+      match: { params },
     } = this.props;
-    const flowId = analyzePath(this.props.location.pathname, 1);
+    const { id } = params;
+    // const flowId = analyzePath(this.props.location.pathname, 1);
     // const step_id = analyzePath(this.props.location.pathname, 2)
     dispatch({
       type: 'start/getStartDetail',
-      payload: flowId,
+      payload: id,
     });
   }
   getGridItem = (key) => {

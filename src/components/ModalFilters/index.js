@@ -329,7 +329,7 @@ ModalFilters.defaultProps = {
     //   ],
     // },
   ],
-  sorter: 'created_at-asc',
+  sorter: 'created_at-desc',
   sorterData: [],
   filters: {
     // point_a: { min: 1, max: 10 }, point_b: { min: 1, max: 10 }

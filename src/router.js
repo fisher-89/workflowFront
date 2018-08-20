@@ -49,22 +49,15 @@ function RouterConfig({
     models: () => [import('./models/start')],
     component: () =>
       import('./routes/TableEdit/AddGridList'),
-  }, {
-    path: '/approvelist',
-    models: () => [
-      import('./models/approve'),
-    ],
-    component: () =>
-      import('./routes/Approved/ApproveList'),
   },
   {
-    path: '/approvelist2',
+    path: '/approvelist',
     models: () => [
       import('./models/approve'),
       import('./models/list'),
     ],
     component: () =>
-      import('./routes/Approved/ApproveList2'),
+      import('./routes/Approved/ApproveList'),
   },
   {
     path: '/approve/:id',
@@ -99,7 +92,10 @@ function RouterConfig({
       import('./routes/TableEdit/SelectStep'),
   }, {
     path: '/select_approver/:id',
-    models: () => [],
+    models: () => [
+      import('./models/start'),
+
+    ],
     component: () =>
       import('./routes/TableEdit/SelectApprover'),
   },
@@ -107,18 +103,10 @@ function RouterConfig({
     path: '/start_list',
     models: () => [
       import('./models/start'),
-    ],
-    component: () =>
-      import('./routes/TableEdit/StartList'),
-  },
-  {
-    path: '/start_list2',
-    models: () => [
-      import('./models/start'),
       import('./models/list'),
     ],
     component: () =>
-      import('./routes/TableEdit/StartList2'),
+      import('./routes/TableEdit/StartList'),
   },
   {
     path: '/start_detail/:id',

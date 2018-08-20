@@ -38,7 +38,7 @@ export const tabbar = [{
 }, {
   title: '审批',
   key: 'approval',
-  to: '/approvelist2?type=processing&page=1',
+  to: '/approvelist?type=processing&page=1',
   icon: appro_,
   selIcon: appro,
 }, {
