@@ -14,6 +14,8 @@ import {
 import {
   getGridFilter,
 } from '../../utils/convert';
+import spin from '../../components/General/Loader';
+
 import styles from '../common.less';
 
 class AddGridList extends Component {
@@ -114,7 +116,7 @@ class AddGridList extends Component {
   render() {
     const {
       start,
-      dispatch,
+      dispatch, loading,
     } = this.props;
     const {
       key,
@@ -124,6 +126,7 @@ class AddGridList extends Component {
       startflow,
       gridformdata,
     } = start;
+    spin(loading);
     const newFormData = start.form_data;
     const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
       [] : gridformdata.find(item => item.key === key).fields[Number(index)];
@@ -171,5 +174,5 @@ export default connect(({
   loading,
 }) => ({
   start,
-  loading,
+  loading: loading.global,
 }))(AddGridList);

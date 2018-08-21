@@ -87,10 +87,10 @@ class FormDetail extends Component {
         <React.Fragment>
           <List.Item
             key={idx}
-            extra={formData && formData[item.key] ? formData[item.key] : '暂无'}
+            extra={<span style={{ color: '#ccc' }}>{formData && formData[item.key] ? formData[item.key] : '暂无'}</span>}
             size="small"
           >
-            <span style={{ color: '#ccc' }}>{item.name}</span>
+            <span>{item.name}</span>
           </List.Item>
         </React.Fragment>
       );

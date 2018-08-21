@@ -26,13 +26,21 @@
   flex-grow: 1;
   flex-direction: column;
 }
-
+input::-webkit-input-placeholder{
+  color:#ddd!important;
+}
 :global {
   .container {
     position: absolute;
     top: 0;
     bottom: 0;
     width: 100%;
+  }
+  .am-tabs-default-bar-top .am-tabs-default-bar-tab::after {
+    content: none!important;
+  }
+  .am-textarea-control textarea{
+    color:@extra-color!important;
   }
   .am-tabs-tab-bar-wrap {
     height: 88/75rem;
@@ -74,10 +82,12 @@
   }
   .am-textarea-label.am-textarea-label-5 {
     width:96px!important;
+    color:@title-color !important;
   }
   .am-list-item .am-input-label.am-input-label-5{
     width:96px!important;
     text-overflow:ellipsis;
+    color:@title-color !important;
   }
   .am-list-line {
     border-bottom-color: @base-bg-color  !important;
@@ -98,7 +108,8 @@
     flex-shrink: 0 !important;
     flex-grow: 0 !important;
     flex-basis: auto !important;
-    margin-right: 5px !important
+    margin-right: 5px !important;
+    color:@title-color !important;
   }
   .am-list-extra {
     flex-grow: 1 !important;

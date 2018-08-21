@@ -22,7 +22,7 @@ const tabs = {
         name: 'flow_type_id',
         type: 'checkBox',
         multiple: true,
-        title: '审核环节',
+        title: '流程类型',
         options: flowTypeOptions,
       },
     ],
@@ -38,7 +38,7 @@ const tabs = {
       {
         name: 'flow_type_id',
         type: 'checkBox',
-        title: '审核环节',
+        title: '流程类型',
         multiple: true,
         options: flowTypeOptions,
       },
@@ -55,7 +55,7 @@ const tabs = {
       {
         name: 'flow_type_id',
         type: 'checkBox',
-        title: '审核环节',
+        title: '流程类型',
         multiple: true,
         options: flowTypeOptions,
       },
@@ -72,7 +72,7 @@ const tabs = {
       {
         name: 'flow_type_id',
         type: 'checkBox',
-        title: '审核环节',
+        title: '流程类型',
         multiple: true,
         options: flowTypeOptions,
       },

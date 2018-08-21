@@ -16,7 +16,7 @@
 
 .array_container {
   flex-grow: 1;
-  padding:10px 10px 5px 0;
+  padding:10px 10px 0px 0;
 }
 
 .show_img {
@@ -29,7 +29,7 @@
     height: 120/75rem;
     flex-grow: 0;
     flex-shrink: 0;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 }
 
@@ -40,14 +40,14 @@
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding-left: 15px;
   min-height: @common-height;
-
   .title {
     flex-grow: 0;
     flex-shrink: 0; // padding-left: 15px;
+    color:@title-color;    
     .common_title();
-    &.readonly {
-      color:@readonly-title-color;
-    }
+    // &.readonly {
+    //   color:@readonly-title-color;
+    // }
   }
 }
 

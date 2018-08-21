@@ -274,3 +274,12 @@ export function formatDate(type) {
     default: return 'YYYY-MM-DD'
   }
 }
+
+export function isToday(str) {
+  let iscurrentDay = false;
+  if (new Date(str).toDateString() === new Date().toDateString()) {
+    // 今天
+    iscurrentDay = true;
+  }
+  return iscurrentDay;
+}

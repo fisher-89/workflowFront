@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import ListView from '../../components/ListView';
 import { Label } from '../../components/General';
 import { getStartState } from '../../utils/convert.js';
+import { isToday } from '../../utils/util.js';
 import style from './index.less';
 
 @ListView
@@ -12,6 +14,7 @@ export default class Start extends Component {
       timeKey,
       onHandleClick,
     } = this.props;
+    const time = isToday(value[timeKey]) ? moment(value[timeKey]).format('HH:MM') : value[timeKey];
     return (
       <div
         className={style.item}
@@ -27,8 +30,7 @@ export default class Start extends Component {
           />
           <span className={style.title_name}>{value.name}</span>
         </div>
-        <div className={style.desc}>{value.name}</div>
-        <div className={style.desc}>{value[timeKey]}</div>
+        <div className={style.desc}>{time}</div>
       </div>
     );
   }
