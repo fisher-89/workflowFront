@@ -53,16 +53,14 @@ class ApproveDetail extends Component {
         value_0: `${gridItem.name}${i + 1}`,
       };
       let num = 0;
-      item.map((its) => { // 取前三个字段
+      item.forEach((its) => { // 取前三个字段
         const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
         const { type } = fieldsItem || {};
         if (num < 3 && type && type !== 'file' && type !== 'array') {
           newObj[`value_${num}`] = its.value;
           num += 1;
         }
-        return true;
       });
-
       return newObj;
     });
     return dataList.map((item, i) => {
