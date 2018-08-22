@@ -84,8 +84,6 @@ class IndexPage extends React.Component {
   }
 }
 
-IndexPage.propTypes = {};
-
 export default connect(({ common }) => ({
   common,
 }))(IndexPage);

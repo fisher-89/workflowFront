@@ -302,11 +302,11 @@ render() {
     },
   } = startflow;
   // 只需要展示的（不包括可编辑的）
-  const showForm = form.filter(item => !startflow.step.hidden_fields.includes(item.key));
+  const showForm = form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
 
   // 可编辑的
   const editableForm = form.filter((item) => {
-    return startflow.step.editable_fields.includes(item.key);
+    return startflow.step.editable_fields.indexOf(item.key) !== -1;
   });
 
   return (

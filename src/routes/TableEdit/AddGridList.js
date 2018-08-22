@@ -139,8 +139,10 @@ class AddGridList extends Component {
     let editableForm = [];
     if (startflow && key) {
       const { fields: { grid } } = startflow;
-      showGrid = getGridFilter(grid, 'hidden_fields', startflow.step, 1).find(item => item.key === key).newFields;
-      editableForm = getGridFilter(grid, 'editable_fields', startflow.step).find(item => item.key === key).newFields;
+      const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
+      showGrid = showGridObj.newFields;
+      const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === key);
+      editableForm = editableFormObj.newFields;
     }
     return (
       <div className={styles.con}>

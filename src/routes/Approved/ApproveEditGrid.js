@@ -54,22 +54,14 @@ class AddGridList extends Component {
 
   // 将数据保存到modal的gridformdata中
   saveData = (formdata) => {
-    const result = formdata.find(item => item.msg);
+    const [result] = formdata.filter(item => item.msg);
     if (result) {
       Toast.fail(result.msg);
       return;
     }
-    const {
-      key,
-      index,
-    } = this.state;
-    const {
-      dispatch,
-      approve,
-    } = this.props;
-    const {
-      gridformdata,
-    } = approve;
+    const { key, index } = this.state;
+    const { dispatch, approve } = this.props;
+    const { gridformdata } = approve;
     const newGridformdata = [...gridformdata];
     const obj = {};
     obj.key = key;
@@ -80,16 +72,21 @@ class AddGridList extends Component {
     if (gridformdata && !gridformdata.length) {
       newGridformdata.push(obj);
     } else if (gridformdata && gridformdata.length) { // 如果gridformdata不为空
-      let keyIdx = '';
-      const keyItem = newGridformdata.find((item, i) => {
+      let keyIdx = -1;
+      // const keyItem = newGridformdata.find((item, i) => {
+      //   if (item.key === key) {
+      //     keyIdx = i;
+      //     return item;
+      //   }
+      //   return null;
+      // });
+      newGridformdata.forEach((item, i) => {
         if (item.key === key) {
           keyIdx = i;
-          return item;
         }
-        return null;
       });
       if (index === '-1') { // 新增
-        if (!keyItem) { // 如果没有对应的key
+        if (keyItem === -1) { // 如果没有对应的key
           newGridformdata.push(obj);
         } else { // 如果有对应的key
           newGridformdata[keyIdx].fields.push(formdata);
@@ -126,8 +123,16 @@ class AddGridList extends Component {
       gridformdata,
     } = approve;
     const newFormData = approve.form_data;
-    const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
-      [] : gridformdata.find(item => item.key === key).fields[Number(index)];
+    let formdata = [];
+    // const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
+    //   [] : gridformdata.find(item => item.key === key).fields[Number(index)];
+
+    if ((gridformdata && !gridformdata.length) || !key || index === '-1') {
+      formdata = [];
+    } else {
+      const [current] = gridformdata.filter(item => item.key === key);
+      formdata = current.fields[Number(index)];
+    }
     if (!startflow) {
       return <p style={{ textAlign: 'center' }}>暂无信息</p>;
     }
@@ -139,8 +144,10 @@ class AddGridList extends Component {
           grid,
         },
       } = startflow;
-      showGrid = getGridFilter(grid, 'hidden_fields', startflow.step, 1).find(item => item.key === key).newFields;
-      editableForm = getGridFilter(grid, 'editable_fields', startflow.step).find(item => item.key === key).newFields;
+      const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
+      const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === key);
+      showGrid = showGridObj.newFields;
+      editableForm = editableFormObj.newFields;
     }
     return (
       <div className={styles.con}>

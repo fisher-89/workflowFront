@@ -74,7 +74,8 @@ class StartGridDetail extends Component {
           grid,
         },
       } = startflow;
-      showGrid = getGridFilter(grid, 'hidden_fields', startflow.step, 1).find(item => item.key === key).newFields;
+      const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
+      showGrid = showGridObj.newFields;
     }
     return (
       <div className={styles.con}>
