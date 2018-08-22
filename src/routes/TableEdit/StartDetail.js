@@ -1,10 +1,6 @@
 // 审批的表单
-import React, {
-  Component,
-} from 'react';
-import {
-  connect,
-} from 'dva';
+import React, { Component } from 'react';
+import { connect } from 'dva';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
 import style from './index.less';
@@ -41,6 +37,7 @@ class StartDetail extends Component {
           num += 1;
         }
       });
+      return newObj;
     });
 
     return dataList.map((item, i) => {
