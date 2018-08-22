@@ -5,7 +5,6 @@ import CheckBoxs from './check/CheckBox.js';
 import CreateForm from './Form/CreateForm';
 import FormDetail from './Form/FormDetail';
 import Nothing from './Nothing/Nothing';
-import ListFilter from './Filter1/ListFilter';
 import ListSort from './Filter/ListSort';
 import SearchList from './Search/SeachList';
 import PersonIcon from './PeronIcon/PersonIcon';
@@ -18,7 +17,6 @@ export {
   FormDetail,
   Nothing,
   ListView,
-  ListFilter,
   ListSort,
   SearchList,
   PersonIcon,

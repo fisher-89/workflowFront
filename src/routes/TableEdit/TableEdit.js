@@ -1,8 +1,6 @@
 // 发起页面
 import React, { Component } from 'react';
-import {
-  Button, WhiteSpace,
-} from 'antd-mobile';
+import { Button, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
@@ -26,15 +24,8 @@ class TableEdit extends Component {
 
   // 列表控件内部fields
   getGridItem = (key) => {
-    const {
-      start: { gridformdata, startflow },
-    } = this.props;
-    const {
-      fields: {
-        grid,
-      },
-    } = startflow;
-
+    const { start: { gridformdata, startflow } } = this.props;
+    const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
     const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
@@ -52,7 +43,6 @@ class TableEdit extends Component {
         }
         return true;
       });
-
       return newObj;
     });
     return dataList.map((item, i) => {
@@ -71,20 +61,11 @@ class TableEdit extends Component {
     });
   }
 
-
   // 遍历列表控件
   getGridList = () => {
-    const {
-      start,
-    } = this.props;
-    const {
-      startflow,
-    } = start;
-    const {
-      fields: {
-        grid,
-      },
-    } = startflow;
+    const { start } = this.props;
+    const { startflow } = start;
+    const { fields: { grid } } = startflow;
     // const editable_grid = getGridFilter(grid, 'editable_fields', startflow.step)
     return grid.map((item) => {
       return (
@@ -103,29 +84,25 @@ class TableEdit extends Component {
   }
     // 去编辑列表控件里每条数据
     toEditGrid = (url) => {
-      const {
-        history,
-      } = this.props;
-      this.childComp.saveData();
+      const { history } = this.props;
+      // this.childComp.saveData();
+      this.saveData();
       history.push(url);
     }
   // 给列表控件追加item
   addGridList = (key) => {
-    const {
-      history,
-      dispatch,
-    } = this.props;
-    this.childComp.saveData();
+    const { history, dispatch } = this.props;
+    // this.childComp.saveData();
+    this.saveData();
     dispatch({
       type: 'start/refreshModal',
     });
     history.push(`/addgridlist/${key}/-1`);
   };
   // 每次跳页面保存到modal
-  saveData = (formdata) => {
-    const {
-      dispatch,
-    } = this.props;
+  saveData = () => {
+    const { formdata } = this.childComp.state;
+    const { dispatch } = this.props;
     dispatch({
       type: 'start/save',
       payload: {
@@ -138,81 +115,63 @@ class TableEdit extends Component {
   // 提交数据
   submitData = (e) => {
     e.preventDefault();
-    const {
-      flowId,
-    } = this.state;
-    const {
-      dispatch,
-      history,
-    } = this.props;
-    this.childComp.saveData();
-    setTimeout(() => {
-      const {
-        start,
-
-      } = this.props;
-      const {
-        // formdata,
-        gridformdata,
-        formdata,
-      } = start;
-      // 整理formdata数据
-      const formObj = {};
-      formdata.map((item) => {
-        formObj[item.key] = item.value;
-        return item;
-      });
-      // 整理列表控件数据
-      const formgridObj = {};
-      gridformdata.map((item) => {
-        const { fields } = item;
-        const forgridArr = fields.map((its) => {
-          const obj = {};
-          its.map((it) => {
-            obj[it.key] = it.value;
-            return true;
-          });
-          return obj;
+    const { flowId } = this.state;
+    const { dispatch, history } = this.props;
+    // console.log(' this.childComp', this.childComp.state.formdata);
+    // this.childComp.saveData();
+    // setTimeout(() => {
+    const { start: { gridformdata } } = this.props;
+    const { formdata } = this.childComp.state;
+    // 整理formdata数据
+    const formObj = {};
+    formdata.map((item) => {
+      formObj[item.key] = item.value;
+      return item;
+    });
+    // 整理列表控件数据
+    const formgridObj = {};
+    gridformdata.map((item) => {
+      const { fields } = item;
+      const forgridArr = fields.map((its) => {
+        const obj = {};
+        its.map((it) => {
+          obj[it.key] = it.value;
+          return true;
         });
-        formgridObj[item.key] = [...forgridArr];
-        return item;
+        return obj;
       });
-      const formData = {
-        ...formObj,
-        ...formgridObj,
-      };
+      formgridObj[item.key] = [...forgridArr];
+      return item;
+    });
+    const formData = {
+      ...formObj,
+      ...formgridObj,
+    };
 
-      dispatch({
-        type: 'start/preSet',
-        payload: {
-          data: {
-            form_data: formData,
-          },
-          id: flowId,
-          preType: 'start',
-          cb: () => {
-            history.push('/select_step');
-          },
+    dispatch({
+      type: 'start/preSet',
+      payload: {
+        data: {
+          form_data: formData,
         },
-      });
-    }, 500);
+        id: flowId,
+        preType: 'start',
+        cb: () => {
+          history.push('/select_step');
+        },
+      },
+    });
+    // }
+    // , 500);
   };
 
   render() {
     const { start, dispatch, loading } = this.props;
-    const {
-      startflow,
-      formdata,
-    } = start;
+    const { startflow, formdata } = start;
     const formData = start.form_data;
     spin(loading);
-
     if (!startflow) return null;
-    const {
-      fields: {
-        form,
-      },
-    } = startflow;
+    const { fields: { form } } = startflow;
     // 可编辑的form
     const showForm = form.filter(item => !startflow.step.hidden_fields.includes(item.key));
     const editableForm = form.filter(item => startflow.step.editable_fields.includes(item.key));
@@ -222,7 +181,7 @@ class TableEdit extends Component {
           <CreateForm
             startflow={startflow}
             formdata={formdata}
-            evtClick={this.saveData}
+            // evtClick={this.saveData}
             dispatch={dispatch}
             show_form={showForm}
             editable_form={editableForm}

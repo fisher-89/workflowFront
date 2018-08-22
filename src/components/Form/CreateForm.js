@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  List, InputItem, Toast, DatePicker, ImagePicker, Modal, Grid,
+  List, InputItem, Toast, DatePicker, ImagePicker, Modal,
   Carousel, TextareaItem, Picker,
 } from 'antd-mobile';
 import { connect } from 'dva';
@@ -15,19 +15,11 @@ import { formatDate } from '../../utils/util';
 import style from './index.less';
 import CheckBoxs from '../../components/ModalFilters/CheckBox';
 
-// const dateTypeCol = [
-//   'time', 'datetime', 'date',
-// ];
 class CreateForm extends Component {
   state = {
     init: false,
-    refresh: [], // 用于更新state
-    tmpItem: null, // 弹出modal临时保存的item
-    choseItem: [],
-    visible: false,
     preview: false,
     reviewImg: [],
-    files: [],
     editableForm: [], // 可编辑表单
     showForm: [], // 显示的表单
     // required_form: [], // 必填
@@ -40,12 +32,7 @@ class CreateForm extends Component {
     this.props.onRef(this);
   }
   componentWillReceiveProps(nextprops) {
-    const {
-      formdata,
-      // show_form,
-      // editable_form,
-      // form_data,
-    } = nextprops;
+    const { formdata } = nextprops;
     const showForm = nextprops.show_form;
     const editableForm = nextprops.editable_form;
     const newFormData = nextprops.form_data;
@@ -103,6 +90,7 @@ class CreateForm extends Component {
       });
     }
   }
+
   onHandleToFixed = (value, floatNumber) => {
     const a = value;
     const b = Number(a);
@@ -115,16 +103,8 @@ class CreateForm extends Component {
   }
 
   onChange = (v, item) => {
-    const {
-      formdata,
-    } = this.state;
-    const { key, max, min } = item;
-    const obj = {
-      key,
-      value: v,
-      hasError: false,
-      msg: '',
-    };
+    const { max, min } = item;
+    const obj = this.initCurrentObj(v, item);
     // 验证正则
     if (item.type === 'int') {
       // let newValue = v;
@@ -147,47 +127,12 @@ class CreateForm extends Component {
         obj.value = newValue;
       }
     }
-    const data = formdata.map((its) => {
-      if (its.key === item.key) {
-        return obj;
-      } else {
-        return its;
-      }
-    });
-
-    this.setState({
-      formdata: data,
-      [key]: {
-        ...obj,
-      },
-    });
+    this.bindFormDataChange(obj, item);
   }
 
   onhandleSingleChange = (v, item) => {
-    const {
-      formdata,
-    } = this.state;
-    const { key } = item;
-    const obj = {
-      key,
-      value: v,
-      hasError: false,
-      msg: '',
-    };
-    const data = formdata.map((its) => {
-      if (its.key === item.key) {
-        return obj;
-      } else {
-        return its;
-      }
-    });
-
-    this.setState({
-      formdata: data,
-      [key]: {
-        ...obj,
-      },
-    });
+    const obj = this.initCurrentObj(v, item);
+    this.bindFormDataChange(obj, item);
   }
 
   onErrorClick = (item) => {
@@ -199,37 +144,9 @@ class CreateForm extends Component {
       Toast.info(itemkey.msg);
     }
   }
-  getChoseItem = (el) => { // 单选选择之后
-    const {
-      tmpItem,
-      formdata,
-    } = this.state;
-    const { key } = tmpItem;
-    const obj = {
-      key,
-      value: el.text,
-      hasError: false,
-      msg: '',
-    };
-    const data = formdata.map((its) => {
-      if (its.key === tmpItem.key) {
-        return obj;
-      } else {
-        return its;
-      }
-    });
-    this.setState({
-      visible: false,
-      formdata: data,
-      [key]: {
-        ...obj,
-      },
-    });
-  }
+
   getGridList = () => {
-    const {
-      showGrid,
-    } = this.state;
+    const { showGrid } = this.state;
     showGrid.map((item) => {
       return (
         <List
@@ -318,17 +235,6 @@ class CreateForm extends Component {
               </div>
             </React.Fragment>
           );
-          // } else if (item.options && item.options.length) { // 单选但是是id，需找出id对应的值
-          //   return (
-          //     <List.Item
-          //       key={i}
-          //       extra={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
-          //       size="small"
-          //     >
-          //       {item.name}{newFormData[item.key]}
-          //     </List.Item>
-          //   );
-          // }
         }
         return (
           <React.Fragment key={i}>
@@ -385,7 +291,6 @@ class CreateForm extends Component {
                   data={data}
                   cols={1}
                   value={[itemkey.value]}
-                  // onChange={e => this.onChange(e[0], item)}
                   onChange={e => this.onhandleSingleChange(e[0], item)}
                 >
                   <List.Item arrow="horizontal" onClick={this.onClick}>{item.name}</List.Item>
@@ -472,18 +377,21 @@ class CreateForm extends Component {
       return item;
     });
   }
-  timeChange = (v, item) => { // 时间改变事件
-    const formatStr = item.type === 'date' ? 'YYYY-MM-DD' : item.type === 'time' ? 'HH:mm:ss' : item.type === 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : '';
-    const {
-      formdata,
-    } = this.state;
+
+  initCurrentObj = (v, item) => {
     const { key } = item;
     const obj = {
       key,
-      value: moment(v).format(formatStr),
+      value: v,
       hasError: false,
       msg: '',
     };
+    return { ...obj };
+  }
+
+  bindFormDataChange = (obj, item) => {
+    const { formdata } = this.state;
+    const { key } = item;
     const data = formdata.map((its) => {
       if (its.key === item.key) {
         return obj;
@@ -491,7 +399,6 @@ class CreateForm extends Component {
         return its;
       }
     });
-
     this.setState({
       formdata: data,
       [key]: {
@@ -499,69 +406,22 @@ class CreateForm extends Component {
       },
     });
   }
-  choseItem = (item) => { // 弹出单选
-    const option = item.options;
-    const choseItem = option.map((its) => {
-      const obj = {
-        ...item,
-        text: its,
-        icon: 'https://gw.alipayobjects.com/zos/rmsportal/nywPmnTAvTmLusPxHPSu.png',
-      };
-      return obj;
-    });
-    this.setState({
-      visible: true,
-      choseItem,
-      tmpItem: item,
-    });
-  }
 
-  saveData = () => {
-    const {
-      evtClick,
-    } = this.props;
-    const {
-      formdata,
-    } = this.state;
-    evtClick(formdata);
-  }
-  submitTable = () => {
-
+  timeChange = (v, item) => { // 时间改变事件
+    const formatStr = formatDate(item.type);
+    const obj = this.initCurrentObj(moment(v).format(formatStr), item);
+    this.bindFormDataChange(obj, item);
   }
 
   // 上传图片
   filesOnchange = (files, type, index, item) => {
-    const {
-      formdata,
-    } = this.state;
-    const { key } = item;
     const newFiles = files.map((its) => {
       return rebackImg(its.url, `${UPLOAD_PATH}`, '_thumb');
     });
-    const obj = {
-      key,
-      hasError: false,
-      msg: '',
-      value: [...newFiles],
-    };
-    const {
-      dispatch,
-    } = this.props;
+    const obj = this.initCurrentObj(newFiles, item);
+    const { dispatch } = this.props;
     if (type === 'remove') {
-      const data = formdata.map((its) => {
-        if (its.key === item.key) {
-          return obj;
-        } else {
-          return its;
-        }
-      });
-      this.setState({
-        files: [...newFiles],
-        formdata: [...data],
-        [key]: {
-          ...obj,
-        },
-      });
+      this.bindFormDataChange(obj, item);
     }
     if (type === 'add') {
       // lrz(files[files.length - 1].url, { width: 500 })
@@ -576,59 +436,13 @@ class CreateForm extends Component {
           cb: (f) => {
             newFiles[newFiles.length - 1] = f.path;
             obj.value = [...newFiles];
-            const data = formdata.map((its) => {
-              if (its.key === item.key) {
-                return obj;
-              } else {
-                return its;
-              }
-            });
-            this.setState({
-              files: [...newFiles],
-              formdata: [...data],
-              [key]: {
-                ...obj,
-              },
-            });
+            this.bindFormDataChange(obj, item);
           },
         },
       });
     }
   }
-  // }
-  checkStatus = (i, value, key) => {
-    const keyItem = this.state[key].value;
-    const {
-      formdata,
-    } = this.state;
-    let newStatus = [];
-    if (keyItem.includes(value)) {
-      newStatus = keyItem.filter(item => value !== item);
-    } else { // 没被选中,剔除
-      newStatus = [...keyItem];
-      newStatus.push(value);
-    }
-    const obj = {
-      key,
-      value: newStatus,
-      hasError: false,
-      msg: '',
-    };
-    const data = formdata.map((its) => {
-      if (its.key === key) {
-        return obj;
-      } else {
-        return its;
-      }
-    });
-    this.setState({
-      formdata: data,
-      [key]: {
-        ...obj,
-      },
-      refresh: [...newStatus],
-    });
-  }
+
   reviewImg = (i, img) => {
     const imgs = img.map((item) => {
       return reAgainImg(item.url, '_thumb');
@@ -639,6 +453,7 @@ class CreateForm extends Component {
       preview: true,
     });
   }
+
   reviewReadImg = (i, img) => {
     const imgs = [...img];
     const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
@@ -657,35 +472,16 @@ class CreateForm extends Component {
       });
     }
   }
+
   render() {
-    const {
-      startflow,
-    } = this.props;
-    const {
-      choseItem,
-      visible,
-      preview,
-      reviewImg,
-    } = this.state;
+    const { startflow } = this.props;
+    const { preview, reviewImg } = this.state;
     if (!startflow) return null;
     return (
       <div className={style.form} style={{ background: '#fff' }}>
         <List>
           {this.getFormList()}
         </List>
-        <Modal
-          popup
-          visible={visible}
-          onClose={() => this.setState({ visible: false })}
-          animationType="slide-up"
-        >
-          <Grid
-            data={choseItem}
-            hasLine={false}
-            onClick={this.getChoseItem}
-          />
-        </Modal>
-
         <Modal
           visible={preview}
           popup

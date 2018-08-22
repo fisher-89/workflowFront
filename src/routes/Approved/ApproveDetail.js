@@ -140,13 +140,15 @@ class ApproveDetail extends Component {
     } = approve;
     let url = `/approve_grid/${key}/${i}`;
     if (startflow.step_run.action_type === 0) {
-      this.childComp.saveData();
+      // this.childComp.saveData();
+      this.saveData();
       url = `/approve_grid_edit/${key}/${i}`;
     }
     history.push(url);
   }
   // 保存到modal
-  saveData = (formdata) => {
+  saveData = () => {
+    const { formdata } = this.childComp.state;
     const {
       dispatch,
     } = this.props;
@@ -194,75 +196,63 @@ class ApproveDetail extends Component {
 // 提交数据
 submitData = (e) => {
   e.preventDefault();
-  const {
-    flowId,
-  } = this.state;
-  const {
-    dispatch,
-    history,
-  } = this.props;
-  this.childComp.saveData();
-  setTimeout(() => {
-    const {
-      approve,
-    } = this.props;
-    const {
-      formdata,
-      gridformdata,
-      startflow,
-    } = approve;
-    // 整理formdata数据
-    const flowRun = startflow.flow_run;
-    const formObj = {};
-    formdata.map((item) => {
-      formObj[item.key] = item.value;
-      return item;
-    });
-    // 整理列表控件数据
-    const formgridObj = {};
-    gridformdata.map((item) => {
-      const {
-        fields,
-      } = item;
-      const forgridArr = fields.map((its) => {
-        const obj = {};
-        its.map((it) => {
-          obj[it.key] = it.value;
-          return true;
-        });
-        return obj;
+  const { flowId } = this.state;
+  const { dispatch, history } = this.props;
+  // this.childComp.saveData();
+  // this.saveData();
+  const { formdata } = this.childComp.state;
+  // setTimeout(() => {
+  const { approve: { gridformdata, startflow } } = this.props;
+  // 整理formdata数据
+  const flowRun = startflow.flow_run;
+  const formObj = {};
+  formdata.map((item) => {
+    formObj[item.key] = item.value;
+    return item;
+  });
+  // 整理列表控件数据
+  const formgridObj = {};
+  gridformdata.map((item) => {
+    const { fields } = item;
+    const forgridArr = fields.map((its) => {
+      const obj = {};
+      its.map((it) => {
+        obj[it.key] = it.value;
+        return true;
       });
-      formgridObj[item.key] = [...forgridArr];
-      return item;
+      return obj;
     });
-    const newformData = {
-      ...formObj,
-      ...formgridObj,
-    };
-    dispatch({
-      type: 'start/preSet',
-      payload: {
-        data: {
-          form_data: newformData,
-          step_run_id: flowId,
-        },
-        id: flowRun.flow_id,
-        preType: 'approve',
-        cb: (data) => {
-          if (data.step_end === 1) { // 不选步骤
-            prompt('填写备注', '', [{
-              text: '取消',
-            }, {
-              text: '确定',
-              onPress: v => this.submitStep(v, data),
-            }], 'default', null, ['请输入备注']);
-          } else {
-            history.push('/select_step');
-          }
-        },
+    formgridObj[item.key] = [...forgridArr];
+    return item;
+  });
+  const newformData = {
+    ...formObj,
+    ...formgridObj,
+  };
+  dispatch({
+    type: 'start/preSet',
+    payload: {
+      data: {
+        form_data: newformData,
+        step_run_id: flowId,
       },
-    });
-  }, 500);
+      id: flowRun.flow_id,
+      preType: 'approve',
+      cb: (data) => {
+        if (data.step_end === 1) { // 不选步骤
+          prompt('填写备注', '', [{
+            text: '取消',
+          }, {
+            text: '确定',
+            onPress: v => this.submitStep(v, data),
+          }], 'default', null, ['请输入备注']);
+        } else {
+          history.push('/select_step');
+        }
+      },
+    },
+  });
+  // }, 500);
 }
 
 fillRemark = () => {

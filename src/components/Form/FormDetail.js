@@ -15,17 +15,9 @@ class FormDetail extends Component {
     reviewImg: [],
     showGrid: [], // 显示的列表控件
   }
-  componentDidMount() {
-    // this.props.onRef(this)
-  }
-
 
   // 生成表单
   getFormList = () => {
-    // const {
-    //   show_form,
-    //   form_data,
-    // } = this.props;
     const showForm = this.props.show_form;
     const formData = this.props.form_data;
     return showForm.map((item, i) => {
@@ -112,6 +104,7 @@ class FormDetail extends Component {
       );
     });
   }
+
   reviewImg = (i, img) => {
     const imgs = (img || []).map((item) => {
       return `${UPLOAD_PATH}${item}`;
@@ -122,6 +115,7 @@ class FormDetail extends Component {
       preview: true,
     });
   }
+
   hideModal = (e) => {
     e.preventDefault();
     const attr = e.target.getAttribute('data-preview');
@@ -131,6 +125,7 @@ class FormDetail extends Component {
       });
     }
   }
+
   render() {
     const {
       preview,
