@@ -4,9 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { startState } from '../../utils/convert';
 import ListControl from '../../components/ListView/ListControl';
-import {
-  userStorage, dealFlowTypeOptions, getUrlParams,
-} from '../../utils/util';
+import { userStorage, dealFlowTypeOptions, getUrlParams } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 import './reset.less';

@@ -12,10 +12,7 @@ import styles from '../common.less';
 
 class StartDetail extends Component {
   componentWillMount() {
-    const {
-      dispatch,
-      match: { params },
-    } = this.props;
+    const { dispatch, match: { params } } = this.props;
     const { id } = params;
     // const flowId = analyzePath(this.props.location.pathname, 1);
     // const step_id = analyzePath(this.props.location.pathname, 2)
@@ -25,14 +22,8 @@ class StartDetail extends Component {
     });
   }
   getGridItem = (key) => {
-    const {
-      start: { gridformdata, startflow },
-    } = this.props;
-    const {
-      fields: {
-        grid,
-      },
-    } = startflow;
+    const { start: { gridformdata, startflow } } = this.props;
+    const { fields: { grid } } = startflow;
 
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
     const gridFields = gridItem.fields;
@@ -42,17 +33,14 @@ class StartDetail extends Component {
         value_0: `${gridItem.name}${i + 1}`,
       };
       let num = 0;
-      item.map((its) => { // 取前三个字段
+      item.forEach((its) => { // 取前三个字段
         const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
         const { type } = fieldsItem || {};
         if (num < 3 && type && type !== 'file' && type !== 'array') {
           newObj[`value_${num}`] = its.value;
           num += 1;
         }
-        return true;
       });
-
-      return newObj;
     });
 
     return dataList.map((item, i) => {
@@ -72,17 +60,9 @@ class StartDetail extends Component {
   }
 
   getGridList = () => {
-    const {
-      start,
-    } = this.props;
-    const {
-      startflow,
-    } = start;
-    const {
-      fields: {
-        grid,
-      },
-    } = startflow;
+    const { start } = this.props;
+    const { startflow } = start;
+    const { fields: { grid } } = startflow;
     return grid.map((item, i) => {
       const idx = i;
       return (
@@ -96,36 +76,18 @@ class StartDetail extends Component {
       );
     });
   }
+
   toEditGrid = (url) => {
-    const {
-      history,
-    } = this.props;
-    // this.childComp.saveData();
+    const { history } = this.props;
     history.push(url);
   }
+
   addGridList = (key) => {
-    const {
-      history,
-      dispatch,
-    } = this.props;
-    this.childComp.saveData();
+    const { history, dispatch } = this.props;
     dispatch({
       type: 'start/refreshModal',
     });
     history.push(`/addgridlist/${key}/-1`);
-  }
-  // 保存到modal
-  saveData = (formdata) => {
-    const {
-      dispatch,
-    } = this.props;
-    dispatch({
-      type: 'start/save',
-      payload: {
-        key: 'formdata',
-        value: formdata,
-      },
-    });
   }
 
   doWithDraw = () => {
@@ -139,20 +101,12 @@ class StartDetail extends Component {
     });
   }
   render() {
-    const {
-      start, loading,
-    } = this.props;
-    const {
-      startflow,
-    } = start;
+    const { start, loading } = this.props;
+    const { startflow } = start;
     const formData = start.form_data;
     spin(loading);
     if (!startflow) return null;
-    const {
-      fields: {
-        form,
-      },
-    } = startflow;
+    const { fields: { form } } = startflow;
     const flowRun = startflow.flow_run;
     // 只需要展示的（不包括可编辑的）
     const showForm = form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
@@ -162,7 +116,6 @@ class StartDetail extends Component {
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>
-
           <FormDetail
             form_data={formData}
             show_form={showForm}

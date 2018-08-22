@@ -1,19 +1,8 @@
-import React, {
-  Component,
-} from 'react';
-import {
-  connect,
-} from 'dva';
-import {
-  List,
-  SearchBar,
-} from 'antd-mobile';
-
-import {
-  Nothing,
-} from '../../components/index';
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import { List, SearchBar } from 'antd-mobile';
+import { Nothing } from '../../components/index';
 import nothing from '../../assets/nothing.png';
-
 import style from './index.less';
 import styles from '../common.less';
 
@@ -37,20 +26,12 @@ class SelectStep extends Component {
   }
 
   componentWillReceiveProps(nextprops) {
-    const {
-      start,
-      match: { params },
-    } = nextprops;
+    const { start, match: { params } } = nextprops;
     const { id } = params;
-    const {
-      preStepData,
-    } = start;
+    const { preStepData } = start;
     const [step] = (preStepData.available_steps || []).filter(item => `${item.id}` === `${id}`);
     const approverList = step ? step.approvers : [];
-
-    const {
-      init,
-    } = this.state;
+    const { init } = this.state;
     if (!init) {
       this.setState({
         init: true,
@@ -86,9 +67,7 @@ class SelectStep extends Component {
     });
   }
   getApproverList = () => {
-    const {
-      searchList,
-    } = this.state;
+    const { searchList } = this.state;
     if (searchList && !searchList.length) {
       return (
         <Nothing src={nothing} />
@@ -125,24 +104,15 @@ class SelectStep extends Component {
     });
   }
   choseItem = (el) => { // 选择，type来标志是单选还是多选0:单选，1:多选
-    const {
-      dispatch,
-      start,
-      history,
-    } = this.props;
-    const {
-      steps,
-    } = start;
-    const {
-      id,
-    } = this.state;
+    const { dispatch, start, history } = this.props;
+    const { steps } = start;
+    const { id } = this.state;
     const newSteps = steps.map((item) => {
-      let obj = { ...item,
-      };
+      let obj = { ...item };
       if (Number(id) === Number(item.id)) {
-        obj = { ...item,
-          approvers: { ...el,
-          },
+        obj = {
+          ...item,
+          approvers: { ...el },
         };
       }
       return obj;
@@ -157,9 +127,7 @@ class SelectStep extends Component {
     history.goBack(-1);
   }
   serachDep = (e) => { // 搜索
-    const {
-      approverList,
-    } = this.state;
+    const { approverList } = this.state;
     const result = approverList.filter(item => item.realname.indexOf(e) > -1);
     this.setState({
       searchList: result,
@@ -182,9 +150,7 @@ class SelectStep extends Component {
   }
 }
 export default connect(({
-  start,
-  loading,
+  start, loading,
 }) => ({
-  start,
-  loading,
+  start, loading,
 }))(SelectStep);

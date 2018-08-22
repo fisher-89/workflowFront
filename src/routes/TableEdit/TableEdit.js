@@ -85,14 +85,12 @@ class TableEdit extends Component {
     // 去编辑列表控件里每条数据
     toEditGrid = (url) => {
       const { history } = this.props;
-      // this.childComp.saveData();
       this.saveData();
       history.push(url);
     }
   // 给列表控件追加item
   addGridList = (key) => {
     const { history, dispatch } = this.props;
-    // this.childComp.saveData();
     this.saveData();
     dispatch({
       type: 'start/refreshModal',
@@ -117,9 +115,6 @@ class TableEdit extends Component {
     e.preventDefault();
     const { flowId } = this.state;
     const { dispatch, history } = this.props;
-    // console.log(' this.childComp', this.childComp.state.formdata);
-    // this.childComp.saveData();
-    // setTimeout(() => {
     const { start: { gridformdata } } = this.props;
     const { formdata } = this.childComp.state;
     // 整理formdata数据
@@ -161,8 +156,6 @@ class TableEdit extends Component {
         },
       },
     });
-    // }
-    // , 500);
   };
 
   render() {

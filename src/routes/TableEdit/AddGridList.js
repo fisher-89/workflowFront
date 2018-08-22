@@ -1,21 +1,10 @@
 // 编辑或新增列表控件数据页面
-import React, {
-  Component,
-} from 'react';
-import {
-  Toast,
-} from 'antd-mobile';
-import {
-  connect,
-} from 'dva';
-import {
-  CreateForm,
-} from '../../components';
-import {
-  getGridFilter,
-} from '../../utils/convert';
+import React, { Component } from 'react';
+import { Toast } from 'antd-mobile';
+import { connect } from 'dva';
+import { CreateForm } from '../../components';
+import { getGridFilter } from '../../utils/convert';
 import spin from '../../components/General/Loader';
-
 import styles from '../common.less';
 
 class AddGridList extends Component {
@@ -25,22 +14,14 @@ class AddGridList extends Component {
     index: '-1',
   }
   componentDidMount() {
-    const {
-      dispatch,
-    } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'start/refreshModal',
     });
   }
   componentWillReceiveProps(nextprops) {
-    const {
-      match: { params },
-    } = nextprops;
-    const {
-      flag,
-      key,
-    } = this.state;
-
+    const { match: { params } } = nextprops;
+    const { flag, key } = this.state;
     if (!key && flag) {
       const { type, index } = params;
       // const newKey = analyzePath(location.pathname, 1);
@@ -109,18 +90,9 @@ class AddGridList extends Component {
   }
 
   render() {
-    const {
-      start,
-      dispatch, loading,
-    } = this.props;
-    const {
-      key,
-      index,
-    } = this.state;
-    const {
-      startflow,
-      gridformdata,
-    } = start;
+    const { start, dispatch, loading } = this.props;
+    const { key, index } = this.state;
+    const { startflow, gridformdata } = start;
     spin(loading);
     const newFormData = start.form_data;
     let formdata = [];

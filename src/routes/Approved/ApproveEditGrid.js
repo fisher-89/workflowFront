@@ -53,7 +53,8 @@ class AddGridList extends Component {
   }
 
   // 将数据保存到modal的gridformdata中
-  saveData = (formdata) => {
+  saveData = () => {
+    const { formdata } = this.childComp.state;
     const [result] = formdata.filter(item => item.msg);
     if (result) {
       Toast.fail(result.msg);
@@ -106,7 +107,8 @@ class AddGridList extends Component {
   // 提交数据
   submitData = (e) => {
     e.preventDefault();
-    this.childComp.saveData(); // 子组件里的方法，为了能够把子组件的数据回传到父组件。该方法里执行了通过父组件传递下去的方法，然后参数为子组件的数据
+    // this.childComp.saveData(); // 子组件里的方法，为了能够把子组件的数据回传到父组件。该方法里执行了通过父组件传递下去的方法，然后参数为子组件的数据
+    this.saveData();
     this.props.history.goBack(-1);
   }
   render() {
@@ -156,7 +158,7 @@ class AddGridList extends Component {
             onRef={(comp) => { this.childComp = comp; }}
             startflow={startflow}
             formdata={formdata}
-            evtClick={this.saveData}
+            // evtClick={this.saveData}
             dispatch={dispatch}
             form_data={newFormData}
             editable_form={editableForm}

@@ -17,7 +17,6 @@ class SelectStep extends Component {
   }
   componentWillMount() {
     const { start: { preType }, history, dispatch } = this.props;
-    console.log('preType', preType);
     if (preType) {
       dispatch({
         type: 'start/refreshModal',
@@ -28,16 +27,9 @@ class SelectStep extends Component {
   }
 
   componentWillReceiveProps(nextprops) {
-    const {
-      start,
-    } = nextprops;
-    const {
-      preStepData,
-      steps,
-    } = start;
-    const {
-      init,
-    } = this.state;
+    const { start } = nextprops;
+    const { preStepData, steps } = start;
+    const { init } = this.state;
     let step = null;
     if (steps && !steps.length && !init) { // 当steps还没有被初始化过，里面为[]
       step = (preStepData.available_steps || []).map((item) => {
@@ -58,9 +50,7 @@ class SelectStep extends Component {
   }
 
   getSteps = () => { // 生成步骤
-    const {
-      steps,
-    } = this.state;
+    const { steps } = this.state;
     return steps.map((item, i) => {
       const idx = i;
       return (
@@ -94,10 +84,7 @@ class SelectStep extends Component {
     });
   }
   choseApprover = (el) => { // 去选择审批人
-    const {
-      history,
-      dispatch,
-    } = this.props;
+    const { history, dispatch } = this.props;
     const {
       steps,
     } = this.state;
@@ -112,10 +99,7 @@ class SelectStep extends Component {
   }
 
   choseItem = (el) => { // 选择某项
-    const {
-      steps,
-      preStepData,
-    } = this.state;
+    const { steps, preStepData } = this.state;
     let newSteps = [...steps];
     if (preStepData.concurrent_type === 0) {
       newSteps = steps.map((item) => {
@@ -140,15 +124,9 @@ class SelectStep extends Component {
   }
 
   submitStep = (v) => { // 提交步骤
-    const {
-      dispatch,
-      history,
-      start: { preType },
+    const { dispatch, history, start: { preType },
     } = this.props;
-    const {
-      steps,
-      preStepData,
-    } = this.state;
+    const { steps, preStepData } = this.state;
     const checkedSteps = steps.filter(item => item.checked);
     const errMsg = [];
     const nextSteps = checkedSteps.map((item) => {
@@ -222,9 +200,7 @@ class SelectStep extends Component {
     }
   }
   render() {
-    const {
-      preStepData,
-    } = this.state;
+    const { preStepData } = this.state;
     const { start: { preType }, loading } = this.props;
     const info = preStepData ? (preStepData.concurrent_type === 0 ? '（请任选一个步骤）' : preStepData.concurrent_type === 2 ? '（请选择全部步骤）' : '') : '';
     spin(loading);

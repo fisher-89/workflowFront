@@ -21,23 +21,14 @@ class ApproveGridDetail extends Component {
     index: '0',
   }
   componentDidMount() {
-    const {
-      dispatch,
-    } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'approve/refreshModal',
     });
   }
   componentWillReceiveProps(nextprops) {
-    const {
-      match: { params },
-
-    } = nextprops;
-    const {
-      flag,
-      key,
-    } = this.state;
-
+    const { match: { params } } = nextprops;
+    const { flag, key } = this.state;
     if (!key && flag) {
       const { type, index } = params;
 
@@ -55,27 +46,16 @@ class ApproveGridDetail extends Component {
     this.props.history.goBack(-1);
   }
   render() {
-    const {
-      approve,
-    } = this.props;
-    const {
-      key,
-      index,
-    } = this.state;
-    const {
-      startflow,
-    } = approve;
+    const { approve } = this.props;
+    const { key, index } = this.state;
+    const { startflow } = approve;
     const formData = approve.form_data;
     if (!startflow) {
       return '暂无信息';
     }
     let showGrid = [];
     if (startflow && key) {
-      const {
-        fields: {
-          grid,
-        },
-      } = startflow;
+      const { fields: { grid } } = startflow;
       const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
       showGrid = showGridObj.newFields;
     }

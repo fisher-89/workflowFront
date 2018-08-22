@@ -43,15 +43,8 @@ class ApproveDetail extends Component {
     });
   }
   getGridItem = (key) => {
-    const {
-      approve: { gridformdata, startflow },
-    } = this.props;
-    const {
-      fields: {
-        grid,
-      },
-    } = startflow;
-
+    const { approve: { gridformdata, startflow } } = this.props;
+    const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
     const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
@@ -102,17 +95,9 @@ class ApproveDetail extends Component {
     });
   }
   getGridList = () => {
-    const {
-      approve,
-    } = this.props;
-    const {
-      startflow,
-    } = approve;
-    const {
-      fields: {
-        grid,
-      },
-    } = startflow;
+    const { approve } = this.props;
+    const { startflow } = approve;
+    const { fields: { grid } } = startflow;
     return grid.map((item, i) => {
       const idx = i;
       return (
@@ -131,13 +116,8 @@ class ApproveDetail extends Component {
 
 
   toEditGrid = (key, i) => {
-    const {
-      approve,
-      history,
-    } = this.props;
-    const {
-      startflow,
-    } = approve;
+    const { approve, history } = this.props;
+    const { startflow } = approve;
     let url = `/approve_grid/${key}/${i}`;
     if (startflow.step_run.action_type === 0) {
       // this.childComp.saveData();
