@@ -198,8 +198,6 @@ submitData = (e) => {
   e.preventDefault();
   const { flowId } = this.state;
   const { dispatch, history } = this.props;
-  // this.childComp.saveData();
-  // this.saveData();
   const { formdata } = this.childComp.state;
   // setTimeout(() => {
   const { approve: { gridformdata, startflow } } = this.props;
