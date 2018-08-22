@@ -17,9 +17,10 @@
         },
         "production": {
             "define": {
-                "OA_PATH": "http://192.168.20.238:8003/",
-                "OA_CLIENT_ID": "6",
-                "OA_CLIENT_SECRET": "lcBIS0l1eW038wqUgDf6qsNyUl3L69Ck8YxHXKGi"
+                "OA_PATH": "http://112.74.177.132:8002",
+                "UPLOAD_PATH": "http://112.74.177.132:8006",
+                "OA_CLIENT_ID": "4",
+                "OA_CLIENT_SECRET": "2uTAhDPFqasLQ6M9cKyF4m3h3E9tK5LB5184BW3z"
             }
         }
     },
