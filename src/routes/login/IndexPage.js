@@ -78,6 +78,7 @@ class IndexPage extends React.Component {
             );
           })
         }
+        <WhiteSpace size="md" />
       </div>
     );
   }

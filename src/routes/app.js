@@ -45,12 +45,6 @@ class App extends React.Component {
     // });
   }
 
-  // componentWillReceiveProps(props) {
-  //   const { location: { pathname }, loading } = props;
-  //   if (this.props.location.pathname !== pathname) {
-  //     spin(loading);
-  //   }
-  // }
   render() {
     const {
       children,
@@ -65,7 +59,8 @@ class App extends React.Component {
     const {
       footStyle,
     } = common;
-    pathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
+    pathname = pathname.indexOf('/') === 0 ? pathname : `/ ${pathname} `;
+
     // spin(loadings);
     return (
       <div className={style.container}>
@@ -88,7 +83,7 @@ class App extends React.Component {
 
         </div>
         {
-            openPages && openPages.includes(pathname) ? (
+            openPages && openPages.indexOf(pathname) !== -1 ? (
               <div
                 className={style.footer}
                 style={footStyle}
@@ -98,7 +93,7 @@ class App extends React.Component {
                   pathname={pathname}
                 />
               </div>
-) : ''
+        ) : ''
           }
       </div>
     );
