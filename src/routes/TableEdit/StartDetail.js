@@ -155,7 +155,7 @@ class StartDetail extends Component {
     } = startflow;
     const flowRun = startflow.flow_run;
     // 只需要展示的（不包括可编辑的）
-    const showForm = form.filter(item => !startflow.step.hidden_fields.includes(item.key));
+    const showForm = form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
 
     // 可编辑的
 

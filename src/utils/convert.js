@@ -137,8 +137,8 @@ export function getGridFilter(fields, name, step, flag) {
     const newFields = [];
     item.fields.forEach((its) => {
       str = `${item.key}.*.${its.key}`;
-      if (flag === 1 ? !step.hidden_fields.includes(str) && !step[name].includes(str) :
-        !step.hidden_fields.includes(str) && step[name].includes(str)) {
+      if (flag === 1 ? step.hidden_fields.indexOf(str) === -1 && step[name].indexOf(str) === -1 :
+        step.hidden_fields.indexOf(str) === -1 && step[name].indexOf(str) !== -1) {
         newFields.push(its);
       }
     });
