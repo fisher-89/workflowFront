@@ -32,6 +32,10 @@
   align-items: center;
   padding-left: 30/75rem;
   background: #fff;
+  border-bottom: 1px solid #eee;
+  &:last-child {
+    border-bottom: none;
+  }
   .step_item {
     width: 36/75rem;
     height: 36/75rem;
@@ -50,12 +54,6 @@
   }
   .list_item {
     flex-grow: 1;
-    border-bottom: 1px solid #eee;
-    &:last-child {
-      .list_item {
-        border-bottom: none;
-      }
-    }
   }
 }
 
@@ -88,6 +86,9 @@
   padding: 0 @aside-distance;
   background: #fff;
   border-bottom: 1px solid #eee;
+  &:last-child {
+    border-bottom: none;
+  }
   .appro_item {
     width: 36/75rem;
     height: 36/75rem;
@@ -102,11 +103,6 @@
   }
   .list_item {
     flex-grow: 1; // border-bottom: 1px solid #eee;
-  }
-  &:last-child {
-    .list_item {
-      border-bottom: none;
-    }
   }
 }
 
@@ -142,7 +138,6 @@
   flex-direction: column;
   position: relative;
   flex-grow: 1;
-  
 }
 
 .filter_item {
@@ -168,20 +163,22 @@
     color: rgb(24, 144, 255);
   }
 }
+
 .grid_list_item {
   padding: 10px @aside-distance;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   background: #fff;
- 
 }
-.main_info{
+
+.main_info {
   line-height: 24px;
   font-size: @middle-size;
-  color:@title-color;
+  color: @title-color;
 }
+
 .desc {
   line-height: 22px;
   margin-top: 5px;
   font-size: @little-size;
-  color:@extra-color;
+  color: @extra-color;
 }
