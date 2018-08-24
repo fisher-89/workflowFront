@@ -333,7 +333,7 @@ class CreateForm extends Component {
               <InputItem
                 placeholder={item.description}
                 error={itemkey.hasError}
-                type="digit"
+                type="number"
                 onErrorClick={() => this.onErrorClick(item)}
                 onChange={e => this.onChange(e, item)}
                 value={itemkey.value}

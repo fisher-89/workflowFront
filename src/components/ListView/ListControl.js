@@ -72,6 +72,7 @@ export default class ListControl extends Component {
     const { type = defaultType } = currentParams;
     this.setState({
       type,
+      visible: false,
     });
     if (search !== this.props.location.search) {
       this.currentFilter(search ? search.slice(1) : '');
@@ -150,10 +151,6 @@ export default class ListControl extends Component {
     });
     const filterParams = `${notbelongParams.join(';')};${filterUrl}`;
     this.filters = doConditionValue(filterParams);
-  }
-
-  handleVisible = (flag, model) => {
-    this.setState({ visible: !!flag, model });
   }
 
   fetchFiltersDataSource = (params) => {
@@ -247,7 +244,7 @@ export default class ListControl extends Component {
         </div>
         <Tabs
           tabs={tab}
-          // swipeable={false}
+          swipeable={false}
           renderTabBar={props => (
             <Tabs.DefaultTabBar
               {...props}
