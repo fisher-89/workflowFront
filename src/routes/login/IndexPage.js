@@ -34,6 +34,14 @@ class IndexPage extends React.Component {
         description: '这是发起的列表',
       },
     ];
+    const testList = [
+      {
+        text: '测试',
+        icon: listIcon,
+        id: '-1',
+        description: '测试',
+      },
+    ];
     return (
       <div>
         <WhiteSpace size="md" />
@@ -45,6 +53,13 @@ class IndexPage extends React.Component {
               data={startList}
               hasLine={false}
               onClick={() => history.push('/start_list?type=processing&page=1')}
+            />
+            <Grid
+            // 我发起的
+              square={false}
+              data={testList}
+              hasLine={false}
+              onClick={() => history.push('/test')}
             />
           </div>
         </WingBlank>
