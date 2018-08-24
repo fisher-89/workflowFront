@@ -37,9 +37,9 @@ class App extends React.Component {
 
     document.body.style.margin = '0px';
     // 这是防止页面被拖拽
-    document.body.addEventListener('touchmove', (ev) => {
-      ev.preventDefault();
-    });
+    // document.body.addEventListener('touchmove', (ev) => {
+    //   ev.preventDefault();
+    // });
     // this.props.dispatch({
     //   type: 'common/getFlowList',
     // });
