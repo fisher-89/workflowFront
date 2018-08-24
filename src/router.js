@@ -140,12 +140,12 @@ function RouterConfig({
     component: () =>
       import('./routes/My/my'),
   },
-  {
-    path: '/test',
-    models: () => [],
-    component: () =>
-      import('./routes/test/testfloat'),
-  },
+  // {
+  //   path: '/test',
+  //   models: () => [],
+  //   component: () =>
+  //     import('./routes/test/testfloat'),
+  // },
   ];
   const speRoutes = [{
     path: '/extrance',
