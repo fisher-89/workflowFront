@@ -7,9 +7,9 @@ import createHistory from 'history/createBrowserHistory';
 import './utils/dingtalk';
 import './index.css';
 
-// dd.ready(() => {
-//   dd.ui.webViewBounce.disable();
-// });
+dd.ready(() => {
+  dd.ui.webViewBounce.disable();
+});
 // 1. Initialize
 const app = dva({
   ...createLoading({
