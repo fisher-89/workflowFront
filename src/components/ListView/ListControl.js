@@ -247,7 +247,7 @@ export default class ListControl extends Component {
         </div>
         <Tabs
           tabs={tab}
-          swipeable={false}
+          // swipeable={false}
           renderTabBar={props => (
             <Tabs.DefaultTabBar
               {...props}
