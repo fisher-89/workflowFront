@@ -249,7 +249,14 @@ class CreateForm extends Component {
       }
       // 可改
       if (isEdit) {
-        if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
+        console.log('staff', item.type);
+        if (item.type === 'staff') {
+          return (
+            <List.Item arrow="horizontal">
+              {item.title}
+            </List.Item>
+          );
+        } else if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
           if (item.type === 'array') {
             let currentValue = itemkey.value;
             const reg = /^\[|\]$/g;

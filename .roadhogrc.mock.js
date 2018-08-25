@@ -52,6 +52,35 @@ const proxy = {
         "name": "请假流程",
         "description": "请假流程描述"
     }],
+    'GET /api/start/2': {
+        "step": {
+            "id": 73,
+            "name": "步骤1",
+            "description": "这是步骤1",
+            "flow_id": 4,
+            "step_key": 1,
+            "hidden_fields": [],
+            "editable_fields": [
+                "staff"
+            ]
+        },
+            "form_data":{
+                staff:[] 
+            },
+            "fields": {
+                "form": [{
+                    "key": "staff",
+                    "name": "描述",
+                    "description": "报销描述",
+                    "type": "staff",
+                    "min": "",
+                    "max": "100",
+                    "scale": 0,
+                }],
+                "grid":[] 
+            }
+        
+    },
     'GET /api/start/1': {
         "step": {
             "id": 73,

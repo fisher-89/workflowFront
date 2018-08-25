@@ -220,6 +220,7 @@ export default {
       const newFormData = {
         ...action.payload.form_data,
       };
+      console.log('grid', action);
       const grid = [...action.payload.fields.grid];
       const gridformdata = grid.map((item) => { // 最外层key
         const gridItem = newFormData[item.key];
