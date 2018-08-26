@@ -11,6 +11,11 @@ const host= test;
 const noProxy = process.env.NO_PROXY === 'true';
 const proxy = {
     // 支持值为 Object 和 Array
+    'GET /api/oa/departments':[
+        {'realname':'魏颖',staff_sn:'120752'},
+        {'realname':'魏颖2',staff_sn:'130752'},
+        {'realname':'魏颖3',staff_sn:'138752'},
+    ],
     'GET /api/list': [{
         "id": 1,
         "name": "报销流程",
@@ -63,9 +68,11 @@ const proxy = {
             "editable_fields": [
                 "staff"
             ]
-        },
+            },
             "form_data":{
-                staff:[] 
+                staff:[
+                    {'realname':'魏颖','staff_sn':'120752'}
+                ] 
             },
             "fields": {
                 "form": [{
@@ -779,7 +786,8 @@ const proxy = {
         "prev_page_url": null,
         "to": 1,
         "total": 1
-    }
+    },
+   
 }
 export default !noProxy ? {
     // 'POST /api/approval/(.*)': 'http://192.168.20.144:8002/api/approval',

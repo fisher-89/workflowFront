@@ -3,8 +3,7 @@ import {
   connect,
 } from 'dva';
 import { SearchList, Nothing } from '../../components/index';
-import { Department, Staff, SeStaff, FinalStaff } from '../../common/ListView/index.js';
-import { userStorage, isArray } from '../../utils/util';
+import { Department, Staff, SeStaff } from '../../common/ListView/index.js';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -15,8 +14,6 @@ import style from './index.less';
   finalStaff: formSearchStaff.finalStaff,
   searStaff: formSearchStaff.searStaff,
   breadCrumb: formSearchStaff.breadCrumb,
-  loading1: loading.effects['formSearchStaff/fetchSearchStaff'],
-  loading2: loading.effects['formSearchStaff/fetchSelfDepStaff'],
   loading3: loading.effects['formSearchStaff/fetchFirstDepartment'],
   searchLoding: loading.effects['formSearchStaff/serachStaff'],
 }))
@@ -30,7 +27,7 @@ export default class SelPerson extends Component {
   }
 
   componentWillMount() {
-    this.firstDepartment();
+    this.fetchDataSource();
   }
 
   componentWillUnmount() {
@@ -39,26 +36,7 @@ export default class SelPerson extends Component {
     }
   }
 
-  onFinalSearch = (search) => {
-    const { finalStaff } = this.props;
-    let newFinalStaff = null;
-    if (isArray(finalStaff)) {
-      newFinalStaff = finalStaff.filter(item => item.staff_name.indexOf(search) > -1);
-    } else {
-      newFinalStaff = [];
-    }
-    return newFinalStaff;
-  }
-
   onSearch = (search) => {
-    const { key } = this.state;
-    const isFinal = key === 'final';
-    if (isFinal) {
-      this.setState({
-        search,
-      });
-      return;
-    }
     if (this.timer) {
       clearInterval(this.timer);
     }
@@ -71,25 +49,38 @@ export default class SelPerson extends Component {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    const { dispatch } = this.props;
+    const { match: { params } } = this.props;
+    const { fieldId } = params;
+    const currentParams = {
+      field_id: fieldId,
+      page: 1,
+      pagesize: 15,
+      filters: {
+        realname: { like: search },
+      },
+    };
+
     this.setState({
       search,
     }, () => {
-      dispatch({
-        type: 'searchStaff/serachStaff',
-        payload: `page=1&pagesize=15&filters=realname~${search};status_id>=0`,
-      });
+      this.fetchPageDataSource(currentParams);
     });
   }
 
   onPageChange = () => {
-    const { dispatch, searStaff } = this.props;
-    const { page } = searStaff;
+    const { searStaff, match: { params } } = this.props;
     const { search } = this.state;
-    dispatch({
-      type: 'searchStaff/serachStaff',
-      payload: `page=${page + 1}&pagesize=15&status_id>=0&filters=realname~${search};status_id>=0`,
-    });
+    const { page } = searStaff;
+    const { fieldId } = params;
+    const currentParams = {
+      field_id: fieldId,
+      page: page + 1,
+      pagesize: 15,
+      filters: {
+        realname: { like: search },
+      },
+    };
+    this.fetchPageDataSource(currentParams);
   }
 
   onRefresh = () => {
@@ -99,7 +90,7 @@ export default class SelPerson extends Component {
 
   getSelectResult = (result) => {
     const { selected, type } = this.state;
-    if (type === '1') {
+    if (type !== '1') {
       this.getSingleSelect(result);
     } else {
       this.setState({
@@ -113,30 +104,34 @@ export default class SelPerson extends Component {
   }
 
   getSingleSelect = (result) => {
-    const { dispatch, history, match: { params } } = this.props;
-    const { modal } = params;
-    const { key, type } = this.state;
+    const { key } = this.state;
+    const { history, formSearchStaff: { currentKey }, dispatch } = this.props;
+    const current = { ...currentKey[`${key}`] || {} };
+    const { cb } = current;
+    const newSelectstaff = [result];
+    if (cb) {
+      cb(newSelectstaff);
+    }
     dispatch({
-      type: `${modal}/saveStaff`,
+      type: 'formSearchStaff/saveSelectStaff',
       payload: {
         key,
-        type,
-        value: result,
+        value: newSelectstaff,
       },
     });
     history.goBack(-1);
   }
 
   getInitState = () => {
-    const { match: { params }, formSearchStaff } = this.props;
+    const { match: { params }, formSearchStaff: { currentKey } } = this.props;
     const { key, type } = params;
-    const current = formSearchStaff[`${key}`] || {};
+    const current = currentKey[`${key}`] || {};
     const { data = [] } = current;
     const obj = {
       selected: {
         data,
         total: 50,
-        num: 0,
+        num: data.length,
       },
       selectAll: false,
       search: '',
@@ -144,32 +139,6 @@ export default class SelPerson extends Component {
       type, // 选的类型，单选还是多选
     };
     return obj;
-  }
-
-  fetchSelfDepStaff = () => {
-    const { dispatch } = this.props;
-    const user = userStorage('userInfo');
-    // fetch({ departmentId: user.department.id });
-    dispatch({
-      type: 'formSearchStaff/fetchSelfDepStaff',
-      payload: { departmentId: user.department.id },
-    });
-  }
-
-  fetchformSearchStaff = (params) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'formSearchStaff/fetchSearchStaff',
-      payload: params,
-    });
-  }
-
-  fetchSearchStaff = (params) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'formSearchStaff/fetchSearchStaff',
-      payload: params,
-    });
   }
 
   makeBreadCrumbData = (params) => {
@@ -189,45 +158,76 @@ export default class SelPerson extends Component {
     return newBread;
   }
 
-  selDepartment = (params) => {
-    const newBread = this.makeBreadCrumbData(params);
-    const parentId = params.id;
-    if (parentId === '-1') {
-      this.firstDepartment();
-    } else {
-      this.fetchSearchStaff({
-        parentId,
+  selDepartment = (data) => {
+    const { match: { params } } = this.props;
+    const { fieldId } = params;
+    const newBread = this.makeBreadCrumbData(data);
+    const parentId = data.id;
+    this.setState({
+      selectAll: false,
+    });
+    let payload = null;
+    if (`${parentId}` !== '-1') {
+      payload = {
         breadCrumb: newBread,
-      });
+        reqData: { field_id: fieldId, department: parentId },
+      };
     }
+    this.fetchDataSource(payload);
+  }
+
+  fetchDataSource = (payload) => {
+    const { dispatch, match: { params } } = this.props;
+    const { fieldId } = params;
+    let newParams = {};
+    if (payload) {
+      newParams = { ...payload };
+    } else {
+      newParams = {
+        breadCrumb: [{ name: '联系人', id: '-1' }],
+        reqData: { field_id: fieldId },
+      };
+    }
+    dispatch({
+      type: 'formSearchStaff/fetchFirstDepartment',
+      payload: { ...newParams },
+    });
+  }
+
+  fetchPageDataSource = (params) => {
+    dispatch({
+      type: 'formSearchStaff/serachStaff',
+      payload: params,
+    });
   }
 
   checkedAll = () => { // 全选
     const { staff } = this.props;
-    const { selectAll } = this.state;
-    const selected = {};
+    const staffSn = staff.map(item => item.staff_sn);
+    const { selectAll, selected } = this.state;
+    const { data } = selected;
     if (selectAll) {
-      selected.data = [];
-      selected.num = 0;
+      const newData = data.filter(item => staffSn.indexOf(item.staff_sn) === -1);
+      selected.data = newData;
+      selected.num = newData.length;
     } else {
-      selected.data = [...staff];
-      selected.num = staff.length;
+      const newData = [...data, ...staff];
+      const result = [];
+      const obj = {};
+      for (let i = 0; i < newData.length; i += 1) {
+        if (!obj[newData[i].staff_sn]) { // 如果能查找到，证明数组元素重复了
+          obj[newData[i].staff_sn] = 1;
+          result.push(newData[i]);
+        }
+      }
+      selected.data = result;
+      selected.num = result.length;
     }
     selected.total = 50;
 
     this.setState({
       selected,
       selectAll: !selectAll,
-    });
-  }
-
-  firstDepartment = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'formSearchStaff/fetchFirstDepartment',
-      payload: {
-        breadCrumb: [{ name: '联系人', id: '-1' }],
-      },
     });
   }
 
@@ -244,9 +244,9 @@ export default class SelPerson extends Component {
   }
 
   selectOk = () => {
-    const { match: { params }, history, formSearchStaff, dispatch } = this.props;
+    const { match: { params }, history, formSearchStaff: { currentKey }, dispatch } = this.props;
     const { key } = params;
-    const current = formSearchStaff[`${key}`] || {};
+    const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const { selected } = this.state;
     const newSelectstaff = selected.data;
@@ -267,92 +267,83 @@ export default class SelPerson extends Component {
     const {
       department,
       staff, searStaff,
-      breadCrumb, loading1,
-      loading2, loading3,
+      breadCrumb,
+      loading3,
       history, location,
     } = this.props;
     const someProps = {
       location,
       history,
     };
-    const { selected, type, search, key } = this.state;
-    const isFinal = key === 'final';
+    const { selected, type, search, key, selectAll } = this.state;
+    const selectedData = selected.data;
     const { page, totalpage, data = [] } = searStaff;
-    const tempFinal = this.onFinalSearch(search);
+    const staffSn = staff.map(item => item.staff_sn);
+    const checkAble = selectedData.filter(item =>
+      staffSn.indexOf(item.staff_sn) > -1).length === staffSn.length && selectAll;
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <SearchList
-          multiple={type !== '1'}
-          name={isFinal ? 'staff_name' : 'realname'}
-          isFinal={isFinal}
+          multiple={type === '1'}
+          name="realname"
           bread={breadCrumb}
-          checkAble={staff.length && (selected.num === staff.length)}
+          checkAble={checkAble}
           selected={selected}
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
           handleBread={this.selDepartment}
-          firstDepartment={this.firstDepartment}
+          fetchDataSource={() => this.fetchDataSource()}
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
         >
           <div
             className={style.child}
-            style={{ ...(loading1 || loading2 || loading3 ? { display: 'none' } : null) }}
+            style={{ ...(loading3 ? { display: 'none' } : null) }}
           >
             {department.length && !search ? (
               <Department
+                onRefresh={false}
                 dataSource={department}
                 heightNone
                 fetchDataSource={this.selDepartment}
                 name="id"
               />
             ) : null}
-            {search && data && !data.length && !tempFinal.length ? <Nothing /> : null}
-            {!search && staff.length && !isFinal ? (
+            {search && data && !data.length ? <Nothing /> : null}
+            {!search && staff.length ? (
               <Staff
                 link=""
                 heightNone
-                isFinal={isFinal}
+                onRefresh={false}
                 name="staff_sn"
-                renderName={isFinal ? 'staff_name' : 'realname'}
+                renderName="realname"
                 dispatch={this.props.dispatch}
-                multiple={type !== '1'}
+                multiple={type === '1'}
                 selected={selected.data}
                 dataSource={staff}
                 onChange={this.getSelectResult}
               />
             ) : null}
-            {search && !isFinal ? (
+            {search ? (
               <SeStaff
                 {...someProps}
                 type={key}
                 link=""
                 heightNone
-                isFinal={isFinal}
                 name="staff_sn"
-                renderName={isFinal ? 'staff_name' : 'realname'}
+                renderName="realname"
                 page={page}
                 totalpage={totalpage}
                 onPageChange={this.onPageChange}
                 dispatch={this.props.dispatch}
-                multiple={type !== '1'}
+                multiple={type === '1'}
                 selected={selected.data}
                 dataSource={data}
                 onRefresh={this.onRefresh}
                 onChange={this.getSelectResult}
               />
             ) : null}
-            {isFinal ? (
-              <FinalStaff
-                link=""
-                heightNone
-                name="staff_sn"
-                dispatch={this.props.dispatch}
-                selected={selected.data}
-                dataSource={tempFinal}
-                onChange={this.getSelectResult}
-              />
-            ) : null}
+
           </div>
 
         </SearchList>

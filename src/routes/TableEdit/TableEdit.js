@@ -98,17 +98,20 @@ class TableEdit extends Component {
     history.push(`/addgridlist/${key}/-1`);
   };
   // 每次跳页面保存到modal
-  saveData = () => {
-    const { formdata } = this.childComp.state;
+  saveData = (formdata) => {
+    let newFormData = formdata;
+    if (newFormData === undefined) {
+      newFormData = this.childComp.state.formdata;
+    }
     const { dispatch } = this.props;
     dispatch({
       type: 'start/save',
       payload: {
         key: 'formdata',
-        value: formdata,
+        value: newFormData,
       },
     });
-    return formdata;
+    return newFormData;
   };
   // 提交数据
   submitData = (e) => {
@@ -159,7 +162,7 @@ class TableEdit extends Component {
   };
 
   render() {
-    const { start, dispatch, loading } = this.props;
+    const { start, dispatch, loading, history } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
     spin(loading);
@@ -173,9 +176,10 @@ class TableEdit extends Component {
       <div className={styles.con}>
         <div className={styles.con_content} style={{ paddingBottom: '20px' }}>
           <CreateForm
+            history={history}
             startflow={startflow}
             formdata={formdata}
-            // evtClick={this.saveData}
+            evtClick={this.saveData}
             dispatch={dispatch}
             show_form={showForm}
             editable_form={editableForm}

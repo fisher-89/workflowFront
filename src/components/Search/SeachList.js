@@ -51,7 +51,7 @@ export default class SearchList extends Component {
       checkedAll,
       checkAble,
       handleBread,
-      firstDepartment,
+      fetchDataSource,
       selectOk,
       isFinal = false,
     } = this.props;
@@ -80,7 +80,7 @@ export default class SearchList extends Component {
               <List >
                 <List.Item
                   arrow="horizontal"
-                  onClick={firstDepartment}
+                  onClick={fetchDataSource}
                 >全部
                 </List.Item>
               </List>

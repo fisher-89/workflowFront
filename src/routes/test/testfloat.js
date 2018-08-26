@@ -19,7 +19,7 @@ class Test extends React.Component {
   }
 
   selperson = () => {
-    const { dispatch, history, location: { pathname } } = this.props;
+    const { dispatch, history } = this.props;
     dispatch({
       type: 'formSearchStaff/saveCback',
       payload: {
@@ -34,7 +34,7 @@ class Test extends React.Component {
         fetch: this.fetchDataSource,
       },
     });
-    history.push(`/form_sel_person/flowstaff/2${pathname}`);
+    history.push('/form_sel_person/flowstaff/2');
   }
 
   renderSelectPerson = () => {

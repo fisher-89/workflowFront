@@ -293,6 +293,8 @@ export default class SelPerson extends Component {
               <Department
                 dataSource={department}
                 heightNone
+                onRefresh={false}
+
                 fetchDataSource={this.selDepartment}
                 name="id"
               />
@@ -303,6 +305,7 @@ export default class SelPerson extends Component {
                 link=""
                 heightNone
                 isFinal={isFinal}
+                onRefresh={false}
                 name="staff_sn"
                 renderName={isFinal ? 'staff_name' : 'realname'}
                 dispatch={this.props.dispatch}

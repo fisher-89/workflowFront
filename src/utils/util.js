@@ -283,3 +283,16 @@ export function isToday(str) {
   }
   return iscurrentDay;
 }
+
+export function isJSON(str) {
+  try {
+    const obj = JSON.parse(str);
+    if (typeof obj === 'object' && obj) {
+      return obj
+    }
+    else { return str }
+  }
+  catch (e) {
+    return str
+  }
+}

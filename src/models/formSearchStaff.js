@@ -1,10 +1,11 @@
 import {
-  department,
+  // department,
   getStaff,
   firstDepartment,
-  serachStaff,
-} from '../services/department';
+  // serachStaff,
+} from '../services/formStaff';
 import defaultReducers from './reducers/default';
+import { makerFilters } from '../utils/util';
 
 export default {
   namespace: 'formSearchStaff',
@@ -22,21 +23,16 @@ export default {
       page: '',
       totalpage: '',
     },
-    selectStaff: {
-      first: [],
-      final: [],
-      participants: [],
-      copy: [],
-      workingStaff: {
-        0: [],
-      },
+    currentKey: {
+
     },
 
   },
   effects: {
     * fetchSearchStaff({ payload }, { put, call }) {
-      const { parentId, breadCrumb } = payload;
-      const response = yield call(department, parentId);
+      const { reqData, breadCrumb } = payload;
+      const params = makerFilters(reqData);
+      const response = yield call(firstDepartment, params);
       const { children, staff } = response;
       yield put({
         type: 'save',
@@ -88,21 +84,32 @@ export default {
       }
     },
     * fetchFirstDepartment({ payload }, { put, call }) { // 一级部门列表
-      const { breadCrumb } = payload;
-      const response = yield call(firstDepartment);
+      const { breadCrumb, reqData } = payload;
+      const params = makerFilters(reqData);
+      const response = yield call(firstDepartment, params);
       if (response && !response.error) {
+        const { data, type } = response;
+        let department = [];
+        let staffs = [];
+        if (type === 'staff') {
+          staffs = data;
+        } else {
+          const { children, staff } = data;
+          department = children;
+          staffs = staff;
+        }
         yield put({
           type: 'save',
           payload: {
             store: 'department',
-            data: response || [],
+            data: department,
           },
         });
         yield put({
           type: 'save',
           payload: {
             store: 'staff',
-            data: [],
+            data: staffs,
           },
         });
       }
@@ -114,19 +121,22 @@ export default {
         },
       });
     },
-    * serachStaff({ payload }, { put, call, select }) { // 一级部门列表
-      const { searStaff } = yield select(_ => _.searchStaff);
-      const response = yield call(serachStaff, payload);
+    * serachStaff({ payload }, { put, call, select }) {
+      const { searStaff } = yield select(_ => _.formSearchStaff);
+      const params = makerFilters(payload);
+      const response = yield call(firstDepartment, params);
       if (response && !response.error) {
-        const { data, page, totalpage } = response;
+        const res = response.data;
+        const { page, totalpage, data } = res;
         let newStaff = null;
-        if (page !== 1) {
+        if (`${page}` !== '1') {
           const oldData = searStaff.data;
           const newData = oldData.concat(data);
           newStaff = { data: newData, page, totalpage };
         } else {
-          newStaff = { ...response };
+          newStaff = { ...res };
         }
+        console.log('newStaff', newStaff);
         yield put({
           type: 'save',
           payload: {
@@ -142,28 +152,33 @@ export default {
     ...defaultReducers,
     saveCback(state, action) {
       const { cb, key } = action.payload;
-      const current = state[key] || {};
+      const { currentKey } = state;
+      const current = { ...currentKey[key] || {} };
+      current.cb = cb;
       return {
         ...state,
-        [key]: { ...current, cb },
+        currentKey: { ...currentKey, [key]: current },
       };
     },
     saveFetch(state, action) {
       const { fetch, key } = action.payload;
-      const current = state[key] || {};
+      const { currentKey } = state;
+      const current = { ...currentKey[key] || {} };
+      current.fetch = fetch;
       return {
         ...state,
-        [key]: { ...current, fetch },
+        currentKey: { ...currentKey, [key]: current },
       };
     },
 
     saveSelectStaff(state, action) {
       const { value, key } = action.payload;
-      const current = state[key] || {};
-      console.log(value);
+      const { currentKey } = state;
+      const current = { ...currentKey[key] || {} };
+      current.data = value;
       return {
         ...state,
-        [key]: { ...current, data: value },
+        currentKey: { ...currentKey, [key]: current },
       };
     },
     clearSelectStaff(state) {

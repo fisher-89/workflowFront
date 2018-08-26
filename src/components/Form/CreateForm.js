@@ -11,7 +11,7 @@ import {
   rebackImg,
 } from '../../utils/convert';
 
-import { formatDate } from '../../utils/util';
+import { formatDate, isJSON } from '../../utils/util';
 import style from './index.less';
 import CheckBoxs from '../../components/ModalFilters/CheckBox';
 
@@ -41,16 +41,17 @@ class CreateForm extends Component {
       if (tempFormdata && !tempFormdata.length) {
         editableForm.map((item) => {
           const formatStr = formatDate(item.type);
-          let currentValue = newFormData[item.key];
+          // let currentValue = newFormData[item.key];
+          const currentValue = isJSON(newFormData[item.key]);
           let value = currentValue;
-          if (item.type === 'array') {
-            const reg = /^\[|\]$/g;
-            if (typeof (currentValue) === 'string') {
-              const str = currentValue.replace(reg, '');
-              currentValue = str.split(',');
-            }
-            value = currentValue;
-          }
+          // if (item.type === 'array') {
+          //   const reg = /^\[|\]$/g;
+          //   if (typeof (currentValue) === 'string') {
+          //     const str = currentValue.replace(reg, '');
+          //     currentValue = str.split(',');
+          //   }
+          //   value = currentValue;
+          // }
           if (item.type === 'time') {
             value = moment(`2018/1/1 ${currentValue}`).format(formatStr);
           }
@@ -183,7 +184,16 @@ class CreateForm extends Component {
       }
       const isEdit = editKey.indexOf(item.key) > -1;
       if (!isEdit) { // 只读
-        if (item.type === 'file') { // 文件
+        if (item.type === 'staff') {
+          const { value } = itemkey;
+          return (
+            <List.Item
+              extra={this.renderCurrent(value)}
+            >
+              {item.name}
+            </List.Item>
+          );
+        } else if (item.type === 'file') { // 文件
           return (
             <React.Fragment key={i}>
               <div className={style.file}>
@@ -249,11 +259,15 @@ class CreateForm extends Component {
       }
       // 可改
       if (isEdit) {
-        console.log('staff', item.type);
         if (item.type === 'staff') {
+          const { value } = itemkey;
           return (
-            <List.Item arrow="horizontal">
-              {item.title}
+            <List.Item
+              arrow="horizontal"
+              extra={this.renderCurrent(value)}
+              onClick={() => this.chosePerson(item, itemkey)}
+            >
+              {item.name}
             </List.Item>
           );
         } else if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
@@ -379,6 +393,8 @@ class CreateForm extends Component {
             </React.Fragment>
 
           );
+        } else {
+          return <p>其他</p>;
         }
       }
       return item;
@@ -480,6 +496,49 @@ class CreateForm extends Component {
     }
   }
 
+  selComponentCb = (item, data) => {
+    const { evtClick } = this.props;
+    const obj = this.initCurrentObj(data, item);
+    const { key } = item;
+    const { formdata } = this.state;
+    const datas = formdata.map((its) => {
+      if (its.key === key) {
+        return obj;
+      } else {
+        return its;
+      }
+    });
+    evtClick(datas);
+  }
+
+  chosePerson = (item, current) => {
+    const { key, value } = current;
+    const { type, id } = item;
+    const isMuti = item.is_checkbox;
+    const { dispatch, history, evtClick } = this.props;
+    const newKey = `${type}_${key}_${id}`;
+    evtClick();
+    dispatch({
+      type: 'formSearchStaff/saveSelectStaff',
+      payload: {
+        key: newKey,
+        value: value || [],
+      },
+    });
+    dispatch({
+      type: 'formSearchStaff/saveCback',
+      payload: {
+        key: newKey,
+        cb: data => this.selComponentCb(item, data),
+      },
+    });
+    history.push(`/form_sel_person/${newKey}/${isMuti}/${id}`);
+  }
+
+  renderCurrent = (persons) => {
+    return (persons || []).map(item => `${item.realname}、`);
+  }
+
   render() {
     const { startflow } = this.props;
     const { preview, reviewImg } = this.state;
@@ -530,7 +589,7 @@ class CreateForm extends Component {
   }
 }
 export default connect(({
-  loading,
+  loading, formSearchStaff,
 }) => ({
-  loading,
+  loading, selected: formSearchStaff,
 }))(CreateForm);

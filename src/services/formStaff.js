@@ -8,8 +8,12 @@ export async function getStaff(id) {
   return request(`/api/oa/departments/${id}/staff`);
 }
 
-export async function firstDepartment() {
-  return request('/api/oa/departments?filters=parent_id=0');
+export async function firstDepartment(params) {
+  // const urlParams = url ? `?${url}` : '';
+  return request('/api/staff', {
+    body: params,
+    method: 'GET',
+  });
 }
 
 

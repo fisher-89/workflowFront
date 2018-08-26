@@ -167,7 +167,7 @@ function RouterConfig({
       import('./routes/SelectPlugins/SelPerson'),
   },
   {
-    path: '/form_sel_person/:key/:type/:fromto',
+    path: '/form_sel_person/:key/:type/:fieldId',
     // models: () => [
     //   import('./models/formSearchStaff'),
     // ],

@@ -65,7 +65,7 @@ class IndexPage extends React.Component {
         </WingBlank>
         {
           // 可发起的流程
-          flowListData.map((item) => {
+          (flowListData || []).map((item) => {
             const data = item.flow.map((i) => {
               const obj = {};
               obj.icon = listIcon;
