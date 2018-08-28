@@ -30,7 +30,7 @@ function RouterConfig({
   const routes = [{
     path: '/home',
     // models: () => [],
-    models: [],
+    models: ['common'],
     component: () =>
       import('./routes/login/IndexPage'),
   },
@@ -156,37 +156,30 @@ function RouterConfig({
   },
   {
     path: '/sel_person/:key/:type/:modal',
-    // models: () => [
-    //   import('./models/searchStaff'),
-    //   import('./models/approve'),
-    //   import('./models/start'),
-    // ],
     models: ['approve', 'start', 'searchStaff'],
-
     component: () =>
       import('./routes/SelectPlugins/SelPerson'),
   },
   {
     path: '/form_sel_person/:key/:type/:fieldId',
-    // models: () => [
-    //   import('./models/formSearchStaff'),
-    // ],
     models: ['formSearchStaff'],
-
     component: () =>
       import('./routes/SelectPlugins/FormSelPerson'),
   },
   {
+    path: '/form_sel_department/:key/:type/:fieldId',
+    models: ['formSearchDep'],
+    component: () =>
+      import('./routes/SelectPlugins/SelDepartment'),
+  },
+  {
     path: '/my',
-    // models: () => [],
     models: [],
-
     component: () =>
       import('./routes/My/my'),
   },
   {
     path: '/test',
-    // models: () => [],
     models: [],
 
     component: () =>
@@ -195,7 +188,6 @@ function RouterConfig({
   ];
   const speRoutes = [{
     path: '/extrance',
-    // models: () => [],
     models: [],
     component: () =>
       import('./routes/login/Extrance'),

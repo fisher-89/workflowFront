@@ -180,7 +180,6 @@ class CreateForm extends Component {
             url: `${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}`,
           };
         });
-        // itemkey.value = [...imgs]
       }
       const isEdit = editKey.indexOf(item.key) > -1;
       if (!isEdit) { // 只读
@@ -188,7 +187,7 @@ class CreateForm extends Component {
           const { value } = itemkey;
           return (
             <List.Item
-              extra={this.renderCurrent(value)}
+              extra={this.renderCurrent(value, 'realname')}
             >
               {item.name}
             </List.Item>
@@ -247,24 +246,36 @@ class CreateForm extends Component {
           );
         }
         return (
-          <React.Fragment key={i}>
-            <List.Item
-              extra={<span style={{ color: '#ccc' }}>{newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}</span>}
-              size="small"
-            >
-              {item.name}
-            </List.Item>
-          </React.Fragment>
+          <div className={style.readonly}>
+            <TextareaItem
+              title={item.name}
+              autoHeight
+              editable={false}
+              value={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
+            />
+          </div>
         );
       }
       // 可改
       if (isEdit) {
+        if (item.type === 'department') {
+          const { value } = itemkey;
+          return (
+            <List.Item
+              arrow="horizontal"
+              extra={this.renderCurrent(value, 'name')}
+              onClick={() => this.choseDepartment(item, itemkey)}
+            >
+              {item.name}
+            </List.Item>
+          );
+        }
         if (item.type === 'staff') {
           const { value } = itemkey;
           return (
             <List.Item
               arrow="horizontal"
-              extra={this.renderCurrent(value)}
+              extra={this.renderCurrent(value, 'realname')}
               onClick={() => this.chosePerson(item, itemkey)}
             >
               {item.name}
@@ -535,8 +546,33 @@ class CreateForm extends Component {
     history.push(`/form_sel_person/${newKey}/${isMuti}/${id}`);
   }
 
-  renderCurrent = (persons) => {
-    return (persons || []).map(item => `${item.realname}、`);
+  choseDepartment = (item, current) => {
+    const { key, value } = current;
+    const { type, id } = item;
+    const isMuti = item.is_checkbox;
+    const { dispatch, history, evtClick } = this.props;
+    const newKey = `${type}_${key}_${id}`;
+    evtClick();
+    dispatch({
+      type: 'formSearchDep/saveSelectDepartment',
+      payload: {
+        key: newKey,
+        value: value || [],
+      },
+    });
+    dispatch({
+      type: 'formSearchDep/saveCback',
+      payload: {
+        key: newKey,
+        cb: data => this.selComponentCb(item, data),
+      },
+    });
+    history.push(`/form_sel_department/${newKey}/${isMuti}/${id}`);
+  }
+
+
+  renderCurrent = (persons, name) => {
+    return (persons || []).map(item => `${item[name]}、`);
   }
 
   render() {

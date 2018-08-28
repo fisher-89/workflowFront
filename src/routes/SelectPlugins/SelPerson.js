@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   connect,
 } from 'dva';
-import { SearchList, Nothing } from '../../components/index';
+import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff, FinalStaff } from '../../common/ListView/index.js';
 import { userStorage, isArray } from '../../utils/util';
 import styles from '../common.less';
@@ -271,7 +271,7 @@ export default class SelPerson extends Component {
     const tempFinal = this.onFinalSearch(search);
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
-        <SearchList
+        <PersonContainer
           multiple={type !== '1'}
           name={isFinal ? 'staff_name' : 'realname'}
           isFinal={isFinal}
@@ -348,7 +348,7 @@ export default class SelPerson extends Component {
             ) : null}
           </div>
 
-        </SearchList>
+        </PersonContainer>
       </div>
     );
   }

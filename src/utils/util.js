@@ -296,3 +296,71 @@ export function isJSON(str) {
     return str
   }
 }
+
+export function markTreeData(data, pid = null, { parentId, key }) {
+  const tree = [];
+  data.forEach((item) => {
+    if (item[parentId] === pid) {
+      const temp = {
+        ...item,
+        key: `${item[key]}`,
+      };
+      const children = markTreeData(data, item[key], { parentId, key });
+      if (children.length > 0) {
+        temp.children = children;
+      }
+      tree.push(temp);
+    }
+  });
+  return tree;
+}
+
+export function getOriginTree(item) {
+  const origin = [];
+  backTreeOrigin(item, origin);
+  function backTreeOrigin(item) {
+    const temp = { ...item };
+    delete temp.children;
+    origin.push(temp);
+    const children = item.children
+    if (children && children.length) {
+      children.forEach(its => {
+        backTreeOrigin(its)
+      })
+    }
+  }
+  return origin;
+}
+
+
+
+// export function backTreeOrigin(data, pid = null) {
+//   const origin = [];
+//   data.forEach((item) => {
+//     const temp = { ...item };
+//     const { children } = temp;
+//     delete temp.children;
+//     origin.push(item);
+//     if (children) {
+//       const childrenData = backTreeOrigin(children, pid);
+//       origin.push(childrenData);
+//     }
+//   });
+//   return origin;
+// }
+
+// 数组去重
+
+Array.prototype.unique = function (name = "id") {
+  const result = this;
+  const newData = [];
+  const obj = {};
+  for (let i = 0; i < result.length; i += 1) {
+    if (!obj[result[i][name]]) { // 如果能查找到，证明数组元素重复了
+      obj[result[i][name]] = 1;
+      newData.push(result[i]);
+    }
+  }
+  return newData
+}
+

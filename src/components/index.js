@@ -6,7 +6,9 @@ import CreateForm from './Form/CreateForm';
 import FormDetail from './Form/FormDetail';
 import Nothing from './Nothing/Nothing';
 import ListSort from './Filter/ListSort';
-import SearchList from './Search/SeachList';
+import PersonContainer from './Container/PersonContainer';
+import DepContainer from './Container/DepContainer';
+
 import PersonIcon from './PeronIcon/PersonIcon';
 
 export {
@@ -18,6 +20,7 @@ export {
   Nothing,
   ListView,
   ListSort,
-  SearchList,
+  PersonContainer,
   PersonIcon,
+  DepContainer,
 };

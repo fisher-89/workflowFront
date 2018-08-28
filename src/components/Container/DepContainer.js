@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
-import { Button, List } from 'antd-mobile';
+import { Button, SearchBar, Switch } from 'antd-mobile';
 import ReactDOM from 'react-dom';
-import { PersonIcon } from '../../components/index.js';
-import { Search, Bread } from '../../components/General/index';
+// import { PersonIcon } from '../../components/index.js';
+import { Bread } from '../../components/General/index';
 import style from './index.less';
 
-export default class SearchList extends Component {
-  state = {
-    value: '',
-    height: document.documentElement.clientHeight,
+export default class DepContainer extends Component {
+  constructor(props) {
+    super(props);
+    const { switchState } = props;
+    this.state = {
+      value: '',
+      switchState,
+      height: document.documentElement.clientHeight,
+    };
+  }
 
-  };
   componentDidMount() {
     const htmlDom = ReactDOM.findDOMNode(this.ptr);
     const offetTop = htmlDom.getBoundingClientRect().top;
@@ -18,6 +23,16 @@ export default class SearchList extends Component {
     setTimeout(() => this.setState({
       height: hei,
     }), 0);
+  }
+
+  componentWillReceiveProps(props) {
+    const oldSwitchState = this.props.switchState;
+    const { switchState } = props;
+    if (switchState !== oldSwitchState) {
+      this.setState({
+        switchState,
+      });
+    }
   }
 
   onChange = (value) => {
@@ -29,10 +44,12 @@ export default class SearchList extends Component {
       handleSearch(value);
     }
   };
+
   onSubmit = () => {
     const { handleSearch } = this.props;
     handleSearch(this.state.value);
   }
+
   onCancel = () => {
     const { searchOncancel } = this.props;
     this.setState({
@@ -41,26 +58,28 @@ export default class SearchList extends Component {
       searchOncancel();
     });
   }
+
+  handleSwitchChange = (check) => {
+    const { onSwitchChange } = this.props;
+    this.setState({
+      switchState: check,
+    });
+    onSwitchChange(check);
+  }
+
   render() {
     const {
-      bread,
-      children,
-      multiple,
-      name,
-      selected,
-      checkedAll,
-      checkAble,
+      bread, children, multiple, name, selected, checkedAll, checkAble,
       handleBread,
-      fetchDataSource,
       selectOk,
-      isFinal = false,
     } = this.props;
+    const { switchState } = this.state;
     return (
       <div className={style.con}>
         <div className={style.header}>
-          <Search
+          <SearchBar
             value={this.state.value}
-            placeholder="请输入员工姓名"
+            placeholder="请输入部门名称"
             showCancelButton={this.state.value}
             onChange={this.onChange}
             onCancel={
@@ -69,34 +88,30 @@ export default class SearchList extends Component {
               }
             onSubmit={this.onSubmit}
           />
-          {this.state.value || isFinal ? null : (
+          {this.state.value ? null : (
             <Bread
               bread={bread}
               handleBread={handleBread}
             />
           )}
-          {this.state.value || isFinal ? null : (
-            <div style={{ padding: '0 0.32rem' }} >
-              <List >
-                <List.Item
-                  arrow="horizontal"
-                  onClick={fetchDataSource}
-                >全部
-                </List.Item>
-              </List>
-            </div>
-          )}
           {multiple && !this.state.value ? (
-            <div className={style.action}>
-              <div className={style.action_item}>
-                <div
-                  className={[style.item, checkAble ? style.checked : null].join(' ')}
-                  onClick={checkedAll}
-                >
-                  <span>全选</span>
-                </div>
+            <div className={style.seldep_item}>
+              <div
+                className={checkAble ? style.checked : style.unchecked}
+                onClick={checkedAll}
+              >
+                <span>全选</span>
+              </div>
+              <div className={style.right}>
+                <span style={{ marginRight: '15px' }}>包含下级</span>
+                <Switch
+                  checked={switchState}
+                  color="rgb(0,122,255)"
+                  onClick={this.handleSwitchChange}
+                />
               </div>
             </div>
+
           ) : null}
         </div>
         <div
@@ -114,14 +129,7 @@ export default class SearchList extends Component {
                   {selected.data.map((item, i) => {
                     const idx = i;
                     return (
-                      <PersonIcon
-                        key={idx}
-                        value={item}
-                        nameKey={name}
-                        showNum={2}
-                        itemStyle={{ marginBottom: 0 }}
-                        footer={false}
-                      />
+                      <span style={{ flexShrink: 0 }} key={idx}>{item[name]}、</span>
                     );
                   })}
                 </div>
@@ -145,7 +153,7 @@ export default class SearchList extends Component {
   }
 }
 
-SearchList.defaultProps = {
+DepContainer.defaultProps = {
   multiple: false,
   name: 'name',
   checkAble: false,

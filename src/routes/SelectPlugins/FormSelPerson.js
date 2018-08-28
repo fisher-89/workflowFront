@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   connect,
 } from 'dva';
-import { SearchList, Nothing } from '../../components/index';
+import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff } from '../../common/ListView/index.js';
 import styles from '../common.less';
 import style from './index.less';
@@ -283,7 +283,7 @@ export default class SelPerson extends Component {
       staffSn.indexOf(item.staff_sn) > -1).length === staffSn.length && selectAll;
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
-        <SearchList
+        <PersonContainer
           multiple={type === '1'}
           name="realname"
           bread={breadCrumb}
@@ -346,7 +346,7 @@ export default class SelPerson extends Component {
 
           </div>
 
-        </SearchList>
+        </PersonContainer>
       </div>
     );
   }

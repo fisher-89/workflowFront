@@ -7,7 +7,8 @@ class Entrance extends React.Component {
       localStorage.getItem('OA_access_token_expires_in') > new Date().getTime()) {
       window.location.href = '/home';
     } else {
-      window.location.href = `${OA_PATH}/oauth/authorize?client_id=${OA_CLIENT_ID}&response_type=code`;
+      window.location.href =
+    `${OA_PATH}/oauth/authorize?client_id=${OA_CLIENT_ID}&response_type=code`;
     }
   }
   render() {

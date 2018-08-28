@@ -495,3 +495,38 @@
   .base(@list-text-color,
   12px);
 }
+
+
+.seldep_item {
+  display: flex;
+  background: #fff;
+  padding:0 15px;
+  border-bottom: 1px solid @base-bg-color;
+  justify-content: space-between;
+  div { 
+    width: 50%;
+    flex-grow: 1;
+    height: 44px;
+    line-height: 44px;
+    font-size: @middle-size;
+    padding-left: 1rem;
+  }
+
+  .checked {
+    background: url(../../assets/select_icon/selected.png) no-repeat left center;
+    background-size: 44/75rem;
+  }
+  .unchecked {
+    background: url(../../assets/select_icon/unseled.png) no-repeat left center;
+    background-size: 44/75rem;
+  }
+  .single_checked {
+    background: url(../../assets/select_icon/singled.png) no-repeat left center;
+    background-size: 44/75rem;
+  }
+  .single_unchecked {
+    background: url(../../assets/select_icon/unseled.png) no-repeat left center;
+    background-size: 44/75rem;
+  }
+ 
+}

@@ -1,3 +1,4 @@
+@import '../../utils/var.less';
 .con {
   height: 100%;
   display: flex;
@@ -86,11 +87,37 @@
     padding: 16/75rem 0;
     height: 132/75rem;
     flex-grow: 1;
+    font-size: @middle-size;
   }
   .opt {
     margin-left: 20/75rem;
     display: flex;
     height: 86/75rem;
     align-items: center;
+  }
+}
+
+.seldep_item {
+  display: flex;
+  padding:0 15px;
+  justify-content: space-around;
+  div { 
+    width: 50%;
+    flex-grow: 1;
+    height: 44px;
+    line-height: 44px;
+    font-size: @middle-size;
+    padding-left: 1rem;
+  }
+  .right{
+    text-align: right;
+  }
+  .checked {
+    background: url(../../assets/select_icon/selected.png) no-repeat left center;
+    background-size: 44/75rem;
+  }
+  .unchecked {
+    background: url(../../assets/select_icon/unseled.png) no-repeat left center;
+    background-size: 44/75rem;
   }
 }

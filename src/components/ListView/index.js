@@ -158,7 +158,7 @@ export default function ListView(ListItem) {
       this.setState({
         muti: [...newMuti],
       }, () => {
-        onChange(this.state.muti);
+        onChange(this.state.muti, item);
       });
     }
 
@@ -202,7 +202,6 @@ export default function ListView(ListItem) {
        || (`${page}` === '1'))
        && loading.global);
       spin(loader);
-      console.log('loader', loader);
       return (
         <div
           {...(page && { onTouchStart: this.handleStart })}

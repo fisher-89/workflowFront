@@ -16,6 +16,7 @@ import FinalStaff from './FinalStaff';
 // import RecordDetail from './RecordDetail';
 // import PaticipantBuckle from './PaticipantBuckle';
 // import Auditted from './Auditted';
+import SelDep from './SelDep';
 
 export {
   Department,
@@ -35,4 +36,5 @@ export {
   // PaticipantBuckle,
   // Auditted,
   // EventList,
+  SelDep,
 };
