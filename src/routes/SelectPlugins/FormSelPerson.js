@@ -109,14 +109,15 @@ export default class SelPerson extends Component {
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const newSelectstaff = [result];
+    const formSelectedStaff = this.makeFormStaff(newSelectstaff);
     if (cb) {
-      cb(newSelectstaff);
+      cb(formSelectedStaff);
     }
     dispatch({
       type: 'formSearchStaff/saveSelectStaff',
       payload: {
         key,
-        value: newSelectstaff,
+        value: formSelectedStaff,
       },
     });
     history.goBack(-1);
@@ -243,6 +244,16 @@ export default class SelPerson extends Component {
     }
   }
 
+  makeFormStaff = (newSelectstaff) => {
+    const selectedStaff = newSelectstaff.map((item) => {
+      const obj = {};
+      obj.staff_name = item.realname;
+      obj.staff_sn = item.staff_sn;
+      return obj;
+    });
+    return selectedStaff;
+  }
+
   selectOk = () => {
     const { match: { params }, history, formSearchStaff: { currentKey }, dispatch } = this.props;
     const { key } = params;
@@ -250,14 +261,15 @@ export default class SelPerson extends Component {
     const { cb } = current;
     const { selected } = this.state;
     const newSelectstaff = selected.data;
+    const formSeletedStaff = this.makeFormStaff(newSelectstaff);
     if (cb) {
-      cb(newSelectstaff);
+      cb(formSeletedStaff);
     }
     dispatch({
       type: 'formSearchStaff/saveSelectStaff',
       payload: {
         key,
-        value: newSelectstaff,
+        value: formSeletedStaff,
       },
     });
     history.goBack(-1);

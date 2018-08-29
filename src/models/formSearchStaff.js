@@ -136,7 +136,6 @@ export default {
         } else {
           newStaff = { ...res };
         }
-        console.log('newStaff', newStaff);
         yield put({
           type: 'save',
           payload: {

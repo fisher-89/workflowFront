@@ -300,7 +300,7 @@ export function isJSON(str) {
 export function markTreeData(data, pid = null, { parentId, key }) {
   const tree = [];
   data.forEach((item) => {
-    if (item[parentId] === pid) {
+    if (`${item[parentId]}` === `${pid}`) {
       const temp = {
         ...item,
         key: `${item[key]}`,
@@ -364,3 +364,14 @@ Array.prototype.unique = function (name = "id") {
   return newData
 }
 
+
+export function initCurrentObj(v, item) {
+  const { key } = item;
+  const obj = {
+    key,
+    value: v,
+    hasError: false,
+    msg: '',
+  };
+  return { ...obj };
+}

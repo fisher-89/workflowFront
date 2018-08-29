@@ -34,7 +34,7 @@ export default class SelDepartment extends Component {
     const { department } = nextProps;
     const oldDep = this.props.department;
     if (JSON.stringify(department) !== JSON.stringify(oldDep)) {
-      const tree = markTreeData(department, null, { parentId: 'parent_id', key: 'id' });
+      const tree = markTreeData(department, 0, { parentId: 'parent_id', key: 'id' });
       this.setState({
         currentDep: tree,
       });
@@ -320,7 +320,7 @@ export default class SelDepartment extends Component {
     let currentChild = [];
     let breadCrumb = [{ name: '选择部门', id: -1 }];
     if (`${item.id}` === '-1') {
-      currentChild = markTreeData(department, null, { parentId: 'parent_id', key: 'id' });
+      currentChild = markTreeData(department, 0, { parentId: 'parent_id', key: 'id' });
     } else {
       currentChild = item.children || [];
       breadCrumb = this.makeBreadCrumbData(item);

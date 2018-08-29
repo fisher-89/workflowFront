@@ -1,6 +1,6 @@
 // 发起页面
 import React, { Component } from 'react';
-import { Button, WhiteSpace } from 'antd-mobile';
+import { Button, WhiteSpace, SwipeAction } from 'antd-mobile';
 import { connect } from 'dva';
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
@@ -21,6 +21,7 @@ class TableEdit extends Component {
       payload: this.state.flowId,
     });
   }
+
 
   // 列表控件内部fields
   getGridItem = (key) => {
@@ -45,18 +46,35 @@ class TableEdit extends Component {
       });
       return newObj;
     });
+    const extra = [
+      {
+        text: '删除',
+        style: { backgroundColor: 'rgb(218,81,85)', minWidth: '1.6rem', color: 'white', fontSize: '12px', borderTopRightRadius: '2px' },
+        onPress: 'deleteItem',
+      },
+    ];
     return dataList.map((item, i) => {
       const idx = i;
+      const newExtra = extra.map((_) => {
+        const obj = { ..._ };
+        obj.onPress = e => this[_.onPress](e, key, i);
+        return obj;
+      });
       return (
-        <div
-          className={style.grid_list_item}
+        <SwipeAction
+          right={newExtra}
+          autoClose={false}
           key={idx}
-          onClick={() => this.toEditGrid(`/addgridlist/${key}/${i}`)}
         >
-          {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
-          {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
-          {item.value_2 && <div className={style.desc}>{item.value_2}</div>}
-        </div>
+          <div
+            className={style.grid_list_item}
+            onClick={() => this.toEditGrid(`/addgridlist/${key}/${i}`)}
+          >
+            {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
+            {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
+            {item.value_2 && <div className={style.desc}>{item.value_2}</div>}
+          </div>
+        </SwipeAction>
       );
     });
   }
@@ -67,9 +85,10 @@ class TableEdit extends Component {
     const { startflow } = start;
     const { fields: { grid } } = startflow;
     // const editable_grid = getGridFilter(grid, 'editable_fields', startflow.step)
-    return grid.map((item) => {
+    return grid.map((item, i) => {
+      const index = i;
       return (
-        <div key={item.key} className={style.grid_item}>
+        <div key={index} className={style.grid_item}>
           <p className={style.grid_opt}>
             <span>{item.name}</span>
             <a
@@ -82,12 +101,38 @@ class TableEdit extends Component {
       );
     });
   }
-    // 去编辑列表控件里每条数据
-    toEditGrid = (url) => {
-      const { history } = this.props;
-      this.saveData();
-      history.push(url);
-    }
+
+  // 去编辑列表控件里每条数据
+  toEditGrid = (url) => {
+    const { history } = this.props;
+    this.saveData();
+    history.push(url);
+  }
+
+  deleteItem = (e, key, i) => {
+    e.stopPropagation();
+    const { start: { gridformdata }, dispatch } = this.props;
+    const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
+    const { fields } = currentGridData;
+    fields.splice(i, 1);
+    currentGridData.fields = fields;
+    const newGridformdata = gridformdata.map((item) => {
+      let obj = { ...item };
+      if (item.key === key) {
+        obj = { ...currentGridData };
+      }
+      return obj;
+    });
+
+    dispatch({
+      type: 'start/save',
+      payload: {
+        key: 'gridformdata',
+        value: newGridformdata,
+      },
+    });
+  }
+
   // 给列表控件追加item
   addGridList = (key) => {
     const { history, dispatch } = this.props;
@@ -97,6 +142,7 @@ class TableEdit extends Component {
     });
     history.push(`/addgridlist/${key}/-1`);
   };
+
   // 每次跳页面保存到modal
   saveData = (formdata) => {
     let newFormData = formdata;
@@ -113,6 +159,7 @@ class TableEdit extends Component {
     });
     return newFormData;
   };
+
   // 提交数据
   submitData = (e) => {
     e.preventDefault();

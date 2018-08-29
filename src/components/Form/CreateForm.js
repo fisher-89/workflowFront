@@ -5,6 +5,7 @@ import {
 } from 'antd-mobile';
 import { connect } from 'dva';
 import moment from 'moment';
+import { SelectComp } from '../FormType';
 import {
   dealThumbImg,
   reAgainImg,
@@ -184,10 +185,11 @@ class CreateForm extends Component {
       const isEdit = editKey.indexOf(item.key) > -1;
       if (!isEdit) { // 只读
         if (item.type === 'staff') {
-          const { value } = itemkey;
+          const value = newFormData[item.key];
           return (
             <List.Item
-              extra={this.renderCurrent(value, 'realname')}
+              key={i}
+              extra={this.renderCurrent(value, 'staff_name')}
             >
               {item.name}
             </List.Item>
@@ -214,7 +216,6 @@ class CreateForm extends Component {
                 </div>
               </div>
             </React.Fragment>
-
           );
         } else if (item.type === 'array') { // 数组
           let currentValue = newFormData[item.key];
@@ -246,7 +247,7 @@ class CreateForm extends Component {
           );
         }
         return (
-          <div className={style.readonly}>
+          <div className={style.readonly} key={i}>
             <TextareaItem
               title={item.name}
               autoHeight
@@ -258,30 +259,35 @@ class CreateForm extends Component {
       }
       // 可改
       if (isEdit) {
-        if (item.type === 'department') {
-          const { value } = itemkey;
+        if (item.type === 'department' || item.type === 'staff') {
+          const { evtClick, history } = this.props;
           return (
-            <List.Item
-              arrow="horizontal"
-              extra={this.renderCurrent(value, 'name')}
-              onClick={() => this.choseDepartment(item, itemkey)}
-            >
-              {item.name}
-            </List.Item>
+            <SelectComp
+              history={history}
+              evtClick={evtClick}
+              field={item}
+              defaultValue={newFormData[item.key]}
+              data={itemkey}
+              key={i}
+              selComponentCb={this.selComponentCb}
+            />
           );
         }
-        if (item.type === 'staff') {
-          const { value } = itemkey;
-          return (
-            <List.Item
-              arrow="horizontal"
-              extra={this.renderCurrent(value, 'realname')}
-              onClick={() => this.chosePerson(item, itemkey)}
-            >
-              {item.name}
-            </List.Item>
-          );
-        } else if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
+        // if (item.type === 'staff') {
+        //   const { value } = itemkey;
+        //   return (
+        //     <List.Item
+        //       key={i}
+        //       arrow="horizontal"
+        //       extra={this.renderCurrent(value, 'staff_name')}
+        //       onClick={() => this.chosePerson(item, itemkey)}
+        //     >
+        //       {item.name}
+        //     </List.Item>
+        //   );
+        // } else
+
+        if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
           if (item.type === 'array') {
             let currentValue = itemkey.value;
             const reg = /^\[|\]$/g;
@@ -375,9 +381,8 @@ class CreateForm extends Component {
           );
         } else if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
           return (
-            <React.Fragment>
+            <React.Fragment key={i}>
               <DatePicker
-                key={i}
                 mode={item.type}
                 onChange={e => this.timeChange(e, item)}
                 value={item.type === 'time' ? new Date(`2018/8/1 ${itemkey.value}`) : new Date(itemkey.value)}
@@ -402,10 +407,9 @@ class CreateForm extends Component {
                 </div>
               </div>
             </React.Fragment>
-
           );
         } else {
-          return <p>其他</p>;
+          return <p key={i}>其他</p>;
         }
       }
       return item;
