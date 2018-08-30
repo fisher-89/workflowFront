@@ -196,6 +196,7 @@ export default class SelPerson extends Component {
   }
 
   fetchPageDataSource = (params) => {
+    const { dispatch } = this.props;
     dispatch({
       type: 'formSearchStaff/serachStaff',
       payload: params,
@@ -309,7 +310,6 @@ export default class SelPerson extends Component {
           searchOncancel={this.searchOncancel}
         >
           <div
-            className={style.child}
             style={{ ...(loading3 ? { display: 'none' } : null) }}
           >
             {department.length && !search ? (

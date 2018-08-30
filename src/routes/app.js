@@ -52,6 +52,7 @@ class App extends React.Component {
     const {
       footStyle,
     } = common;
+
     pathname = pathname.indexOf('/') === 0 ? pathname : `/ ${pathname} `;
 
     // spin(loadings);

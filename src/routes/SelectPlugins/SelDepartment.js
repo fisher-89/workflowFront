@@ -2,20 +2,18 @@ import React, { Component } from 'react';
 import {
   connect,
 } from 'dva';
-import { DepContainer, Nothing } from '../../components/index';
-import { SelDep, SeStaff } from '../../common/ListView/index.js';
+import { DepContainer } from '../../components/index';
+import { SelDep } from '../../common/ListView/index.js';
 import { markTreeData, getOriginTree } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
 @connect(({ formSearchDep, loading }) => ({
-  formSearchDep,
+  isConfig: formSearchDep.isConfig,
   department: formSearchDep.department,
-  finalStaff: formSearchDep.finalStaff,
-  searStaff: formSearchDep.searStaff,
   breadCrumb: formSearchDep.breadCrumb,
-  loading3: loading.effects['formSearchDep/fetchFirstDepartment'],
-  searchLoding: loading.effects['formSearchDep/serachStaff'],
+  currentKey: formSearchDep.currentKey,
+  loading: loading.global,
 }))
 export default class SelDepartment extends Component {
   constructor(props) {
@@ -33,7 +31,8 @@ export default class SelDepartment extends Component {
   componentWillReceiveProps(nextProps) {
     const { department } = nextProps;
     const oldDep = this.props.department;
-    if (JSON.stringify(department) !== JSON.stringify(oldDep)) {
+    const { currentDep } = this.state;
+    if (JSON.stringify(department) !== JSON.stringify(oldDep) || !currentDep.length) {
       const tree = markTreeData(department, 0, { parentId: 'parent_id', key: 'id' });
       this.setState({
         currentDep: tree,
@@ -60,43 +59,15 @@ export default class SelDepartment extends Component {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    const { match: { params } } = this.props;
-    const { fieldId } = params;
-    const currentParams = {
-      field_id: fieldId,
-      page: 1,
-      pagesize: 15,
-      filters: {
-        realname: { like: search },
-      },
-    };
-
-    this.setState({
-      search,
-    }, () => {
-      this.fetchPageDataSource(currentParams);
+    const { department } = this.props;
+    const result = department.filter((item) => {
+      const { name } = item;
+      return name.indexOf(search) > -1;
     });
-  }
-
-  onPageChange = () => {
-    const { searStaff, match: { params } } = this.props;
-    const { search } = this.state;
-    const { page } = searStaff;
-    const { fieldId } = params;
-    const currentParams = {
-      field_id: fieldId,
-      page: page + 1,
-      pagesize: 15,
-      filters: {
-        realname: { like: search },
-      },
-    };
-    this.fetchPageDataSource(currentParams);
-  }
-
-  onRefresh = () => {
-    const { search } = this.state;
-    this.onSearchSubmit(search);
+    this.setState({
+      currentDep: result,
+      search,
+    });
   }
 
   getSelectResult = (result, current) => {
@@ -142,7 +113,7 @@ export default class SelDepartment extends Component {
 
   getSingleSelect = (result) => {
     const { key } = this.state;
-    const { history, formSearchDep: { currentKey }, dispatch } = this.props;
+    const { history, currentKey, dispatch } = this.props;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const newSelectstaff = [result];
@@ -160,7 +131,7 @@ export default class SelDepartment extends Component {
   }
 
   getInitState = () => {
-    const { match: { params }, formSearchDep: { currentKey } } = this.props;
+    const { match: { params }, currentKey } = this.props;
     const { key, type } = params;
     const current = currentKey[`${key}`] || {};
     const { data = [] } = current;
@@ -230,14 +201,6 @@ export default class SelDepartment extends Component {
     });
   }
 
-  fetchPageDataSource = (params) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'formSearchDep/serachStaff',
-      payload: params,
-    });
-  }
-
   checkedAll = (name = 'id') => { // 全选
     const { department } = this.props;
     let depSn = department.map(item => item.id);
@@ -271,15 +234,12 @@ export default class SelDepartment extends Component {
       search: '',
     });
     const { breadCrumb } = this.props;
-    if (breadCrumb && breadCrumb.length) {
-      this.selDepartment(breadCrumb[breadCrumb.length - 1]);
-    } else {
-      this.fetchSelfDepStaff();
-    }
+    const item = breadCrumb[breadCrumb.length - 1];
+    this.fetchNextDep(item);
   }
 
   selectOk = () => {
-    const { match: { params }, history, formSearchDep: { currentKey }, dispatch } = this.props;
+    const { match: { params }, history, currentKey, dispatch } = this.props;
     const { key } = params;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
@@ -318,7 +278,7 @@ export default class SelDepartment extends Component {
   fetchNextDep = (item) => {
     const { department, dispatch } = this.props;
     let currentChild = [];
-    let breadCrumb = [{ name: '选择部门', id: -1 }];
+    let breadCrumb = [{ name: '一级部门', id: -1 }];
     if (`${item.id}` === '-1') {
       currentChild = markTreeData(department, 0, { parentId: 'parent_id', key: 'id' });
     } else {
@@ -346,18 +306,13 @@ export default class SelDepartment extends Component {
 
   render() {
     const {
-      searStaff,
       breadCrumb,
-      loading3,
-      history, location,
+      isConfig,
     } = this.props;
-    const someProps = {
-      location,
-      history,
-    };
-    const { selected, type, search, key, currentDep, switchState } = this.state;
+
+    console.log(88888, 666);
+    const { selected, type, search, currentDep, switchState } = this.state;
     const selectedData = selected.data;
-    const { page, totalpage, data = [] } = searStaff;
     const depSn = currentDep.map(item => item.id);
     const checkAble = selectedData.filter(item =>
       depSn.indexOf(item.id) > -1).length === currentDep.length;
@@ -378,48 +333,19 @@ export default class SelDepartment extends Component {
           onSwitchChange={(check) => { this.setState({ switchState: check }); }}
           searchOncancel={this.searchOncancel}
         >
-          <div
-            // className={style.child}
-            style={{ ...(loading3 ? { display: 'none' } : null) }}
-          >
-            {!currentDep.length && <Nothing />}
-            {!search ? (
-              <SelDep
-                link=""
-                heightNone
-                hasExtra={false}
-                onRefresh={false}
-                name="id"
-                renderName="name"
-                dispatch={this.props.dispatch}
-                multiple={type === '1'}
-                selected={selected.data}
-                dataSource={currentDep}
-                extra={this.renderExtraContent}
-                onChange={this.getSelectResult}
-              />
-            ) : null}
-            {search ? (
-              <SeStaff
-                {...someProps}
-                type={key}
-                link=""
-                heightNone
-                name="staff_sn"
-                renderName="realname"
-                page={page}
-                totalpage={totalpage}
-                onPageChange={this.onPageChange}
-                dispatch={this.props.dispatch}
-                multiple={type === '1'}
-                selected={selected.data}
-                dataSource={data}
-                onRefresh={this.onRefresh}
-                onChange={this.getSelectResult}
-              />
-            ) : null}
-
-          </div>
+          <SelDep
+            link=""
+            onRefresh={false}
+            name="id"
+            heightNone
+            renderName="name"
+            dispatch={this.props.dispatch}
+            multiple={type === '1'}
+            selected={selected.data}
+            dataSource={currentDep}
+            extra={!search && !isConfig && this.renderExtraContent}
+            onChange={this.getSelectResult}
+          />
 
         </DepContainer>
       </div>

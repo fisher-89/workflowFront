@@ -286,7 +286,6 @@ export default class SelPerson extends Component {
           searchOncancel={this.searchOncancel}
         >
           <div
-            className={style.child}
             style={{ ...(loading1 || loading2 || loading3 ? { display: 'none' } : null) }}
           >
             {department.length && !search ? (

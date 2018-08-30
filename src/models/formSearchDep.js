@@ -1,8 +1,5 @@
 import {
-  // department,
-  getStaff,
-  firstDepartment,
-  // serachStaff,
+  getDepartment,
 } from '../services/formStaff';
 import defaultReducers from './reducers/default';
 import { makerFilters } from '../utils/util';
@@ -11,86 +8,19 @@ export default {
   namespace: 'formSearchDep',
   state: {
     department: [],
-    staff: [],
-    finalStaff: [],
-    searStaff: {
-      page: '',
-      totalpage: '',
-      data: [],
-    },
+    isConfig: true,
     breadCrumb: [],
-    pageInfo: {
-      page: '',
-      totalpage: '',
-    },
     currentKey: {
-
     },
-
   },
   effects: {
-    * fetchSearchStaff({ payload }, { put, call }) {
-      const { reqData, breadCrumb } = payload;
-      const params = makerFilters(reqData);
-      const response = yield call(firstDepartment, params);
-      const { children, staff } = response;
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'staff',
-          data: staff,
-        },
-      });
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'breadCrumb',
-          data: breadCrumb,
-        },
-      });
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'department',
-          data: children,
-        },
-      });
-    },
-    * fetchSelfDepStaff({ payload }, { put, call }) { // 自己部门员工列表
-      const { departmentId } = payload;
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'breadCrumb',
-          data: [],
-        },
-      });
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'department',
-          data: [],
-        },
-      });
-      const response = yield call(getStaff, departmentId);
-      if (response && !response.error) {
-        yield put({
-          type: 'save',
-          payload: {
-            store: 'staff',
-            data: response || [],
-          },
-        });
-      }
-    },
     * fetchFirstDepartment({ payload }, { put, call }) { // 一级部门列表
       const { breadCrumb, reqData } = payload;
       const params = makerFilters(reqData);
-      const response = yield call(firstDepartment, params);
-      console.log(response);
-
+      const response = yield call(getDepartment, params);
       if (response && !response.error) {
         const { data } = response;
+        const isConfig = response.is_config;
         yield put({
           type: 'save',
           payload: {
@@ -98,6 +28,13 @@ export default {
             data,
           },
         });
+        yield put({
+          type: 'save',
+          payload: {
+            store: 'isConfig',
+            data: isConfig,
+          },
+        });
       }
       yield put({
         type: 'save',
@@ -106,30 +43,6 @@ export default {
           data: breadCrumb,
         },
       });
-    },
-    * serachStaff({ payload }, { put, call, select }) {
-      const { searStaff } = yield select(_ => _.formSearchStaff);
-      const params = makerFilters(payload);
-      const response = yield call(firstDepartment, params);
-      if (response && !response.error) {
-        const res = response.data;
-        const { page, totalpage, data } = res;
-        let newStaff = null;
-        if (`${page}` !== '1') {
-          const oldData = searStaff.data;
-          const newData = oldData.concat(data);
-          newStaff = { data: newData, page, totalpage };
-        } else {
-          newStaff = { ...res };
-        }
-        yield put({
-          type: 'save',
-          payload: {
-            store: 'searStaff',
-            data: newStaff,
-          },
-        });
-      }
     },
 
   },

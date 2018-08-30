@@ -76,15 +76,13 @@ export default class PersonContainer extends Component {
             />
           )}
           {this.state.value || isFinal ? null : (
-            <div style={{ padding: '0 0.32rem' }} >
-              <List >
-                <List.Item
-                  arrow="horizontal"
-                  onClick={fetchDataSource}
-                >全部
-                </List.Item>
-              </List>
-            </div>
+            <List >
+              <List.Item
+                arrow="horizontal"
+                onClick={fetchDataSource}
+              >全部
+              </List.Item>
+            </List>
           )}
           {multiple && !this.state.value ? (
             <div className={style.action}>

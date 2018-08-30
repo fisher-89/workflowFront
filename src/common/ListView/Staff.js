@@ -6,16 +6,23 @@ import style from './index.less';
 export default class Staff extends Component {
   render() {
     const { value, onClick, checked, multiple, renderName = 'realname', isFinal = false } = this.props;
-    const className = multiple ? { className: [style.item, checked ? style.checked : null].join(' ') } : { className: style.single_item };
+    // const className = multiple ? { className: [style.item, checked ?
+    //  style.checked : null].join(' ') } : { className: style.single_item };
+
+    const className = checked ?
+      { className: multiple ? style.checked : style.single_checked } :
+      { className: multiple ? style.unchecked : style.single_unchecked };
     return (
       <div
-        className={style.action_item}
         onClick={() => onClick(value)}
       >
         <div
-          {...className}
+          className={style.seldep_item}
         >
-          <span>{value[renderName]}</span>
+          <div
+            {...className}
+          >{value[renderName]}
+          </div>
         </div>
         {isFinal ? (
           <React.Fragment>

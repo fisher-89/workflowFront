@@ -45,9 +45,6 @@
     flex-shrink: 0; // padding-left: 15px;
     color:@title-color;    
     .common_title();
-    // &.readonly {
-    //   color:@readonly-title-color;
-    // }
   }
 }
 
@@ -87,6 +84,15 @@
     }
     .am-list-item.am-textarea-item {
       border-bottom: 1px solid @split-line-color !important;
+    }
+  }
+}
+
+.readonly {
+  color:#ccc;
+  :global {
+    .am-textarea-control textarea{
+      color:#ccc!important;
     }
   }
 }

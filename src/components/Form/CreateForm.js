@@ -44,6 +44,7 @@ class CreateForm extends Component {
           const formatStr = formatDate(item.type);
           // let currentValue = newFormData[item.key];
           const currentValue = isJSON(newFormData[item.key]);
+          console.log('currentValue', currentValue);
           let value = currentValue;
           // if (item.type === 'array') {
           //   const reg = /^\[|\]$/g;
@@ -218,12 +219,12 @@ class CreateForm extends Component {
             </React.Fragment>
           );
         } else if (item.type === 'array') { // 数组
-          let currentValue = newFormData[item.key];
-          const reg = /^\[|\]$/g;
-          if (typeof (currentValue) === 'string') {
-            const str = currentValue.replace(reg, '');
-            currentValue = str.split(',');
-          }
+          const currentValue = newFormData[item.key];
+          // const reg = /^\[|\]$/g;
+          // if (typeof (currentValue) === 'string') {
+          //   const str = currentValue.replace(reg, '');
+          //   currentValue = str.split(',');
+          // }
           const options = (item.options || []).map((its) => {
             const obj = {};
             obj.label = its;
@@ -273,28 +274,14 @@ class CreateForm extends Component {
             />
           );
         }
-        // if (item.type === 'staff') {
-        //   const { value } = itemkey;
-        //   return (
-        //     <List.Item
-        //       key={i}
-        //       arrow="horizontal"
-        //       extra={this.renderCurrent(value, 'staff_name')}
-        //       onClick={() => this.chosePerson(item, itemkey)}
-        //     >
-        //       {item.name}
-        //     </List.Item>
-        //   );
-        // } else
-
         if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
           if (item.type === 'array') {
-            let currentValue = itemkey.value;
-            const reg = /^\[|\]$/g;
-            if (typeof (currentValue) === 'string') {
-              const str = currentValue.replace(reg, '');
-              currentValue = str.split(',');
-            }
+            const currentValue = itemkey.value;
+            // const reg = /^\[|\]$/g;
+            // if (typeof (currentValue) === 'string') {
+            //   const str = currentValue.replace(reg, '');
+            //   currentValue = str.split(',');
+            // }
             const options = (item.options || []).map((its) => {
               const obj = {};
               obj.label = its;

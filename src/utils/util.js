@@ -293,7 +293,7 @@ export function isJSON(str) {
     else { return str }
   }
   catch (e) {
-    return str
+    return ''
   }
 }
 
