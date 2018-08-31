@@ -4,6 +4,7 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff } from '../../common/ListView/index.js';
+import { makeFieldValue } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -93,11 +94,16 @@ export default class SelPerson extends Component {
     if (type !== '1') {
       this.getSingleSelect(result);
     } else {
+      const newResult = result.map((item) => {
+        const obj = { ...item };
+        obj.staff_name = item.realname || item.staff_name;
+        return obj;
+      });
       this.setState({
         selected: {
           ...selected,
-          data: result,
-          num: result.length,
+          data: newResult,
+          num: newResult.length,
         },
       });
     }
@@ -128,11 +134,12 @@ export default class SelPerson extends Component {
     const { key, type } = params;
     const current = currentKey[`${key}`] || {};
     const { data = [] } = current;
+    const newData = makeFieldValue(data, { staff_name: 'realname' }, true);
     const obj = {
       selected: {
-        data,
+        data: newData,
         total: 50,
-        num: data.length,
+        num: newData.length,
       },
       selectAll: false,
       search: '',

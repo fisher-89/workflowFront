@@ -266,25 +266,27 @@
   background: #fff;
   font-size: 16px;
   border-bottom: 1px solid rgb(250, 250, 250);
-  .single_item {
-    // height: 48/75rem;
-    // line-height: 48/75rem;
-    .textLineOverFlow()
-  }
   .baseinfo {
+    
     width: 590/75rem;
     .textLineOverFlow()
   }
   .item {
     border-bottom: none;
     display: flex;
-    height: 48/75rem;
+    height: 64/75rem;
+    line-height: 64/75rem;
     align-items: center;
     background: url(../../assets/select_icon/unseled.png) no-repeat right center;
     background-size: 44/75rem;
     &.checked {
       background: url(../../assets/select_icon/selected.png) no-repeat right center;
       background-size: 44/75rem;
+    }
+    &.single_item {
+      background: url(../../assets/select_icon/singled.png) no-repeat right center;
+      background-size: 44/75rem;
+      .textLineOverFlow()
     }
   }
 }

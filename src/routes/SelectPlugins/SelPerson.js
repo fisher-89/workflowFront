@@ -224,6 +224,7 @@ export default class SelPerson extends Component {
       },
     });
   }
+
   searchOncancel = () => {
     this.setState({
       search: '',
@@ -281,7 +282,7 @@ export default class SelPerson extends Component {
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
           handleBread={this.selDepartment}
-          firstDepartment={this.firstDepartment}
+          fetchDataSource={this.firstDepartment}
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
         >

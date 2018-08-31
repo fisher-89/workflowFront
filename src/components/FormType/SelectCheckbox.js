@@ -4,22 +4,22 @@ import { connect } from 'dva';
 import {
   List, Picker, TextareaItem,
 } from 'antd-mobile';
-import CheckBox from '../ModalFilters/CheckBox';
-import style from '../for/index.less';
+import CheckBoxs from '../ModalFilters/CheckBox';
+import style from './index.less';
 
 
 class SelectCheckbox extends React.Component {
   renderFormPicker = (value, options, item) => {
+    const { onChange } = this.props;
     return (
       <Picker
         cols={1}
-        value={value}
+        value={[value]}
         data={options}
-        onChange={e => this.onhandleSingleChange(e[0], item)}
+        onChange={e => onChange(e[0], item)}
       >
         <List.Item
           arrow="horizontal"
-        // onClick={this.onClick}
         >
           {item.name}
         </List.Item>
@@ -28,13 +28,8 @@ class SelectCheckbox extends React.Component {
   }
 
   render() {
-    const {
-      isEdit,
-      field,
-      data: { value },
-      field: { type, name },
-      options, onChange } = this.props;
-
+    const { isEdit, field, data: { value },
+      field: { type, name }, options, defaultValue, onChange } = this.props;
     const cls = classNames(style.title, {
       [style.readonly]: !isEdit,
     });
@@ -43,18 +38,19 @@ class SelectCheckbox extends React.Component {
         <div className={style.file}>
           <p className={cls}>{name}</p>
           <div className={style.array_container}>
-            <CheckBox
+            <CheckBoxs
               style={{ marginBottom: '10px' }}
               options={options}
-              value={isEdit ? value : defaultValue}
-              {...(!isEdit && { onChange: v => onChange(v, field) })}
+              value={isEdit ? value || [] : defaultValue || []}
+              {...(isEdit && { onChange: v => onChange(v, field) })}
+              readonly={!isEdit}
             />
           </div>
         </div>
       );
     }
     return isEdit ? (this.renderFormPicker(value, options, field)) : (
-      <div className={style.readonly} key={i} >
+      <div className={style.readonly} >
         <TextareaItem
           title={name}
           autoHeight
@@ -67,18 +63,7 @@ class SelectCheckbox extends React.Component {
 }
 SelectCheckbox.defaultProps = {
   isEdit: true,
+  data: {},
 };
 
-export default connect()(SelectComp);
-
-// <div className={style.file}>
-//           <p className={style.title}>{item.name}</p>
-//           <div className={style.array_container}>
-//             <CheckBox
-//               style={{ marginBottom: '10px' }}
-//               options={options}
-//               value={value}
-//               onChange={v => onChange(v, item)}
-//             />
-//           </div>
-//         </div>
+export default connect()(SelectCheckbox);

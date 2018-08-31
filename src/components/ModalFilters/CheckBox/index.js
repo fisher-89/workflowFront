@@ -18,6 +18,7 @@ class CheckBox extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { value, multiple } = nextProps;
+
     if (JSON.stringify(value) !== JSON.stringify(this.props.value)) {
       let newValue = [];
       newValue = value || (multiple ? [] : '');
@@ -35,6 +36,7 @@ class CheckBox extends React.PureComponent {
           pushAble = false;
         }
       });
+
       if (pushAble) {
         newValue.push(changeValue);
       } else {

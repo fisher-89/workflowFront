@@ -290,7 +290,7 @@ export function isJSON(str) {
     if (typeof obj === 'object' && obj) {
       return obj
     }
-    else { return str }
+    else { return '' }
   }
   catch (e) {
     return ''
@@ -364,7 +364,6 @@ Array.prototype.unique = function (name = "id") {
   return newData
 }
 
-
 export function initCurrentObj(v, item) {
   const { key } = item;
   const obj = {
@@ -374,4 +373,26 @@ export function initCurrentObj(v, item) {
     msg: '',
   };
   return { ...obj };
+}
+
+export function makeFieldValue(value, name, multiple = false) {
+  const keys = Object.keys(name);
+  if (multiple) {
+    const newValue = value.map(item => {
+      return getFieldValue(item, keys, name)
+    })
+    return newValue;
+  }
+  const newValue = getFieldValue(value, keys, name)
+  return newValue;
+}
+
+export function getFieldValue(value, keys, name) {
+  const newValue = { ...value };
+  keys.forEach(key => {
+    const newKey = name[key];
+    delete newValue[key];
+    newValue[newKey] = value[key]
+  })
+  return newValue
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { List, TextareaItem } from 'antd-mobile';
 import { connect } from 'dva';
+import { isJSON } from '../../utils/util';
 import './index.less';
 
 const dispatchColumn = {
@@ -46,7 +47,8 @@ class SelectComp extends React.Component {
   }
 
   renderCurrent = (data, name) => {
-    return (data || []).map(item => `${item[name]}、`);
+    const newData = isJSON(newData);
+    return (newData || []).map(item => `${item[name]}、`);
   }
 
   render() {
@@ -68,10 +70,10 @@ class SelectComp extends React.Component {
     }
     return (
       <TextareaItem
-        title={item.name}
+        title={field.name}
         autoHeight
         editable={false}
-        value={this.renderCurrent(defaultValue || [], name)}
+        value={this.renderCurrent(defaultValue || [], name).join('')}
       />
     );
   }

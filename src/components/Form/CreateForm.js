@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
-  List, InputItem, Toast, DatePicker, ImagePicker, Modal,
-  Carousel, TextareaItem, Picker,
+  List, Toast, Modal,
+  Carousel,
 } from 'antd-mobile';
 import { connect } from 'dva';
 import moment from 'moment';
-import { SelectComp } from '../FormType';
+import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload } from '../FormType';
 import {
   dealThumbImg,
   reAgainImg,
@@ -14,7 +14,7 @@ import {
 
 import { formatDate, isJSON } from '../../utils/util';
 import style from './index.less';
-import CheckBoxs from '../../components/ModalFilters/CheckBox';
+// import CheckBoxs from '../../components/ModalFilters/CheckBox';
 
 class CreateForm extends Component {
   state = {
@@ -38,13 +38,12 @@ class CreateForm extends Component {
     const editableForm = nextprops.editable_form;
     const newFormData = nextprops.form_data;
     if (newFormData && (!this.state.init)) {
+      const formData = [];
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {
         editableForm.map((item) => {
           const formatStr = formatDate(item.type);
-          // let currentValue = newFormData[item.key];
           const currentValue = isJSON(newFormData[item.key]);
-          console.log('currentValue', currentValue);
           let value = currentValue;
           // if (item.type === 'array') {
           //   const reg = /^\[|\]$/g;
@@ -64,6 +63,9 @@ class CreateForm extends Component {
               value = moment().format(formatStr);
             }
           }
+          const formItem = {};
+          formItem[item.key] = value;
+          formData.push(formItem);
           const obj = {
             key: item.key,
             value,
@@ -87,7 +89,7 @@ class CreateForm extends Component {
         init: true,
         editableForm,
         showForm,
-        newFormData,
+        newFormData: formData,
         formdata: tempFormdata,
         ...obj,
       });
@@ -133,7 +135,7 @@ class CreateForm extends Component {
     this.bindFormDataChange(obj, item);
   }
 
-  onhandleSingleChange = (v, item) => {
+  onhandleCheckChange = (v, item) => {
     const obj = this.initCurrentObj(v, item);
     this.bindFormDataChange(obj, item);
   }
@@ -184,223 +186,159 @@ class CreateForm extends Component {
         });
       }
       const isEdit = editKey.indexOf(item.key) > -1;
-      if (!isEdit) { // 只读
-        if (item.type === 'staff') {
-          const value = newFormData[item.key];
-          return (
-            <List.Item
-              key={i}
-              extra={this.renderCurrent(value, 'staff_name')}
-            >
-              {item.name}
-            </List.Item>
-          );
-        } else if (item.type === 'file') { // 文件
-          return (
-            <React.Fragment key={i}>
-              <div className={style.file}>
-                <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
-                <div className={style.array_container}>
-                  <div className={style.show_img}>
-                    {(newFormData[item.key] || []).map((its, ix) => {
-                      const x = item.key + ix;
-                      return (
-                        <img
-                          src={`${its}`}
-                          key={x}
-                          alt="图片"
-                          onClick={() => this.reviewReadImg(x, newFormData[item.key])}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </React.Fragment>
-          );
-        } else if (item.type === 'array') { // 数组
-          const currentValue = newFormData[item.key];
-          // const reg = /^\[|\]$/g;
-          // if (typeof (currentValue) === 'string') {
-          //   const str = currentValue.replace(reg, '');
-          //   currentValue = str.split(',');
-          // }
-          const options = (item.options || []).map((its) => {
-            const obj = {};
-            obj.label = its;
-            obj.value = its;
-            return obj;
-          });
-          return (
-            <React.Fragment key={i} >
-              <div className={style.file}>
-                <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
-                <div className={style.array_container}>
-                  <CheckBoxs
-                    style={{ marginBottom: '10px' }}
-                    options={options}
-                    value={currentValue}
-                    readonly
-                  />
-                </div>
-              </div>
-            </React.Fragment>
-          );
-        }
+      // if (!isEdit) { // 只读
+      // if (item.type === 'staff') {
+      //   const value = newFormData[item.key];
+      //   return (
+      //     <List.Item
+      //       key={i}
+      //       extra={this.renderCurrent(value, 'staff_name')}
+      //     >
+      //       {item.name}
+      //     </List.Item>
+      //   );
+      // }
+
+      //    if (item.type === 'file') { // 文件
+      //     return (
+      //       <React.Fragment key={i}>
+      //         <div className={style.file}>
+      //           <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
+      //           <div className={style.array_container}>
+      //             <div className={style.show_img}>
+      //               {(newFormData[item.key] || []).map((its, ix) => {
+      //                 const x = item.key + ix;
+      //                 return (
+      //                   <img
+      //                     src={`${its}`}
+      //                     key={x}
+      //                     alt="图片"
+      //                     onClick={() => this.reviewReadImg(x, newFormData[item.key])}
+      //                   />
+      //                 );
+      //               })}
+      //             </div>
+      //           </div>
+      //         </div>
+      //       </React.Fragment>
+      //     );
+      //   } else if (item.type === 'array') { // 数组
+      //     const currentValue = newFormData[item.key];
+      //     // const reg = /^\[|\]$/g;
+      //     // if (typeof (currentValue) === 'string') {
+      //     //   const str = currentValue.replace(reg, '');
+      //     //   currentValue = str.split(',');
+      //     // }
+      //     const options = (item.options || []).map((its) => {
+      //       const obj = {};
+      //       obj.label = its;
+      //       obj.value = its;
+      //       return obj;
+      //     });
+      //     return (
+      //       <React.Fragment key={i} >
+      //         <div className={style.file}>
+      //           <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
+      //           <div className={style.array_container}>
+      //             <CheckBoxs
+      //               style={{ marginBottom: '10px' }}
+      //               options={options}
+      //               value={currentValue}
+      //               readonly
+      //             />
+      //           </div>
+      //         </div>
+      //       </React.Fragment>
+      //     );
+      //   }
+      //   return (
+      //     <div className={style.readonly} key={i}>
+      //       <TextareaItem
+      //         title={item.name}
+      //         autoHeight
+      //         editable={false}
+      //         value={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
+      //       />
+      //     </div>
+      //   );
+      // }
+      // 可改
+      // if (isEdit) {
+      if (item.type === 'department' || item.type === 'staff') {
+        const { evtClick, history } = this.props;
         return (
-          <div className={style.readonly} key={i}>
-            <TextareaItem
-              title={item.name}
-              autoHeight
-              editable={false}
-              value={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
-            />
-          </div>
+          <SelectComp
+            history={history}
+            isEdit={isEdit}
+            evtClick={evtClick}
+            field={item}
+            defaultValue={newFormData[item.key]}
+            data={itemkey}
+            key={i}
+            selComponentCb={this.selComponentCb}
+          />
         );
       }
-      // 可改
-      if (isEdit) {
-        if (item.type === 'department' || item.type === 'staff') {
-          const { evtClick, history } = this.props;
-          return (
-            <SelectComp
-              history={history}
-              evtClick={evtClick}
-              field={item}
-              defaultValue={newFormData[item.key]}
-              data={itemkey}
-              key={i}
-              selComponentCb={this.selComponentCb}
-            />
-          );
-        }
-        if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
-          if (item.type === 'array') {
-            const currentValue = itemkey.value;
-            // const reg = /^\[|\]$/g;
-            // if (typeof (currentValue) === 'string') {
-            //   const str = currentValue.replace(reg, '');
-            //   currentValue = str.split(',');
-            // }
-            const options = (item.options || []).map((its) => {
-              const obj = {};
-              obj.label = its;
-              obj.value = its;
-              return obj;
-            });
-            return (
-              <React.Fragment key={i}>
-                <div className={style.file}>
-                  <p className={style.title}>{item.name}</p>
-                  <div className={style.array_container}>
-                    <CheckBoxs
-                      style={{ marginBottom: '10px' }}
-                      options={options}
-                      value={currentValue}
-                      onChange={v => this.onChange(v, item)}
-                    />
-                  </div>
-                </div>
-              </React.Fragment>
-            );
-          } else {
-            const data = item.options.map((its) => {
-              const obj = {};
-              obj.label = its;
-              obj.value = its;
-              return obj;
-            });
-            return (
-              <React.Fragment key={i}>
-                <Picker
-                  data={data}
-                  cols={1}
-                  value={[itemkey.value]}
-                  onChange={e => this.onhandleSingleChange(e[0], item)}
-                >
-                  <List.Item arrow="horizontal" onClick={this.onClick}>{item.name}</List.Item>
-                </Picker>
-              </React.Fragment>
-            );
-          }
-        } else if (item.type === 'text') {
-          if (item.max > 10) {
-            return (
-              <React.Fragment key={i}>
-                <TextareaItem
-                  title={item.name}
-                  autoHeight
-                  placeholder={item.description}
-                  error={itemkey.hasError}
-                  onErrorClick={() => this.onErrorClick(item)}
-                  onChange={e => this.onChange(e, item)}
-                  value={itemkey.value}
-                />
-              </React.Fragment>
-            );
-          } else {
-            return (
-              <React.Fragment key={i}>
-                <InputItem
-                  placeholder={item.description}
-                  error={itemkey.hasError}
-                  onErrorClick={() => this.onErrorClick(item)}
-                  onChange={e => this.onChange(e, item)}
-                  value={itemkey.value}
-                >{item.name}
-                </InputItem>
-              </React.Fragment>
-            );
-          }
-        } else if (item.type === 'int') {
-          return (
-            <React.Fragment key={i}>
-              <InputItem
-                placeholder={item.description}
-                error={itemkey.hasError}
-                type="number"
-                onErrorClick={() => this.onErrorClick(item)}
-                onChange={e => this.onChange(e, item)}
-                value={itemkey.value}
-              >{item.name}
-              </InputItem>
-            </React.Fragment>
-          );
-        } else if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
-          return (
-            <React.Fragment key={i}>
-              <DatePicker
-                mode={item.type}
-                onChange={e => this.timeChange(e, item)}
-                value={item.type === 'time' ? new Date(`2018/8/1 ${itemkey.value}`) : new Date(itemkey.value)}
-              >
-                <List.Item arrow="horizontal">{item.name}</List.Item>
-              </DatePicker>
-            </React.Fragment>
-          );
-        } else if (item.type === 'file') {
-          return (
-            <React.Fragment key={i}>
-              <div className={style.file}>
-                <p className={style.title}>{item.name}</p>
-                <div className={style.picker_container}>
-                  <ImagePicker
-                    files={itemValue}
-                    onChange={(file, type, index) => this.filesOnchange(file, type, index, item)}
-                    onImageClick={e => this.reviewImg(e, itemValue)}
-                    selectable={itemValue ? itemValue.length < 5 : true}
-                    accept="image/gif,image/jpeg,image/jpg,image/png"
-                  />
-                </div>
-              </div>
-            </React.Fragment>
-          );
-        } else {
-          return <p key={i}>其他</p>;
-        }
+      if (item.options && item.options.length) { // 有options，说明是复选框或者单选框
+        const options = (item.options || []).map((its) => {
+          const obj = {};
+          obj.label = `${its}`;
+          obj.value = `${its}`;
+          return obj;
+        });
+        return (
+          <SelectCheckbox
+            key={i}
+            field={item}
+            isEdit={isEdit}
+            defaultValue={newFormData[item.key]}
+            data={itemkey || {}}
+            options={options}
+            onChange={this.onhandleCheckChange}
+          />
+        );
+      } else if (item.type === 'text' || item.type === 'int') {
+        return (
+          <TextInput
+            onChange={this.onChange}
+            field={item}
+            key={i}
+            isEdit={isEdit}
+            defaultValue={newFormData[item.key]}
+            data={itemkey}
+          />
+        );
       }
-      return item;
-    });
+
+      if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
+        return (
+          <FormDate
+            onChange={this.timeChange}
+            field={item}
+            key={i}
+            isEdit={isEdit}
+            defaultValue={newFormData[item.key]}
+            data={itemkey}
+          />
+        );
+      } else if (item.type === 'file') {
+        return (
+          <Upload
+            onChange={this.bindFormDataChange}
+            field={item}
+            key={i}
+            isEdit={isEdit}
+            defaultValue={newFormData[item.key]}
+            data={itemValue}
+          />
+        );
+      } else {
+        return <p key={i}>其他</p>;
+      }
+    }
+      // return item;
+    // }
+    );
   }
 
   initCurrentObj = (v, item) => {
@@ -511,54 +449,6 @@ class CreateForm extends Component {
       }
     });
     evtClick(datas);
-  }
-
-  chosePerson = (item, current) => {
-    const { key, value } = current;
-    const { type, id } = item;
-    const isMuti = item.is_checkbox;
-    const { dispatch, history, evtClick } = this.props;
-    const newKey = `${type}_${key}_${id}`;
-    evtClick();
-    dispatch({
-      type: 'formSearchStaff/saveSelectStaff',
-      payload: {
-        key: newKey,
-        value: value || [],
-      },
-    });
-    dispatch({
-      type: 'formSearchStaff/saveCback',
-      payload: {
-        key: newKey,
-        cb: data => this.selComponentCb(item, data),
-      },
-    });
-    history.push(`/form_sel_person/${newKey}/${isMuti}/${id}`);
-  }
-
-  choseDepartment = (item, current) => {
-    const { key, value } = current;
-    const { type, id } = item;
-    const isMuti = item.is_checkbox;
-    const { dispatch, history, evtClick } = this.props;
-    const newKey = `${type}_${key}_${id}`;
-    evtClick();
-    dispatch({
-      type: 'formSearchDep/saveSelectDepartment',
-      payload: {
-        key: newKey,
-        value: value || [],
-      },
-    });
-    dispatch({
-      type: 'formSearchDep/saveCback',
-      payload: {
-        key: newKey,
-        cb: data => this.selComponentCb(item, data),
-      },
-    });
-    history.push(`/form_sel_department/${newKey}/${isMuti}/${id}`);
   }
 
 

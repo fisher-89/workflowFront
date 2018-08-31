@@ -310,7 +310,6 @@ export default class SelDepartment extends Component {
       isConfig,
     } = this.props;
 
-    console.log(88888, 666);
     const { selected, type, search, currentDep, switchState } = this.state;
     const selectedData = selected.data;
     const depSn = currentDep.map(item => item.id);

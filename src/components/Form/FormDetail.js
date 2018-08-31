@@ -5,9 +5,10 @@ import { List, Modal, Carousel } from 'antd-mobile';
 import {
   connect,
 } from 'dva';
-import style from './index.less';
-import CheckBoxs from '../../components/ModalFilters/CheckBox';
 import { dealThumbImg } from '../../utils/convert';
+import { SelectComp, SelectCheckbox, TextInput, Upload } from '../FormType';
+
+import style from './index.less';
 
 class FormDetail extends Component {
   state = {
@@ -22,69 +23,102 @@ class FormDetail extends Component {
     const formData = this.props.form_data;
     return showForm.map((item, i) => {
       const idx = i;
-      if (item.type === 'file') { // 文件
+      if (item.type === 'department' || item.type === 'staff') {
         return (
-          <React.Fragment>
-            <div key={idx} className={style.file}>
-              <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
-              <div className={style.array_container}>
-                <div className={style.show_img}>
-                  {(formData[item.key] || []).map((its, x) => {
-              const ix = x;
-            return (
-              <img
-                src={`${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}`}
-                key={ix}
-                alt="图片"
-                onClick={() => this.reviewImg(ix, formData[item.key])}
-              />);
-        })}
-                </div>
-              </div>
-            </div>
-          </React.Fragment>
+          <SelectComp
+            isEdit={false}
+            field={item}
+            defaultValue={formData[item.key]}
+            key={idx}
+          />
+        );
+      }
+      if (item.type === 'file') { // 文件
+        // return (
+        //   <React.Fragment>
+        //     <div key={idx} className={style.file}>
+        //       <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
+        //       <div className={style.array_container}>
+        //         <div className={style.show_img}>
+        //           {(formData[item.key] || []).map((its, x) => {
+        //       const ix = x;
+        //     return (
+        //       <img
+        //         src={`${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}`}
+        //         key={ix}
+        //         alt="图片"
+        //         onClick={() => this.reviewImg(ix, formData[item.key])}
+        //       />);
+        // })}
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </React.Fragment>
 
+        // );
+        const files = (formData[item.key] || []).map((its) => { return { url: dealThumbImg(`${UPLOAD_PATH}${its}`, '_thumb') }; });
+        return (
+          <Upload
+            field={item}
+            key={idx}
+            isEdit={false}
+            data={files}
+          />
         );
       } else if (item.type === 'array') { // 数组
-        let currentValue = formData[item.key];
-        const reg = /^\[|\]$/g;
-        if (typeof (currentValue) === 'string') {
-          const str = currentValue.replace(reg, '');
-          currentValue = str.split(',');
-        }
+        // let currentValue = formData[item.key];
+        // const reg = /^\[|\]$/g;
+        // if (typeof (currentValue) === 'string') {
+        //   const str = currentValue.replace(reg, '');
+        //   currentValue = str.split(',');
+        // }
         const options = (item.options || []).map((its) => {
           const obj = {};
           obj.label = its;
           obj.value = its;
           return obj;
         });
-        return (
-          <React.Fragment>
-            <div key={idx} className={style.file}>
-              <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
-              <div className={style.array_container}>
-                <CheckBoxs
-                  options={options}
-                  style={{ marginBottom: '10px' }}
-                  value={currentValue}
-                  readonly
-                />
-              </div>
-            </div>
-          </React.Fragment>
+        // return (
+        //   <React.Fragment>
+        //     <div key={idx} className={style.file}>
+        //       <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
+        //       <div className={style.array_container}>
+        //         <CheckBoxs
+        //           options={options}
+        //           style={{ marginBottom: '10px' }}
+        //           value={currentValue}
+        //           readonly
+        //         />
+        //       </div>
+        //     </div>
+        //   </React.Fragment>
 
+        // );
+        return (
+          <SelectCheckbox
+            key={idx}
+            field={item}
+            isEdit={false}
+            defaultValue={formData[item.key]}
+            options={options}
+          />
         );
       }
       return (
-        <React.Fragment>
-          <List.Item
-            key={idx}
-            extra={<span style={{ color: '#ccc' }}>{formData && formData[item.key] ? formData[item.key] : '暂无'}</span>}
-            size="small"
-          >
-            <span>{item.name}</span>
-          </List.Item>
-        </React.Fragment>
+        // <List.Item
+        //   key={idx}
+        //   extra={<span style={{ color: '#ccc' }}>{formData && formData[item.key]
+        //  ? formData[item.key] : '暂无'}</span>}
+        //   size="small"
+        // >
+        //   <span>{item.name}</span>
+        // </List.Item>
+        <TextInput
+          defaultValue={formData[item.key]}
+          key={idx}
+          field={item}
+          isEdit={false}
+        />
       );
     });
   }
