@@ -375,20 +375,23 @@ export function initCurrentObj(v, item) {
   return { ...obj };
 }
 
-export function makeFieldValue(value, name, multiple = false) {
+export function makeFieldValue(value, name, multiple = false, include = false) {
   const keys = Object.keys(name);
   if (multiple) {
     const newValue = value.map(item => {
-      return getFieldValue(item, keys, name)
+      return getFieldValue(item, keys, name, include)
     })
     return newValue;
   }
-  const newValue = getFieldValue(value, keys, name)
+  const newValue = getFieldValue(value, keys, name, include)
   return newValue;
 }
 
-export function getFieldValue(value, keys, name) {
-  const newValue = { ...value };
+export function getFieldValue(value, keys, name, include) {
+  let newValue = {};
+  if (include) {
+    newValue = { ...item }
+  }
   keys.forEach(key => {
     const newKey = name[key];
     delete newValue[key];

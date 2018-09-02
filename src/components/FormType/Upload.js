@@ -80,7 +80,6 @@ export default class Upload extends React.Component {
   renderFormDate = () => {
     const { data, field, isEdit } = this.props;
     const { name } = field;
-    console.log('data', data);
     return (
       <div className={style.file} >
         <p className={style.title}>{name}</p>

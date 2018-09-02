@@ -23,6 +23,15 @@ export async function getDepartment(params) {
   });
 }
 
+export async function getShopList(params) {
+  // const urlParams = url ? `?${url}` : '';
+  return request('/api/shop', {
+    method: 'GET',
+    body: params,
+  });
+}
+
+
 export async function serachStaff(search) {
   return request(`/api/oa/staff?${search}`, null, false);
 }

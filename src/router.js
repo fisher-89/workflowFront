@@ -64,10 +64,6 @@ function RouterConfig({
   },
   {
     path: '/approvelist',
-    // models: () => [
-    //   import('./models/approve'),
-    //   import('./models/list'),
-    // ],
     models: ['approve', 'list'],
 
     component: () =>
@@ -75,49 +71,30 @@ function RouterConfig({
   },
   {
     path: '/approve/:id',
-    // models: () => [
-    //   import('./models/approve'),
-    //   import('./models/start'),
-
-    // ],
     models: ['approve', 'start'],
 
     component: () =>
       import('./routes/Approved/ApproveDetail'),
   }, {
     path: '/approve_grid/:type/:index',
-    // models: () => [
-    //   import('./models/approve'),
-    // ],
     models: ['approve'],
 
     component: () =>
       import('./routes/Approved/ApproveGridDetail'),
   }, {
     path: '/approve_grid_edit/:type/:index',
-    // models: () => [
-    //   import('./models/approve'),
-    // ],
     models: ['approve'],
-
     component: () =>
       import('./routes/Approved/ApproveEditGrid'),
   },
   {
     path: '/select_step',
-    // models: () => [
-    //   import('./models/start'),
-    // ],
     models: ['start'],
 
     component: () =>
       import('./routes/TableEdit/SelectStep'),
   }, {
     path: '/select_approver/:id',
-    // models: () => [
-    //   import('./models/start'),
-
-    // ],
     models: ['start'],
 
     component: () =>
@@ -125,20 +102,12 @@ function RouterConfig({
   },
   {
     path: '/start_list',
-    // models: () => [
-    //   import('./models/start'),
-    //   import('./models/list'),
-    // ],
     models: ['list', 'start'],
-
     component: () =>
       import('./routes/TableEdit/StartList'),
   },
   {
     path: '/start_detail/:id',
-    // models: () => [
-    //   import('./models/start'),
-    // ],
     models: ['start'],
 
     component: () =>
@@ -146,9 +115,6 @@ function RouterConfig({
   },
   {
     path: '/search_staff/:dep_id',
-    // models: () => [
-    //   import('./models/start'),
-    // ],
     models: ['start'],
 
     component: () =>
@@ -171,6 +137,12 @@ function RouterConfig({
     models: ['formSearchDep'],
     component: () =>
       import('./routes/SelectPlugins/SelDepartment'),
+  },
+  {
+    path: '/form_sel_shop/:key/:type/:fieldId',
+    models: ['formSearchShop'],
+    component: () =>
+      import('./routes/SelectPlugins/SelShop'),
   },
   {
     path: '/my',

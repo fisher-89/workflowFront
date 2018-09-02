@@ -17,6 +17,7 @@ import FinalStaff from './FinalStaff';
 // import PaticipantBuckle from './PaticipantBuckle';
 // import Auditted from './Auditted';
 import SelDep from './SelDep';
+import Shop from './Shop';
 
 export {
   Department,
@@ -37,4 +38,5 @@ export {
   // Auditted,
   // EventList,
   SelDep,
+  Shop,
 };

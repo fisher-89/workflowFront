@@ -108,7 +108,7 @@ export default class ListControl extends Component {
   }
 
   findNotBelong = () => {
-    const { filterColumns } = this.props;
+    const { filterColumns = [] } = this.props;
     const notBelongs = filterColumns.filter(item => item.notbelong);
     return notBelongs;
   }
@@ -222,16 +222,48 @@ export default class ListControl extends Component {
     });
   }
 
-  render() {
-    const { children, tab, filterColumns, searchColumns, defaultSort, sortList = [], top = '3.813333rem' } = this.props;
-    const { type, searchValue } = this.state;
-    const initIndex = findInitIndex(tab, 'type', type);
-    const searchName = searchColumns.name;
+  renderFilter = () => {
+    const { filterColumns, children, sortList = [] } = this.props;
+    const activeStyle = Object.keys(this.filters || {}).length ? style.active : null;
     let [sortItem] = sortList.filter(item => item.value === this.sorter);
     if (!sortItem) {
       [sortItem] = sortList;
     }
-    const activeStyle = Object.keys(this.filters || {}).length ? style.active : null;
+    return (
+      <React.Fragment>
+        {filterColumns && (
+        <div className={style.filter_con}>
+          <div
+            className={[style.dosort].join(' ')}
+            onClick={() => this.handleVisible(true, 'sort')}
+          >
+            {sortItem.name}
+            <span style={{
+            backgroundImage: `url(${sortItem.icon})`,
+            backgroundPosition: 'right center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '0.4rem',
+          }}
+            />
+          </div>
+          <div
+            className={[style.filter, activeStyle].join(' ')}
+            onClick={() => this.handleVisible(true, 'filter')}
+          >筛选
+            <span />
+          </div>
+        </div>
+        )}
+        {children}
+      </React.Fragment>
+    );
+  }
+
+  render() {
+    const { tab, filterColumns, searchColumns, defaultSort, sortList = [], top = '3.813333rem' } = this.props;
+    const { type, searchValue } = this.state;
+    const initIndex = findInitIndex(tab, 'type', type);
+    const searchName = searchColumns.name;
 
     return (
       <div className={styles.con}>
@@ -242,6 +274,7 @@ export default class ListControl extends Component {
             onChange={value => this.searchOnchange(searchName, value)}
           />
         </div>
+        {tab && tab.length && (
         <Tabs
           tabs={tab}
           swipeable={false}
@@ -254,31 +287,10 @@ export default class ListControl extends Component {
           onChange={this.statusChange}
           initialPage={initIndex}
         >
-          <React.Fragment>
-            <div className={style.filter_con}>
-              <div
-                className={[style.dosort].join(' ')}
-                onClick={() => this.handleVisible(true, 'sort')}
-              >
-                {sortItem.name}
-                <span style={{
-                  backgroundImage: `url(${sortItem.icon})`,
-                  backgroundPosition: 'right center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '0.4rem',
-                }}
-                />
-              </div>
-              <div
-                className={[style.filter, activeStyle].join(' ')}
-                onClick={() => this.handleVisible(true, 'filter')}
-              >筛选
-                <span />
-              </div>
-            </div>
-            {children}
-          </React.Fragment>
+          {this.renderFilter()}
         </Tabs>
+        )}
+        {(!tab || (tab && !tab.length)) && this.renderFilter()}
         <ModalFilters
           visible={this.state.visible}
           model={this.state.model}
@@ -286,7 +298,7 @@ export default class ListControl extends Component {
           top={top}
           sorter={this.sorter || defaultSort}
           onResetForm={this.onResetForm}
-          filterColumns={filterColumns}
+          filterColumns={filterColumns || []}
           sorterData={sortList}
           fetchDataSource={this.fetchFiltersDataSource}
           onCancel={this.handleVisible}
@@ -301,5 +313,6 @@ ListControl.defaultProps = {
     name: 'name',
     defaultValue: '',
   },
+  tab: [],
   handleFetchDataSource: () => { },
 };

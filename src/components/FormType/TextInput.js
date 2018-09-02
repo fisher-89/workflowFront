@@ -27,14 +27,13 @@ class TextInput extends React.Component {
 
   render() {
     const { isEdit, field: { name }, defaultValue } = this.props;
-    console.log('defaultValue', defaultValue);
     return isEdit ? (this.renderFormInput()) : (
       <div className={style.readonly} >
         <TextareaItem
           title={name}
           autoHeight
           editable={false}
-          value={`${defaultValue}` || '暂无'}
+          value={`${defaultValue || ''}` || '暂无'}
         />
       </div>
     );

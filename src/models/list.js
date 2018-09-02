@@ -1,6 +1,5 @@
 import * as c from '../services/start';
 import * as a from '../services/approve';
-
 // import defaultReducers from './reducers/default';
 const initDatas = {
   page: 1,
@@ -8,12 +7,19 @@ const initDatas = {
   data: [],
 };
 const initLists = {
+  '/form_sel_shop_all': {
+    type: 'all',
+    url: {
+      type: 'all',
+      page: 1,
+    },
+    datas: { ...initDatas },
+  },
   '/approvelist_all': {
     type: 'all',
     url: {
       type: 'all',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },
@@ -124,6 +130,7 @@ export default {
         });
       }
     },
+
     * getApproList({ payload }, { call, put }) {
       const data = yield call(a.getApproList, payload.parms);
       if (data && !data.error) {

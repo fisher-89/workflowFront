@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { DepContainer } from '../../components/index';
 import { SelDep } from '../../common/ListView/index.js';
-import { markTreeData, getOriginTree } from '../../utils/util';
+import { markTreeData, getOriginTree, makeFieldValue } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -113,20 +113,14 @@ export default class SelDepartment extends Component {
 
   getSingleSelect = (result) => {
     const { key } = this.state;
-    const { history, currentKey, dispatch } = this.props;
+    const { history, currentKey } = this.props;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const newSelectstaff = [result];
     if (cb) {
       cb(newSelectstaff);
     }
-    dispatch({
-      type: 'formSearchDep/saveSelectStaff',
-      payload: {
-        key,
-        value: newSelectstaff,
-      },
-    });
+
     history.goBack(-1);
   }
 
@@ -135,11 +129,14 @@ export default class SelDepartment extends Component {
     const { key, type } = params;
     const current = currentKey[`${key}`] || {};
     const { data = [] } = current;
+
+    const newData = makeFieldValue(data, { key: 'id', value: 'name' }, true);
+
     const obj = {
       selected: {
-        data,
+        data: newData,
         total: 50,
-        num: data.length,
+        num: newData.length,
       },
       selectAll: false,
       search: '',
@@ -239,22 +236,16 @@ export default class SelDepartment extends Component {
   }
 
   selectOk = () => {
-    const { match: { params }, history, currentKey, dispatch } = this.props;
+    const { match: { params }, history, currentKey } = this.props;
     const { key } = params;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const { selected } = this.state;
-    const newSelectstaff = selected.data;
+    const newSelect = selected.data;
+
     if (cb) {
-      cb(newSelectstaff);
+      cb(newSelect);
     }
-    dispatch({
-      type: 'formSearchDep/saveSelectStaff',
-      payload: {
-        key,
-        value: newSelectstaff,
-      },
-    });
     history.goBack(-1);
   }
 

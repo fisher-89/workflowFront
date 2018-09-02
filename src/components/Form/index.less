@@ -89,13 +89,21 @@
       border-bottom: 1px solid @split-line-color !important;
     }
   }
-}
-
-.readonly {
-  color:#ccc;
-  :global {
-    .am-textarea-control textarea{
-      color:#ccc!important;
+  .readonly {
+    color:#ccc;
+    :global {
+      .am-textarea-control textarea{
+        color:#ccc!important;
+      }
     }
   }
+}
+
+.form_detail {
+  :global {
+    .am-image-picker-list .am-image-picker-item .am-image-picker-item-remove {
+      opacity: 0;
+    }
+  }
+ 
 }

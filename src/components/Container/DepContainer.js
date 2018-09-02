@@ -69,7 +69,7 @@ export default class DepContainer extends Component {
 
   render() {
     const {
-      bread, children, multiple, name, selected, checkedAll, checkAble,
+      bread = [], children, multiple, name, selected, checkedAll, checkAble,
       handleBread,
       selectOk,
     } = this.props;
@@ -88,7 +88,7 @@ export default class DepContainer extends Component {
               }
             onSubmit={this.onSubmit}
           />
-          {this.state.value ? null : (
+          {(this.state.value || !bread.length) ? null : (
             <Bread
               bread={bread}
               handleBread={handleBread}

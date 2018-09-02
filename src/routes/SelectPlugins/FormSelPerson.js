@@ -111,21 +111,13 @@ export default class SelPerson extends Component {
 
   getSingleSelect = (result) => {
     const { key } = this.state;
-    const { history, formSearchStaff: { currentKey }, dispatch } = this.props;
+    const { history, formSearchStaff: { currentKey } } = this.props;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const newSelectstaff = [result];
-    const formSelectedStaff = this.makeFormStaff(newSelectstaff);
     if (cb) {
-      cb(formSelectedStaff);
+      cb(newSelectstaff);
     }
-    dispatch({
-      type: 'formSearchStaff/saveSelectStaff',
-      payload: {
-        key,
-        value: formSelectedStaff,
-      },
-    });
     history.goBack(-1);
   }
 
@@ -134,7 +126,7 @@ export default class SelPerson extends Component {
     const { key, type } = params;
     const current = currentKey[`${key}`] || {};
     const { data = [] } = current;
-    const newData = makeFieldValue(data, { staff_name: 'realname' }, true);
+    const newData = makeFieldValue(data, { key: 'staff_sn', value: 'realname' }, true);
     const obj = {
       selected: {
         data: newData,
@@ -252,34 +244,16 @@ export default class SelPerson extends Component {
     }
   }
 
-  makeFormStaff = (newSelectstaff) => {
-    const selectedStaff = newSelectstaff.map((item) => {
-      const obj = {};
-      obj.staff_name = item.realname;
-      obj.staff_sn = item.staff_sn;
-      return obj;
-    });
-    return selectedStaff;
-  }
-
   selectOk = () => {
-    const { match: { params }, history, formSearchStaff: { currentKey }, dispatch } = this.props;
+    const { match: { params }, history, formSearchStaff: { currentKey } } = this.props;
     const { key } = params;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const { selected } = this.state;
     const newSelectstaff = selected.data;
-    const formSeletedStaff = this.makeFormStaff(newSelectstaff);
     if (cb) {
-      cb(formSeletedStaff);
+      cb(newSelectstaff);
     }
-    dispatch({
-      type: 'formSearchStaff/saveSelectStaff',
-      payload: {
-        key,
-        value: formSeletedStaff,
-      },
-    });
     history.goBack(-1);
   }
 

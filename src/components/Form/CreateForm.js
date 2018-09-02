@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {
-  List, Toast, Modal,
-  Carousel,
+  List, Toast,
 } from 'antd-mobile';
 import { connect } from 'dva';
 import moment from 'moment';
-import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload } from '../FormType';
+import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region } from '../FormType';
 import {
   dealThumbImg,
-  reAgainImg,
-  rebackImg,
 } from '../../utils/convert';
 
 import { formatDate, isJSON } from '../../utils/util';
@@ -19,8 +16,6 @@ import style from './index.less';
 class CreateForm extends Component {
   state = {
     init: false,
-    preview: false,
-    reviewImg: [],
     editableForm: [], // 可编辑表单
     showForm: [], // 显示的表单
     // required_form: [], // 必填
@@ -38,7 +33,7 @@ class CreateForm extends Component {
     const editableForm = nextprops.editable_form;
     const newFormData = nextprops.form_data;
     if (newFormData && (!this.state.init)) {
-      const formData = [];
+      const formData = { ...newFormData };
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {
         editableForm.map((item) => {
@@ -63,9 +58,7 @@ class CreateForm extends Component {
               value = moment().format(formatStr);
             }
           }
-          const formItem = {};
-          formItem[item.key] = value;
-          formData.push(formItem);
+          formData[item.key] = value;
           const obj = {
             key: item.key,
             value,
@@ -264,7 +257,19 @@ class CreateForm extends Component {
       // }
       // 可改
       // if (isEdit) {
-      if (item.type === 'department' || item.type === 'staff') {
+      if (item.type === 'region') {
+        return (
+          <Region
+            key={i}
+            field={item}
+            isEdit={isEdit}
+            defaultValue={newFormData[item.key]}
+            data={itemkey || {}}
+            onChange={this.onhandleCheckChange}
+          />
+        );
+      }
+      if (item.type === 'department' || item.type === 'staff' || item.type === 'shop') {
         const { evtClick, history } = this.props;
         return (
           <SelectComp
@@ -376,66 +381,6 @@ class CreateForm extends Component {
     this.bindFormDataChange(obj, item);
   }
 
-  // 上传图片
-  filesOnchange = (files, type, index, item) => {
-    const newFiles = files.map((its) => {
-      return rebackImg(its.url, `${UPLOAD_PATH}`, '_thumb');
-    });
-    const obj = this.initCurrentObj(newFiles, item);
-    const { dispatch } = this.props;
-    if (type === 'remove') {
-      this.bindFormDataChange(obj, item);
-    }
-    if (type === 'add') {
-      // lrz(files[files.length - 1].url, { width: 500 })
-      // .then((rst) => {
-      // 处理成功会执行
-      const imgformData = new FormData();
-      imgformData.append('upFile', files[files.length - 1].file);
-      dispatch({
-        type: 'start/fileUpload',
-        payload: {
-          data: imgformData,
-          cb: (f) => {
-            newFiles[newFiles.length - 1] = f.path;
-            obj.value = [...newFiles];
-            this.bindFormDataChange(obj, item);
-          },
-        },
-      });
-    }
-  }
-
-  reviewImg = (i, img) => {
-    const imgs = img.map((item) => {
-      return reAgainImg(item.url, '_thumb');
-    });
-    const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
-    this.setState({
-      reviewImg: newImgs,
-      preview: true,
-    });
-  }
-
-  reviewReadImg = (i, img) => {
-    const imgs = [...img];
-    const newImgs = imgs.slice(i).concat(imgs.slice(0, i));
-    this.setState({
-      reviewImg: newImgs,
-      preview: true,
-    });
-  }
-
-  hideModal = (e) => {
-    e.preventDefault();
-    const attr = e.target.getAttribute('data-preview');
-    if (attr === 'preview') {
-      this.setState({
-        preview: false,
-      });
-    }
-  }
-
   selComponentCb = (item, data) => {
     const { evtClick } = this.props;
     const obj = this.initCurrentObj(data, item);
@@ -458,49 +403,13 @@ class CreateForm extends Component {
 
   render() {
     const { startflow } = this.props;
-    const { preview, reviewImg } = this.state;
     if (!startflow) return null;
     return (
-      <div className={style.form} style={{ background: '#fff' }}>
+      <div className={[style.edit_form, style.form].join(' ')} style={{ background: '#fff' }}>
         <List>
           {this.getFormList()}
         </List>
-        <Modal
-          visible={preview}
-          popup
-          maskClosable
-          wrapClassName={style.wrap}
-          onClose={() => this.setState({ preview: false })}
-        >
-          <div
-            className={style.preview}
-            data-preview="preview"
-            onClick={this.hideModal}
-          >
-            <div className={style.caroul}>
-              <Carousel
-                autoplay={false}
-                infinite
-              >
-                {(reviewImg || []).map((val, i) => {
-                  const idx = i;
-                  return (
-                    <img
-                      src={val}
-                      key={idx}
-                      alt="carousel"
-                      style={{ width: '100%', verticalAlign: 'top' }}
-                      onLoad={() => {
-                        window.dispatchEvent(new Event('resize'));
-                      }}
-                    />
-                  );
-                })}
-              </Carousel>
-            </div>
-          </div>
 
-        </Modal>
       </div>
     );
   }
