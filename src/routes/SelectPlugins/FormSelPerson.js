@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff } from '../../common/ListView/index.js';
-import { makeFieldValue } from '../../utils/util';
+import { makeFieldValue, makeBreadCrumbData } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -141,27 +141,15 @@ export default class SelPerson extends Component {
     return obj;
   }
 
-  makeBreadCrumbData = (params) => {
+  makeBreadCrumb = (params) => {
     const { breadCrumb } = this.props;
-    let newBread = [...breadCrumb];
-    let splitIndex = null;
-    newBread.forEach((item, index) => {
-      if (item.id === params.id) {
-        splitIndex = index + 1;
-      }
-    });
-    if (splitIndex !== null) {
-      newBread = newBread.slice(0, splitIndex);
-    } else {
-      newBread.push(params);
-    }
-    return newBread;
+    return makeBreadCrumbData(params, breadCrumb, 'id');
   }
 
   selDepartment = (data) => {
     const { match: { params } } = this.props;
     const { fieldId } = params;
-    const newBread = this.makeBreadCrumbData(data);
+    const newBread = this.makeBreadCrumb(data);
     const parentId = data.id;
     this.setState({
       selectAll: false,

@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { DepContainer } from '../../components/index';
 import { SelDep } from '../../common/ListView/index.js';
-import { markTreeData, getOriginTree, makeFieldValue } from '../../utils/util';
+import { markTreeData, getOriginTree, makeFieldValue, makeBreadCrumbData } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -148,27 +148,15 @@ export default class SelDepartment extends Component {
     return obj;
   }
 
-  makeBreadCrumbData = (params) => {
+  makeBreadCrumb = (params) => {
     const { breadCrumb } = this.props;
-    let newBread = [...breadCrumb];
-    let splitIndex = null;
-    newBread.forEach((item, index) => {
-      if (item.id === params.id) {
-        splitIndex = index + 1;
-      }
-    });
-    if (splitIndex !== null) {
-      newBread = newBread.slice(0, splitIndex);
-    } else {
-      newBread.push(params);
-    }
-    return newBread;
+    return makeBreadCrumbData(params, breadCrumb, 'id');
   }
 
   selDepartment = (data) => {
     const { match: { params } } = this.props;
     const { fieldId } = params;
-    const newBread = this.makeBreadCrumbData(data);
+    const newBread = this.makeBreadCrumb(data);
     const parentId = data.id;
     let payload = null;
     if (`${parentId}` !== '-1') {
