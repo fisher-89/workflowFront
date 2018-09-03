@@ -236,6 +236,8 @@ class TableEdit extends Component {
           <WhiteSpace />
           {this.getGridList()}
         </div>
+        <WhiteSpace />
+
         <div>
           <Button type="primary" onClick={this.submitData}>确定</Button>
         </div>

@@ -10,7 +10,7 @@ import {
 } from '../../utils/convert';
 
 import { formatDate, isJSON } from '../../utils/util';
-import style from './index.less';
+import style from '../FormType/index.less';
 // import CheckBoxs from '../../components/ModalFilters/CheckBox';
 
 class CreateForm extends Component {
@@ -395,7 +395,6 @@ class CreateForm extends Component {
     });
     evtClick(datas);
   }
-
 
   renderCurrent = (persons, name) => {
     return (persons || []).map(item => `${item[name]}、`);

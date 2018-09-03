@@ -55,7 +55,7 @@ class SelectCheckbox extends React.Component {
           title={name}
           autoHeight
           editable={false}
-          value={defaultValue}
+          value={`${defaultValue || ''}`}
         />
       </div>
     );

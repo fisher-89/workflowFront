@@ -8,7 +8,7 @@ import {
 import { dealThumbImg } from '../../utils/convert';
 import { SelectComp, SelectCheckbox, Region, TextInput, Upload } from '../FormType';
 
-import style from './index.less';
+import style from '../FormType/index.less';
 
 class FormDetail extends Component {
   state = {

@@ -2,17 +2,9 @@
 import React, {
   Component,
 } from 'react';
-import {
-  List,
-  Modal,
-} from 'antd-mobile';
-import {
-  connect,
-} from 'dva';
-import {
-  CreateForm,
-  FormDetail,
-} from '../../components';
+import { Modal, SwipeAction } from 'antd-mobile';
+import { connect } from 'dva';
+import { CreateForm, FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
 
 import style from '../TableEdit/index.less';
@@ -26,10 +18,7 @@ class ApproveDetail extends Component {
     flowId: '',
   }
   componentWillMount() {
-    const {
-      dispatch,
-      match: { params },
-    } = this.props;
+    const { dispatch, match: { params } } = this.props;
     const { id } = params;
     this.setState({
       flowId: id,
@@ -37,11 +26,10 @@ class ApproveDetail extends Component {
     localStorage.flowId = id;
     dispatch({
       type: 'approve/getStartFlow',
-      payload: {
-        flow_id: id,
-      },
+      payload: id,
     });
   }
+
   getGridItem = (key) => {
     const { approve: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
@@ -63,18 +51,39 @@ class ApproveDetail extends Component {
       });
       return newObj;
     });
+
+    const extra = [
+      {
+        text: '删除',
+        style: { backgroundColor: 'rgb(218,81,85)', minWidth: '1.6rem', color: 'white', fontSize: '12px', borderTopRightRadius: '2px' },
+        onPress: 'deleteItem',
+      },
+    ];
+
+
     return dataList.map((item, i) => {
       const idx = i;
+      const newExtra = extra.map((_) => {
+        const obj = { ..._ };
+        obj.onPress = e => this[_.onPress](e, key, i);
+        return obj;
+      });
       return (
-        <div
-          className={style.grid_list_item}
+        <SwipeAction
+          right={newExtra}
+          autoClose={false}
           key={idx}
-          onClick={() => this.toEditGrid(key, idx)}
         >
-          {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
-          {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
-          {item.value_2 && <div className={style.desc}>{item.value_2}</div>}
-        </div>
+          <div
+            className={style.grid_list_item}
+            key={idx}
+            onClick={() => this.toEditGrid(key, idx)}
+          >
+            {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
+            {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
+            {item.value_2 && <div className={style.desc}>{item.value_2}</div>}
+          </div>
+        </SwipeAction>
       );
     });
   }
@@ -97,21 +106,42 @@ class ApproveDetail extends Component {
     const { startflow } = approve;
     const { fields: { grid } } = startflow;
     return grid.map((item, i) => {
-      const idx = i;
+      const index = i;
+      // return (
+      //   <div key={idx}>
+      //     <p className={style.title}>
+      //       <span>{item.name}</span>
+      //     </p>
+      //     <List key={item.key}>
+      //       {this.getGridItem(item.key)}
+      //     </List>
+      //   </div>
+      // );
       return (
-        <div key={idx}>
-          <p className={style.title}>
+        <div key={index} className={style.grid_item}>
+          <p className={style.grid_opt}>
             <span>{item.name}</span>
+            <a
+              onClick={() => this.addGridList(item.key)}
+            >+添加{item.name}
+            </a>
           </p>
-          <List key={item.key}>
-            {this.getGridItem(item.key)}
-          </List>
+          {this.getGridItem(item.key)}
         </div>
-
       );
     });
   }
 
+
+  // 给列表控件追加item
+  addGridList = (key) => {
+    const { history, dispatch } = this.props;
+    this.saveData();
+    dispatch({
+      type: 'approve/refreshModal',
+    });
+    history.push(`/approve_grid_edit/${key}/-1`);
+  };
 
   toEditGrid = (key, i) => {
     const { approve, history } = this.props;
@@ -124,6 +154,7 @@ class ApproveDetail extends Component {
     }
     history.push(url);
   }
+
   // 保存到modal
   saveData = () => {
     const { formdata } = this.childComp.state;
@@ -139,6 +170,7 @@ class ApproveDetail extends Component {
     });
     return formdata;
   }
+
   submitStep = (v, data) => {
     const {
       dispatch,
@@ -240,6 +272,7 @@ fillRemark = () => {
     onPress: this.doReject,
   }], 'default', null, ['input your name']);
 }
+
 doReject = (v) => {
   const {
     dispatch,
@@ -263,22 +296,12 @@ doDeliver = () => { // 转交
   history.push('/sel_person/deliver/2/approve');
 }
 render() {
-  const {
-    approve,
-    dispatch, loading,
-  } = this.props;
-  const {
-    startflow,
-    formdata,
-  } = approve;
+  const { approve, dispatch, loading } = this.props;
+  const { startflow, formdata } = approve;
   const newFormData = approve.form_data;
   spin(loading);
   if (!startflow) return null;
-  const {
-    fields: {
-      form,
-    },
-  } = startflow;
+  const { fields: { form } } = startflow;
   // 只需要展示的（不包括可编辑的）
   const showForm = form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
 
@@ -289,7 +312,7 @@ render() {
 
   return (
     <div className={styles.con}>
-      <div className={styles.con_content}>
+      <div className={styles.con_content} style={{ marginBottom: '20px' }}>
         {startflow.step_run.action_type === 0 ? (
           <CreateForm
             startflow={startflow}
@@ -307,9 +330,9 @@ render() {
             show_form={showForm}
           />
           )}
-
         {this.getGridList()}
       </div>
+
       <div className={styles.footer}>
         {startflow.step_run.action_type === 0 ? (
           <a

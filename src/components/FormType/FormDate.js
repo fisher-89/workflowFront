@@ -28,7 +28,7 @@ export default class FormDate extends React.Component {
           title={name}
           autoHeight
           editable={false}
-          value={defaultValue}
+          value={`${defaultValue || ''}`}
         />
       </div>
     );

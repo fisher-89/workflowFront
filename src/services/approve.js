@@ -1,8 +1,8 @@
 import request from '../utils/request';
 
 // 审批详情
-export function getStartFlow(data) {
-  return request(`/api/approval/${data.flow_id}`);
+export function getStartFlow(id) {
+  return request(`/api/approval/${id}`);
 }
 // 审批列表
 export function getApproList(data) {

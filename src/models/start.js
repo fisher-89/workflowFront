@@ -71,6 +71,9 @@ export default {
       if ((gridformdata && gridformdata.length) || (startflow && `${startflow.step.flow_id}` === `${payload}`)) {
         return;
       }
+      yield put({
+        type: 'resetStart',
+      });
       const data = yield call(c.getStartFlow, payload);
 
       if (data && !data.error) {
@@ -82,6 +85,7 @@ export default {
         });
       }
     },
+
     * fileUpload({ payload }, { call }) {
       const data = yield call(c.fileUpload, payload.data);
       if (data && !data.error) {

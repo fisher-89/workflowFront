@@ -2,7 +2,7 @@ import React from 'react';
 import { List, TextareaItem } from 'antd-mobile';
 import { connect } from 'dva';
 import { isJSON, makeFieldValue } from '../../utils/util';
-import './index.less';
+import style from './index.less';
 
 const dispatchColumn = {
   staff: {
@@ -104,12 +104,14 @@ class SelectComp extends React.Component {
       );
     }
     return (
-      <TextareaItem
-        title={field.name}
-        autoHeight
-        editable={false}
-        value={this.renderCurrent(defaultValue || [], name).join('')}
-      />
+      <div className={style.readonly}>
+        <TextareaItem
+          title={field.name}
+          autoHeight
+          editable={false}
+          value={this.renderCurrent(defaultValue || [], name).join('')}
+        />
+      </div>
     );
   }
 }

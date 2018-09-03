@@ -4,6 +4,49 @@
   flex-wrap: wrap;
 }
 
+.form {
+  :global {
+    .am-list-line {
+      border-bottom:none!important;
+      border-bottom-color: transparent!important;
+    }
+    .am-list-line::after {
+      content: none!important;
+    }
+    .am-list-item.am-input-item.am-list-item-middle {
+      border-bottom: 1px solid @split-line-color;
+    }
+    .am-list-item.am-list-item-middle {
+      border-bottom: 1px solid @split-line-color;
+    }
+    .am-list-item.am-textarea-item {
+      border-bottom: 1px solid @split-line-color !important;
+    }
+  }
+}
+
+.form_detail {
+  :global {
+    .am-image-picker-list .am-image-picker-item .am-image-picker-item-remove {
+      opacity: 0;
+    }
+  }
+}
+
+.edit_form {
+  .readonly {
+    color:@readonly-color;
+    :global {
+      .am-textarea-control textarea {
+        color:@readonly-color!important;
+      }
+      .am-textarea-control {
+        background: url('../../assets/lock.png') no-repeat right !important;
+        background-size: 16px;
+      }
+    }
+  }
+}
 .title {
   .common_title();
 }

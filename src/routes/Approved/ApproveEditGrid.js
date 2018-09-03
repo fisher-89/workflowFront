@@ -31,14 +31,10 @@ class AddGridList extends Component {
       type: 'approve/refreshModal',
     });
   }
+
   componentWillReceiveProps(nextprops) {
-    const {
-      match: { params },
-    } = nextprops;
-    const {
-      flag,
-      key,
-    } = this.state;
+    const { match: { params } } = nextprops;
+    const { flag, key } = this.state;
 
     if (!key && flag) {
       const { type, index } = params;
@@ -81,13 +77,15 @@ class AddGridList extends Component {
       //   }
       //   return null;
       // });
+      // let keyItem = null;
       newGridformdata.forEach((item, i) => {
         if (item.key === key) {
           keyIdx = i;
+          // keyItem = item;
         }
       });
       if (index === '-1') { // 新增
-        if (keyItem === -1) { // 如果没有对应的key
+        if (keyIdx === -1) { // 如果没有对应的key
           newGridformdata.push(obj);
         } else { // 如果有对应的key
           newGridformdata[keyIdx].fields.push(formdata);
@@ -111,19 +109,11 @@ class AddGridList extends Component {
     this.saveData();
     this.props.history.goBack(-1);
   }
+
   render() {
-    const {
-      approve,
-      dispatch,
-    } = this.props;
-    const {
-      key,
-      index,
-    } = this.state;
-    const {
-      startflow,
-      gridformdata,
-    } = approve;
+    const { approve, dispatch } = this.props;
+    const { key, index } = this.state;
+    const { startflow, gridformdata } = approve;
     const newFormData = approve.form_data;
     let formdata = [];
     // const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
