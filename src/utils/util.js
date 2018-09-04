@@ -390,7 +390,7 @@ export function makeFieldValue(value, name, multiple = false, include = false) {
 export function getFieldValue(value, keys, name, include) {
   let newValue = {};
   if (include) {
-    newValue = { ...item }
+    newValue = { ...value }
   }
   keys.forEach(key => {
     const newKey = name[key];
@@ -400,18 +400,18 @@ export function getFieldValue(value, keys, name, include) {
   return newValue
 }
 
-export function makeBreadCrumbData(params,bread,name){
-    let newBread = [...bread];
-    let splitIndex = null;
-    newBread.forEach((item, index) => {
-      if (item[name] === params[name]) {
-        splitIndex = index + 1;
-      }
-    });
-    if (splitIndex !== null) {
-      newBread = newBread.slice(0, splitIndex);
-    } else {
-      newBread.push(params);
+export function makeBreadCrumbData(params, bread, name) {
+  let newBread = [...bread];
+  let splitIndex = null;
+  newBread.forEach((item, index) => {
+    if (item[name] === params[name]) {
+      splitIndex = index + 1;
     }
-    return newBread;
+  });
+  if (splitIndex !== null) {
+    newBread = newBread.slice(0, splitIndex);
+  } else {
+    newBread.push(params);
+  }
+  return newBread;
 }

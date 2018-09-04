@@ -29,7 +29,7 @@ export default class SelPerson extends Component {
     selectAll: false,
     search: '',
     key: '', // 选的什么人
-    type: 2, // 选的类型，单选还是多选
+    type: 1, // 选的类型，单选还是多选
   };
 
   componentWillMount() {
@@ -114,7 +114,7 @@ export default class SelPerson extends Component {
 
   getSelectResult = (result) => {
     const { selected, type } = this.state;
-    if (type === '1') {
+    if (`${type}` !== '1') {
       this.getSingleSelect(result);
     } else {
       this.setState({
@@ -273,7 +273,7 @@ export default class SelPerson extends Component {
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
-          multiple={type !== '1'}
+          multiple={`${type}` === '1'}
           name={isFinal ? 'staff_name' : 'realname'}
           isFinal={isFinal}
           bread={breadCrumb}
@@ -309,7 +309,7 @@ export default class SelPerson extends Component {
                 name="staff_sn"
                 renderName={isFinal ? 'staff_name' : 'realname'}
                 dispatch={this.props.dispatch}
-                multiple={type !== '1'}
+                multiple={`${type}` === '1'}
                 selected={selected.data}
                 dataSource={staff}
                 onChange={this.getSelectResult}
@@ -328,7 +328,7 @@ export default class SelPerson extends Component {
                 totalpage={totalpage}
                 onPageChange={this.onPageChange}
                 dispatch={this.props.dispatch}
-                multiple={type !== '1'}
+                multiple={`${type}` === '1'}
                 selected={selected.data}
                 dataSource={data}
                 onRefresh={this.onRefresh}

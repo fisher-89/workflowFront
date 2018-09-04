@@ -114,7 +114,7 @@ export default class SelPerson extends Component {
     const { history, formSearchStaff: { currentKey } } = this.props;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
-    const newSelectstaff = [result];
+    const newSelectstaff = result;
     if (cb) {
       cb(newSelectstaff);
     }
@@ -124,15 +124,23 @@ export default class SelPerson extends Component {
   getInitState = () => {
     const { match: { params }, formSearchStaff: { currentKey } } = this.props;
     const { key, type } = params;
+    const multiple = `${type}` === '1';
     const current = currentKey[`${key}`] || {};
-    const { data = [] } = current;
-    const newData = makeFieldValue(data, { key: 'staff_sn', value: 'realname' }, true);
+    const data = current.data || (multiple ? [] : {});
+
+    const newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
+    let mutiData = [];
+    if (multiple) {
+      mutiData = newData;
+    }
+    const singleSelected = multiple ? {} : newData;
     const obj = {
       selected: {
-        data: newData,
+        data: mutiData,
         total: 50,
-        num: newData.length,
+        num: mutiData.length,
       },
+      singleSelected,
       selectAll: false,
       search: '',
       key, // 选的什么人
@@ -257,8 +265,9 @@ export default class SelPerson extends Component {
       location,
       history,
     };
-    const { selected, type, search, key, selectAll } = this.state;
+    const { selected, type, search, key, selectAll, singleSelected } = this.state;
     const selectedData = selected.data;
+    console.log('select', selectedData);
     const { page, totalpage, data = [] } = searStaff;
     const staffSn = staff.map(item => item.staff_sn);
     const checkAble = selectedData.filter(item =>
@@ -266,7 +275,7 @@ export default class SelPerson extends Component {
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
-          multiple={type === '1'}
+          multiple={`${type}` === '1'}
           name="realname"
           bread={breadCrumb}
           checkAble={checkAble}
@@ -298,6 +307,7 @@ export default class SelPerson extends Component {
                 onRefresh={false}
                 name="staff_sn"
                 renderName="realname"
+                singleSelected={singleSelected}
                 dispatch={this.props.dispatch}
                 multiple={type === '1'}
                 selected={selected.data}

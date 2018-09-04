@@ -14,13 +14,14 @@ class TextInput extends React.Component {
     const inputType = type === 'int' ? { type: 'number' } : null;
     return (
       <TextareaItem
+        clear
         title={name}
         autoHeight
         {...inputType}
         placeholder={description}
         error={hasError}
         onChange={e => onChange(e, field)}
-        value={`${value}`}
+        value={`${value || ''}`}
       />
     );
   }

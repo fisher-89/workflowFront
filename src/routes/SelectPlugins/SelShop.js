@@ -135,17 +135,23 @@ export default class SelPerson extends Component {
     const { match: { params }, formSearchShop: { currentKey } } = this.props;
     const { key, type } = params;
     const current = currentKey[`${key}`] || {};
-    const { data = [] } = current;
-    const newData = makeFieldValue(data, { key: 'shop_sn', value: 'name' }, true);
-
+    const multiple = `${type === 1}`;
+    const data = current.data || multiple ? [] : {};
+    const newData = makeFieldValue(data, { value: 'shop_sn', text: 'name' }, multiple);
+    let mutiData = [];
+    if (multiple) {
+      mutiData = newData;
+    }
+    const singleSelected = multiple ? {} : newData;
     const obj = {
       selected: {
-        data: newData,
+        data: mutiData,
         total: 50,
-        num: newData.length,
+        num: mutiData.length,
       },
       selectAll: false,
       search: '',
+      singleSelected,
       key, // 选的什么人
       type, // 选的类型，单选还是多选
     };
@@ -249,7 +255,7 @@ export default class SelPerson extends Component {
       history,
     };
     const { page, totalpage, data } = shop;
-    const { selected, type, key, selectAll } = this.state;
+    const { selected, type, key, selectAll, singleSelected } = this.state;
     const selectedData = selected.data;
     const shopSn = (data || []).map(item => item.shop_sn);
     const checkAble = selectedData.filter(item =>
@@ -280,6 +286,7 @@ export default class SelPerson extends Component {
               renderName="name"
               page={page}
               totalpage={totalpage}
+              singleSelected={singleSelected}
               onPageChange={this.onPageChange}
               dispatch={this.props.dispatch}
               multiple={type === '1'}

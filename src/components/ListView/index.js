@@ -164,7 +164,7 @@ export default function ListView(ListItem) {
 
     makeListItemProps = (item) => {
       const { muti } = this.state;
-      const { multiple, onChange, name } = this.props;
+      const { multiple, onChange, name, singleSelected } = this.props;
       const response = {
         ...this.props,
         value: item,
@@ -173,7 +173,8 @@ export default function ListView(ListItem) {
       if (!this.props.fetchDataSource && onChange) {
         response.onClick = multiple ? this.handlesMultiple : onChange;
         const dataId = muti.map(m => m[name]);
-        response.checked = dataId.indexOf(item[name]) !== -1;
+        response.checked = multiple ?
+          dataId.indexOf(item[name]) !== -1 : singleSelected[name] === item[name];
       }
       return response;
     }

@@ -293,7 +293,7 @@ doDeliver = () => { // 转交
   const {
     history,
   } = this.props;
-  history.push('/sel_person/deliver/2/approve');
+  history.push('/sel_person/deliver/1/approve');
 }
 render() {
   const { approve, dispatch, loading } = this.props;

@@ -9,39 +9,29 @@ const dispatchColumn = {
     modal: 'formSearchStaff',
     reduce: 'saveSelectStaff',
     to: 'form_sel_person',
-    name: 'value',
-    key: 'staff_sn',
-    value: 'realname',
+    name: 'text',
+    value: 'staff_sn',
+    text: 'realname',
   },
   department: {
     modal: 'formSearchDep',
     reduce: 'saveSelectDepartment',
     to: 'form_sel_department',
-    name: 'value',
-    key: 'id',
-    value: 'name',
+    name: 'text',
+    value: 'id',
+    text: 'name',
   },
   shop: {
     modal: 'formSearchShop',
     reduce: 'saveSelectShop',
     to: 'form_sel_shop',
-    name: 'value',
-    key: 'shop_sn',
-    value: 'name',
+    name: 'text',
+    value: 'shop_sn',
+    text: 'name',
   },
 };
 
 class SelectComp extends React.Component {
-  makeFormStaff = (newSelectstaff) => {
-    const selectedStaff = newSelectstaff.map((item) => {
-      const obj = {};
-      obj.key = item.realname;
-      obj.value = item.staff_sn;
-      return obj;
-    });
-    return selectedStaff;
-  }
-
   toChoose = (field = {}, data = {}) => {
     const { key, value } = data;
     const { type, id } = field;
@@ -50,14 +40,14 @@ class SelectComp extends React.Component {
     const newKey = `${type}_${key}_${id}`;
     const curDispath = dispatchColumn[type];
     const { modal, reduce, to } = curDispath;
-    const originKey = curDispath.key;
-    const originValue = curDispath.value;
+    const originKey = curDispath.value;
+    const originValue = curDispath.text;
     evtClick();
     dispatch({
       type: `${modal}/${reduce}`,
       payload: {
         key: newKey,
-        value: value || [],
+        value: value || (isMuti ? [] : {}),
       },
     });
     dispatch({
@@ -66,9 +56,9 @@ class SelectComp extends React.Component {
         key: newKey,
         cb: (source) => {
           const obj = {};
-          obj[originKey] = 'key';
-          obj[originValue] = 'value';
-          const newSource = makeFieldValue(source, obj, true, false);
+          obj[originKey] = 'value';
+          obj[originValue] = 'text';
+          const newSource = makeFieldValue(source, obj, isMuti, false);
           selComponentCb(data, newSource);
         },
       },
@@ -76,28 +66,33 @@ class SelectComp extends React.Component {
     history.push(`/${to}/${newKey}/${isMuti}/${id}`);
   }
 
-  renderCurrent = (data, name) => {
+  renderCurrent = (data, name, isMuti) => {
     let newData = null;
     if (typeof data === 'object' && data) {
       newData = data;
     } else {
       newData = isJSON(newData);
     }
-    return (newData || []).map(item => (item[name] ? `${item[name]}、` : ''));
+    if (isMuti) {
+      return (newData || []).map(item => (item[name] ? `${item[name]}、` : ''));
+    } else {
+      return newData[name] || '';
+    }
   }
 
   render() {
     const { data, field, isEdit, defaultValue } = this.props;
     const { value } = data || {};
     const { type } = field;
+    const isMuti = field.is_checkbox;
     const curDispath = dispatchColumn[type];
     const { name } = curDispath;
     if (isEdit) {
       return (
         <List.Item
           arrow="horizontal"
-          extra={this.renderCurrent(value, name)}
-          onClick={() => this.toChoose(field, data)}
+          extra={this.renderCurrent(value, name, isMuti)}
+          onClick={() => this.toChoose(field, data, isMuti)}
         >
           {field.name}
         </List.Item>

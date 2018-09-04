@@ -128,16 +128,22 @@ export default class SelDepartment extends Component {
     const { match: { params }, currentKey } = this.props;
     const { key, type } = params;
     const current = currentKey[`${key}`] || {};
-    const { data = [] } = current;
-
-    const newData = makeFieldValue(data, { key: 'id', value: 'name' }, true);
+    const multiple = `${type === 1}`;
+    const data = current.data || multiple ? [] : {};
+    const newData = makeFieldValue(data, { value: 'id', text: 'name' }, multiple);
+    let mutiData = [];
+    if (multiple) {
+      mutiData = newData;
+    }
+    const singleSelected = multiple ? {} : newData;
 
     const obj = {
       selected: {
-        data: newData,
+        data: mutiData,
         total: 50,
-        num: newData.length,
+        num: mutiData.length,
       },
+      singleSelected,
       selectAll: false,
       search: '',
       switchState: false,
@@ -289,7 +295,7 @@ export default class SelDepartment extends Component {
       isConfig,
     } = this.props;
 
-    const { selected, type, search, currentDep, switchState } = this.state;
+    const { selected, type, search, currentDep, switchState, singleSelected } = this.state;
     const selectedData = selected.data;
     const depSn = currentDep.map(item => item.id);
     const checkAble = selectedData.filter(item =>
@@ -317,6 +323,7 @@ export default class SelDepartment extends Component {
             name="id"
             heightNone
             renderName="name"
+            singleSelected={singleSelected}
             dispatch={this.props.dispatch}
             multiple={type === '1'}
             selected={selected.data}

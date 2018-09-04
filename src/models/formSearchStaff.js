@@ -175,6 +175,7 @@ export default {
       const { currentKey } = state;
       const current = { ...currentKey[key] || {} };
       current.data = value;
+
       return {
         ...state,
         currentKey: { ...currentKey, [key]: current },

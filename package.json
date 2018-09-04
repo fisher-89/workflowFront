@@ -4,6 +4,7 @@
         "start": "set PORT=8001&&roadhog server",
         "start:no-proxy": "set PORT=8001 && cross-env NO_PROXY=true ESLINT=none roadhog dev",
         "build": "roadhog build",
+        "lint:style": "stylelint \"src/**/*.less\" --syntax less",
         "lint": "eslint --ext .js src test",
         "precommit": "npm run lint"
     },
@@ -47,6 +48,7 @@
         "less-loader": "^4.1.0",
         "redbox-react": "^1.4.3",
         "roadhog": "2.4.1",
-        "roadhog-api-doc": "^1.0.2"
+        "roadhog-api-doc": "^1.0.2",
+        "stylelint": "^9.5.0"
     }
 }

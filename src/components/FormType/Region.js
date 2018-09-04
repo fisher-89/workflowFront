@@ -9,15 +9,59 @@ import { isJSON } from '../../utils/util';
 import districtTree from '../../utils/district.json';
 import district from '../../utils/district.js';
 
-const region = ['province_id', 'city_id', 'area_id'];
+const region = ['province_id', 'city_id', 'area_id', 'detail'];
+const regionSelect = ['province_id', 'city_id', 'area_id'];
+const addressInfo = {
+  province_id: '',
+  city_id: '',
+  area_id: '',
+  detail: '',
+};
 class Region extends React.Component {
+  constructor(props) {
+    super(props);
+    const { data: { value } } = props;
+    const newAddress = { ...addressInfo, ...(value || {}) };
+    this.state = {
+      address: newAddress,
+    };
+  }
+
+  onHandlePickerChange = (e) => {
+    const { address } = this.state;
+    const obj = this.reverseValidValue(e);
+    const newAddress = {
+      ...address, ...obj,
+    };
+    this.onChangeCallback(newAddress);
+  }
+
+  onHandleChange = (e) => {
+    const { address } = this.state;
+    const newAddress = {
+      ...address, detail: e,
+    };
+    this.onChangeCallback(newAddress);
+  }
+
+  onChangeCallback = (value) => {
+    const { onChange, field } = this.props;
+    this.setState({
+      address: value,
+    }, () => {
+      onChange(value, field);
+    });
+  }
+
   makeValidValue = (value) => {
     const keys = Object.keys(value);
     const newValue = [];
     keys.forEach((key) => {
-      const id = value[key];
-      const index = region.indexOf(key);
-      newValue.splice(index, 0, id);
+      const text = value[key];
+      const index = regionSelect.indexOf(key);
+      if (index > -1) {
+        newValue.splice(index, 0, text);
+      }
     });
     return newValue;
   }
@@ -30,27 +74,35 @@ class Region extends React.Component {
     });
     return obj;
   }
+
   renderFormRegion = (value, field) => {
-    const newValue = this.makeValidValue(value);
-    const { onChange } = this.props;
+    const newPikerValue = this.makeValidValue(value);
+    const { detail } = value;
     const regionLevel = field.region_level;
     return (
-      <Picker
-        cols={regionLevel}
-        value={newValue}
-        data={districtTree}
-        onOk={(e) => {
-         const obj = this.reverseValidValue(e);
-          onChange(obj, field);
+      <div>
+        <Picker
+          cols={regionLevel}
+          value={newPikerValue}
+          data={districtTree}
+          onOk={e => this.onHandlePickerChange(e)
           }
-        }
-      >
-        <List.Item
-          arrow="horizontal"
         >
-          {field.name}
-        </List.Item>
-      </Picker>
+          <List.Item
+            arrow="horizontal"
+          >
+            {field.name}
+          </List.Item>
+        </Picker>
+        <TextareaItem
+          clear
+          title="详细地址"
+          autoHeight
+          placeholder="详细地址：如小区、门牌号等"
+          onChange={e => this.onHandleChange(e)}
+          value={`${detail || ''}`}
+        />
+      </div>
     );
   }
 
