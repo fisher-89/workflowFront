@@ -151,6 +151,12 @@ function RouterConfig({
       import('./routes/My/my'),
   },
   {
+    path: '/tag',
+    models: [],
+    component: () =>
+      import('./components/General/TagGroup/index.js'),
+  },
+  {
     path: '/test',
     models: [],
 

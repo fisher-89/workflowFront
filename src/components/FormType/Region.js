@@ -9,13 +9,13 @@ import { isJSON } from '../../utils/util';
 import districtTree from '../../utils/district.json';
 import district from '../../utils/district.js';
 
-const region = ['province_id', 'city_id', 'area_id', 'detail'];
-const regionSelect = ['province_id', 'city_id', 'area_id'];
+const region = ['province_id', 'city_id', 'county_id', 'address'];
+const regionSelect = ['province_id', 'city_id', 'county_id'];
 const addressInfo = {
   province_id: '',
   city_id: '',
-  area_id: '',
-  detail: '',
+  county_id: '',
+  address: '',
 };
 class Region extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class Region extends React.Component {
   onHandleChange = (e) => {
     const { address } = this.state;
     const newAddress = {
-      ...address, detail: e,
+      ...address, address: e,
     };
     this.onChangeCallback(newAddress);
   }
@@ -77,7 +77,7 @@ class Region extends React.Component {
 
   renderFormRegion = (value, field) => {
     const newPikerValue = this.makeValidValue(value);
-    const { detail } = value;
+    const { address } = value;
     const regionLevel = field.region_level;
     return (
       <div>
@@ -100,7 +100,7 @@ class Region extends React.Component {
           autoHeight
           placeholder="详细地址：如小区、门牌号等"
           onChange={e => this.onHandleChange(e)}
-          value={`${detail || ''}`}
+          value={`${address || ''}`}
         />
       </div>
     );

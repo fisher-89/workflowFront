@@ -4,14 +4,13 @@ import {
 } from 'antd-mobile';
 import { connect } from 'dva';
 import moment from 'moment';
-import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region } from '../FormType';
+import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region, FormArray } from '../FormType';
 import {
   dealThumbImg,
 } from '../../utils/convert';
 
 import { formatDate, isJSON } from '../../utils/util';
 import style from '../FormType/index.less';
-// import CheckBoxs from '../../components/ModalFilters/CheckBox';
 
 class CreateForm extends Component {
   state = {
@@ -179,84 +178,8 @@ class CreateForm extends Component {
         });
       }
       const isEdit = editKey.indexOf(item.key) > -1;
-      // if (!isEdit) { // 只读
-      // if (item.type === 'staff') {
-      //   const value = newFormData[item.key];
-      //   return (
-      //     <List.Item
-      //       key={i}
-      //       extra={this.renderCurrent(value, 'staff_name')}
-      //     >
-      //       {item.name}
-      //     </List.Item>
-      //   );
-      // }
 
-      //    if (item.type === 'file') { // 文件
-      //     return (
-      //       <React.Fragment key={i}>
-      //         <div className={style.file}>
-      //           <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
-      //           <div className={style.array_container}>
-      //             <div className={style.show_img}>
-      //               {(newFormData[item.key] || []).map((its, ix) => {
-      //                 const x = item.key + ix;
-      //                 return (
-      //                   <img
-      //                     src={`${its}`}
-      //                     key={x}
-      //                     alt="图片"
-      //                     onClick={() => this.reviewReadImg(x, newFormData[item.key])}
-      //                   />
-      //                 );
-      //               })}
-      //             </div>
-      //           </div>
-      //         </div>
-      //       </React.Fragment>
-      //     );
-      //   } else if (item.type === 'array') { // 数组
-      //     const currentValue = newFormData[item.key];
-      //     // const reg = /^\[|\]$/g;
-      //     // if (typeof (currentValue) === 'string') {
-      //     //   const str = currentValue.replace(reg, '');
-      //     //   currentValue = str.split(',');
-      //     // }
-      //     const options = (item.options || []).map((its) => {
-      //       const obj = {};
-      //       obj.label = its;
-      //       obj.value = its;
-      //       return obj;
-      //     });
-      //     return (
-      //       <React.Fragment key={i} >
-      //         <div className={style.file}>
-      //           <p className={[style.title, style.readonly].join(' ')}>{item.name}</p>
-      //           <div className={style.array_container}>
-      //             <CheckBoxs
-      //               style={{ marginBottom: '10px' }}
-      //               options={options}
-      //               value={currentValue}
-      //               readonly
-      //             />
-      //           </div>
-      //         </div>
-      //       </React.Fragment>
-      //     );
-      //   }
-      //   return (
-      //     <div className={style.readonly} key={i}>
-      //       <TextareaItem
-      //         title={item.name}
-      //         autoHeight
-      //         editable={false}
-      //         value={newFormData && newFormData[item.key] ? newFormData[item.key] : '暂无'}
-      //       />
-      //     </div>
-      //   );
-      // }
-      // 可改
-      // if (isEdit) {
+
       if (item.type === 'region') {
         return (
           <Region
@@ -281,6 +204,18 @@ class CreateForm extends Component {
             data={itemkey}
             key={i}
             selComponentCb={this.selComponentCb}
+          />
+        );
+      }
+      if (item.type === 'array') {
+        return (
+          <FormArray
+            key={i}
+            field={item}
+            isEdit={isEdit}
+            defaultValue={newFormData[item.key]}
+            data={itemkey || {}}
+            onChange={this.onhandleCheckChange}
           />
         );
       }
