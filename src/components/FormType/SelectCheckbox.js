@@ -29,11 +29,12 @@ class SelectCheckbox extends React.Component {
 
   render() {
     const { isEdit, field, data: { value },
-      field: { type, name }, options, defaultValue, onChange } = this.props;
+      field: { name, max, min }, options, defaultValue, onChange } = this.props;
     const cls = classNames(style.title, {
       [style.readonly]: !isEdit,
     });
-    if (type === 'array') {
+    const multiple = field.is_checkbox;
+    if (multiple) {
       return (
         <div className={style.file}>
           <p className={cls}>{name}</p>
@@ -41,6 +42,7 @@ class SelectCheckbox extends React.Component {
             <CheckBoxs
               style={{ marginBottom: '10px' }}
               options={options}
+              range={{ max, min }}
               value={isEdit ? value || [] : defaultValue || []}
               {...(isEdit && { onChange: v => onChange(v, field) })}
               readonly={!isEdit}

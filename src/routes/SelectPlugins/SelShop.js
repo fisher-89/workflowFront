@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
-import {
-  connect,
-} from 'dva';
+import { connect } from 'dva';
 import { PersonContainer } from '../../components/index';
 import { Shop } from '../../common/ListView/index.js';
-import { makeFieldValue } from '../../utils/util';
+import { makeFieldValue, getUrlParams } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
 @connect(({ formSearchShop, loading }) => ({
   formSearchShop,
-  // shop: formSearchShop.staff,
   shop: formSearchShop.shop,
   breadCrumb: formSearchShop.breadCrumb,
-  loading3: loading.effects['formSearchShop/fetchFirstDepartment'],
+  loading: loading.effects['formSearchShop/fetchFirstDepartment'],
   searchLoding: loading.effects['formSearchShop/serachStaff'],
 }))
 export default class SelPerson extends Component {
@@ -26,10 +23,9 @@ export default class SelPerson extends Component {
   }
 
   componentWillMount() {
-    const { match: { params } } = this.props;
-    const { fieldId } = params;
+    const { params: { id } } = this.state;
     this.fetchDataSource({
-      page: 1, pagesize: 15, field_id: fieldId,
+      page: 1, pagesize: 15, field_id: id,
     });
   }
 
@@ -52,10 +48,9 @@ export default class SelPerson extends Component {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    const { match: { params } } = this.props;
-    const { fieldId } = params;
+    const { params: { id } } = this.state;
     const currentParams = {
-      field_id: fieldId,
+      field_id: id,
       page: 1,
       pagesize: 15,
       filters: {
@@ -71,12 +66,11 @@ export default class SelPerson extends Component {
   }
 
   onPageChange = () => {
-    const { shop, match: { params } } = this.props;
-    const { search } = this.state;
+    const { shop } = this.props;
+    const { search, params: { id } } = this.state;
     const { page } = shop;
-    const { fieldId } = params;
     const currentParams = {
-      field_id: fieldId,
+      field_id: id,
       page: page + 1,
       pagesize: 15,
       filters: {
@@ -116,27 +110,23 @@ export default class SelPerson extends Component {
     const { history, formSearchShop: { currentKey } } = this.props;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
-    const newSelectstaff = [result];
-    // const formSelectedStaff = this.makeFormShop(newSelectstaff);
+    const newSelectstaff = result;
     if (cb) {
       cb(newSelectstaff);
     }
-    // dispatch({
-    //   type: 'formSearchShop/saveSelectShop',
-    //   payload: {
-    //     key,
-    //     value: formSelectedStaff,
-    //   },
-    // });
     history.goBack(-1);
   }
 
   getInitState = () => {
-    const { match: { params }, formSearchShop: { currentKey } } = this.props;
-    const { key, type } = params;
+    const { formSearchShop: { currentKey } } = this.props;
+    const urlParams = getUrlParams();
+    const paramsValue = urlParams.params;
+    const params = JSON.parse(paramsValue);
+    const { key, type, max } = params;
+
     const current = currentKey[`${key}`] || {};
-    const multiple = `${type === 1}`;
-    const data = current.data || multiple ? [] : {};
+    const multiple = `${type}` === '1';
+    const data = current.data || (multiple ? [] : {});
     const newData = makeFieldValue(data, { value: 'shop_sn', text: 'name' }, multiple);
     let mutiData = [];
     if (multiple) {
@@ -146,11 +136,12 @@ export default class SelPerson extends Component {
     const obj = {
       selected: {
         data: mutiData,
-        total: 50,
+        total: max || 50,
         num: mutiData.length,
       },
       selectAll: false,
       search: '',
+      params,
       singleSelected,
       key, // 选的什么人
       type, // 选的类型，单选还是多选
@@ -159,13 +150,13 @@ export default class SelPerson extends Component {
   }
 
   fetchDataSource = (payload) => {
-    const { dispatch, match: { params } } = this.props;
-    const { fieldId } = params;
+    const { dispatch } = this.props;
+    const { params: { id } } = this.state;
     let newParams = {};
     if (payload) {
       newParams = { ...payload };
     } else {
-      newParams = { field_id: fieldId, page: 1, pagesize: 15 };
+      newParams = { field_id: id, page: 1, pagesize: 15 };
     }
     dispatch({
       type: 'formSearchShop/getShopList',
@@ -178,7 +169,7 @@ export default class SelPerson extends Component {
     const { shop } = this.props;
     const shopData = shop.data || [];
     const shopSn = shopData.map(item => item[name]);
-    const { selectAll, selected } = this.state;
+    const { selectAll, selected, params: { max } } = this.state;
     const { data } = selected;
     if (selectAll) {
       const newData = data.filter(item => shopSn.indexOf(item[name]) === -1);
@@ -197,7 +188,7 @@ export default class SelPerson extends Component {
       selected.data = result;
       selected.num = result.length;
     }
-    selected.total = 50;
+    selected.total = max || 50;
 
     this.setState({
       selected,
@@ -223,7 +214,8 @@ export default class SelPerson extends Component {
   }
 
   selectOk = () => {
-    const { match: { params }, history, formSearchStaff: { currentKey }, dispatch } = this.props;
+    const { history, formSearchStaff: { currentKey }, dispatch } = this.props;
+    const { params } = this.state;
     const { key } = params;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
@@ -247,7 +239,7 @@ export default class SelPerson extends Component {
     const {
       shop,
       breadCrumb,
-      loading3,
+      loading,
       history, location,
     } = this.props;
     const someProps = {
@@ -263,7 +255,7 @@ export default class SelPerson extends Component {
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
-          multiple={type === '1'}
+          multiple={`${type}` === '1'}
           name="shop_sn"
           bread={breadCrumb}
           checkAble={checkAble}
@@ -275,9 +267,8 @@ export default class SelPerson extends Component {
           searchOncancel={this.searchOncancel}
         >
           <div
-            style={{ ...(loading3 ? { display: 'none' } : null) }}
+            style={{ ...(loading ? { display: 'none' } : null) }}
           >
-            {}
             <Shop
               {...someProps}
               type={key}

@@ -101,6 +101,7 @@ class ApproveDetail extends Component {
       },
     });
   }
+
   getGridList = () => {
     const { approve } = this.props;
     const { startflow } = approve;
@@ -312,7 +313,7 @@ render() {
 
   return (
     <div className={styles.con}>
-      <div className={styles.con_content} style={{ marginBottom: '20px' }}>
+      <div className={styles.con_content} >
         {startflow.step_run.action_type === 0 ? (
           <CreateForm
             startflow={startflow}
@@ -330,7 +331,10 @@ render() {
             show_form={showForm}
           />
           )}
-        {this.getGridList()}
+        <div style={{ marginBottom: '20px' }}>
+          {this.getGridList()}
+
+        </div>
       </div>
 
       <div className={styles.footer}>

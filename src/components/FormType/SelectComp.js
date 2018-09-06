@@ -63,7 +63,15 @@ class SelectComp extends React.Component {
         },
       },
     });
-    history.push(`/${to}/${newKey}/${isMuti}/${id}`);
+    const params = {
+      key: newKey,
+      type: isMuti,
+      id,
+      max: 30,
+    };
+    const urlParams = JSON.stringify(params);
+    // history.push(`/${to}/${newKey}/${isMuti}/${id}`);
+    history.push(`/${to}?params=${urlParams}`);
   }
 
   renderCurrent = (data, name, isMuti) => {
@@ -76,7 +84,7 @@ class SelectComp extends React.Component {
     if (isMuti) {
       return (newData || []).map(item => (item[name] ? `${item[name]}、` : ''));
     } else {
-      return newData[name] || '';
+      return newData[name] ? [newData[name]] : [];
     }
   }
 

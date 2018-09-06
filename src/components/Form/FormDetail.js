@@ -6,7 +6,7 @@ import {
   connect,
 } from 'dva';
 import { dealThumbImg } from '../../utils/convert';
-import { SelectComp, SelectCheckbox, Region, TextInput, Upload } from '../FormType';
+import { SelectComp, SelectCheckbox, Region, TextInput, Upload, FormArray } from '../FormType';
 
 import style from '../FormType/index.less';
 
@@ -51,7 +51,16 @@ class FormDetail extends Component {
             data={files}
           />
         );
-      } else if (item.type === 'array') { // 数组
+      } else if (item.type === 'array') {
+        return (
+          <FormArray
+            key={idx}
+            field={item}
+            isEdit={false}
+            defaultValue={formData[item.key]}
+          />
+        );
+      } else if (item.type === 'select') { // 数组
         // const reg = /^\[|\]$/g;
         const options = (item.options || []).map((its) => {
           const obj = {};

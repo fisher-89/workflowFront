@@ -1,13 +1,18 @@
 import React from 'react';
 // import classNames from 'classnames';
 import { connect } from 'dva';
-import {
-  TextareaItem,
-} from 'antd-mobile';
+import { TextareaItem, Toast } from 'antd-mobile';
 import style from './index.less';
 
 
 class TextInput extends React.Component {
+  onHandleBlur = (v) => {
+    const { isRequire, field: { name } } = this.props;
+    if (isRequire && !v) {
+      Toast.info(`请输入${name}`, 1.5);
+    }
+  }
+
   renderFormInput = () => {
     const { onChange, data: { value, hasError }, field } = this.props;
     const { name, description, type } = field;
@@ -21,6 +26,7 @@ class TextInput extends React.Component {
         placeholder={description}
         error={hasError}
         onChange={e => onChange(e, field)}
+        onBlur={this.onHandleBlur}
         value={`${value || ''}`}
       />
     );

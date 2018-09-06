@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff } from '../../common/ListView/index.js';
-import { makeFieldValue, makeBreadCrumbData } from '../../utils/util';
+import { makeFieldValue, makeBreadCrumbData, getUrlParams } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -15,7 +15,7 @@ import style from './index.less';
   finalStaff: formSearchStaff.finalStaff,
   searStaff: formSearchStaff.searStaff,
   breadCrumb: formSearchStaff.breadCrumb,
-  loading3: loading.effects['formSearchStaff/fetchFirstDepartment'],
+  loading: loading.effects['formSearchStaff/fetchFirstDepartment'],
   searchLoding: loading.effects['formSearchStaff/serachStaff'],
 }))
 export default class SelPerson extends Component {
@@ -50,10 +50,9 @@ export default class SelPerson extends Component {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    const { match: { params } } = this.props;
-    const { fieldId } = params;
+    const { params: { id } } = this.state;
     const currentParams = {
-      field_id: fieldId,
+      field_id: id,
       page: 1,
       pagesize: 15,
       filters: {
@@ -110,7 +109,7 @@ export default class SelPerson extends Component {
   }
 
   getSingleSelect = (result) => {
-    const { key } = this.state;
+    const { params: { key } } = this.state;
     const { history, formSearchStaff: { currentKey } } = this.props;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
@@ -122,8 +121,11 @@ export default class SelPerson extends Component {
   }
 
   getInitState = () => {
-    const { match: { params }, formSearchStaff: { currentKey } } = this.props;
-    const { key, type } = params;
+    const { formSearchStaff: { currentKey } } = this.props;
+    const urlParams = getUrlParams();
+    const paramsValue = urlParams.params;
+    const params = JSON.parse(paramsValue);
+    const { key, type, max } = params;
     const multiple = `${type}` === '1';
     const current = currentKey[`${key}`] || {};
     const data = current.data || (multiple ? [] : {});
@@ -137,14 +139,15 @@ export default class SelPerson extends Component {
     const obj = {
       selected: {
         data: mutiData,
-        total: 50,
+        total: max || 50,
         num: mutiData.length,
       },
       singleSelected,
+      params,
       selectAll: false,
       search: '',
-      key, // 选的什么人
-      type, // 选的类型，单选还是多选
+      // key, // 选的什么人
+      // type, // 选的类型，单选还是多选
     };
     return obj;
   }
@@ -155,8 +158,8 @@ export default class SelPerson extends Component {
   }
 
   selDepartment = (data) => {
-    const { match: { params } } = this.props;
-    const { fieldId } = params;
+    const { params } = this.state;
+    const fieldId = params.id;
     const newBread = this.makeBreadCrumb(data);
     const parentId = data.id;
     this.setState({
@@ -173,8 +176,9 @@ export default class SelPerson extends Component {
   }
 
   fetchDataSource = (payload) => {
-    const { dispatch, match: { params } } = this.props;
-    const { fieldId } = params;
+    const { dispatch } = this.props;
+    const { params } = this.state;
+    const fieldId = params.id;
     let newParams = {};
     if (payload) {
       newParams = { ...payload };
@@ -201,7 +205,7 @@ export default class SelPerson extends Component {
   checkedAll = () => { // 全选
     const { staff } = this.props;
     const staffSn = staff.map(item => item.staff_sn);
-    const { selectAll, selected } = this.state;
+    const { selectAll, selected, params: { max } } = this.state;
     const { data } = selected;
     if (selectAll) {
       const newData = data.filter(item => staffSn.indexOf(item.staff_sn) === -1);
@@ -220,7 +224,7 @@ export default class SelPerson extends Component {
       selected.data = result;
       selected.num = result.length;
     }
-    selected.total = 50;
+    selected.total = max || 50;
 
     this.setState({
       selected,
@@ -241,11 +245,11 @@ export default class SelPerson extends Component {
   }
 
   selectOk = () => {
-    const { match: { params }, history, formSearchStaff: { currentKey } } = this.props;
+    const { history, formSearchStaff: { currentKey } } = this.props;
+    const { params, selected } = this.state;
     const { key } = params;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
-    const { selected } = this.state;
     const newSelectstaff = selected.data;
     if (cb) {
       cb(newSelectstaff);
@@ -258,16 +262,15 @@ export default class SelPerson extends Component {
       department,
       staff, searStaff,
       breadCrumb,
-      loading3,
+      loading,
       history, location,
     } = this.props;
     const someProps = {
       location,
       history,
     };
-    const { selected, type, search, key, selectAll, singleSelected } = this.state;
+    const { selected, search, selectAll, singleSelected, params: { key, type } } = this.state;
     const selectedData = selected.data;
-    console.log('select', selectedData);
     const { page, totalpage, data = [] } = searStaff;
     const staffSn = staff.map(item => item.staff_sn);
     const checkAble = selectedData.filter(item =>
@@ -288,7 +291,7 @@ export default class SelPerson extends Component {
           searchOncancel={this.searchOncancel}
         >
           <div
-            style={{ ...(loading3 ? { display: 'none' } : null) }}
+            style={{ ...(loading ? { display: 'none' } : null) }}
           >
             {department.length && !search ? (
               <Department
@@ -309,7 +312,7 @@ export default class SelPerson extends Component {
                 renderName="realname"
                 singleSelected={singleSelected}
                 dispatch={this.props.dispatch}
-                multiple={type === '1'}
+                multiple={`${type}` === '1'}
                 selected={selected.data}
                 dataSource={staff}
                 onChange={this.getSelectResult}
@@ -327,7 +330,7 @@ export default class SelPerson extends Component {
                 totalpage={totalpage}
                 onPageChange={this.onPageChange}
                 dispatch={this.props.dispatch}
-                multiple={type === '1'}
+                multiple={`${type}` === '1'}
                 selected={selected.data}
                 dataSource={data}
                 onRefresh={this.onRefresh}

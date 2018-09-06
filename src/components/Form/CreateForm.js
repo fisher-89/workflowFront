@@ -17,7 +17,7 @@ class CreateForm extends Component {
     init: false,
     editableForm: [], // 可编辑表单
     showForm: [], // 显示的表单
-    // required_form: [], // 必填
+    requiredForm: [], // 必填
     // editable_grid: [], // 可编辑的列表控件
     // show_grid: [], // 显示的列表控件
     // required_grid: [], // 必须,
@@ -30,6 +30,7 @@ class CreateForm extends Component {
     const { formdata } = nextprops;
     const showForm = nextprops.show_form;
     const editableForm = nextprops.editable_form;
+    const requiredForm = nextprops.required_form;
     const newFormData = nextprops.form_data;
     if (newFormData && (!this.state.init)) {
       const formData = { ...newFormData };
@@ -80,6 +81,7 @@ class CreateForm extends Component {
       this.setState({
         init: true,
         editableForm,
+        requiredForm,
         showForm,
         newFormData: formData,
         formdata: tempFormdata,
@@ -106,9 +108,9 @@ class CreateForm extends Component {
     if (item.type === 'int') {
       // let newValue = v;
       let newValue = this.onHandleToFixed(v, item.scale);
-      if (min !== '' && parseFloat(newValue) < min) {
-        newValue = min;
-      }
+      // if (min !== '' && parseFloat(newValue) < min) {
+      //   newValue = min;
+      // }
       if (max !== '' && parseFloat(newValue) > max) {
         newValue = max;
       }
@@ -159,6 +161,7 @@ class CreateForm extends Component {
   getFormList = () => {
     const {
       editableForm,
+      requiredForm = [],
       formdata,
       showForm,
       newFormData,
@@ -166,7 +169,10 @@ class CreateForm extends Component {
     const editKey = editableForm.map((item) => {
       return item.key;
     });
+    const requireKey = requiredForm.map(item => item.key);
     return showForm.map((item, idx) => {
+      const isEdit = editKey.indexOf(item.key) > -1;
+      const isRequire = requireKey.indexOf(item.key) > -1;
       const i = idx;
       const [itemkey] = formdata.filter(its => item.key === its.key);
       let itemValue = [];
@@ -177,9 +183,6 @@ class CreateForm extends Component {
           };
         });
       }
-      const isEdit = editKey.indexOf(item.key) > -1;
-
-
       if (item.type === 'region') {
         return (
           <Region
@@ -244,6 +247,7 @@ class CreateForm extends Component {
             field={item}
             key={i}
             isEdit={isEdit}
+            isRequire={isRequire}
             defaultValue={newFormData[item.key]}
             data={itemkey}
           />
@@ -338,6 +342,7 @@ class CreateForm extends Component {
   render() {
     const { startflow } = this.props;
     if (!startflow) return null;
+    console.log(this.state.formdata);
     return (
       <div className={[style.edit_form, style.form].join(' ')} style={{ background: '#fff' }}>
         <List>

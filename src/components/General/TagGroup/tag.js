@@ -61,7 +61,7 @@ class Tag extends React.Component {
         className={style.tag_item}
       >
         <div
-          className={cls}
+          className={style.item}
           style={(!onEditing ? { display: 'none' } : null)}
         >
           <input
@@ -73,7 +73,7 @@ class Tag extends React.Component {
           />
         </div>
         {!onEditing && (
-          <div className={style.item}>
+          <div className={cls}>
             <p onClick={!readonly ? this.showInput : null}>{inputValue}</p>
             {!readonly && <span onClick={() => handleClose(inputValue)} />}
           </div>

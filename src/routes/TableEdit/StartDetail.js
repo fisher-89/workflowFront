@@ -117,8 +117,9 @@ class StartDetail extends Component {
             form_data={formData}
             show_form={showForm}
           />
-
-          {this.getGridList()}
+          <div style={{ marginBottom: '20px' }}>
+            {this.getGridList()}
+          </div>
         </div>
         <div className={styles.footer}>
           {flowRun && flowRun.status === 0 ?

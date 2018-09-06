@@ -1,16 +1,22 @@
 import React from 'react';
 import Tag from './tag.js';
+import { isJSON } from '../../../utils/util';
 import style from './index.less';
 
 export default class TagGroup extends React.Component {
   constructor(props) {
     super(props);
-    const { value = ['2', '4'] } = props;
+    const { value } = props;
+    let newValue = [];
+    if (typeof value === 'object' && value) {
+      newValue = value;
+    } else {
+      newValue = isJSON(value) || [];
+    }
     this.state = {
       onEditing: false,
       inputValue: '',
-      tags: value,
-
+      tags: newValue,
     };
   }
 
@@ -68,6 +74,7 @@ export default class TagGroup extends React.Component {
 
   renderTag = () => {
     const { tags } = this.state;
+    console.log('tags', tags);
     return tags.map((item, i) => {
       const props = this.makeTagProps(item, i);
       return (

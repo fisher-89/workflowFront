@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import {
-  connect,
-} from 'dva';
-import { DepContainer } from '../../components/index';
+import { connect } from 'dva';
+import { DepContainer, Nothing } from '../../components/index';
 import { SelDep } from '../../common/ListView/index.js';
-import { markTreeData, getOriginTree, makeFieldValue, makeBreadCrumbData } from '../../utils/util';
+import { markTreeData, getOriginTree, makeFieldValue, makeBreadCrumbData, getUrlParams } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -31,11 +29,12 @@ export default class SelDepartment extends Component {
   componentWillReceiveProps(nextProps) {
     const { department } = nextProps;
     const oldDep = this.props.department;
-    const { currentDep } = this.state;
-    if (JSON.stringify(department) !== JSON.stringify(oldDep) || !currentDep.length) {
+    const { init } = this.state;
+    if (JSON.stringify(department) !== JSON.stringify(oldDep) || !init) {
       const tree = markTreeData(department, 0, { parentId: 'parent_id', key: 'id' });
       this.setState({
         currentDep: tree,
+        init: true,
       });
     }
   }
@@ -73,7 +72,7 @@ export default class SelDepartment extends Component {
   getSelectResult = (result, current) => {
     const { selected, type, switchState } = this.state;
     const oldData = selected.data;
-    if (type !== '1') {
+    if (`${type}` !== '1') {
       this.getSingleSelect(result);
     } else {
       let newSeleted = result;
@@ -112,7 +111,7 @@ export default class SelDepartment extends Component {
   }
 
   getSingleSelect = (result) => {
-    const { key } = this.state;
+    const { params: { key } } = this.state;
     const { history, currentKey } = this.props;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
@@ -125,10 +124,13 @@ export default class SelDepartment extends Component {
   }
 
   getInitState = () => {
-    const { match: { params }, currentKey } = this.props;
-    const { key, type } = params;
+    const { currentKey } = this.props;
+    const urlParams = getUrlParams();
+    const paramsValue = urlParams.params;
+    const params = JSON.parse(paramsValue);
+    const { key, type, max } = params;
     const current = currentKey[`${key}`] || {};
-    const multiple = `${type === 1}`;
+    const multiple = `${type}` === '1';
     const data = current.data || multiple ? [] : {};
     const newData = makeFieldValue(data, { value: 'id', text: 'name' }, multiple);
     let mutiData = [];
@@ -140,16 +142,17 @@ export default class SelDepartment extends Component {
     const obj = {
       selected: {
         data: mutiData,
-        total: 50,
+        total: max || 50,
         num: mutiData.length,
       },
       singleSelected,
       selectAll: false,
       search: '',
       switchState: false,
-      key, // 选的什么人
-      type, // 选的类型，单选还是多选
+      // key, // 选的什么人
+      // type, // 选的类型，单选还是多选
       currentDep: [],
+      params,
     };
     return obj;
   }
@@ -160,30 +163,29 @@ export default class SelDepartment extends Component {
   }
 
   selDepartment = (data) => {
-    const { match: { params } } = this.props;
-    const { fieldId } = params;
+    const { params: { id } } = this.state;
     const newBread = this.makeBreadCrumb(data);
     const parentId = data.id;
     let payload = null;
     if (`${parentId}` !== '-1') {
       payload = {
         breadCrumb: newBread,
-        reqData: { field_id: fieldId, department: parentId },
+        reqData: { field_id: id, department: parentId },
       };
     }
     this.fetchDataSource(payload);
   }
 
   fetchDataSource = (payload) => {
-    const { dispatch, match: { params } } = this.props;
-    const { fieldId } = params;
+    const { dispatch } = this.props;
+    const { params: { id } } = this.state;
     let newParams = {};
     if (payload) {
       newParams = { ...payload };
     } else {
       newParams = {
         breadCrumb: [{ name: '选择部门', id: '-1' }],
-        reqData: { field_id: fieldId },
+        reqData: { field_id: id },
       };
     }
     dispatch({
@@ -194,6 +196,7 @@ export default class SelDepartment extends Component {
 
   checkedAll = (name = 'id') => { // 全选
     const { department } = this.props;
+    const { params: { max } } = this.state;
     let depSn = department.map(item => item.id);
     const { selected, switchState, currentDep } = this.state;
     const curDepSn = currentDep.map(item => item.id);
@@ -214,7 +217,7 @@ export default class SelDepartment extends Component {
     const result = newData.unique('id');
     selected.data = result;
     selected.num = result.length;
-    selected.total = 50;
+    selected.total = max || 50;
     this.setState({
       selected,
     });
@@ -230,8 +233,8 @@ export default class SelDepartment extends Component {
   }
 
   selectOk = () => {
-    const { match: { params }, history, currentKey } = this.props;
-    const { key } = params;
+    const { history, currentKey } = this.props;
+    const { params: { key } } = this.state;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const { selected } = this.state;
@@ -295,7 +298,8 @@ export default class SelDepartment extends Component {
       isConfig,
     } = this.props;
 
-    const { selected, type, search, currentDep, switchState, singleSelected } = this.state;
+    const { selected, params: { type }, search, currentDep,
+      switchState, singleSelected } = this.state;
     const selectedData = selected.data;
     const depSn = currentDep.map(item => item.id);
     const checkAble = selectedData.filter(item =>
@@ -303,7 +307,7 @@ export default class SelDepartment extends Component {
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <DepContainer
-          multiple={type === '1'}
+          multiple={`${type}` === '1'}
           name="name"
           bread={breadCrumb}
           checkAble={checkAble}
@@ -317,6 +321,10 @@ export default class SelDepartment extends Component {
           onSwitchChange={(check) => { this.setState({ switchState: check }); }}
           searchOncancel={this.searchOncancel}
         >
+
+          {!currentDep.length && (
+          <Nothing />
+          )}
           <SelDep
             link=""
             onRefresh={false}
@@ -324,8 +332,7 @@ export default class SelDepartment extends Component {
             heightNone
             renderName="name"
             singleSelected={singleSelected}
-            dispatch={this.props.dispatch}
-            multiple={type === '1'}
+            multiple={`${type}` === '1'}
             selected={selected.data}
             dataSource={currentDep}
             extra={!search && !isConfig && this.renderExtraContent}

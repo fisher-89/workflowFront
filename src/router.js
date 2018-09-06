@@ -127,19 +127,25 @@ function RouterConfig({
       import('./routes/SelectPlugins/SelPerson'),
   },
   {
-    path: '/form_sel_person/:key/:type/:fieldId',
+    path: '/form_sel_person',
     models: ['formSearchStaff'],
     component: () =>
       import('./routes/SelectPlugins/FormSelPerson'),
   },
+  // {
+  //   path: '/form_sel_department/:key/:type/:fieldId',
+  //   models: ['formSearchDep'],
+  //   component: () =>
+  //     import('./routes/SelectPlugins/SelDepartment'),
+  // },
   {
-    path: '/form_sel_department/:key/:type/:fieldId',
+    path: '/form_sel_department',
     models: ['formSearchDep'],
     component: () =>
       import('./routes/SelectPlugins/SelDepartment'),
   },
   {
-    path: '/form_sel_shop/:key/:type/:fieldId',
+    path: '/form_sel_shop',
     models: ['formSearchShop'],
     component: () =>
       import('./routes/SelectPlugins/SelShop'),

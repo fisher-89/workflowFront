@@ -4,6 +4,7 @@ import { Button, WhiteSpace, SwipeAction } from 'antd-mobile';
 import { connect } from 'dva';
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
+import { isArray, isObject } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
@@ -208,6 +209,32 @@ class TableEdit extends Component {
     });
   };
 
+  judgeAbleSubmit = (requiredForm) => {
+    const formdata = this.childComp ? (this.childComp.state.formdata) : [];
+    const newFormData = {};
+    (formdata || []).forEach((item) => {
+      const { key, value } = item;
+      newFormData[key] = value;
+    });
+    let ableSubmit = true;
+    const requireKey = requiredForm.map(item => item.key);
+    for (let i = 0; i < requireKey.length; i += 1) {
+      const key = requireKey[i];
+      const value = newFormData[key];
+      if (!value) {
+        ableSubmit = false;
+      } else if (isArray(value) && !value.length) {
+        ableSubmit = false;
+      } else if (isObject(value) && JSON.stringify(value) === '{}') {
+        ableSubmit = false;
+      }
+      if (!ableSubmit) {
+        break;
+      }
+    }
+    return ableSubmit;
+  }
+
   render() {
     const { start, dispatch, loading, history } = this.props;
     const { startflow, formdata } = start;
@@ -219,6 +246,9 @@ class TableEdit extends Component {
     const showForm = form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
     const editableForm = form.filter(item =>
       startflow.step.editable_fields.indexOf(item.key) !== -1);
+    const requiredForm = form.filter(item =>
+      startflow.step.required_fields.indexOf(item.key) !== -1);
+    const ableSubmit = this.judgeAbleSubmit(requiredForm);
     return (
       <div className={styles.con}>
         <div className={styles.con_content} style={{ paddingBottom: '20px' }}>
@@ -230,16 +260,24 @@ class TableEdit extends Component {
             dispatch={dispatch}
             show_form={showForm}
             editable_form={editableForm}
+            required_form={requiredForm}
             form_data={formData}
             onRef={(comp) => { this.childComp = comp; }}
           />
           <WhiteSpace />
-          {this.getGridList()}
+          <div style={{ marginBottom: '20px' }}>
+            {this.getGridList()}
+          </div>
         </div>
         <WhiteSpace />
 
         <div>
-          <Button type="primary" onClick={this.submitData}>确定</Button>
+          <Button
+            type={ableSubmit ? 'primary' : ''}
+            disabled={!ableSubmit}
+            onClick={this.submitData}
+          >确定
+          </Button>
         </div>
       </div>
     );

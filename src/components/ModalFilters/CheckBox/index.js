@@ -27,7 +27,7 @@ class CheckBox extends React.PureComponent {
   }
 
   handleOnChange = (changeValue) => {
-    const { onChange, multiple } = this.props;
+    const { onChange, multiple, range: { max } } = this.props;
     if (multiple) {
       let newValue = [...this.state.value];
       let pushAble = true;
@@ -38,7 +38,12 @@ class CheckBox extends React.PureComponent {
       });
 
       if (pushAble) {
-        newValue.push(changeValue);
+        const { length } = newValue;
+        if (max > 0 && `${length}` === `${max}`) {
+          Toast.info(`最多选择${length}项`);
+        } else {
+          newValue.push(changeValue);
+        }
       } else {
         newValue = newValue.filter(item => `${changeValue}` !== `${item}`);
       }

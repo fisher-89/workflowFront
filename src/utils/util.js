@@ -415,3 +415,10 @@ export function makeBreadCrumbData(params, bread, name) {
   }
   return newBread;
 }
+
+export function isString(str) {
+  return (typeof str == 'string') && str.constructor == String;
+} 
+export function isObject(obj){
+  return obj instanceof Object
+}

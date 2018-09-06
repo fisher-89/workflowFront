@@ -4,6 +4,7 @@ import { Toast } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
 import { getGridFilter } from '../../utils/convert';
+import { isObject, isArray } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import styles from '../common.less';
 
@@ -89,6 +90,27 @@ class AddGridList extends Component {
     this.props.history.goBack(-1);
   }
 
+  judgeAbleSubmit = (requiredForm) => {
+    const { formdata } = this.childComp ? this.childComp.state : {};
+    let ableSubmit = true;
+    const requireKey = requiredForm.map(item => item.key);
+    for (let i = 0; i < requireKey.length; i += 1) {
+      const key = requireKey[i];
+      const value = formdata[key];
+      if (!value) {
+        ableSubmit = false;
+      } else if (isArray(value) && !value.length) {
+        ableSubmit = false;
+      } else if (isObject(value) && JSON.stringify(value) === '{}') {
+        ableSubmit = false;
+      }
+      if (!ableSubmit) {
+        break;
+      }
+    }
+    return ableSubmit;
+  }
+
   render() {
     const { start, dispatch, loading } = this.props;
     const { key, index } = this.state;
@@ -109,13 +131,20 @@ class AddGridList extends Component {
     }
     let showGrid = [];
     let editableForm = [];
+    let requireForm = [];
     if (startflow && key) {
       const { fields: { grid } } = startflow;
       const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
       showGrid = showGridObj.newFields;
       const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === key);
       editableForm = editableFormObj.newFields;
+
+      const [requireFormObj] = getGridFilter(grid, 'required_fields', startflow.step).filter(item => item.key === key);
+      requireForm = requireFormObj.newFields;
     }
+    const ableSubmit = this.judgeAbleSubmit(requireForm);
+
+
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>
@@ -123,6 +152,7 @@ class AddGridList extends Component {
             onRef={(comp) => { this.childComp = comp; }}
             startflow={startflow}
             formdata={formdata}
+            required_form={requireForm}
             // evtClick={this.saveData}
             dispatch={dispatch}
             form_data={newFormData}
@@ -132,7 +162,8 @@ class AddGridList extends Component {
         </div>
         <div className={styles.footer}>
           <a
-            type="primary"
+            type={ableSubmit ? 'primary' : ''}
+            disabled={!ableSubmit}
             onClick={this.submitData}
           >确定
           </a>
