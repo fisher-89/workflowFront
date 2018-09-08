@@ -1,10 +1,10 @@
 // 编辑或新增列表控件数据页面
 import React, { Component } from 'react';
-import { Toast } from 'antd-mobile';
+import { Toast, Button } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
 import { getGridFilter } from '../../utils/convert';
-import { isObject, isArray } from '../../utils/util';
+import { initFormdata, isableSubmit } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import styles from '../common.less';
 
@@ -13,26 +13,40 @@ class AddGridList extends Component {
     flag: true,
     key: '',
     index: '-1',
+    formdata: [],
   }
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'start/refreshModal',
     });
   }
+
   componentWillReceiveProps(nextprops) {
-    const { match: { params } } = nextprops;
+    const { match: { params }, start } = nextprops;
+    const { startflow } = start;
     const { flag, key } = this.state;
-    if (!key && flag) {
+    if (!key && flag && startflow) {
       const { type, index } = params;
-      // const newKey = analyzePath(location.pathname, 1);
-      // const index = analyzePath(location.pathname, 2);
+      const { fields: { grid } } = startflow;
+      const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
+      const editableForm = editableFormObj.newFields;
+      const newFormData = start.form_data;
+      const formdata = initFormdata(newFormData, editableForm);
       this.setState({
         key: type,
         index,
         flag: false,
+        formdata,
       });
     }
+  }
+
+  handleOnchange = (formdata) => {
+    this.setState({
+      formdata,
+    });
   }
 
   // 将数据保存到modal的gridformdata中
@@ -90,27 +104,6 @@ class AddGridList extends Component {
     this.props.history.goBack(-1);
   }
 
-  judgeAbleSubmit = (requiredForm) => {
-    const { formdata } = this.childComp ? this.childComp.state : {};
-    let ableSubmit = true;
-    const requireKey = requiredForm.map(item => item.key);
-    for (let i = 0; i < requireKey.length; i += 1) {
-      const key = requireKey[i];
-      const value = formdata[key];
-      if (!value) {
-        ableSubmit = false;
-      } else if (isArray(value) && !value.length) {
-        ableSubmit = false;
-      } else if (isObject(value) && JSON.stringify(value) === '{}') {
-        ableSubmit = false;
-      }
-      if (!ableSubmit) {
-        break;
-      }
-    }
-    return ableSubmit;
-  }
-
   render() {
     const { start, dispatch, loading } = this.props;
     const { key, index } = this.state;
@@ -138,13 +131,10 @@ class AddGridList extends Component {
       showGrid = showGridObj.newFields;
       const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === key);
       editableForm = editableFormObj.newFields;
-
       const [requireFormObj] = getGridFilter(grid, 'required_fields', startflow.step).filter(item => item.key === key);
       requireForm = requireFormObj.newFields;
     }
-    const ableSubmit = this.judgeAbleSubmit(requireForm);
-
-
+    const ableSubmit = isableSubmit(requireForm, this.state.formdata);
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>
@@ -154,19 +144,21 @@ class AddGridList extends Component {
             formdata={formdata}
             required_form={requireForm}
             // evtClick={this.saveData}
+            onChange={this.handleOnchange}
+
             dispatch={dispatch}
             form_data={newFormData}
             editable_form={editableForm}
             show_form={showGrid}
           />
         </div>
-        <div className={styles.footer}>
-          <a
-            type={ableSubmit ? 'primary' : ''}
+        <div style={{ padding: '10px' }}>
+          <Button
+            type="primary"
             disabled={!ableSubmit}
             onClick={this.submitData}
           >确定
-          </a>
+          </Button>
         </div>
       </div>
     );

@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff } from '../../common/ListView/index.js';
-import { makeFieldValue, makeBreadCrumbData, getUrlParams } from '../../utils/util';
+import { makeFieldValue, makeBreadCrumbData, getUrlParams, dealCheckAll } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -68,12 +68,11 @@ export default class SelPerson extends Component {
   }
 
   onPageChange = () => {
-    const { searStaff, match: { params } } = this.props;
-    const { search } = this.state;
+    const { searStaff } = this.props;
+    const { search, params: { id } } = this.state;
     const { page } = searStaff;
-    const { fieldId } = params;
     const currentParams = {
-      field_id: fieldId,
+      field_id: id,
       page: page + 1,
       pagesize: 15,
       filters: {
@@ -89,8 +88,8 @@ export default class SelPerson extends Component {
   }
 
   getSelectResult = (result) => {
-    const { selected, type } = this.state;
-    if (type !== '1') {
+    const { selected, params: { type } } = this.state;
+    if (`${type}` !== '1') {
       this.getSingleSelect(result);
     } else {
       const newResult = result.map((item) => {
@@ -206,28 +205,29 @@ export default class SelPerson extends Component {
     const { staff } = this.props;
     const staffSn = staff.map(item => item.staff_sn);
     const { selectAll, selected, params: { max } } = this.state;
-    const { data } = selected;
-    if (selectAll) {
-      const newData = data.filter(item => staffSn.indexOf(item.staff_sn) === -1);
-      selected.data = newData;
-      selected.num = newData.length;
-    } else {
-      const newData = [...data, ...staff];
-      const result = [];
-      const obj = {};
-      for (let i = 0; i < newData.length; i += 1) {
-        if (!obj[newData[i].staff_sn]) { // 如果能查找到，证明数组元素重复了
-          obj[newData[i].staff_sn] = 1;
-          result.push(newData[i]);
-        }
-      }
-      selected.data = result;
-      selected.num = result.length;
-    }
-    selected.total = max || 50;
+    // const { data } = selected;
+    // if (selectAll) {
+    //   const newData = data.filter(item => staffSn.indexOf(item.staff_sn) === -1);
+    //   selected.data = newData;
+    //   selected.num = newData.length;
+    // } else {
+    //   const newData = [...data, ...staff];
+    //   const result = [];
+    //   const obj = {};
+    //   for (let i = 0; i < newData.length; i += 1) {
+    //     if (!obj[newData[i].staff_sn]) { // 如果能查找到，证明数组元素重复了
+    //       obj[newData[i].staff_sn] = 1;
+    //       result.push(newData[i]);
+    //     }
+    //   }
+    //   selected.data = result;
+    //   selected.num = result.length;
+    // }
+    // selected.total = max || 50;
+    const newSelected = dealCheckAll(selected, staffSn, 'staff_sn', selectAll, staff, max);
 
     this.setState({
-      selected,
+      selected: newSelected,
       selectAll: !selectAll,
     });
   }
@@ -269,7 +269,7 @@ export default class SelPerson extends Component {
       location,
       history,
     };
-    const { selected, search, selectAll, singleSelected, params: { key, type } } = this.state;
+    const { selected, search, selectAll, singleSelected, params: { type } } = this.state;
     const selectedData = selected.data;
     const { page, totalpage, data = [] } = searStaff;
     const staffSn = staff.map(item => item.staff_sn);
@@ -302,8 +302,9 @@ export default class SelPerson extends Component {
                 name="id"
               />
             ) : null}
-            {search && data && !data.length ? <Nothing /> : null}
-            {!search && staff.length ? (
+            {((search && data && !data.length)
+              || (!search && !staff.length && !department.length)) ? <Nothing /> : null}
+            {!search ? (
               <Staff
                 link=""
                 heightNone
@@ -321,7 +322,6 @@ export default class SelPerson extends Component {
             {search ? (
               <SeStaff
                 {...someProps}
-                type={key}
                 link=""
                 heightNone
                 name="staff_sn"

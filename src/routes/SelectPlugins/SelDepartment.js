@@ -70,7 +70,7 @@ export default class SelDepartment extends Component {
   }
 
   getSelectResult = (result, current) => {
-    const { selected, type, switchState } = this.state;
+    const { selected, params: { type }, switchState } = this.state;
     const oldData = selected.data;
     if (`${type}` !== '1') {
       this.getSingleSelect(result);

@@ -5,6 +5,8 @@ import React, {
 import { Modal, SwipeAction } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
+import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData } from '../../utils/util';
+
 import spin from '../../components/General/Loader';
 
 import style from '../TableEdit/index.less';
@@ -16,42 +18,53 @@ const {
 class ApproveDetail extends Component {
   state = {
     flowId: '',
+    formdata: [],
+    griddata: [],
   }
   componentWillMount() {
-    const { dispatch, match: { params } } = this.props;
+    const { approve: { gridformdata, startflow, formdata }, dispatch,
+      match: { params } } = this.props;
     const { id } = params;
+    let griddata = [];
+    if (startflow) {
+      griddata = dealGridData(gridformdata);
+    }
     this.setState({
-      flowId: id,
+      griddata,
+      formdata,
     });
-    localStorage.flowId = id;
     dispatch({
       type: 'approve/getStartFlow',
       payload: id,
     });
   }
 
+  componentWillReceiveProps(props) {
+    const { approve: { startflow, gridformdata } } = props;
+    const oldstartflow = this.props.start.startflow;
+    if (JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) {
+      const formData = startflow.form_data;
+      const { fields: { form } } = startflow;
+      // 可编辑的form
+      const editableForm = form.filter(item =>
+        startflow.step.editable_fields.indexOf(item.key) !== -1);
+      const formdata = initFormdata(formData, editableForm);
+      const griddata = dealGridData(gridformdata);
+
+      this.setState({
+        formdata,
+        griddata,
+      });
+    }
+  }
+
   getGridItem = (key) => {
     const { approve: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
-    const gridFields = gridItem.fields;
+    // const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
-    const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
-      const newObj = {
-        value_0: `${gridItem.name}${i + 1}`,
-      };
-      let num = 0;
-      item.forEach((its) => { // 取前三个字段
-        const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
-        const { type } = fieldsItem || {};
-        if (num < 3 && type && type !== 'file' && type !== 'array') {
-          newObj[`value_${num}`] = its.value;
-          num += 1;
-        }
-      });
-      return newObj;
-    });
-
+    const dataList = makeGridItemData(currentGridData, gridItem);
     const extra = [
       {
         text: '删除',
@@ -59,8 +72,6 @@ class ApproveDetail extends Component {
         onPress: 'deleteItem',
       },
     ];
-
-
     return dataList.map((item, i) => {
       const idx = i;
       const newExtra = extra.map((_) => {
@@ -87,6 +98,7 @@ class ApproveDetail extends Component {
       );
     });
   }
+
   getThrough = () => {
     const {
       dispatch,
@@ -108,16 +120,6 @@ class ApproveDetail extends Component {
     const { fields: { grid } } = startflow;
     return grid.map((item, i) => {
       const index = i;
-      // return (
-      //   <div key={idx}>
-      //     <p className={style.title}>
-      //       <span>{item.name}</span>
-      //     </p>
-      //     <List key={item.key}>
-      //       {this.getGridItem(item.key)}
-      //     </List>
-      //   </div>
-      // );
       return (
         <div key={index} className={style.grid_item}>
           <p className={style.grid_opt}>
@@ -133,7 +135,35 @@ class ApproveDetail extends Component {
     });
   }
 
+  handleOnchange = (formdata) => {
+    this.setState({
+      formdata,
+    });
+  }
 
+  deleteItem = (e, key, i) => {
+    e.stopPropagation();
+    const { approve: { gridformdata }, dispatch } = this.props;
+    const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
+    const { fields } = currentGridData;
+    fields.splice(i, 1);
+    currentGridData.fields = fields;
+    const newGridformdata = gridformdata.map((item) => {
+      let obj = { ...item };
+      if (item.key === key) {
+        obj = { ...currentGridData };
+      }
+      return obj;
+    });
+
+    dispatch({
+      type: 'approve/save',
+      payload: {
+        key: 'gridformdata',
+        value: newGridformdata,
+      },
+    });
+  }
   // 给列表控件追加item
   addGridList = (key) => {
     const { history, dispatch } = this.props;
@@ -204,172 +234,161 @@ class ApproveDetail extends Component {
       },
     });
   }
-// 提交数据
-submitData = (e) => {
-  e.preventDefault();
-  const { flowId } = this.state;
-  const { dispatch, history } = this.props;
-  const { formdata } = this.childComp.state;
-  // setTimeout(() => {
-  const { approve: { gridformdata, startflow } } = this.props;
-  // 整理formdata数据
-  const flowRun = startflow.flow_run;
-  const formObj = {};
-  formdata.map((item) => {
-    formObj[item.key] = item.value;
-    return item;
-  });
-  // 整理列表控件数据
-  const formgridObj = {};
-  gridformdata.map((item) => {
-    const { fields } = item;
-    const forgridArr = fields.map((its) => {
-      const obj = {};
-      its.map((it) => {
-        obj[it.key] = it.value;
-        return true;
-      });
-      return obj;
+  // 提交数据
+  submitData = (e) => {
+    e.preventDefault();
+    const { flowId } = this.state;
+    const { dispatch, history } = this.props;
+    const { formdata } = this.childComp.state;
+    // setTimeout(() => {
+    const { approve: { gridformdata, startflow } } = this.props;
+    // 整理formdata数据
+    const flowRun = startflow.flow_run;
+    const formObj = {};
+    formdata.map((item) => {
+      formObj[item.key] = item.value;
+      return item;
     });
-    formgridObj[item.key] = [...forgridArr];
-    return item;
-  });
-  const newformData = {
-    ...formObj,
-    ...formgridObj,
-  };
-  dispatch({
-    type: 'start/preSet',
-    payload: {
-      data: {
-        form_data: newformData,
+    // 整理列表控件数据
+    const formgridObj = dealGridData(gridformdata);
+    const newformData = {
+      ...formObj,
+      ...formgridObj,
+    };
+    dispatch({
+      type: 'start/preSet',
+      payload: {
+        data: {
+          form_data: newformData,
+          step_run_id: flowId,
+        },
+        id: flowRun.flow_id,
+        preType: 'approve',
+        cb: (data) => {
+          if (data.step_end === 1) { // 不选步骤
+            prompt('填写备注', '', [{
+              text: '取消',
+            }, {
+              text: '确定',
+              onPress: v => this.submitStep(v, data),
+            }], 'default', null, ['请输入备注']);
+          } else {
+            history.push('/select_step');
+          }
+        },
+      },
+    });
+    // }, 500);
+  }
+
+  fillRemark = () => {
+    prompt('填写备注', '', [{
+      text: '取消',
+      // onPress: this.submitStep
+    }, {
+      text: '确定',
+      onPress: this.doReject,
+    }], 'default', null, ['input your name']);
+  }
+
+  doReject = (v) => {
+    const {
+      dispatch,
+    } = this.props;
+    const {
+      flowId,
+    } = this.state;
+    dispatch({
+      type: 'approve/doReject',
+      payload: {
         step_run_id: flowId,
+        remark: v,
       },
-      id: flowRun.flow_id,
-      preType: 'approve',
-      cb: (data) => {
-        if (data.step_end === 1) { // 不选步骤
-          prompt('填写备注', '', [{
-            text: '取消',
-          }, {
-            text: '确定',
-            onPress: v => this.submitStep(v, data),
-          }], 'default', null, ['请输入备注']);
-        } else {
-          history.push('/select_step');
-        }
-      },
-    },
-  });
-  // }, 500);
-}
+    });
+  }
 
-fillRemark = () => {
-  prompt('填写备注', '', [{
-    text: '取消',
-    // onPress: this.submitStep
-  }, {
-    text: '确定',
-    onPress: this.doReject,
-  }], 'default', null, ['input your name']);
-}
+  doDeliver = () => { // 转交
+    const {
+      history,
+    } = this.props;
+    history.push('/sel_person/deliver/1/approve');
+  }
 
-doReject = (v) => {
-  const {
-    dispatch,
-  } = this.props;
-  const {
-    flowId,
-  } = this.state;
-  dispatch({
-    type: 'approve/doReject',
-    payload: {
-      step_run_id: flowId,
-      remark: v,
-    },
-  });
-}
+  render() {
+    const { approve, dispatch, loading } = this.props;
+    const { startflow, formdata } = approve;
+    const newFormData = approve.form_data;
+    spin(loading);
+    if (!startflow) return null;
+    const { fields: { form, grid } } = startflow;
+    // 只需要展示的（不包括可编辑的）
+    const showForm = form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
 
-doDeliver = () => { // 转交
-  const {
-    history,
-  } = this.props;
-  history.push('/sel_person/deliver/1/approve');
-}
-render() {
-  const { approve, dispatch, loading } = this.props;
-  const { startflow, formdata } = approve;
-  const newFormData = approve.form_data;
-  spin(loading);
-  if (!startflow) return null;
-  const { fields: { form } } = startflow;
-  // 只需要展示的（不包括可编辑的）
-  const showForm = form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
+    // 可编辑的
+    const editableForm = form.filter((item) => {
+      return startflow.step.editable_fields.indexOf(item.key) !== -1;
+    });
+    const requiredForm = form.filter(item =>
+      startflow.step.required_fields.indexOf(item.key) !== -1);
+    const requiredGrid = grid.filter(item =>
+      startflow.step.required_fields.indexOf(item.key) !== -1);
+    const ableSubmit = isableSubmit(requiredForm, this.state.formdata)
+      && judgeGridSubmit(requiredGrid, this.state.griddata);
+    return (
+      <div className={styles.con}>
+        <div className={styles.con_content} >
+          {startflow.step_run.action_type === 0 ? (
+            <CreateForm
+              startflow={startflow}
+              formdata={formdata}
+              evtClick={this.saveData}
+              onChange={this.handleOnchange}
+              dispatch={dispatch}
+              show_form={showForm}
+              editable_form={editableForm}
+              form_data={newFormData}
+              onRef={(comp) => { this.childComp = comp; }}
+            />
+          ) : (
+            <FormDetail
+              form_data={newFormData}
+              show_form={showForm}
+            />
+            )}
+          <div style={{ marginBottom: '20px' }}>
+            {this.getGridList()}
+          </div>
+        </div>
 
-  // 可编辑的
-  const editableForm = form.filter((item) => {
-    return startflow.step.editable_fields.indexOf(item.key) !== -1;
-  });
-
-  return (
-    <div className={styles.con}>
-      <div className={styles.con_content} >
-        {startflow.step_run.action_type === 0 ? (
-          <CreateForm
-            startflow={startflow}
-            formdata={formdata}
-            evtClick={this.saveData}
-            dispatch={dispatch}
-            show_form={showForm}
-            editable_form={editableForm}
-            form_data={newFormData}
-            onRef={(comp) => { this.childComp = comp; }}
-          />
-        ) : (
-          <FormDetail
-            form_data={newFormData}
-            show_form={showForm}
-          />
-          )}
-        <div style={{ marginBottom: '20px' }}>
-          {this.getGridList()}
-
+        <div className={styles.footer}>
+          {startflow.step_run.action_type === 0 ? (
+            <a
+              onClick={ableSubmit ? this.submitData : null}
+              style={(!ableSubmit ? { color: 'rgb(204,204,204)' } : null)}
+            >
+              <span>通过</span>
+            </a>
+          ) : ''}
+          {startflow.step_run.action_type === 0 ? (
+            <a
+              onClick={this.doDeliver}
+            >
+              <span>转交</span>
+            </a>
+          ) : ''}
+          {startflow.step.reject_type !== 0 && startflow.step_run.action_type === 0 ? (
+            <a
+              onClick={this.fillRemark}
+            >
+              <span>驳回</span>
+            </a>
+          ) : ''}
         </div>
       </div>
-
-      <div className={styles.footer}>
-        {startflow.step_run.action_type === 0 ? (
-          <a
-            onClick={this.submitData}
-          >
-            <span>通过</span>
-          </a>
-        ) : ''}
-        {startflow.step_run.action_type === 0 ? (
-          <a
-            onClick={this.doDeliver}
-          >
-            <span>转交</span>
-          </a>
-        ) : ''}
-        {startflow.step.reject_type !== 0 && startflow.step_run.action_type === 0 ? (
-          <a
-            onClick={this.fillRemark}
-          >
-            <span>驳回</span>
-          </a>
-        ) : ''}
-      </div>
-    </div>
-  );
-}
+    );
+  }
 }
 export default connect(({
-  approve,
-  start,
-  loading,
-}) => ({
-  approve,
-  start,
-  loading: loading.global,
+  approve, start, loading,
+}) => ({ approve, start, loading: loading.global,
 }))(ApproveDetail);

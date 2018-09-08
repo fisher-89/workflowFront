@@ -51,8 +51,9 @@ export default function ListView(ListItem) {
 
     onRefresh = () => {
       const { history, location: { pathname }, type, onRefresh } = this.props;
+      console.log('type', type);
       if (type) {
-        const url = `${pathname}?type=${type}&page=1&totalpage=10`;
+        const url = `${pathname}?type=${type}&page=1&pagesize=10`;
         history.replace(url);
       }
       onRefresh();

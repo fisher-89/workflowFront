@@ -1,10 +1,10 @@
 // 发起页面
 import React, { Component } from 'react';
-import { Button, WhiteSpace, SwipeAction } from 'antd-mobile';
+import { Button, SwipeAction } from 'antd-mobile';
 import { connect } from 'dva';
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
-import { isArray, isObject } from '../../utils/util';
+import { initFormdata, isableSubmit, judgeGridSubmit, dealGridData, makeGridItemData } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
@@ -13,8 +13,22 @@ class TableEdit extends Component {
     super(props);
     this.state = {
       flowId: props.match.params.id, // 发起的流程ID
+      formdata: [],
+      griddata: [],
     };
   }
+  componentWillMount() {
+    const { start: { gridformdata, startflow, formdata } } = this.props;
+    let griddata = [];
+    if (startflow) {
+      griddata = dealGridData(gridformdata);
+    }
+    this.setState({
+      griddata,
+      formdata,
+    });
+  }
+
   componentDidMount() {
     // 获取流程发起的数据
     this.props.dispatch({
@@ -23,30 +37,48 @@ class TableEdit extends Component {
     });
   }
 
+  componentWillReceiveProps(props) {
+    const { start: { startflow, gridformdata } } = props;
+    const oldstartflow = this.props.start.startflow;
+    if (JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) {
+      const formData = startflow.form_data;
+      const { fields: { form } } = startflow;
+      // 可编辑的form
+      const editableForm = form.filter(item =>
+        startflow.step.editable_fields.indexOf(item.key) !== -1);
+      const formdata = initFormdata(formData, editableForm);
+      const griddata = dealGridData(gridformdata);
+      this.setState({
+        formdata,
+        griddata,
+      });
+    }
+  }
 
   // 列表控件内部fields
   getGridItem = (key) => {
     const { start: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
-    const gridFields = gridItem.fields;
+    // const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
-    const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
-      const newObj = {
-        value_0: `${gridItem.name}${i + 1}`,
-      };
-      let num = 0;
-      item.map((its) => { // 取前三个字段
-        const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
-        const { type } = fieldsItem || {};
-        if (num < 3 && type && type !== 'file' && type !== 'array') {
-          newObj[`value_${num}`] = its.value;
-          num += 1;
-        }
-        return true;
-      });
-      return newObj;
-    });
+    // const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
+    //   const newObj = {
+    //     value_0: `${gridItem.name}${i + 1}`,
+    //   };
+    //   let num = 0;
+    //   item.map((its) => { // 取前三个字段
+    //     const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
+    //     const { type } = fieldsItem || {};
+    //     if (num < 3 && type && type !== 'file' && type !== 'array') {
+    //       newObj[`value_${num}`] = its.value;
+    //       num += 1;
+    //     }
+    //     return true;
+    //   });
+    //   return newObj;
+    // });
+    const dataList = makeGridItemData(currentGridData, gridItem);
     const extra = [
       {
         text: '删除',
@@ -100,6 +132,12 @@ class TableEdit extends Component {
           {this.getGridItem(item.key)}
         </div>
       );
+    });
+  }
+
+  handleOnchange = (formdata) => {
+    this.setState({
+      formdata,
     });
   }
 
@@ -170,25 +208,11 @@ class TableEdit extends Component {
     const { formdata } = this.childComp.state;
     // 整理formdata数据
     const formObj = {};
-    formdata.map((item) => {
+    formdata.forEach((item) => {
       formObj[item.key] = item.value;
       return item;
     });
-    // 整理列表控件数据
-    const formgridObj = {};
-    gridformdata.map((item) => {
-      const { fields } = item;
-      const forgridArr = fields.map((its) => {
-        const obj = {};
-        its.map((it) => {
-          obj[it.key] = it.value;
-          return true;
-        });
-        return obj;
-      });
-      formgridObj[item.key] = [...forgridArr];
-      return item;
-    });
+    const formgridObj = dealGridData(gridformdata);
     const formData = {
       ...formObj,
       ...formgridObj,
@@ -209,54 +233,33 @@ class TableEdit extends Component {
     });
   };
 
-  judgeAbleSubmit = (requiredForm) => {
-    const formdata = this.childComp ? (this.childComp.state.formdata) : [];
-    const newFormData = {};
-    (formdata || []).forEach((item) => {
-      const { key, value } = item;
-      newFormData[key] = value;
-    });
-    let ableSubmit = true;
-    const requireKey = requiredForm.map(item => item.key);
-    for (let i = 0; i < requireKey.length; i += 1) {
-      const key = requireKey[i];
-      const value = newFormData[key];
-      if (!value) {
-        ableSubmit = false;
-      } else if (isArray(value) && !value.length) {
-        ableSubmit = false;
-      } else if (isObject(value) && JSON.stringify(value) === '{}') {
-        ableSubmit = false;
-      }
-      if (!ableSubmit) {
-        break;
-      }
-    }
-    return ableSubmit;
-  }
-
   render() {
     const { start, dispatch, loading, history } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
     spin(loading);
     if (!startflow) return null;
-    const { fields: { form } } = startflow;
+    const { fields: { form, grid } } = startflow;
     // 可编辑的form
     const showForm = form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
     const editableForm = form.filter(item =>
       startflow.step.editable_fields.indexOf(item.key) !== -1);
     const requiredForm = form.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
-    const ableSubmit = this.judgeAbleSubmit(requiredForm);
+    const requiredGrid = grid.filter(item =>
+      startflow.step.required_fields.indexOf(item.key) !== -1);
+    const ableSubmit = isableSubmit(requiredForm, this.state.formdata)
+      && judgeGridSubmit(requiredGrid, this.state.griddata);
+
     return (
       <div className={styles.con}>
-        <div className={styles.con_content} style={{ paddingBottom: '20px' }}>
+        <div className={styles.con_content}>
           <CreateForm
             history={history}
             startflow={startflow}
             formdata={formdata}
             evtClick={this.saveData}
+            onChange={this.handleOnchange}
             dispatch={dispatch}
             show_form={showForm}
             editable_form={editableForm}
@@ -264,16 +267,13 @@ class TableEdit extends Component {
             form_data={formData}
             onRef={(comp) => { this.childComp = comp; }}
           />
-          <WhiteSpace />
           <div style={{ marginBottom: '20px' }}>
             {this.getGridList()}
           </div>
         </div>
-        <WhiteSpace />
-
-        <div>
+        <div style={{ padding: '10px' }}>
           <Button
-            type={ableSubmit ? 'primary' : ''}
+            type="primary"
             disabled={!ableSubmit}
             onClick={this.submitData}
           >确定

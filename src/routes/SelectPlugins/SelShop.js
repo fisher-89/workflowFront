@@ -260,9 +260,9 @@ export default class SelPerson extends Component {
           bread={breadCrumb}
           checkAble={checkAble}
           selected={selected}
+          all={false}
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
-          fetchDataSource={() => this.fetchDataSource()}
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
         >

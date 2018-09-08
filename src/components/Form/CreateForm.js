@@ -297,6 +297,7 @@ class CreateForm extends Component {
   }
 
   bindFormDataChange = (obj, item) => {
+    const { onChange } = this.props;
     const { formdata } = this.state;
     const { key } = item;
     const data = formdata.map((its) => {
@@ -311,7 +312,7 @@ class CreateForm extends Component {
       [key]: {
         ...obj,
       },
-    });
+    }, () => onChange(data));
   }
 
   timeChange = (v, item) => { // 时间改变事件
@@ -342,7 +343,6 @@ class CreateForm extends Component {
   render() {
     const { startflow } = this.props;
     if (!startflow) return null;
-    console.log(this.state.formdata);
     return (
       <div className={[style.edit_form, style.form].join(' ')} style={{ background: '#fff' }}>
         <List>

@@ -60,26 +60,28 @@ export default {
     * fetchSearchStaff({ payload }, { put, call }) {
       const { parentId, breadCrumb } = payload;
       const response = yield call(department, parentId);
-      const { children, staff } = response;
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'staff',
-          data: staff,
-        },
-      });
+      if (response && !response.error) {
+        const { children, staff } = response;
+        yield put({
+          type: 'save',
+          payload: {
+            store: 'staff',
+            data: staff,
+          },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            store: 'department',
+            data: children,
+          },
+        });
+      }
       yield put({
         type: 'save',
         payload: {
           store: 'breadCrumb',
           data: breadCrumb,
-        },
-      });
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'department',
-          data: children,
         },
       });
     },

@@ -1,9 +1,8 @@
 
 
 /* eslint-disable */
-import {
-  Toast,
-} from 'antd-mobile';
+import { Toast } from 'antd-mobile';
+import moment from 'moment'
 
 const codeMessage = {
   200: '服务器成功返回请求的数据',
@@ -418,7 +417,147 @@ export function makeBreadCrumbData(params, bread, name) {
 
 export function isString(str) {
   return (typeof str == 'string') && str.constructor == String;
-} 
-export function isObject(obj){
+}
+export function isObject(obj) {
   return obj instanceof Object
+}
+
+export function initFormdata(source, editableform) {
+  const formdata = editableform.map(item => {
+    const formatStr = formatDate(item.type);
+    const currentValue = isJSON(source[item.key]);
+    let value = currentValue;
+    if (item.type === 'time') {
+      value = moment(`2018/1/1 ${currentValue}`).format(formatStr);
+    }
+    if (item.type === 'date' || item.type === 'datetime') {
+      if (currentValue) {
+        value = moment(currentValue).format(formatStr);
+      } else {
+        value = moment().format(formatStr);
+      }
+    }
+    const obj = {
+      key: item.key,
+      value,
+      hasError: false,
+      msg: '',
+    };
+    return obj
+  })
+  return formdata;
+}
+
+export function isableSubmit(requiredForm, formdata) {
+  const newFormData = {};
+  (formdata || []).forEach((item) => {
+    const { key, value } = item;
+    newFormData[key] = value;
+  });
+  let ableSubmit = true;
+  const requireKey = requiredForm.map(item => item.key);
+  for (let i = 0; i < requireKey.length; i += 1) {
+    const key = requireKey[i];
+    const value = newFormData[key];
+    ableSubmit = judgeIsNothing(value)
+    if (!ableSubmit) {
+      break;
+    }
+  }
+  return ableSubmit;
+}
+
+
+export function judgeIsNothing(value) {
+  let ableSubmit = true;
+  if (!value) {
+    ableSubmit = false;
+  } else if (isArray(value) && !value.length) {
+    ableSubmit = false;
+  } else if (isObject(value) && JSON.stringify(value) === '{}') {
+    ableSubmit = false;
+  }
+  return ableSubmit
+}
+
+
+
+export function dealGridData(gridformdata) {
+  // 整理列表控件数据
+  const formgridObj = {};
+  gridformdata.forEach((item) => {
+    const { fields } = item;
+    const forgridArr = fields.map((its) => {
+      const obj = {};
+      its.forEach((it) => {
+        obj[it.key] = it.value;
+      });
+      return obj;
+    });
+    formgridObj[item.key] = [...forgridArr];
+  });
+  return formgridObj;
+}
+
+
+export function judgeGridSubmit(required, formdata) {
+  let ableSubmit = true;
+  for (let i = 0; i < required.length; i += 1) {
+    const item = required[i];
+    const { key } = item;
+    const value = formdata[key];
+    if (!judgeIsNothing(value)) {
+      ableSubmit = false;
+      break;
+    }
+  }
+  return ableSubmit;
+}
+
+export function makeGridItemData(currentGridData, gridItem) {
+  const gridFields = gridItem.fields;
+  const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
+    let value0 = `${gridItem.name}${i + 1}`;
+    const newObj = {
+      value_0: value0,
+    };
+    let num = 0;
+    item.forEach((its) => { // 取前三个字段
+      const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
+      const { type } = fieldsItem || {};
+      if (num < 3 && (type === 'text' || type === 'int' || (type === 'select' && !fieldsItem.is_checkbox))) {
+        const { value } = its;
+        newObj[`value_${num}`] = value || (num === 0 ? value0 : '');
+        num += 1;
+      }
+    });
+    return newObj;
+  });
+  return dataList;
+}
+
+export function dealCheckAll(selects, snArr, name, selectAll, source, max) {
+
+  const selected = { ...selects }
+  const { data } = selects;
+  if (selectAll) {
+    const newData = data.filter(item => snArr.indexOf(item[name]) === -1);
+    selected.data = newData;
+    selected.num = newData.length;
+  } else {
+    const newData = [...data, ...source];
+    const result = [];
+    const obj = {};
+    for (let i = 0; i < newData.length; i += 1) {
+
+      if (!obj[newData[i][name]]) { // 如果能查找到，证明数组元素重复了
+        obj[newData[i][name]] = 1;
+        result.push(newData[i]);
+      }
+    }
+    selected.data = result;
+    selected.num = result.length;
+  }
+  selected.total = max || 50;
+  return selected
 }

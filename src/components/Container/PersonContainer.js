@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'antd-mobile';
+import { Button, List } from 'antd-mobile';
 import ReactDOM from 'react-dom';
 import { PersonIcon } from '../../components/index.js';
 import { Search, Bread } from '../../components/General/index';
@@ -44,15 +44,8 @@ export default class PersonContainer extends Component {
   render() {
     const {
       bread = [],
-      children,
-      multiple,
-      name,
-      selected,
-      checkedAll,
-      checkAble,
-      handleBread,
-      selectOk,
-      isFinal = false,
+      children, fetchDataSource, multiple, all = true,
+      name, selected, checkedAll, checkAble, handleBread, selectOk, isFinal = false,
     } = this.props;
     return (
       <div className={style.con}>
@@ -74,7 +67,17 @@ export default class PersonContainer extends Component {
               handleBread={handleBread}
             />
           )}
-
+          {this.state.value || isFinal || !all ? null : (
+            <div style={{ borderBottom: '1px solid rgb(245, 245, 245)' }}>
+              <List >
+                <List.Item
+                  arrow="horizontal"
+                  onClick={fetchDataSource}
+                >全部
+                </List.Item>
+              </List>
+            </div>
+          )}
           {multiple && !this.state.value ? (
             <div className={style.action}>
               <div className={style.action_item}>

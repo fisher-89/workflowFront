@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff, FinalStaff } from '../../common/ListView/index.js';
-import { userStorage, isArray } from '../../utils/util';
+import { userStorage, isArray, dealCheckAll } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -186,6 +186,9 @@ export default class SelPerson extends Component {
   selDepartment = (params) => {
     const newBread = this.makeBreadCrumbData(params);
     const parentId = params.id;
+    this.setState({
+      selectAll: false,
+    });
     if (parentId === '-1') {
       this.firstDepartment();
     } else {
@@ -198,19 +201,20 @@ export default class SelPerson extends Component {
 
   checkedAll = () => { // 全选
     const { staff } = this.props;
-    const { selectAll } = this.state;
-    const selected = {};
-    if (selectAll) {
-      selected.data = [];
-      selected.num = 0;
-    } else {
-      selected.data = [...staff];
-      selected.num = staff.length;
-    }
-    selected.total = 50;
-
+    const staffSn = staff.map(item => item.staff_sn);
+    const { selectAll, selected } = this.state;
+    // const { data } = selected;
+    // if (selectAll) {
+    //   selected.data = [];
+    //   selected.num = 0;
+    // } else {
+    //   selected.data = [...staff];
+    //   selected.num = staff.length;
+    // }
+    // selected.total = 50;
+    const newSelected = dealCheckAll(selected, staffSn, 'staff_sn', selectAll, staff);
     this.setState({
-      selected,
+      selected: newSelected,
       selectAll: !selectAll,
     });
   }
@@ -266,10 +270,14 @@ export default class SelPerson extends Component {
       location,
       history,
     };
-    const { selected, type, search, key } = this.state;
+    const { selected, type, search, key, selectAll } = this.state;
+    const selectedData = selected.data;
     const isFinal = key === 'final';
     const { page, totalpage, data = [] } = searStaff;
     const tempFinal = this.onFinalSearch(search);
+    const staffSn = staff.map(item => item.staff_sn);
+    const checkAble = selectedData.filter(item =>
+      staffSn.indexOf(item.staff_sn) > -1).length === staffSn.length && selectAll;
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
@@ -277,7 +285,7 @@ export default class SelPerson extends Component {
           name={isFinal ? 'staff_name' : 'realname'}
           isFinal={isFinal}
           bread={breadCrumb}
-          checkAble={staff.length && (selected.num === staff.length)}
+          checkAble={checkAble}
           selected={selected}
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
@@ -299,8 +307,9 @@ export default class SelPerson extends Component {
                 name="id"
               />
             ) : null}
-            {search && data && !data.length && !tempFinal.length ? <Nothing /> : null}
-            {!search && staff.length && !isFinal ? (
+            {((search && data && !data.length && !tempFinal.length)
+              || (!search && !staff.length && !department.length)) ? <Nothing /> : null}
+            {!search && !isFinal ? (
               <Staff
                 link=""
                 heightNone

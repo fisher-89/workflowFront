@@ -17,7 +17,7 @@ export default class Start extends Component {
     const time = isToday(value[timeKey]) ? moment(value[timeKey]).format('HH:MM') : value[timeKey];
     return (
       <div
-        className={style.item}
+        className={style.list_item}
         onClick={() => onHandleClick(value)}
       >
         <div className={style.label_title}>

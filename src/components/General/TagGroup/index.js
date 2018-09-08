@@ -74,7 +74,6 @@ export default class TagGroup extends React.Component {
 
   renderTag = () => {
     const { tags } = this.state;
-    console.log('tags', tags);
     return tags.map((item, i) => {
       const props = this.makeTagProps(item, i);
       return (

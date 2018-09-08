@@ -1,6 +1,7 @@
 // 审批的表单
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { Button } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
 import style from './index.less';
@@ -17,29 +18,29 @@ class StartDetail extends Component {
       payload: id,
     });
   }
+
   getGridItem = (key) => {
     const { start: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
-
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
-    const gridFields = gridItem.fields;
+    // const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
-    const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
-      const newObj = {
-        value_0: `${gridItem.name}${i + 1}`,
-      };
-      let num = 0;
-      item.forEach((its) => { // 取前三个字段
-        const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
-        const { type } = fieldsItem || {};
-        if (num < 3 && type && type !== 'file' && type !== 'array') {
-          newObj[`value_${num}`] = its.value;
-          num += 1;
-        }
-      });
-      return newObj;
-    });
-
+    // const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
+    //   const newObj = {
+    //     value_0: `${gridItem.name}${i + 1}`,
+    //   };
+    //   let num = 0;
+    //   item.forEach((its) => { // 取前三个字段
+    //     const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
+    //     const { type } = fieldsItem || {};
+    //     if (num < 3 && type && type !== 'file' && type !== 'array') {
+    //       newObj[`value_${num}`] = its.value;
+    //       num += 1;
+    //     }
+    //   });
+    //   return newObj;
+    // });
+    const dataList = makeGridItemData(currentGridData, gridItem);
     return dataList.map((item, i) => {
       const idx = i;
       return (
@@ -60,7 +61,16 @@ class StartDetail extends Component {
     const { start } = this.props;
     const { startflow } = start;
     const { fields: { grid } } = startflow;
-    return grid.map((item, i) => {
+    const formdata = startflow.form_data;
+    const validGrid = [];
+    grid.forEach((item) => {
+      const { key } = item;
+      const value = formdata[key];
+      if (!value || (value.length)) {
+        validGrid.push(item);
+      }
+    });
+    return validGrid.map((item, i) => {
       const idx = i;
       return (
         <div key={idx} className={style.grid_item}>
@@ -121,17 +131,16 @@ class StartDetail extends Component {
             {this.getGridList()}
           </div>
         </div>
-        <div className={styles.footer}>
-          {flowRun && flowRun.status === 0 ?
-            (
-              <a
-                onClick={this.doWithDraw}
-              >
-                <span>撤回</span>
-              </a>
-          ) : ''}
-
+        {flowRun && flowRun.status === 0 && (
+        <div style={{ padding: '10px' }}>
+          <Button
+            type="primary"
+            onClick={this.doWithDraw}
+          >撤回
+          </Button>
         </div>
+)}
+
       </div>
     );
   }
