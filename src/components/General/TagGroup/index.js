@@ -29,6 +29,7 @@ export default class TagGroup extends React.Component {
 
   handleInputBlur = () => {
     const { inputValue, tags } = this.state;
+    const { onChange } = this.props;
     let newTags = [...tags];
     if (inputValue && tags.indexOf(inputValue) === -1) {
       newTags = [...tags, inputValue];
@@ -38,6 +39,7 @@ export default class TagGroup extends React.Component {
       tags: newTags,
       inputValue: '',
     });
+    onChange(newTags);
   }
 
   handleClose = (removedTag) => {

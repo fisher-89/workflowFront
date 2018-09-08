@@ -178,7 +178,7 @@ export default {
 
     *saveStaff({ payload }, { put }) {
       const { value } = payload;
-      const { flowId } = localStorage;
+      const { stepRunId } = localStorage;
       const newStaff = value.map((item) => {
         const obj = {};
         obj.approver_sn = item.staff_sn;
@@ -188,7 +188,7 @@ export default {
       yield put({
         type: 'doDeliver',
         payload: {
-          step_run_id: flowId,
+          step_run_id: stepRunId,
           deliver: newStaff,
         },
       });

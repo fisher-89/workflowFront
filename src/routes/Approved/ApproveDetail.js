@@ -25,6 +25,7 @@ class ApproveDetail extends Component {
     const { approve: { gridformdata, startflow, formdata }, dispatch,
       match: { params } } = this.props;
     const { id } = params;
+    localStorage.stepRunId = id;
     let griddata = [];
     if (startflow) {
       griddata = dealGridData(gridformdata);
@@ -311,6 +312,7 @@ class ApproveDetail extends Component {
     const {
       history,
     } = this.props;
+
     history.push('/sel_person/deliver/1/approve');
   }
 
