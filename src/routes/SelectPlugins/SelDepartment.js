@@ -73,6 +73,7 @@ export default class SelDepartment extends Component {
     const { selected, params: { type }, switchState } = this.state;
     const oldData = selected.data;
     if (`${type}` !== '1') {
+      console.log('result', result);
       this.getSingleSelect(result);
     } else {
       let newSeleted = result;
@@ -115,11 +116,10 @@ export default class SelDepartment extends Component {
     const { history, currentKey } = this.props;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
-    const newSelectstaff = [result];
+    const newSelectstaff = result;
     if (cb) {
       cb(newSelectstaff);
     }
-
     history.goBack(-1);
   }
 

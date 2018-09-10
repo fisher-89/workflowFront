@@ -5,7 +5,7 @@ import {
 
 const localIp= 'http://192.168.20.16:8006'
 const test= 'http://112.74.177.132:8006'
-const host= test;
+const host= localIp;
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';

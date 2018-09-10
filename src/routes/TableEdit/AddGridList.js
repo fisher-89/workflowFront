@@ -49,10 +49,46 @@ class AddGridList extends Component {
     });
   }
 
+
+  saveFormData = (formdata) => {
+    const { dispatch, start: { gridDefault } } = this.props;
+    // 保存当前表单的数据
+    let newFormData = formdata;
+    if (newFormData === undefined) {
+      newFormData = this.childComp.state.formdata;
+    }
+    const data = {};
+    newFormData.forEach((item) => {
+      const { key, value } = item;
+      data[key] = value;
+    });
+
+    const newGridDefault = gridDefault.map((item) => {
+      const obj = { ...item };
+      if (item.key === this.state.key) {
+        obj.fieldDefault = { ...data };
+      }
+      return obj;
+    });
+    dispatch({
+      type: 'start/save',
+      payload: {
+        key: 'gridDefault',
+        value: newGridDefault,
+      },
+    });
+  }
+
   // 将数据保存到modal的gridformdata中
-  saveData = () => {
-    const { formdata } = this.childComp.state;
-    const [result] = formdata.filter(item => item.msg);
+  saveData = (formdata) => {
+    // const { formdata } = this.childComp.state;
+    console.log('formdata', formdata);
+    let newFormData = formdata;
+    if (newFormData === undefined) {
+      newFormData = this.childComp.state.formdata;
+    }
+
+    const [result] = newFormData.filter(item => item.msg);
     if (result) {
       Toast.fail(result.msg);
       return;
@@ -64,7 +100,7 @@ class AddGridList extends Component {
     const obj = {};
     obj.key = key;
     obj.fields = [
-      [...formdata],
+      [...newFormData],
     ];
     // 如果gridformdata为空
     if (gridformdata && !gridformdata.length) {
@@ -82,10 +118,10 @@ class AddGridList extends Component {
         if (!keyItem) { // 如果没有对应的key
           newGridformdata.push(obj);
         } else { // 如果有对应的key
-          newGridformdata[keyIdx].fields.push(formdata);
+          newGridformdata[keyIdx].fields.push(newFormData);
         }
       } else { // 修改
-        newGridformdata[keyIdx].fields[index] = [...formdata];
+        newGridformdata[keyIdx].fields[index] = [...newFormData];
       }
     }
     dispatch({
@@ -105,47 +141,54 @@ class AddGridList extends Component {
   }
 
   render() {
-    const { start, dispatch, loading } = this.props;
+    const { start, dispatch, loading, history } = this.props;
     const { key, index } = this.state;
-    const { startflow, gridformdata } = start;
+    const { startflow, gridformdata, gridDefault } = start;
     spin(loading);
-    const newFormData = start.form_data;
+
     let formdata = [];
     // const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
     //   [] : gridformdata.find(item => item.key === key).fields[Number(index)];
-    if ((gridformdata && !gridformdata.length) || !key || index === '-1') {
+    if ((gridformdata && !gridformdata.length) || !key || `${index}` === '-1') {
       formdata = [];
     } else {
-      const [current] = gridformdata.filter(item => item.key === key);
+      const [current] = gridformdata.filter(item => `${item.key}` === `${key}`);
       formdata = current.fields[Number(index)];
     }
     if (!startflow) {
       return <p style={{ textAlign: 'center' }}>暂无信息</p>;
     }
+
     let showGrid = [];
     let editableForm = [];
     let requireForm = [];
+    let newFormData = {};
     if (startflow && key) {
       const { fields: { grid } } = startflow;
+      newFormData = startflow.form_data;
       const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
       showGrid = showGridObj.newFields;
       const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === key);
       editableForm = editableFormObj.newFields;
       const [requireFormObj] = getGridFilter(grid, 'required_fields', startflow.step).filter(item => item.key === key);
       requireForm = requireFormObj.newFields;
+      if (`${index}` === '-1') {
+        const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${key}`);
+        newFormData = gridItemDefault.fieldDefault || {};
+      }
     }
     const ableSubmit = isableSubmit(requireForm, this.state.formdata);
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>
           <CreateForm
+            history={history}
             onRef={(comp) => { this.childComp = comp; }}
             startflow={startflow}
             formdata={formdata}
             required_form={requireForm}
-            // evtClick={this.saveData}
+            evtClick={this.saveFormData}
             onChange={this.handleOnchange}
-
             dispatch={dispatch}
             form_data={newFormData}
             editable_form={editableForm}

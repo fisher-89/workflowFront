@@ -11,6 +11,7 @@ export default {
     startflow: null, // 发起需要的数据
     formdata: [], // 表单的数据
     gridformdata: [], // 列表控件里表单的数据
+    gridfieldDefault: {}, // 列表控件默认值
     form_data: null, // 表单默认值
     steps: [],
     preType: '', // 预提交的类型，是审批的还是发起的
@@ -97,7 +98,7 @@ export default {
       const data = yield call(c.preSet, payload);
       if (data && !data.error) {
         if ((data.step_end === 1 && data.available_steps.length)
-               || (data.step_end === 0 && !data.available_steps.length)) {
+          || (data.step_end === 0 && !data.available_steps.length)) {
           Toast.info('后台配置错误');
           return;
         }
@@ -225,12 +226,15 @@ export default {
       const newFormData = {
         ...action.payload.form_data,
       };
+      const gridDefault = [];
       const grid = [...action.payload.fields.grid];
       const gridformdata = grid.map((item) => { // 最外层key
         const gridItem = newFormData[item.key];
+        const fieldDefault = item.field_default_value;
         const obj = {
           key: item.key,
         };
+        gridDefault.push({ ...obj, fieldDefault });
         // let fields = []
         const fields = gridItem.map((its) => { // 最外层key所对应的数组值，值是一个数组
           const keyArr = Object.keys(its); // 数组由对象构成
@@ -251,6 +255,23 @@ export default {
         startflow: action.payload,
         form_data: action.payload.form_data,
         gridformdata: [...gridformdata],
+        gridDefault,
+      };
+    },
+    resetGridDefault(state) {
+      const { startflow } = state;
+      const grid = [...startflow.fields.grid];
+      const gridDefault = [];
+      grid.forEach((item) => { // 最外层key
+        const fieldDefault = item.field_default_value;
+        const obj = {
+          key: item.key,
+        };
+        gridDefault.push({ ...obj, fieldDefault });
+      });
+      return {
+        ...state,
+        gridDefault,
       };
     },
     refreshModal(state) {

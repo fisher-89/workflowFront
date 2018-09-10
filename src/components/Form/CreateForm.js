@@ -9,7 +9,7 @@ import {
   dealThumbImg,
 } from '../../utils/convert';
 
-import { formatDate, isJSON } from '../../utils/util';
+import { formatDate } from '../../utils/util';
 import style from '../FormType/index.less';
 
 class CreateForm extends Component {
@@ -38,7 +38,9 @@ class CreateForm extends Component {
       if (tempFormdata && !tempFormdata.length) {
         editableForm.map((item) => {
           const formatStr = formatDate(item.type);
-          const currentValue = isJSON(newFormData[item.key]);
+
+          const currentValue = newFormData[item.key];
+
           let value = currentValue;
           // if (item.type === 'array') {
           //   const reg = /^\[|\]$/g;
@@ -102,30 +104,32 @@ class CreateForm extends Component {
   }
 
   onChange = (v, item) => {
-    const { max, min } = item;
+    // const { max, min } = item;
     const obj = this.initCurrentObj(v, item);
+    console.log('v', v);
+    // console.log(v);
     // 验证正则
-    if (item.type === 'int') {
-      // let newValue = v;
-      let newValue = this.onHandleToFixed(v, item.scale);
-      // if (min !== '' && parseFloat(newValue) < min) {
-      //   newValue = min;
-      // }
-      if (max !== '' && parseFloat(newValue) > max) {
-        newValue = max;
-      }
-      obj.value = Number(newValue);
-    }
-    if (item.type === 'text') {
-      if (min !== '' && v.length < min) {
-        obj.msg = `字符长度在${min || '0'}~${max}之间`;
-      }
-      if (max !== '' && v.length > max) {
-        let newValue = v;
-        newValue = newValue.length > max ? newValue.slice(0, max) : newValue;
-        obj.value = newValue;
-      }
-    }
+    // if (item.type === 'int') {
+    //   // let newValue = v;
+    //   let newValue = this.onHandleToFixed(v, item.scale);
+    //   // if (min !== '' && parseFloat(newValue) < min) {
+    //   //   newValue = min;
+    //   // }
+    //   if (max !== '' && parseFloat(newValue) > max) {
+    //     newValue = max;
+    //   }
+    //   obj.value = newValue;
+    // }
+    // if (item.type === 'text') {
+    //   if (min !== '' && v.length < min) {
+    //     obj.msg = `字符长度在${min || '0'}~${max}之间`;
+    //   }
+    //   if (max !== '' && v.length > max) {
+    //     let newValue = v;
+    //     newValue = newValue.length > max ? newValue.slice(0, max) : newValue;
+    //     obj.value = newValue;
+    //   }
+    // }
     this.bindFormDataChange(obj, item);
   }
 

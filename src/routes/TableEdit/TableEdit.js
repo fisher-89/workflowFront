@@ -40,7 +40,7 @@ class TableEdit extends Component {
   componentWillReceiveProps(props) {
     const { start: { startflow, gridformdata } } = props;
     const oldstartflow = this.props.start.startflow;
-    if (JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) {
+    if ((JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) && startflow) {
       const formData = startflow.form_data;
       const { fields: { form } } = startflow;
       // 可编辑的form
@@ -177,7 +177,7 @@ class TableEdit extends Component {
     const { history, dispatch } = this.props;
     this.saveData();
     dispatch({
-      type: 'start/refreshModal',
+      type: 'start/resetGridDefault',
     });
     history.push(`/addgridlist/${key}/-1`);
   };

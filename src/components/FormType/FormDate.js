@@ -8,10 +8,12 @@ import style from './index.less';
 export default class FormDate extends React.Component {
   renderFormDate = () => {
     const { onChange, data: { value }, field } = this.props;
-    const { name, type } = field;
+    const { name, type, max, min } = field;
     return (
       <DatePicker
         mode={type}
+        minDate={min}
+        maxDate={max}
         onChange={e => onChange(e, field)}
         value={type === 'time' ? new Date(`2018/8/1 ${value}`) : new Date(value)}
       >
