@@ -23,7 +23,7 @@ class ApproveGridDetail extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'approve/refreshModal',
+      type: 'approve/updateModal',
     });
   }
   componentWillReceiveProps(nextprops) {

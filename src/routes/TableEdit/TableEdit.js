@@ -117,19 +117,25 @@ class TableEdit extends Component {
     const { start } = this.props;
     const { startflow } = start;
     const { fields: { grid } } = startflow;
-    // const editable_grid = getGridFilter(grid, 'editable_fields', startflow.step)
+    const editableGrid = grid.filter(item =>
+      startflow.step.editable_fields.indexOf(item.key) !== -1);
+    const gridKey = editableGrid.map(item => item.key);
     return grid.map((item, i) => {
       const index = i;
+      const { key, name } = item;
+      const ableAdd = gridKey.indexOf(item.key) > -1;
       return (
         <div key={index} className={style.grid_item}>
           <p className={style.grid_opt}>
-            <span>{item.name}</span>
+            <span>{name}</span>
+            {ableAdd && (
             <a
-              onClick={() => this.addGridList(item.key)}
-            >+添加{item.name}
+              onClick={() => this.addGridList(key)}
+            >+添加{name}
             </a>
+            )}
           </p>
-          {this.getGridItem(item.key)}
+          {this.getGridItem(key)}
         </div>
       );
     });
@@ -166,8 +172,8 @@ class TableEdit extends Component {
     dispatch({
       type: 'start/save',
       payload: {
-        key: 'gridformdata',
-        value: newGridformdata,
+        store: 'gridformdata',
+        data: newGridformdata,
       },
     });
   }
@@ -192,8 +198,8 @@ class TableEdit extends Component {
     dispatch({
       type: 'start/save',
       payload: {
-        key: 'formdata',
-        value: newFormData,
+        store: 'formdata',
+        data: newFormData,
       },
     });
     return newFormData;

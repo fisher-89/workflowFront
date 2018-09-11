@@ -424,19 +424,21 @@ export function isObject(obj) {
 
 export function initFormdata(source, editableform) {
   const formdata = editableform.map(item => {
-    const formatStr = formatDate(item.type);
-    const currentValue = isJSON(source[item.key]);
-    let value = currentValue;
-    if (item.type === 'time') {
-      value = moment(`2018/1/1 ${currentValue}`).format(formatStr);
-    }
-    if (item.type === 'date' || item.type === 'datetime') {
-      if (currentValue) {
-        value = moment(currentValue).format(formatStr);
-      } else {
-        value = moment().format(formatStr);
-      }
-    }
+    // const formatStr = formatDate(item.type);
+    // const currentValue = isJSON(source[item.key]);
+    // let value = currentValue;
+    const value=source[item.key]
+    // if (item.type === 'time') {
+    //   const nowTime = moment().format(formatStr);
+    //   value = moment(`2018-01-01 ${currentValue || nowTime}`).format(formatStr);
+    // }
+    // if (item.type === 'date' || item.type === 'datetime') {
+    //   if (currentValue) {
+    //     value = moment(currentValue).format(formatStr);
+    //   } else {
+    //     value = moment().format(formatStr);
+    //   }
+    // }
     const obj = {
       key: item.key,
       value,

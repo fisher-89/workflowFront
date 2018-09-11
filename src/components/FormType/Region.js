@@ -27,6 +27,18 @@ class Region extends React.Component {
     };
   }
 
+  componentWillReceiveProps(props) {
+    const { data } = props;
+    const oldData = this.props.data;
+    if (JSON.stringify(data) !== JSON.stringify(oldData)) {
+      const { value } = data;
+      const newAddress = { ...addressInfo, ...(value || {}) };
+      this.setState({
+        address: newAddress,
+      });
+    }
+  }
+
   onHandlePickerChange = (e) => {
     const { address } = this.state;
     const obj = this.reverseValidValue(e);
@@ -48,9 +60,8 @@ class Region extends React.Component {
     const { onChange, field } = this.props;
     this.setState({
       address: value,
-    }, () => {
-      onChange(value, field);
     });
+    onChange(value, field);
   }
 
   makeValidValue = (value) => {
@@ -75,34 +86,48 @@ class Region extends React.Component {
     return obj;
   }
 
+
   renderFormRegion = (value, field) => {
-    const newPikerValue = this.makeValidValue(value);
+    const areaValue = this.makeValidValue(value);
     const { address } = value;
-    const regionLevel = field.region_level;
+    const cols = field.region_level;
+    const { name } = field;
     return (
       <div>
-        <Picker
-          cols={regionLevel}
-          value={newPikerValue}
-          data={districtTree}
-          onOk={e => this.onHandlePickerChange(e)
-          }
-        >
-          <List.Item
-            arrow="horizontal"
-          >
-            {field.name}
-          </List.Item>
-        </Picker>
-        <TextareaItem
-          clear
-          title="详细地址"
-          autoHeight
-          placeholder="详细地址：如小区、门牌号等"
-          onChange={e => this.onHandleChange(e)}
-          value={`${address || ''}`}
-        />
+        {this.renderFormArea(areaValue, name, cols)}
+        {`${cols}` === '4' && this.renderFormAddress(address, field)}
       </div>
+    );
+  }
+
+  renderFormArea = (value, name, cols) => {
+    return (
+      <Picker
+        cols={cols}
+        value={value}
+        data={districtTree}
+        onOk={e => this.onHandlePickerChange(e)
+        }
+      >
+        <List.Item
+          arrow="horizontal"
+        >
+          {name}
+        </List.Item>
+      </Picker>
+    );
+  }
+
+  renderFormAddress = (value) => {
+    return (
+      <TextareaItem
+        clear
+        title="详细地址"
+        autoHeight
+        placeholder="详细地址：如小区、门牌号等"
+        onChange={e => this.onHandleChange(e)}
+        value={`${value || ''}`}
+      />
     );
   }
 
@@ -117,7 +142,7 @@ class Region extends React.Component {
       const addrSnArray = this.makeValidValue(newData);
       const lastSn = addrSnArray[addrSnArray.length - 1];
       const [lastName] = district.filter(item => `${item.id}` === `${lastSn}`);
-      return lastName;
+      return lastName ? lastName.full_name : '';
     }
     return '';
   }

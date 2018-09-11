@@ -1,20 +1,14 @@
 // 审批的表单
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import { Modal, SwipeAction } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
 import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData } from '../../utils/util';
-
 import spin from '../../components/General/Loader';
-
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
 
-const {
-  prompt,
-} = Modal;
+const { prompt } = Modal;
 class ApproveDetail extends Component {
   state = {
     flowId: '',
@@ -33,6 +27,7 @@ class ApproveDetail extends Component {
     this.setState({
       griddata,
       formdata,
+      flowId: id,
     });
     dispatch({
       type: 'approve/getStartFlow',
@@ -101,12 +96,8 @@ class ApproveDetail extends Component {
   }
 
   getThrough = () => {
-    const {
-      dispatch,
-    } = this.props;
-    const {
-      flowId,
-    } = this.state;
+    const { dispatch } = this.props;
+    const { flowId } = this.state;
     dispatch({
       type: 'approve/getThrough',
       payload: {
@@ -119,18 +110,25 @@ class ApproveDetail extends Component {
     const { approve } = this.props;
     const { startflow } = approve;
     const { fields: { grid } } = startflow;
+    const editableGrid = grid.filter(item =>
+      startflow.step.editable_fields.indexOf(item.key) !== -1);
+    const gridKey = editableGrid.map(item => item.key);
     return grid.map((item, i) => {
       const index = i;
+      const { key, name } = item;
+      const ableAdd = gridKey.indexOf(item.key) > -1;
       return (
         <div key={index} className={style.grid_item}>
           <p className={style.grid_opt}>
-            <span>{item.name}</span>
+            <span>{name}</span>
+            {ableAdd && (
             <a
-              onClick={() => this.addGridList(item.key)}
-            >+添加{item.name}
+              onClick={() => this.addGridList(key)}
+            >+添加{name}
             </a>
+            )}
           </p>
-          {this.getGridItem(item.key)}
+          {this.getGridItem(key)}
         </div>
       );
     });
@@ -160,8 +158,8 @@ class ApproveDetail extends Component {
     dispatch({
       type: 'approve/save',
       payload: {
-        key: 'gridformdata',
-        value: newGridformdata,
+        store: 'gridformdata',
+        data: newGridformdata,
       },
     });
   }
@@ -170,7 +168,7 @@ class ApproveDetail extends Component {
     const { history, dispatch } = this.props;
     this.saveData();
     dispatch({
-      type: 'approve/refreshModal',
+      type: 'approve/resetGridDefault',
     });
     history.push(`/approve_grid_edit/${key}/-1`);
   };
@@ -190,24 +188,19 @@ class ApproveDetail extends Component {
   // 保存到modal
   saveData = () => {
     const { formdata } = this.childComp.state;
-    const {
-      dispatch,
-    } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'approve/save',
       payload: {
-        key: 'formdata',
-        value: formdata,
+        store: 'formdata',
+        data: formdata,
       },
     });
     return formdata;
   }
 
   submitStep = (v, data) => {
-    const {
-      dispatch,
-      history,
-    } = this.props;
+    const { dispatch, history } = this.props;
     const params = {
       step_run_id: data.step_run_id,
       timestamp: data.timestamp,
@@ -312,7 +305,6 @@ class ApproveDetail extends Component {
     const {
       history,
     } = this.props;
-
     history.push('/sel_person/deliver/1/approve');
   }
 
@@ -363,28 +355,28 @@ class ApproveDetail extends Component {
         </div>
 
         <div className={styles.footer}>
-          {startflow.step_run.action_type === 0 ? (
+          {startflow.step_run.action_type === 0 && (
             <a
               onClick={ableSubmit ? this.submitData : null}
               style={(!ableSubmit ? { color: 'rgb(204,204,204)' } : null)}
             >
               <span>通过</span>
             </a>
-          ) : ''}
-          {startflow.step_run.action_type === 0 ? (
+          ) }
+          {startflow.step_run.action_type === 0 && (
             <a
               onClick={this.doDeliver}
             >
               <span>转交</span>
             </a>
-          ) : ''}
-          {startflow.step.reject_type !== 0 && startflow.step_run.action_type === 0 ? (
+          ) }
+          {startflow.step.reject_type !== 0 && startflow.step_run.action_type === 0 && (
             <a
               onClick={this.fillRemark}
             >
               <span>驳回</span>
             </a>
-          ) : ''}
+          ) }
         </div>
       </div>
     );

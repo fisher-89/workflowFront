@@ -1,21 +1,48 @@
 import React from 'react';
 // import classNames from 'classnames';
 import { connect } from 'dva';
+import moment from 'moment';
 import { TextareaItem, DatePicker, List } from 'antd-mobile';
+import { formatDate } from '../../utils/util';
 import style from './index.less';
 
 @connect()
 export default class FormDate extends React.Component {
+  handleOnChange = (v, field) => {
+    const { type } = field;
+    const { onChange } = this.props;
+    const formatStr = formatDate(type);
+    const value = moment(v).format(formatStr);
+    onChange(value, field);
+  }
+
   renderFormDate = () => {
-    const { onChange, data: { value }, field } = this.props;
+    const { data: { value }, field } = this.props;
     const { name, type, max, min } = field;
+    // const newMax = max ? new Date(max) : new Date();
+    // const newMin = min ? new Date(min) : new Date();
+    // const newValue = value ? new Date(value) : new Date();
+    const nowTime = moment().format(formatDate('time'));
+    let newMax = max;
+    let newMin = min;
+    let newValue = value;
+    if (type === 'time') {
+      newMax = max ? `2018-08-01 ${max}` : undefined;
+      newMin = min ? `2018-08-01 ${min}` : undefined;
+      newValue = value ? `2018-08-01 ${value || max || nowTime}` : undefined;
+    }
+    // const newValue = type === 'time' ?
+    // new Date(`2018-08-01 ${value || nowTime}`) : new Date(value);
+    const maxDate = newMax ? new Date(newMax) : undefined;
+    const minDate = newMin ? new Date(newMin) : undefined;
+    const valueDate = newValue ? new Date(newValue) : undefined;
     return (
       <DatePicker
         mode={type}
-        minDate={min}
-        maxDate={max}
-        onChange={e => onChange(e, field)}
-        value={type === 'time' ? new Date(`2018/8/1 ${value}`) : new Date(value)}
+        minDate={minDate}
+        maxDate={maxDate}
+        onChange={e => this.handleOnChange(e, field)}
+        value={valueDate}
       >
         <List.Item arrow="horizontal">{name}</List.Item>
       </DatePicker>

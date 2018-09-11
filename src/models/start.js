@@ -1,7 +1,7 @@
-import {
-  routerRedux,
-} from 'dva/router';
+import { routerRedux } from 'dva/router';
 import * as c from '../services/start';
+import defaultReducers from './reducers/default';
+import flowReducers from './reducers/flow';
 
 export default {
 
@@ -154,6 +154,8 @@ export default {
   },
 
   reducers: {
+    ...defaultReducers,
+    ...flowReducers,
     saveStartList(state, action) {
       // 先判断是否是更新
       const newRefresh = action.payload.refresh;
@@ -212,73 +214,58 @@ export default {
         steps: [],
       };
     },
-    save(state, action) {
-      const newState = { ...state };
-      newState[action.payload.key] = action.payload.value;
-      return {
-        ...state, ...newState,
-      };
-    },
+    // save(state, action) {
+    //   const newState = { ...state };
+    //   newState[action.payload.key] = action.payload.value;
+    //   return {
+    //     ...state, ...newState,
+    //   };
+    // },
     /*
     * 保存请求时获取的流程数据
      */
-    saveFlow(state, action) {
-      const newFormData = {
-        ...action.payload.form_data,
-      };
-      const gridDefault = [];
-      const grid = [...action.payload.fields.grid];
-      const gridformdata = grid.map((item) => { // 最外层key
-        const gridItem = newFormData[item.key];
-        const fieldDefault = item.field_default_value;
-        const obj = {
-          key: item.key,
-        };
-        gridDefault.push({ ...obj, fieldDefault });
-        // let fields = []
-        const fields = gridItem.map((its) => { // 最外层key所对应的数组值，值是一个数组
-          const keyArr = Object.keys(its); // 数组由对象构成
-          const newArr = keyArr.map((it) => {
-            const newObj = {};
-            newObj.key = it;
-            newObj.value = its[it];
-            newObj.msg = '';
-            return newObj;
-          });
-          return newArr;
-        });
-        obj.fields = [...fields];
-        return obj;
-      });
-      return {
-        ...state,
-        startflow: action.payload,
-        form_data: action.payload.form_data,
-        gridformdata: [...gridformdata],
-        gridDefault,
-      };
-    },
-    resetGridDefault(state) {
-      const { startflow } = state;
-      const grid = [...startflow.fields.grid];
-      const gridDefault = [];
-      grid.forEach((item) => { // 最外层key
-        const fieldDefault = item.field_default_value;
-        const obj = {
-          key: item.key,
-        };
-        gridDefault.push({ ...obj, fieldDefault });
-      });
-      return {
-        ...state,
-        gridDefault,
-      };
-    },
-    refreshModal(state) {
-      return {
-        ...state,
-      };
-    },
+  //   saveFlow(state, action) {
+  //     const newFormData = {
+  //       ...action.payload.form_data,
+  //     };
+  //     const gridDefault = [];
+  //     const grid = [...action.payload.fields.grid];
+  //     const gridformdata = grid.map((item) => { // 最外层key
+  //       const gridItem = newFormData[item.key];
+  //       const fieldDefault = item.field_default_value;
+  //       const obj = {
+  //         key: item.key,
+  //       };
+  //       gridDefault.push({ ...obj, fieldDefault });
+  //       // let fields = []
+  //       const fields = gridItem.map((its) => { // 最外层key所对应的数组值，值是一个数组
+  //         const keyArr = Object.keys(its); // 数组由对象构成
+  //         const newArr = keyArr.map((it) => {
+  //           const newObj = {};
+  //           newObj.key = it;
+  //           newObj.value = its[it];
+  //           newObj.msg = '';
+  //           return newObj;
+  //         });
+  //         return newArr;
+  //       });
+  //       obj.fields = [...fields];
+  //       return obj;
+  //     });
+  //     return {
+  //       ...state,
+  //       startflow: action.payload,
+  //       form_data: action.payload.form_data,
+  //       gridformdata: [...gridformdata],
+  //       gridDefault,
+  //     };
+  //   },
+
+  //   refreshModal(state) {
+  //     return {
+  //       ...state,
+  //     };
+  //   },
   },
 
 };

@@ -22,21 +22,19 @@ class TextInput extends React.Component {
 
   formatIntValue = (v, field) => {
     const { onChange } = this.props;
-    const { scale } = field;
-    const newValue = Number(v).toFixed(scale);
+    const { scale, min } = field;
+    const newValue = Number(v === '' ? min : v).toFixed(scale);
     onChange(newValue, field);
   }
 
   handleOnChange = (v, item) => {
     const { onChange } = this.props;
-    const { max, min, scale } = item;
+    const { max, scale } = item;
     let newValue = v;
     if (item.type === 'int') {
       const reg = /^(-|\d)\d*(\.)?(\d)*$/;
       if (max !== '' && parseFloat(v) > max) {
         newValue = max;
-      } else if (min !== '' && parseFloat(v) < min) {
-        newValue = min;
       } else if (reg.test(newValue)) {
         if (v.indexOf('.') > 0 && v.split('.')[1].length > scale) {
           newValue = Number(v).toFixed(scale);

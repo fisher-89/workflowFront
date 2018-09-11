@@ -20,7 +20,7 @@ class SelectStep extends Component {
       history.goBack(-2);
     } else {
       dispatch({
-        type: 'start/refreshModal',
+        type: 'start/updateModal',
       });
     }
   }
@@ -120,8 +120,8 @@ class SelectStep extends Component {
     dispatch({
       type: 'start/save',
       payload: {
-        key: 'steps',
-        value: newSteps,
+        store: 'steps',
+        data: newSteps,
       },
     });
     history.goBack(-1);

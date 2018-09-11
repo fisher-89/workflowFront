@@ -4,7 +4,7 @@ import { Toast, Button } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
 import { getGridFilter } from '../../utils/convert';
-import { initFormdata, isableSubmit } from '../../utils/util';
+import { isableSubmit, initFormdata } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import styles from '../common.less';
 
@@ -19,21 +19,31 @@ class AddGridList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'start/refreshModal',
+      type: 'start/updateModal',
     });
   }
 
   componentWillReceiveProps(nextprops) {
     const { match: { params }, start } = nextprops;
-    const { startflow } = start;
+    const { startflow, gridDefault, gridformdata } = start;
     const { flag, key } = this.state;
     if (!key && flag && startflow) {
       const { type, index } = params;
       const { fields: { grid } } = startflow;
-      const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
+      const [editableFormObj] =
+       getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
       const editableForm = editableFormObj.newFields;
-      const newFormData = start.form_data;
-      const formdata = initFormdata(newFormData, editableForm);
+      let newFormData = start.form_data;
+      let formdata = [];
+
+      if (`${index}` === '-1') {
+        const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${type}`);
+        newFormData = gridItemDefault.fieldDefault || {};
+        formdata = initFormdata(newFormData, editableForm);
+      } else {
+        const [current] = gridformdata.filter(item => `${item.key}` === `${type}`);
+        formdata = current.fields[Number(index)];
+      }
       this.setState({
         key: type,
         index,
@@ -48,7 +58,6 @@ class AddGridList extends Component {
       formdata,
     });
   }
-
 
   saveFormData = (formdata) => {
     const { dispatch, start: { gridDefault } } = this.props;
@@ -73,8 +82,8 @@ class AddGridList extends Component {
     dispatch({
       type: 'start/save',
       payload: {
-        key: 'gridDefault',
-        value: newGridDefault,
+        store: 'gridDefault',
+        data: newGridDefault,
       },
     });
   }
@@ -82,7 +91,6 @@ class AddGridList extends Component {
   // 将数据保存到modal的gridformdata中
   saveData = (formdata) => {
     // const { formdata } = this.childComp.state;
-    console.log('formdata', formdata);
     let newFormData = formdata;
     if (newFormData === undefined) {
       newFormData = this.childComp.state.formdata;
@@ -127,8 +135,8 @@ class AddGridList extends Component {
     dispatch({
       type: 'start/save',
       payload: {
-        key: 'gridformdata',
-        value: [...newGridformdata],
+        store: 'gridformdata',
+        data: [...newGridformdata],
       },
     });
   }

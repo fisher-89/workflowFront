@@ -18,11 +18,9 @@ class AddGridList extends Component {
 
   }
   componentDidMount() {
-    const {
-      dispatch,
-    } = this.props;
+    const { dispatch } = this.props;
     dispatch({
-      type: 'approve/refreshModal',
+      type: 'approve/updateModal',
     });
   }
 
@@ -50,6 +48,35 @@ class AddGridList extends Component {
   handleOnchange = (formdata) => {
     this.setState({
       formdata,
+    });
+  }
+
+  saveFormData = (formdata) => {
+    const { dispatch, approve: { gridDefault } } = this.props;
+    // 保存当前表单的数据
+    let newFormData = formdata;
+    if (newFormData === undefined) {
+      newFormData = this.childComp.state.formdata;
+    }
+    const data = {};
+    newFormData.forEach((item) => {
+      const { key, value } = item;
+      data[key] = value;
+    });
+
+    const newGridDefault = gridDefault.map((item) => {
+      const obj = { ...item };
+      if (item.key === this.state.key) {
+        obj.fieldDefault = { ...data };
+      }
+      return obj;
+    });
+    dispatch({
+      type: 'approve/save',
+      payload: {
+        store: 'gridDefault',
+        data: newGridDefault,
+      },
     });
   }
 
@@ -102,11 +129,12 @@ class AddGridList extends Component {
     dispatch({
       type: 'approve/save',
       payload: {
-        key: 'gridformdata',
-        value: [...newGridformdata],
+        store: 'gridformdata',
+        data: [...newGridformdata],
       },
     });
   }
+
   // 提交数据
   submitData = (e) => {
     e.preventDefault();
@@ -119,7 +147,6 @@ class AddGridList extends Component {
     const { approve, dispatch } = this.props;
     const { key, index } = this.state;
     const { startflow, gridformdata } = approve;
-    const newFormData = approve.form_data;
     let formdata = [];
     // const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
     //   [] : gridformdata.find(item => item.key === key).fields[Number(index)];
@@ -136,15 +163,21 @@ class AddGridList extends Component {
     let showGrid = [];
     let editableForm = [];
     let requireForm = [];
+    let newFormData = {};
 
     if (startflow && key) {
       const { fields: { grid } } = startflow;
+      newFormData = startflow.form_data;
       const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
       const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === key);
       showGrid = showGridObj.newFields;
       editableForm = editableFormObj.newFields;
       const [requireFormObj] = getGridFilter(grid, 'required_fields', startflow.step).filter(item => item.key === key);
       requireForm = requireFormObj.newFields;
+      if (`${index}` === '-1') {
+        const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${key}`);
+        newFormData = gridItemDefault.fieldDefault || {};
+      }
     }
     const ableSubmit = isableSubmit(requireForm, this.state.formdata);
 
@@ -155,7 +188,8 @@ class AddGridList extends Component {
             onRef={(comp) => { this.childComp = comp; }}
             startflow={startflow}
             formdata={formdata}
-            // evtClick={this.saveData}
+            onChange={this.handleOnchange}
+            evtClick={this.saveFormData}
             dispatch={dispatch}
             form_data={newFormData}
             editable_form={editableForm}

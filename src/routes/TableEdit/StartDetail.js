@@ -84,19 +84,6 @@ class StartDetail extends Component {
     });
   }
 
-  toEditGrid = (url) => {
-    const { history } = this.props;
-    history.push(url);
-  }
-
-  addGridList = (key) => {
-    const { history, dispatch } = this.props;
-    dispatch({
-      type: 'start/refreshModal',
-    });
-    history.push(`/addgridlist/${key}/-1`);
-  }
-
   doWithDraw = () => {
     const { dispatch, start: { startflow } } = this.props;
     const flowRun = startflow.flow_run;

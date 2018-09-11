@@ -162,13 +162,6 @@ function RouterConfig({
     component: () =>
       import('./components/General/TagGroup/index.js'),
   },
-  {
-    path: '/test',
-    models: [],
-
-    component: () =>
-      import('./routes/test/testfloat'),
-  },
   ];
   const speRoutes = [{
     path: '/extrance',

@@ -15,13 +15,12 @@ class StartGridDetail extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'start/refreshModal',
+      type: 'start/updateModal',
     });
   }
   componentWillReceiveProps(nextprops) {
     const { match: { params } } = nextprops;
     const { flag, key } = this.state;
-
     if (!key && flag) {
       const { type, index } = params;
       this.setState({

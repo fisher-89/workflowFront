@@ -3,13 +3,13 @@ import {
   List, Toast,
 } from 'antd-mobile';
 import { connect } from 'dva';
-import moment from 'moment';
+// import moment from 'moment';
 import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region, FormArray } from '../FormType';
 import {
   dealThumbImg,
 } from '../../utils/convert';
 
-import { formatDate } from '../../utils/util';
+// import { formatDate } from '../../utils/util';
 import style from '../FormType/index.less';
 
 class CreateForm extends Component {
@@ -33,15 +33,15 @@ class CreateForm extends Component {
     const requiredForm = nextprops.required_form;
     const newFormData = nextprops.form_data;
     if (newFormData && (!this.state.init)) {
+      console.log(newFormData);
+
       const formData = { ...newFormData };
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {
         editableForm.map((item) => {
-          const formatStr = formatDate(item.type);
-
+          // const formatStr = formatDate(item.type);
           const currentValue = newFormData[item.key];
-
-          let value = currentValue;
+          const value = currentValue;
           // if (item.type === 'array') {
           //   const reg = /^\[|\]$/g;
           //   if (typeof (currentValue) === 'string') {
@@ -50,16 +50,17 @@ class CreateForm extends Component {
           //   }
           //   value = currentValue;
           // }
-          if (item.type === 'time') {
-            value = moment(`2018/1/1 ${currentValue}`).format(formatStr);
-          }
-          if (item.type === 'date' || item.type === 'datetime') {
-            if (currentValue) {
-              value = moment(currentValue).format(formatStr);
-            } else {
-              value = moment().format(formatStr);
-            }
-          }
+          // if (item.type === 'time') {
+          //   const nowTime = moment().format(formatStr);
+          //   value = moment(`2018-01-01 ${currentValue || nowTime}`).format(formatStr);
+          // }
+          // if (item.type === 'date' || item.type === 'datetime') {
+          //   if (currentValue) {
+          //     value = moment(currentValue).format(formatStr);
+          //   } else {
+          //     value = moment().format(formatStr);
+          //   }
+          // }
           formData[item.key] = value;
           const obj = {
             key: item.key,
@@ -92,84 +93,27 @@ class CreateForm extends Component {
     }
   }
 
-  onHandleToFixed = (value, floatNumber) => {
-    const a = value;
-    const b = Number(a);
-    let newValue = b;
-    if (floatNumber) {
-      const c = b.toFixed(floatNumber);
-      newValue = Number(c);
-    }
-    return newValue;
-  }
-
   onChange = (v, item) => {
-    // const { max, min } = item;
     const obj = this.initCurrentObj(v, item);
-    console.log('v', v);
-    // console.log(v);
-    // 验证正则
-    // if (item.type === 'int') {
-    //   // let newValue = v;
-    //   let newValue = this.onHandleToFixed(v, item.scale);
-    //   // if (min !== '' && parseFloat(newValue) < min) {
-    //   //   newValue = min;
-    //   // }
-    //   if (max !== '' && parseFloat(newValue) > max) {
-    //     newValue = max;
-    //   }
-    //   obj.value = newValue;
-    // }
-    // if (item.type === 'text') {
-    //   if (min !== '' && v.length < min) {
-    //     obj.msg = `字符长度在${min || '0'}~${max}之间`;
-    //   }
-    //   if (max !== '' && v.length > max) {
-    //     let newValue = v;
-    //     newValue = newValue.length > max ? newValue.slice(0, max) : newValue;
-    //     obj.value = newValue;
-    //   }
-    // }
     this.bindFormDataChange(obj, item);
   }
 
-  onhandleCheckChange = (v, item) => {
-    const obj = this.initCurrentObj(v, item);
-    this.bindFormDataChange(obj, item);
-  }
+  // onhandleCheckChange = (v, item) => {
+  //   const obj = this.initCurrentObj(v, item);
+  //   this.bindFormDataChange(obj, item);
+  // }
 
   onErrorClick = (item) => {
-    const {
-      formdata,
-    } = this.state;
+    const { formdata } = this.state;
     const [itemkey] = formdata.filter(its => item.key === its.key);
     if (itemkey.hasError) {
       Toast.info(itemkey.msg);
     }
   }
 
-  getGridList = () => {
-    const { showGrid } = this.state;
-    showGrid.map((item) => {
-      return (
-        <List
-          renderHeader={() => item.name}
-          key={item.key}
-        >
-          {this.getGridListField(item)}
-        </List>
-      );
-    });
-  }
   // 生成表单
   getFormList = () => {
-    const {
-      editableForm,
-      requiredForm = [],
-      formdata,
-      showForm,
-      newFormData,
-    } = this.state;
+    const { editableForm, requiredForm = [], formdata, showForm, newFormData } = this.state;
     const editKey = editableForm.map((item) => {
       return item.key;
     });
@@ -195,7 +139,7 @@ class CreateForm extends Component {
             isEdit={isEdit}
             defaultValue={newFormData[item.key]}
             data={itemkey || {}}
-            onChange={this.onhandleCheckChange}
+            onChange={this.onChange}
           />
         );
       }
@@ -222,7 +166,7 @@ class CreateForm extends Component {
             isEdit={isEdit}
             defaultValue={newFormData[item.key]}
             data={itemkey || {}}
-            onChange={this.onhandleCheckChange}
+            onChange={this.onChange}
           />
         );
       }
@@ -241,7 +185,7 @@ class CreateForm extends Component {
             defaultValue={newFormData[item.key]}
             data={itemkey || {}}
             options={options}
-            onChange={this.onhandleCheckChange}
+            onChange={this.onChange}
           />
         );
       } else if (item.type === 'text' || item.type === 'int') {
@@ -261,7 +205,7 @@ class CreateForm extends Component {
       if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
         return (
           <FormDate
-            onChange={this.timeChange}
+            onChange={this.onChange}
             field={item}
             key={i}
             isEdit={isEdit}
@@ -285,7 +229,7 @@ class CreateForm extends Component {
       }
     }
       // return item;
-    // }
+      // }
     );
   }
 
@@ -317,12 +261,6 @@ class CreateForm extends Component {
         ...obj,
       },
     }, () => onChange(data));
-  }
-
-  timeChange = (v, item) => { // 时间改变事件
-    const formatStr = formatDate(item.type);
-    const obj = this.initCurrentObj(moment(v).format(formatStr), item);
-    this.bindFormDataChange(obj, item);
   }
 
   selComponentCb = (item, data) => {

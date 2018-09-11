@@ -52,7 +52,7 @@ export default class PersonContainer extends Component {
         <div className={style.header}>
           <Search
             value={this.state.value}
-            placeholder="请输入员工姓名"
+            placeholder="请输入名称"
             showCancelButton={this.state.value}
             onChange={this.onChange}
             onCancel={

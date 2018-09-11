@@ -1,5 +1,6 @@
 import { Toast } from 'antd-mobile';
 import * as c from '../services/start';
+import defaultReducers from './reducers/default';
 
 export default {
   namespace: 'common',
@@ -30,8 +31,8 @@ export default {
         yield put({
           type: 'save',
           payload: {
-            key: 'flowList',
-            value: newFlowlist,
+            store: 'flowList',
+            data: newFlowlist,
           },
         });
       }
@@ -57,21 +58,7 @@ export default {
   },
 
   reducers: {
-
-    save(state, action) {
-      const newState = { ...state };
-      newState[action.payload.key] = action.payload.value;
-      return {
-        ...state, ...newState,
-
-      };
-    },
-    refreshModal(state) {
-      return {
-        ...state,
-      };
-    },
-
+    ...defaultReducers,
   },
 
 };

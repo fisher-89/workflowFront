@@ -19,7 +19,7 @@ class SelectStep extends Component {
     const { start: { preType }, history, dispatch } = this.props;
     if (preType) {
       dispatch({
-        type: 'start/refreshModal',
+        type: 'start/updateModal',
       });
     } else {
       history.goBack(-1);
@@ -91,8 +91,8 @@ class SelectStep extends Component {
     dispatch({
       type: 'start/save',
       payload: {
-        key: 'steps',
-        value: steps,
+        store: 'steps',
+        data: steps,
       },
     });
     history.push(`/select_approver/${el.id}`);
@@ -158,8 +158,8 @@ class SelectStep extends Component {
     dispatch({
       type: 'start/save',
       payload: {
-        key: 'steps',
-        value: steps,
+        store: 'steps',
+        data: steps,
       },
     });
     if (preType === 'start') {
