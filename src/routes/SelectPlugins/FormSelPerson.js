@@ -128,7 +128,6 @@ export default class SelPerson extends Component {
     const multiple = `${type}` === '1';
     const current = currentKey[`${key}`] || {};
     const data = current.data || (multiple ? [] : {});
-
     const newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
     let mutiData = [];
     if (multiple) {

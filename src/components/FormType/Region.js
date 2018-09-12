@@ -95,7 +95,7 @@ class Region extends React.Component {
     return (
       <div>
         {this.renderFormArea(areaValue, name, cols)}
-        {`${cols}` === '4' && this.renderFormAddress(address, field)}
+        {`${cols}` === '4' && this.renderFormAddress(address, areaValue)}
       </div>
     );
   }
@@ -118,12 +118,14 @@ class Region extends React.Component {
     );
   }
 
-  renderFormAddress = (value) => {
+  renderFormAddress = (value, areaValue) => {
+    const readonly = !areaValue.length;
     return (
       <TextareaItem
         clear
         title="详细地址"
         autoHeight
+        disabled={readonly}
         placeholder="详细地址：如小区、门牌号等"
         onChange={e => this.onHandleChange(e)}
         value={`${value || ''}`}

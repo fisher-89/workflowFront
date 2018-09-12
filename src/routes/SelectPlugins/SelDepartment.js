@@ -128,9 +128,9 @@ export default class SelDepartment extends Component {
     const paramsValue = urlParams.params;
     const params = JSON.parse(paramsValue);
     const { key, type, max } = params;
-    const current = currentKey[`${key}`] || {};
+    const current = currentKey[key] || {};
     const multiple = `${type}` === '1';
-    const data = current.data || multiple ? [] : {};
+    const data = current.data || (multiple ? [] : {});
     const newData = makeFieldValue(data, { value: 'id', text: 'name' }, multiple);
     let mutiData = [];
     if (multiple) {

@@ -35,7 +35,6 @@ class AddGridList extends Component {
       const editableForm = editableFormObj.newFields;
       let newFormData = start.form_data;
       let formdata = [];
-
       if (`${index}` === '-1') {
         const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${type}`);
         newFormData = gridItemDefault.fieldDefault || {};
@@ -60,32 +59,37 @@ class AddGridList extends Component {
   }
 
   saveFormData = (formdata) => {
+    const { index } = this.state;
     const { dispatch, start: { gridDefault } } = this.props;
-    // 保存当前表单的数据
-    let newFormData = formdata;
-    if (newFormData === undefined) {
-      newFormData = this.childComp.state.formdata;
-    }
-    const data = {};
-    newFormData.forEach((item) => {
-      const { key, value } = item;
-      data[key] = value;
-    });
-
-    const newGridDefault = gridDefault.map((item) => {
-      const obj = { ...item };
-      if (item.key === this.state.key) {
-        obj.fieldDefault = { ...data };
+    if (`${index}` !== '-1') {
+      this.saveData(formdata);
+    } else {
+      // 保存当前表单的数据
+      let newFormData = formdata;
+      if (newFormData === undefined) {
+        newFormData = this.childComp.state.formdata;
       }
-      return obj;
-    });
-    dispatch({
-      type: 'start/save',
-      payload: {
-        store: 'gridDefault',
-        data: newGridDefault,
-      },
-    });
+      const data = {};
+      newFormData.forEach((item) => {
+        const { key, value } = item;
+        data[key] = value;
+      });
+
+      const newGridDefault = gridDefault.map((item) => {
+        const obj = { ...item };
+        if (item.key === this.state.key) {
+          obj.fieldDefault = { ...data };
+        }
+        return obj;
+      });
+      dispatch({
+        type: 'start/save',
+        payload: {
+          store: 'gridDefault',
+          data: newGridDefault,
+        },
+      });
+    }
   }
 
   // 将数据保存到modal的gridformdata中
@@ -95,7 +99,6 @@ class AddGridList extends Component {
     if (newFormData === undefined) {
       newFormData = this.childComp.state.formdata;
     }
-
     const [result] = newFormData.filter(item => item.msg);
     if (result) {
       Toast.fail(result.msg);
@@ -150,19 +153,19 @@ class AddGridList extends Component {
 
   render() {
     const { start, dispatch, loading, history } = this.props;
-    const { key, index } = this.state;
-    const { startflow, gridformdata, gridDefault } = start;
+    const { key, index, formdata } = this.state;
+    const { startflow, gridDefault } = start;
     spin(loading);
 
-    let formdata = [];
+    // let formdata = [];
     // const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
     //   [] : gridformdata.find(item => item.key === key).fields[Number(index)];
-    if ((gridformdata && !gridformdata.length) || !key || `${index}` === '-1') {
-      formdata = [];
-    } else {
-      const [current] = gridformdata.filter(item => `${item.key}` === `${key}`);
-      formdata = current.fields[Number(index)];
-    }
+    // if ((gridformdata && !gridformdata.length) || !key || `${index}` === '-1') {
+    //   formdata = [];
+    // } else {
+    //   const [current] = gridformdata.filter(item => `${item.key}` === `${key}`);
+    //   formdata = current.fields[Number(index)];
+    // }
     if (!startflow) {
       return <p style={{ textAlign: 'center' }}>暂无信息</p>;
     }

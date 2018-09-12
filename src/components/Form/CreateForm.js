@@ -1,15 +1,10 @@
 import React, { Component } from 'react';
-import {
-  List, Toast,
-} from 'antd-mobile';
+import { List, Toast } from 'antd-mobile';
 import { connect } from 'dva';
-// import moment from 'moment';
 import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region, FormArray } from '../FormType';
 import {
   dealThumbImg,
 } from '../../utils/convert';
-
-// import { formatDate } from '../../utils/util';
 import style from '../FormType/index.less';
 
 class CreateForm extends Component {
@@ -33,8 +28,6 @@ class CreateForm extends Component {
     const requiredForm = nextprops.required_form;
     const newFormData = nextprops.form_data;
     if (newFormData && (!this.state.init)) {
-      console.log(newFormData);
-
       const formData = { ...newFormData };
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {

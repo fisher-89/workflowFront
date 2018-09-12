@@ -34,7 +34,7 @@ const dispatchColumn = {
 class SelectComp extends React.Component {
   toChoose = (field = {}, data = {}) => {
     const { key, value } = data;
-    const { type, id } = field;
+    const { type, id, max } = field;
     const isMuti = field.is_checkbox;
     const { dispatch, history, evtClick, selComponentCb } = this.props;
     const newKey = `${type}_${key}_${id}`;
@@ -67,7 +67,7 @@ class SelectComp extends React.Component {
       key: newKey,
       type: isMuti,
       id,
-      max: 30,
+      max: max || 50,
     };
     const urlParams = JSON.stringify(params);
     // history.push(`/${to}/${newKey}/${isMuti}/${id}`);
