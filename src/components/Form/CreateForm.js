@@ -209,7 +209,7 @@ class CreateForm extends Component {
       } else if (item.type === 'file') {
         return (
           <Upload
-            onChange={this.bindFormDataChange}
+            onChange={this.onChange}
             field={item}
             key={i}
             isEdit={isEdit}

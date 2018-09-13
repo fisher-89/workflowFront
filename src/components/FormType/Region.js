@@ -150,9 +150,10 @@ class Region extends React.Component {
   }
 
   render() {
-    const { isEdit, field, data: { value },
+    const { isEdit, field,
       field: { name }, defaultValue } = this.props;
-    return isEdit ? (this.renderFormRegion(value, field)) : (
+    const { address } = this.state;
+    return isEdit ? (this.renderFormRegion(address, field)) : (
       <div className={style.readonly} >
         <TextareaItem
           title={name}
@@ -167,6 +168,7 @@ class Region extends React.Component {
 Region.defaultProps = {
   isEdit: true,
   data: {},
+  onChange: () => {},
 };
 
 export default connect()(Region);

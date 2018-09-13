@@ -20,6 +20,17 @@ export default class TagGroup extends React.Component {
     };
   }
 
+  componentWillReceiveProps(props) {
+    const { value } = props;
+    const oldValue = this.props.value;
+    if (JSON.stringify(value) !== JSON.stringify(oldValue)) {
+      const tags = value;
+      this.setState({
+        tags,
+      });
+    }
+  }
+
   handleInputChange = (e) => {
     const { value } = e.target;
     this.setState({

@@ -15,16 +15,16 @@ export default class Upload extends React.Component {
     };
   }
 
-  initCurrentObj = (v, item) => {
-    const { key } = item;
-    const obj = {
-      key,
-      value: v,
-      hasError: false,
-      msg: '',
-    };
-    return { ...obj };
-  }
+  // initCurrentObj = (v, item) => {
+  //   const { key } = item;
+  //   const obj = {
+  //     key,
+  //     value: v,
+  //     hasError: false,
+  //     msg: '',
+  //   };
+  //   return { ...obj };
+  // }
 
   reviewImg = (i, img) => {
     const imgs = img.map((item) => {
@@ -52,10 +52,11 @@ export default class Upload extends React.Component {
     const newFiles = files.map((its) => {
       return rebackImg(its.url, `${UPLOAD_PATH}`, '_thumb');
     });
-    const obj = this.initCurrentObj(newFiles, item);
+    // const obj = this.initCurrentObj(newFiles, item);
     const { dispatch } = this.props;
     if (type === 'remove') {
-      onChange(obj, item);
+      // onChange(obj, item);
+      onChange(newFiles, item);
     }
     if (type === 'add') {
       // lrz(files[files.length - 1].url, { width: 500 })
@@ -69,8 +70,8 @@ export default class Upload extends React.Component {
           data: imgformData,
           cb: (f) => {
             newFiles[newFiles.length - 1] = f.path;
-            obj.value = [...newFiles];
-            onChange(obj, item);
+            // obj.value = [...newFiles];
+            onChange(newFiles, item);
           },
         },
       });
@@ -79,7 +80,7 @@ export default class Upload extends React.Component {
 
   renderFormDate = () => {
     const { data, field, isEdit } = this.props;
-    const { name } = field;
+    const { name, max } = field;
     return (
       <div className={style.file} >
         <p className={style.title}>{name}</p>
@@ -89,7 +90,7 @@ export default class Upload extends React.Component {
             {...(isEdit &&
               { onChange: (file, type, index) => this.filesOnchange(file, type, index, field) })}
             onImageClick={e => this.reviewImg(e, data)}
-            selectable={isEdit && data ? data.length < 5 : false}
+            selectable={isEdit && data ? data.length < (max || 5) : false}
             accept="image/gif,image/jpeg,image/jpg,image/png"
           />
         </div>
