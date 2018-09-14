@@ -35,12 +35,15 @@ export default class SelPerson extends Component {
     }
   }
 
-  onSearch = (search) => {
+  onSearch = (search = '') => {
     if (this.timer) {
       clearInterval(this.timer);
     }
+    this.setState({
+      search,
+    });
     this.timer = setInterval(() => {
-      this.onSearchSubmit(search);
+      this.onSearchSubmit(search.trim());
     }, 500);
   }
 
@@ -48,27 +51,21 @@ export default class SelPerson extends Component {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    const { params: { id } } = this.state;
+    const { params: { id }, page } = this.state;
     const currentParams = {
       field_id: id,
-      page: 1,
+      page,
       pagesize: 15,
       filters: {
         name: { like: search },
       },
     };
-
-    this.setState({
-      search,
-    }, () => {
-      this.fetchDataSource(currentParams);
-    });
+    this.fetchDataSource(currentParams);
   }
 
   onPageChange = () => {
-    const { shop } = this.props;
-    const { search, params: { id } } = this.state;
-    const { page } = shop;
+    const { search, params: { id }, page } = this.state;
+    this.setState({ page: page + 1 });
     const currentParams = {
       field_id: id,
       page: page + 1,
@@ -81,8 +78,12 @@ export default class SelPerson extends Component {
   }
 
   onRefresh = () => {
-    const { search } = this.state;
-    this.onSearchSubmit(search);
+    this.setState({
+      page: 1,
+      search: '',
+    }, () => {
+      this.onSearchSubmit();
+    });
   }
 
   getSelectResult = (result) => {
@@ -123,7 +124,6 @@ export default class SelPerson extends Component {
     const paramsValue = urlParams.params;
     const params = JSON.parse(paramsValue);
     const { key, type, max } = params;
-
     const current = currentKey[`${key}`] || {};
     const multiple = `${type}` === '1';
     const data = current.data || (multiple ? [] : {});
@@ -142,6 +142,7 @@ export default class SelPerson extends Component {
       selectAll: false,
       search: '',
       params,
+      page: 1,
       singleSelected,
       key, // 选的什么人
       type, // 选的类型，单选还是多选
@@ -199,6 +200,7 @@ export default class SelPerson extends Component {
   searchOncancel = () => {
     this.setState({
       search: '',
+      page: 1,
     });
     this.fetchDataSource();
   }
@@ -246,8 +248,8 @@ export default class SelPerson extends Component {
       location,
       history,
     };
-    const { page, totalpage, data } = shop;
-    const { selected, type, key, selectAll, singleSelected } = this.state;
+    const { totalpage, data } = shop;
+    const { selected, type, selectAll, singleSelected, page } = this.state;
     const selectedData = selected.data;
     const shopSn = (data || []).map(item => item.shop_sn);
     const checkAble = selectedData.filter(item =>
@@ -271,7 +273,6 @@ export default class SelPerson extends Component {
           >
             <Shop
               {...someProps}
-              type={key}
               link=""
               name="shop_sn"
               renderName="name"

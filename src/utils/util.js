@@ -563,3 +563,8 @@ export function dealCheckAll(selects, snArr, name, selectAll, source, max) {
   selected.total = max || 50;
   return selected
 }
+
+
+String.prototype.trim = function() {
+  return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+}

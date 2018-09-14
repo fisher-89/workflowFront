@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { Button, List } from 'antd-mobile';
+import { Button, List, SearchBar } from 'antd-mobile';
 import ReactDOM from 'react-dom';
 import { PersonIcon } from '../../components/index.js';
-import { Search, Bread } from '../../components/General/index';
+import { Bread } from '../../components/General/index';
 import style from './index.less';
 
 export default class PersonContainer extends Component {
-  state = {
-    value: '',
-    height: document.documentElement.clientHeight,
+  constructor(props) {
+    super(props);
+    this.state = {
+      height: document.documentElement.clientHeight,
+      value: props.search || '',
+    };
+  }
 
-  };
+
   componentDidMount() {
     const htmlDom = ReactDOM.findDOMNode(this.ptr);
     const offetTop = htmlDom.getBoundingClientRect().top;
@@ -18,6 +22,16 @@ export default class PersonContainer extends Component {
     setTimeout(() => this.setState({
       height: hei,
     }), 0);
+  }
+
+  componentWillReceiveProps(props) {
+    const { search } = props;
+    const oldsearch = this.props;
+    if (search !== undefined && search !== oldsearch) {
+      this.setState({
+        value: search,
+      });
+    }
   }
 
   onChange = (value) => {
@@ -50,7 +64,7 @@ export default class PersonContainer extends Component {
     return (
       <div className={style.con}>
         <div className={style.header}>
-          <Search
+          <SearchBar
             value={this.state.value}
             placeholder="请输入名称"
             showCancelButton={this.state.value}

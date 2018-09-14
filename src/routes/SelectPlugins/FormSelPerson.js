@@ -37,40 +37,41 @@ export default class SelPerson extends Component {
     }
   }
 
-  onSearch = (search) => {
+  onSearch = (search = '') => {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    this.timer = setInterval(() => {
-      this.onSearchSubmit(search);
-    }, 500);
+    this.setState({
+      search,
+    });
+    if (search) {
+      this.timer = setInterval(() => {
+        this.onSearchSubmit(search.trim());
+      }, 500);
+    }
   }
 
   onSearchSubmit = (search) => {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    const { params: { id } } = this.state;
+    const { params: { id }, page } = this.state;
     const currentParams = {
       field_id: id,
-      page: 1,
+      page,
       pagesize: 15,
       filters: {
         realname: { like: search },
       },
     };
-
-    this.setState({
-      search,
-    }, () => {
-      this.fetchPageDataSource(currentParams);
-    });
+    this.fetchPageDataSource(currentParams);
   }
 
   onPageChange = () => {
-    const { searStaff } = this.props;
-    const { search, params: { id } } = this.state;
-    const { page } = searStaff;
+    const { search, params: { id }, page } = this.state;
+    this.setState({
+      page: page + 1,
+    });
     const currentParams = {
       field_id: id,
       page: page + 1,
@@ -84,7 +85,11 @@ export default class SelPerson extends Component {
 
   onRefresh = () => {
     const { search } = this.state;
-    this.onSearchSubmit(search);
+    this.setState({
+      page: 1,
+    }, () => {
+      this.onSearchSubmit(search);
+    });
   }
 
   getSelectResult = (result) => {
@@ -142,6 +147,7 @@ export default class SelPerson extends Component {
       },
       singleSelected,
       params,
+      page: 1,
       selectAll: false,
       search: '',
       // key, // 选的什么人
@@ -234,13 +240,15 @@ export default class SelPerson extends Component {
   searchOncancel = () => {
     this.setState({
       search: '',
+      page: 1,
     });
     const { breadCrumb } = this.props;
     if (breadCrumb && breadCrumb.length) {
       this.selDepartment(breadCrumb[breadCrumb.length - 1]);
-    } else {
-      this.fetchSelfDepStaff();
     }
+    //  else {
+    //   this.fetchDataSource();
+    // }
   }
 
   selectOk = () => {
@@ -268,9 +276,10 @@ export default class SelPerson extends Component {
       location,
       history,
     };
-    const { selected, search, selectAll, singleSelected, params: { type } } = this.state;
+    const { selected, search, selectAll, singleSelected, params: { type }, page } = this.state;
     const selectedData = selected.data;
-    const { page, totalpage, data = [] } = searStaff;
+    const { totalpage, data = [] } = searStaff;
+    console.log('data', data, search);
     const staffSn = staff.map(item => item.staff_sn);
     const checkAble = selectedData.filter(item =>
       staffSn.indexOf(item.staff_sn) > -1).length === staffSn.length && selectAll;
@@ -284,6 +293,7 @@ export default class SelPerson extends Component {
           selected={selected}
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
+          search={search}
           handleBread={this.selDepartment}
           fetchDataSource={() => this.fetchDataSource()}
           selectOk={this.selectOk}

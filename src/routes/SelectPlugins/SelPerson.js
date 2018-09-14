@@ -30,6 +30,7 @@ export default class SelPerson extends Component {
     search: '',
     key: '', // 选的什么人
     type: 1, // 选的类型，单选还是多选
+    page: 1,
   };
 
   componentWillMount() {
@@ -65,21 +66,19 @@ export default class SelPerson extends Component {
     return newFinalStaff;
   }
 
-  onSearch = (search) => {
-    const { key } = this.state;
-    const isFinal = key === 'final';
-    if (isFinal) {
-      this.setState({
-        search,
-      });
-      return;
-    }
+  onSearch = (search = '') => {
+    this.setState({
+      search,
+      page: 1,
+    });
     if (this.timer) {
       clearInterval(this.timer);
     }
-    this.timer = setInterval(() => {
-      this.onSearchSubmit(search);
-    }, 500);
+    if (search) {
+      this.timer = setInterval(() => {
+        this.onSearchSubmit(search);
+      }, 500);
+    }
   }
 
   onSearchSubmit = (search) => {
@@ -87,20 +86,18 @@ export default class SelPerson extends Component {
       clearInterval(this.timer);
     }
     const { dispatch } = this.props;
-    this.setState({
-      search,
-    }, () => {
-      dispatch({
-        type: 'searchStaff/serachStaff',
-        payload: `page=1&pagesize=15&filters=realname~${search};status_id>=0`,
-      });
+    dispatch({
+      type: 'searchStaff/serachStaff',
+      payload: `page=1&pagesize=15&filters=realname~${search};status_id>=0`,
     });
   }
 
   onPageChange = () => {
-    const { dispatch, searStaff } = this.props;
-    const { page } = searStaff;
-    const { search } = this.state;
+    const { dispatch } = this.props;
+    const { page, search } = this.state;
+    this.setState({
+      page: page + 1,
+    });
     dispatch({
       type: 'searchStaff/serachStaff',
       payload: `page=${page + 1}&pagesize=15&status_id>=0&filters=realname~${search};status_id>=0`,
@@ -109,7 +106,11 @@ export default class SelPerson extends Component {
 
   onRefresh = () => {
     const { search } = this.state;
-    this.onSearchSubmit(search);
+    this.setState({
+      page: 1,
+    }, () => {
+      this.onSearchSubmit(search.trim());
+    });
   }
 
   getSelectResult = (result) => {
@@ -232,6 +233,7 @@ export default class SelPerson extends Component {
   searchOncancel = () => {
     this.setState({
       search: '',
+      page: 1,
     });
     const { breadCrumb } = this.props;
     if (breadCrumb && breadCrumb.length) {
