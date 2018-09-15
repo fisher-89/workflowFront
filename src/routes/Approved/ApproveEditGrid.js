@@ -30,12 +30,34 @@ class AddGridList extends Component {
     const { flag, key } = this.state;
 
     if (!key && flag && startflow) {
+      // const { type, index } = params;
+      // const { fields: { grid } } = startflow;
+      // const [editableFormObj] =
+      // getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
+      // const editableForm = editableFormObj.newFields;
+      // const newFormData = approve.form_data;
+      // const formdata = initFormdata(newFormData, editableForm);
+      // this.setState({
+      //   key: type,
+      //   index,
+      //   flag: false,
+      //   formdata,
+      // });
       const { type, index } = params;
       const { fields: { grid } } = startflow;
-      const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
+      const [editableFormObj] =
+       getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
       const editableForm = editableFormObj.newFields;
-      const newFormData = approve.form_data;
-      const formdata = initFormdata(newFormData, editableForm);
+      let newFormData = start.form_data;
+      let formdata = [];
+      if (`${index}` === '-1') {
+        const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${type}`);
+        newFormData = gridItemDefault.fieldDefault || {};
+        formdata = initFormdata(newFormData, editableForm);
+      } else {
+        const [current] = gridformdata.filter(item => `${item.key}` === `${type}`);
+        formdata = current.fields[Number(index)];
+      }
       this.setState({
         key: type,
         index,
@@ -52,32 +74,37 @@ class AddGridList extends Component {
   }
 
   saveFormData = (formdata) => {
+    const { index } = this.state;
     const { dispatch, approve: { gridDefault } } = this.props;
-    // 保存当前表单的数据
-    let newFormData = formdata;
-    if (newFormData === undefined) {
-      newFormData = this.childComp.state.formdata;
-    }
-    const data = {};
-    newFormData.forEach((item) => {
-      const { key, value } = item;
-      data[key] = value;
-    });
-
-    const newGridDefault = gridDefault.map((item) => {
-      const obj = { ...item };
-      if (item.key === this.state.key) {
-        obj.fieldDefault = { ...data };
+    if (`${index}` !== '-1') {
+      this.saveData(formdata);
+    } else {
+      // 保存当前表单的数据
+      let newFormData = formdata;
+      if (newFormData === undefined) {
+        newFormData = this.childComp.state.formdata;
       }
-      return obj;
-    });
-    dispatch({
-      type: 'approve/save',
-      payload: {
-        store: 'gridDefault',
-        data: newGridDefault,
-      },
-    });
+      const data = {};
+      newFormData.forEach((item) => {
+        const { key, value } = item;
+        data[key] = value;
+      });
+
+      const newGridDefault = gridDefault.map((item) => {
+        const obj = { ...item };
+        if (item.key === this.state.key) {
+          obj.fieldDefault = { ...data };
+        }
+        return obj;
+      });
+      dispatch({
+        type: 'approve/save',
+        payload: {
+          store: 'gridDefault',
+          data: newGridDefault,
+        },
+      });
+    }
   }
 
   // 将数据保存到modal的gridformdata中
@@ -144,19 +171,21 @@ class AddGridList extends Component {
   }
 
   render() {
-    const { approve, dispatch } = this.props;
-    const { key, index } = this.state;
-    const { startflow, gridformdata } = approve;
-    let formdata = [];
+    const { approve, dispatch, loading } = this.props;
+    const { key, index, formdata } = this.state;
+    const { startflow, gridDefault } = approve;
+    spin(loading);
+
+    // let formdata = [];
     // const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
     //   [] : gridformdata.find(item => item.key === key).fields[Number(index)];
 
-    if ((gridformdata && !gridformdata.length) || !key || index === '-1') {
-      formdata = [];
-    } else {
-      const [current] = gridformdata.filter(item => item.key === key);
-      formdata = current.fields[Number(index)];
-    }
+    // if ((gridformdata && !gridformdata.length) || !key || index === '-1') {
+    //   formdata = [];
+    // } else {
+    //   const [current] = gridformdata.filter(item => item.key === key);
+    //   formdata = current.fields[Number(index)];
+    // }
     if (!startflow) {
       return <p style={{ textAlign: 'center' }}>暂无信息</p>;
     }

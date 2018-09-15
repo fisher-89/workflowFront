@@ -41,6 +41,7 @@ export default {
       1: {},
     },
     delever: [],
+    gridDefault: [],
   },
 
   subscriptions: {

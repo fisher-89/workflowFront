@@ -41,6 +41,7 @@ export default {
 
     }, // 提交是数据之后的步骤
     startDetail: null,
+    gridDefault: [],
   },
 
   subscriptions: {
