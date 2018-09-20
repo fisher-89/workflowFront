@@ -1,7 +1,7 @@
 import React from 'react';
 // import classNames from 'classnames';
 import { connect } from 'dva';
-import { TextareaItem, Toast, InputItem } from 'antd-mobile';
+import { TextareaItem, Toast } from 'antd-mobile';
 import style from './index.less';
 
 
@@ -55,31 +55,20 @@ class TextInput extends React.Component {
 
   renderFormInput = () => {
     const { data: { value, hasError }, field } = this.props;
-    const { name, description, type } = field;
+    const { name, description } = field;
     return (
-      type === 'int' ? (
-        <InputItem
-          // type="digit"
-          placeholder={description}
-          clear
-          onChange={e => this.handleOnChange(e, field)}
-          onBlur={this.onHandleBlur}
-          value={`${value || ''}`}
 
-        >{name}
-        </InputItem>
-      ) : (
-        <TextareaItem
-          clear
-          title={name}
-          autoHeight
-          placeholder={description}
-          error={hasError}
-          onChange={e => this.handleOnChange(e, field)}
-          onBlur={this.onHandleBlur}
-          value={`${value || ''}`}
-        />
-      ));
+      <TextareaItem
+        clear
+        title={name}
+        autoHeight
+        placeholder={description}
+        error={hasError}
+        onChange={e => this.handleOnChange(e, field)}
+        onBlur={this.onHandleBlur}
+        value={`${value || ''}`}
+      />
+    );
   }
 
   render() {

@@ -15,6 +15,7 @@ import style from './index.less';
   finalStaff: formSearchStaff.finalStaff,
   searStaff: formSearchStaff.searStaff,
   breadCrumb: formSearchStaff.breadCrumb,
+  globalLoading: loading.global,
   loading: loading.effects['formSearchStaff/fetchFirstDepartment'],
   searchLoding: loading.effects['formSearchStaff/serachStaff'],
 }))
@@ -130,7 +131,7 @@ export default class SelPerson extends Component {
     const paramsValue = urlParams.params;
     const params = JSON.parse(paramsValue);
     const { key, type, max } = params;
-    const multiple = `${type}` === '1';
+    const multiple = !!type;
     const current = currentKey[`${key}`] || {};
     const data = current.data || (multiple ? [] : {});
     const newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
@@ -152,6 +153,7 @@ export default class SelPerson extends Component {
       search: '',
       // key, // 选的什么人
       // type, // 选的类型，单选还是多选
+      multiple,
     };
     return obj;
   }
@@ -269,24 +271,23 @@ export default class SelPerson extends Component {
       department,
       staff, searStaff,
       breadCrumb,
-      loading,
+      loading, globalLoading,
       history, location,
     } = this.props;
     const someProps = {
       location,
       history,
     };
-    const { selected, search, selectAll, singleSelected, params: { type }, page } = this.state;
+    const { selected, search, selectAll, singleSelected, multiple, page } = this.state;
     const selectedData = selected.data;
     const { totalpage, data = [] } = searStaff;
-    console.log('data', data, search);
     const staffSn = staff.map(item => item.staff_sn);
     const checkAble = selectedData.filter(item =>
       staffSn.indexOf(item.staff_sn) > -1).length === staffSn.length && selectAll;
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
-          multiple={`${type}` === '1'}
+          multiple={multiple}
           name="realname"
           bread={breadCrumb}
           checkAble={checkAble}
@@ -311,8 +312,9 @@ export default class SelPerson extends Component {
                 name="id"
               />
             ) : null}
-            {((search && data && !data.length)
-              || (!search && !staff.length && !department.length)) ? <Nothing /> : null}
+            {(((search && data && !data.length)
+              || (!search && !staff.length && !department.length))
+              && !globalLoading) ? <Nothing /> : null}
             {!search ? (
               <Staff
                 link=""
@@ -322,7 +324,7 @@ export default class SelPerson extends Component {
                 renderName="realname"
                 singleSelected={singleSelected}
                 dispatch={this.props.dispatch}
-                multiple={`${type}` === '1'}
+                multiple={multiple}
                 selected={selected.data}
                 dataSource={staff}
                 onChange={this.getSelectResult}
@@ -339,7 +341,8 @@ export default class SelPerson extends Component {
                 totalpage={totalpage}
                 onPageChange={this.onPageChange}
                 dispatch={this.props.dispatch}
-                multiple={`${type}` === '1'}
+                multiple={multiple}
+                singleSelected={singleSelected}
                 selected={selected.data}
                 dataSource={data}
                 onRefresh={this.onRefresh}

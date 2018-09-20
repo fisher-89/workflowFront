@@ -9,7 +9,7 @@ export default {
   state: {
     department: [],
     isConfig: true,
-    breadCrumb: [],
+    breadCrumb: [{ name: '选择部门', id: -1 }],
     currentKey: {
     },
   },

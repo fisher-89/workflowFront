@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, SearchBar, Switch } from 'antd-mobile';
+import { Button, SearchBar, Switch, Toast } from 'antd-mobile';
 import ReactDOM from 'react-dom';
 // import { PersonIcon } from '../../components/index.js';
 import { Bread } from '../../components/General/index';
@@ -67,12 +67,21 @@ export default class DepContainer extends Component {
     onSwitchChange(check);
   }
 
+  handleOk = () => {
+    const { selected, selectOk } = this.props;
+    if (selected.num < selected.min) {
+      Toast.info(`请至少选择${selected.min}个`, 1.5);
+    } else {
+      selectOk();
+    }
+  }
+
   render() {
     const {
       bread = [], children, multiple, name, selected, checkedAll, checkAble,
       handleBread,
-      selectOk,
     } = this.props;
+
     const { switchState } = this.state;
     return (
       <div className={style.con}>
@@ -83,9 +92,9 @@ export default class DepContainer extends Component {
             showCancelButton={this.state.value}
             onChange={this.onChange}
             onCancel={
-                this.state.value ? this.onCancel :
-                  () => { }
-              }
+              this.state.value ? this.onCancel :
+                () => { }
+            }
             onSubmit={this.onSubmit}
           />
           {(this.state.value || !bread.length) ? null : (
@@ -138,7 +147,7 @@ export default class DepContainer extends Component {
                     size="small"
                     type={selected.num > selected.total ? 'dashed' : 'primary'}
                     disabled={selected.num > selected.total}
-                    onClick={selectOk}
+                    onClick={this.handleOk}
                   >
                     {selected.num}/{selected.total}确认
                   </Button>

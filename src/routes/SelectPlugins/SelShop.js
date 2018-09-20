@@ -87,15 +87,8 @@ export default class SelPerson extends Component {
   }
 
   getSelectResult = (result) => {
-    const { selected, type } = this.state;
-    if (type !== '1') {
-      this.getSingleSelect(result);
-    } else {
-      // const newResult = result.map((item) => {
-      //   const obj = { ...item };
-      //   obj.staff_name = item.realname || item.staff_name;
-      //   return obj;
-      // });
+    const { selected, multiple } = this.state;
+    if (multiple) {
       this.setState({
         selected: {
           ...selected,
@@ -103,6 +96,8 @@ export default class SelPerson extends Component {
           num: result.length,
         },
       });
+    } else {
+      this.getSingleSelect(result);
     }
   }
 
@@ -123,7 +118,7 @@ export default class SelPerson extends Component {
     const urlParams = getUrlParams();
     const paramsValue = urlParams.params;
     const params = JSON.parse(paramsValue);
-    const { key, type, max } = params;
+    const { key, type, max, min } = params;
     const current = currentKey[`${key}`] || {};
     const multiple = `${type}` === '1';
     const data = current.data || (multiple ? [] : {});
@@ -137,6 +132,7 @@ export default class SelPerson extends Component {
       selected: {
         data: mutiData,
         total: max || 50,
+        min: min || 1,
         num: mutiData.length,
       },
       selectAll: false,
@@ -145,7 +141,7 @@ export default class SelPerson extends Component {
       page: 1,
       singleSelected,
       key, // 选的什么人
-      type, // 选的类型，单选还是多选
+      multiple,
     };
     return obj;
   }
@@ -170,7 +166,7 @@ export default class SelPerson extends Component {
     const { shop } = this.props;
     const shopData = shop.data || [];
     const shopSn = shopData.map(item => item[name]);
-    const { selectAll, selected, params: { max } } = this.state;
+    const { selectAll, selected } = this.state;
     const { data } = selected;
     if (selectAll) {
       const newData = data.filter(item => shopSn.indexOf(item[name]) === -1);
@@ -189,7 +185,7 @@ export default class SelPerson extends Component {
       selected.data = result;
       selected.num = result.length;
     }
-    selected.total = max || 50;
+    // selected.total = max || 50;
 
     this.setState({
       selected,
@@ -216,22 +212,22 @@ export default class SelPerson extends Component {
   }
 
   selectOk = () => {
-    const { history, formSearchStaff: { currentKey }, dispatch } = this.props;
+    const { history, formSearchShop: { currentKey }, dispatch } = this.props;
     const { params } = this.state;
     const { key } = params;
     const current = { ...currentKey[`${key}`] || {} };
     const { cb } = current;
     const { selected } = this.state;
     const newSelectShop = selected.data;
-    const formSeleted = this.makeFormShop(newSelectShop);
+    // const formSeleted = this.makeFormShop(newSelectShop);
     if (cb) {
-      cb(formSeleted);
+      cb(newSelectShop);
     }
     dispatch({
       type: 'formSearchShop/saveSelectShop',
       payload: {
         key,
-        value: formSeleted,
+        value: newSelectShop,
       },
     });
     history.goBack(-1);
@@ -249,15 +245,16 @@ export default class SelPerson extends Component {
       history,
     };
     const { totalpage, data } = shop;
-    const { selected, type, selectAll, singleSelected, page } = this.state;
+    const { selected, selectAll, singleSelected, page, multiple } = this.state;
     const selectedData = selected.data;
     const shopSn = (data || []).map(item => item.shop_sn);
     const checkAble = selectedData.filter(item =>
       shopSn.indexOf(item.shop_sn) > -1).length === shopSn.length && selectAll;
+
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
-          multiple={`${type}` === '1'}
+          multiple={multiple}
           name="shop_sn"
           bread={breadCrumb}
           checkAble={checkAble}
@@ -281,7 +278,7 @@ export default class SelPerson extends Component {
               singleSelected={singleSelected}
               onPageChange={this.onPageChange}
               dispatch={this.props.dispatch}
-              multiple={type === '1'}
+              multiple={multiple}
               selected={selected.data}
               dataSource={data}
               onRefresh={this.onRefresh}

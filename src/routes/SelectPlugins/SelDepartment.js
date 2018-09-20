@@ -70,11 +70,9 @@ export default class SelDepartment extends Component {
   }
 
   getSelectResult = (result, current) => {
-    const { selected, params: { type }, switchState } = this.state;
+    const { selected, multiple, switchState } = this.state;
     const oldData = selected.data;
-    if (`${type}` !== '1') {
-      this.getSingleSelect(result);
-    } else {
+    if (multiple) {
       let newSeleted = result;
       const oldSn = oldData.map(item => item.id);
       const isRemove = oldSn.indexOf(current.id) > -1;
@@ -95,6 +93,8 @@ export default class SelDepartment extends Component {
           num: data.length,
         },
       });
+    } else {
+      this.getSingleSelect(result);
     }
   }
 
@@ -127,9 +127,9 @@ export default class SelDepartment extends Component {
     const urlParams = getUrlParams();
     const paramsValue = urlParams.params;
     const params = JSON.parse(paramsValue);
-    const { key, type, max } = params;
+    const { key, type, max, min } = params;
     const current = currentKey[key] || {};
-    const multiple = `${type}` === '1';
+    const multiple = type;
     const data = current.data || (multiple ? [] : {});
     const newData = makeFieldValue(data, { value: 'id', text: 'name' }, multiple);
     let mutiData = [];
@@ -137,11 +137,11 @@ export default class SelDepartment extends Component {
       mutiData = newData;
     }
     const singleSelected = multiple ? {} : newData;
-
     const obj = {
       selected: {
         data: mutiData,
         total: max || 50,
+        min: min || 1,
         num: mutiData.length,
       },
       singleSelected,
@@ -151,6 +151,7 @@ export default class SelDepartment extends Component {
       // key, // 选的什么人
       // type, // 选的类型，单选还是多选
       currentDep: [],
+      multiple,
       params,
     };
     return obj;
@@ -195,7 +196,7 @@ export default class SelDepartment extends Component {
 
   checkedAll = (name = 'id') => { // 全选
     const { department } = this.props;
-    const { params: { max } } = this.state;
+    // const { params: { max } } = this.state;
     let depSn = department.map(item => item.id);
     const { selected, switchState, currentDep } = this.state;
     const curDepSn = currentDep.map(item => item.id);
@@ -216,7 +217,8 @@ export default class SelDepartment extends Component {
     const result = newData.unique('id');
     selected.data = result;
     selected.num = result.length;
-    selected.total = max || 50;
+    // selected.total = max || 50;
+    // selected.total = min || 50;
     this.setState({
       selected,
     });
@@ -294,10 +296,10 @@ export default class SelDepartment extends Component {
   render() {
     const {
       breadCrumb,
-      isConfig,
+      isConfig, loading,
     } = this.props;
 
-    const { selected, params: { type }, search, currentDep,
+    const { selected, multiple, search, currentDep,
       switchState, singleSelected } = this.state;
     const selectedData = selected.data;
     const depSn = currentDep.map(item => item.id);
@@ -306,7 +308,7 @@ export default class SelDepartment extends Component {
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <DepContainer
-          multiple={`${type}` === '1'}
+          multiple={multiple}
           name="name"
           bread={breadCrumb}
           checkAble={checkAble}
@@ -321,7 +323,7 @@ export default class SelDepartment extends Component {
           searchOncancel={this.searchOncancel}
         >
 
-          {!currentDep.length && (
+          {!currentDep.length && !loading && (
           <Nothing />
           )}
           <SelDep
@@ -331,7 +333,7 @@ export default class SelDepartment extends Component {
             heightNone
             renderName="name"
             singleSelected={singleSelected}
-            multiple={`${type}` === '1'}
+            multiple={multiple}
             selected={selected.data}
             dataSource={currentDep}
             extra={!search && !isConfig && this.renderExtraContent}

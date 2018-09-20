@@ -427,7 +427,7 @@ export function initFormdata(source, editableform) {
     // const formatStr = formatDate(item.type);
     // const currentValue = isJSON(source[item.key]);
     // let value = currentValue;
-    const value=source[item.key]
+    const value = source[item.key]
     // if (item.type === 'time') {
     //   const nowTime = moment().format(formatStr);
     //   value = moment(`2018-01-01 ${currentValue || nowTime}`).format(formatStr);
@@ -539,7 +539,6 @@ export function makeGridItemData(currentGridData, gridItem) {
 }
 
 export function dealCheckAll(selects, snArr, name, selectAll, source, max) {
-
   const selected = { ...selects }
   const { data } = selects;
   if (selectAll) {
@@ -565,6 +564,6 @@ export function dealCheckAll(selects, snArr, name, selectAll, source, max) {
 }
 
 
-String.prototype.trim = function() {
+String.prototype.trim = function () {
   return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 }
