@@ -19,9 +19,6 @@ export default class FormDate extends React.Component {
   renderFormDate = () => {
     const { data: { value }, field } = this.props;
     const { name, type, max, min } = field;
-    // const newMax = max ? new Date(max) : new Date();
-    // const newMin = min ? new Date(min) : new Date();
-    // const newValue = value ? new Date(value) : new Date();
     const nowTime = moment().format(formatDate('time'));
     let newMax = max;
     let newMin = min;
@@ -31,8 +28,6 @@ export default class FormDate extends React.Component {
       newMin = min ? `2018-08-01 ${min}` : undefined;
       newValue = value ? `2018-08-01 ${value || max || nowTime}` : undefined;
     }
-    // const newValue = type === 'time' ?
-    // new Date(`2018-08-01 ${value || nowTime}`) : new Date(value);
     const maxDate = newMax ? new Date(newMax) : undefined;
     const minDate = newMin ? new Date(newMin) : undefined;
     const valueDate = newValue ? new Date(newValue) : undefined;

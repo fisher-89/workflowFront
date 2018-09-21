@@ -94,6 +94,9 @@ CheckBox.defaultProps = {
   multiple: true,
   options: [],
   style: {},
+  range: {
+    max: '', min: '',
+  },
   onChange: () => { },
 };
 export default CheckBox;

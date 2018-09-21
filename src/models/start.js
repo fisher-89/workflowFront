@@ -96,7 +96,7 @@ export default {
     },
     // 预提交
     * preSet({ payload }, { call, put }) {
-      const data = yield call(c.preSet, payload);
+      const data = yield call(c.preSet, payload.data);
       if (data && !data.error) {
         if ((data.step_end === 1 && data.available_steps.length)
           || (data.step_end === 0 && !data.available_steps.length)) {
@@ -106,15 +106,15 @@ export default {
         yield put({
           type: 'save',
           payload: {
-            key: 'preStepData',
-            value: data,
+            store: 'preStepData',
+            data,
           },
         });
         yield put({
           type: 'save',
           payload: {
-            key: 'preType',
-            value: payload.preType,
+            store: 'preType',
+            data: payload.preType,
           },
         });
         yield put({

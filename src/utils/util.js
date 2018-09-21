@@ -3,6 +3,7 @@
 /* eslint-disable */
 import { Toast } from 'antd-mobile';
 import moment from 'moment'
+import district from '../utils/district.js'
 
 const codeMessage = {
   200: '服务器成功返回请求的数据',
@@ -527,15 +528,59 @@ export function makeGridItemData(currentGridData, gridItem) {
     item.forEach((its) => { // 取前三个字段
       const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
       const { type } = fieldsItem || {};
-      if (num < 3 && (type === 'text' || type === 'int' || (type === 'select' && !fieldsItem.is_checkbox))) {
+      // if (num < 3 && (type === 'text' || type === 'int' || (type === 'select' && !fieldsItem.is_checkbox))) {
+      if (num < 3 && type !== 'file') {
         const { value } = its;
-        newObj[`value_${num}`] = value || (num === 0 ? value0 : '');
+        const multiple = fieldsItem.is_checkbox;
+        // newObj[`value_${num}`] = value || (num === 0 ? value0 : '');
+        newObj[`value_${num}`] = renderGridValue(value, type, multiple) || (num === 0 ? value0 : '');
+
         num += 1;
       }
     });
     return newObj;
   });
   return dataList;
+}
+
+export function renderGridValue(value, type, multiple) {
+  let text = '';
+  if (type === 'text' || type === 'int' || type === 'time' || type === 'datetime' || type === 'date') {
+    text = value;
+  }
+  if (type === 'select') {
+    if (!multiple) {
+      text = value
+    }
+    else {
+      text = (value || []).map(item => `${item}、`)
+    }
+  }
+  if (type === 'staff' || type === 'department' || type === 'shop') {
+    if (multiple) {
+      text = (value || []).map(item => item.text).join('、')
+    }
+    else {
+      text = (value || {}).text
+    }
+  }
+  if (type === 'array') {
+    text = (value || []).join('、')
+  }
+  if (type === 'region') {
+    const pId = value.province_id;
+    const cId = value.city_id;
+    const aId = value.county_id;
+    const detail = value.address;
+    text = analyzeRegincode(pId, cId, aId, detail);
+  }
+  return text;
+}
+
+export function analyzeRegincode(province, city, area, detail) {
+  let [regin] = district.filter(item => `${item.id}` === `${area || city || province}`);
+  const address = `${(regin || {}).full_name || ''}${detail || ''}`;
+  return address;
 }
 
 export function dealCheckAll(selects, snArr, name, selectAll, source, max) {

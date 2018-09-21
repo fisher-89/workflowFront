@@ -15,8 +15,9 @@ class SelectStep extends Component {
     preStepData: null,
     init: false,
   }
-  componentWillMount() {
+  componentDidMount() {
     const { start: { preType }, history, dispatch } = this.props;
+    console.log(this.props);
     if (preType) {
       dispatch({
         type: 'start/updateModal',

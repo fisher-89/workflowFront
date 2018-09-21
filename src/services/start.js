@@ -27,9 +27,9 @@ export function getStartList(data) {
 
 // 预提交
 export function preSet(data) {
-  return request(`/api/preset/${data.id}`, {
+  return request('/api/preset', {
     method: 'POST',
-    body: data.data,
+    body: data,
   });
 }
 

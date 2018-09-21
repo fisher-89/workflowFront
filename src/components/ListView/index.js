@@ -203,7 +203,6 @@ export default function ListView(ListItem) {
        || (`${page}` === '1'))
        && loading.global);
       spin(loader);
-      console.log('nothingAble', nothingAble);
       return (
         <div
           {...(page && { onTouchStart: this.handleStart })}

@@ -122,10 +122,10 @@ class ApproveDetail extends Component {
           <p className={style.grid_opt}>
             <span>{name}</span>
             {ableAdd && (
-            <a
-              onClick={() => this.addGridList(key)}
-            >+添加{name}
-            </a>
+              <a
+                onClick={() => this.addGridList(key)}
+              >+添加{name}
+              </a>
             )}
           </p>
           {this.getGridItem(key)}
@@ -255,8 +255,9 @@ class ApproveDetail extends Component {
         data: {
           form_data: newformData,
           step_run_id: flowId,
+          flow_id: flowRun.flow_id,
         },
-        id: flowRun.flow_id,
+        // id: flowRun.flow_id,
         preType: 'approve',
         cb: (data) => {
           if (data.step_end === 1) { // 不选步骤
@@ -362,21 +363,21 @@ class ApproveDetail extends Component {
             >
               <span>通过</span>
             </a>
-          ) }
+          )}
           {startflow.step_run.action_type === 0 && (
             <a
               onClick={this.doDeliver}
             >
               <span>转交</span>
             </a>
-          ) }
+          )}
           {startflow.step.reject_type !== 0 && startflow.step_run.action_type === 0 && (
             <a
               onClick={this.fillRemark}
             >
               <span>驳回</span>
             </a>
-          ) }
+          )}
         </div>
       </div>
     );
@@ -384,5 +385,6 @@ class ApproveDetail extends Component {
 }
 export default connect(({
   approve, start, loading,
-}) => ({ approve, start, loading: loading.global,
+}) => ({
+  approve, start, loading: loading.global,
 }))(ApproveDetail);

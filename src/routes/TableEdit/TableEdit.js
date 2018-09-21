@@ -129,10 +129,10 @@ class TableEdit extends Component {
           <p className={style.grid_opt}>
             <span>{name}</span>
             {ableAdd && (
-            <a
-              onClick={() => this.addGridList(key)}
-            >+添加{name}
-            </a>
+              <a
+                onClick={() => this.addGridList(key)}
+              >+添加{name}
+              </a>
             )}
           </p>
           {this.getGridItem(key)}
@@ -229,10 +229,12 @@ class TableEdit extends Component {
       payload: {
         data: {
           form_data: formData,
+          flow_id: flowId,
         },
-        id: flowId,
+        // id: flowId,
         preType: 'start',
         cb: () => {
+          console.log('22222222');
           history.push('/select_step');
         },
       },

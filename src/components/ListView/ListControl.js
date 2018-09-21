@@ -42,6 +42,7 @@ export default class ListControl extends Component {
     const current = lists[`${pathname}_${type}`];
     const { url, datas } = current;
     const { data } = datas;
+
     this.setState({
       type,
       searchValue: this.fetchSearchValue(),
@@ -72,7 +73,6 @@ export default class ListControl extends Component {
     const { type = defaultType } = currentParams;
     this.setState({
       type,
-      visible: false,
     });
     if (search !== this.props.location.search) {
       this.currentFilter(search ? search.slice(1) : '');
