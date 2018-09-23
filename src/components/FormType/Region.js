@@ -70,7 +70,7 @@ class Region extends React.Component {
     keys.forEach((key) => {
       const text = value[key];
       const index = regionSelect.indexOf(key);
-      if (index > -1) {
+      if (index > -1 && text) {
         newValue.splice(index, 0, text);
       }
     });
@@ -90,12 +90,13 @@ class Region extends React.Component {
   renderFormRegion = (value, field) => {
     const areaValue = this.makeValidValue(value);
     const { address } = value;
-    const cols = field.region_level;
+    const cols = `${field.region_level}` === '4' ? 3 : field.region_level;
+    console.log('areaValue', areaValue);
     const { name } = field;
     return (
       <div>
         {this.renderFormArea(areaValue, name, cols)}
-        {`${cols}` === '4' && this.renderFormAddress(address, areaValue)}
+        {`${field.region_level}` === '4' && this.renderFormAddress(address, areaValue)}
       </div>
     );
   }
@@ -168,7 +169,7 @@ class Region extends React.Component {
 Region.defaultProps = {
   isEdit: true,
   data: {},
-  onChange: () => {},
+  onChange: () => { },
 };
 
 export default connect()(Region);

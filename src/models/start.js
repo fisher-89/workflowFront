@@ -126,7 +126,7 @@ export default {
       }
     },
     * stepStart({ payload }, { call }) {
-      const data = yield call(c.stepStart, payload);
+      const data = yield call(c.stepStart, payload.data);
       if (data && !data.error) {
         payload.cb();
       }

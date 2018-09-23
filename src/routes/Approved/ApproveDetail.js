@@ -163,6 +163,7 @@ class ApproveDetail extends Component {
       },
     });
   }
+
   // 给列表控件追加item
   addGridList = (key) => {
     const { history, dispatch } = this.props;
@@ -228,6 +229,7 @@ class ApproveDetail extends Component {
       },
     });
   }
+
   // 提交数据
   submitData = (e) => {
     e.preventDefault();

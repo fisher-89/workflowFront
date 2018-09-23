@@ -34,9 +34,9 @@ export function preSet(data) {
 }
 
 export function stepStart(data) {
-  return request(`/api/start/${data.id}`, {
+  return request('/api/start', {
     method: 'POST',
-    body: data.data,
+    body: data,
   });
 }
 

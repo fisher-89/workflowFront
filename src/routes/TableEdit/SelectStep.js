@@ -17,7 +17,6 @@ class SelectStep extends Component {
   }
   componentDidMount() {
     const { start: { preType }, history, dispatch } = this.props;
-    console.log(this.props);
     if (preType) {
       dispatch({
         type: 'start/updateModal',
@@ -155,6 +154,7 @@ class SelectStep extends Component {
       step_run_id: preStepData.step_run_id,
       timestamp: preStepData.timestamp,
       next_step: [...nextSteps],
+      flow_id: preStepData.flow_id,
     };
     dispatch({
       type: 'start/save',
@@ -170,7 +170,7 @@ class SelectStep extends Component {
           data: {
             ...params,
           },
-          id: preStepData.flow_id,
+          // id: preStepData.flow_id,
           cb: () => {
             history.replace('/start_list?type=processing&page=1');
           },
