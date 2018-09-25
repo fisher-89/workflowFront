@@ -172,9 +172,9 @@ export default function ListView(ListItem) {
 
       if (!this.props.fetchDataSource && onChange) {
         response.onClick = multiple ? this.handlesMultiple : onChange;
-        const dataId = muti.map(m => m[name]);
+        const dataId = muti.map(m => `${m[name]}`);
         response.checked = multiple ?
-          dataId.indexOf(item[name]) !== -1 : singleSelected[name] === item[name];
+          dataId.indexOf(`${item[name]}`) !== -1 : singleSelected[name] === item[name];
       }
       return response;
     }
