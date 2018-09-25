@@ -7,24 +7,26 @@ import style from './index.less';
 
 class TextInput extends React.Component {
   onHandleBlur = (v) => {
-    const { isRequire, field } = this.props;
+    const { isRequire, field, onChange } = this.props;
     const { name, type, min, max } = field;
+    let newValue = v;
     if (isRequire && !v) {
       Toast.info(`请输入${name}`, 1.5);
     } else if (type === 'text') {
       if (min !== '' && v.length < min) {
         Toast.info(`字符长度在${min || '0'}~${max}之间`);
       }
+      newValue = newValue.length > max ? newValue.slice(0, max) : newValue;
     } else if (type === 'int') {
-      this.formatIntValue(v, field);
+      newValue = this.formatIntValue(newValue, field);
     }
+    onChange(newValue, field);
   }
 
   formatIntValue = (v, field) => {
-    const { onChange } = this.props;
     const { scale, min } = field;
     const newValue = Number(v === '' ? min : v).toFixed(scale);
-    onChange(newValue, field);
+    return newValue;
   }
 
   handleOnChange = (v, item) => {
@@ -41,13 +43,6 @@ class TextInput extends React.Component {
         }
       } else {
         newValue = parseFloat(v);
-      }
-    }
-    if (item.type === 'text') {
-      if (max !== '' && v.length > max) {
-        // let newValue = v;
-        newValue = newValue.length > max ? newValue.slice(0, max) : newValue;
-        obj.value = newValue;
       }
     }
     onChange(newValue, item);

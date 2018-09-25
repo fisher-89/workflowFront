@@ -44,7 +44,7 @@ export default class TagGroup extends React.Component {
     const { onChange } = this.props;
     let newTags = [...tags];
     if (inputValue && tags.indexOf(inputValue) === -1) {
-      newTags = [...tags, inputValue];
+      newTags = [...tags, inputValue.length >= 10 ? inputValue.slice(0, 10) : inputValue];
     }
     this.setState({
       onEditing: false,

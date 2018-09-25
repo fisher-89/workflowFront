@@ -59,6 +59,7 @@ export default class PersonContainer extends Component {
 
  handleOk = () => {
    const { selected, selectOk } = this.props;
+   console.log('min', selected.min);
    if (selected.num < selected.min) {
      Toast.info(`请至少选择${selected.min}个`, 1.5);
    } else {

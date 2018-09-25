@@ -145,7 +145,7 @@ export default class SelDepartment extends Component {
         num: mutiData.length,
       },
       singleSelected,
-      selectAll: false,
+      // selectAll: false,
       search: '',
       switchState: false,
       // key, // 选的什么人
@@ -194,25 +194,27 @@ export default class SelDepartment extends Component {
     });
   }
 
-  checkedAll = (name = 'id') => { // 全选
-    const { department } = this.props;
+  checkedAll = (selectAll, name = 'id') => { // 全选
+    // const { department } = this.props;
     // const { params: { max } } = this.state;
-    let depSn = department.map(item => item.id);
     const { selected, switchState, currentDep } = this.state;
-    const curDepSn = currentDep.map(item => item.id);
+    let depSn = currentDep.map(item => `${item.id}`);
+
+    // const curDepSn = currentDep.map(item => `${item.id}`);
     const { data } = selected;
-    const selectAll = data.filter(item =>
-      curDepSn.indexOf(item.id) > -1).length !== curDepSn.length;
+    // const selectAll = data.filter(item =>
+    //   curDepSn.indexOf(`${item.id}`) > -1).length !== curDepSn.length;
     let newData = [];
     let selfAndChild = [...currentDep];
     if (switchState) { // 开启包含下级
       selfAndChild = this.getChildrenArray(currentDep);
-      depSn = selfAndChild.map(item => item[name]);
+      depSn = selfAndChild.map(item => `${item[name]}`);
     }
+
     if (selectAll) {
       newData = [...data, ...selfAndChild];
     } else {
-      newData = data.filter(item => depSn.indexOf(item[name]) === -1);
+      newData = data.filter(item => depSn.indexOf(`${item[name]}`) === -1);
     }
     const result = newData.unique('id');
     selected.data = result;
@@ -221,6 +223,7 @@ export default class SelDepartment extends Component {
     // selected.total = min || 50;
     this.setState({
       selected,
+      // selectAll: !selectAll,
     });
   }
 
@@ -314,7 +317,7 @@ export default class SelDepartment extends Component {
           checkAble={checkAble}
           selected={selected}
           switchState={switchState}
-          checkedAll={() => this.checkedAll('id')}
+          checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
           handleBread={this.fetchNextDep}
           fetchDataSource={() => this.fetchDataSource()}

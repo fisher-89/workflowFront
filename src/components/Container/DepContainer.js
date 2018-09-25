@@ -81,7 +81,6 @@ export default class DepContainer extends Component {
       bread = [], children, multiple, name, selected, checkedAll, checkAble,
       handleBread,
     } = this.props;
-
     const { switchState } = this.state;
     return (
       <div className={style.con}>
@@ -107,7 +106,7 @@ export default class DepContainer extends Component {
             <div className={style.seldep_item}>
               <div
                 className={checkAble ? style.checked : style.unchecked}
-                onClick={checkedAll}
+                onClick={() => checkedAll(!checkAble)}
               >
                 <span>全选</span>
               </div>
