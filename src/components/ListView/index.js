@@ -147,8 +147,8 @@ export default function ListView(ListItem) {
 
       let newMuti = [...muti];
 
-      const id = item[name];
-      const dataId = muti.map(m => m[name]);
+      const id = `${item[name]}`;
+      const dataId = muti.map(m => `${m[name]}`);
       const idIndex = dataId.indexOf(id);
       if (idIndex !== -1) {
         newMuti = muti.filter((its, index) => index !== idIndex);
