@@ -126,16 +126,7 @@ export default {
         });
       }
     },
-    * fileUpload({
-      payload,
-    }, {
-      call,
-    }) {
-      const data = yield call(s.fileUpload, payload.data);
-      if (data && !data.error) {
-        payload.cb(data);
-      }
-    },
+
     * getThrough({
       payload,
     }, {

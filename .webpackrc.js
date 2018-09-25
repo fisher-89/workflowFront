@@ -1,8 +1,17 @@
+
+import env from './.env.json'
+export default 
 {
     "entry": "src/index.js",
     "extraBabelPlugins": [
         ["import", { "libraryName": "antd-mobile", "libraryDirectory": "es", "style": true }]
     ],
+    "define": {
+        "OA_PATH": env.OA_PATH,
+        "UPLOAD_PATH": env.UPLOAD_PATH,
+        "OA_CLIENT_ID": env.OA_CLIENT_ID,
+        "OA_CLIENT_SECRET": env.OA_CLIENT_SECRET
+    },
     "env": {
         "development": {
             "extraBabelPlugins": [
@@ -13,14 +22,6 @@
                 "UPLOAD_PATH": "http://112.74.177.132:8006",
                 "OA_CLIENT_ID": "99",
                 "OA_CLIENT_SECRET": "Z77PmFkOD9SMAIbVDZcKRxOD6f0YA0ck54amYEr1"
-            }
-        },
-        "production": {
-            "define": {
-                "OA_PATH": "http://112.74.177.132:8002",
-                "UPLOAD_PATH": "http://112.74.177.132:8006",
-                "OA_CLIENT_ID": "4",
-                "OA_CLIENT_SECRET": "2uTAhDPFqasLQ6M9cKyF4m3h3E9tK5LB5184BW3z"
             }
         }
     },
