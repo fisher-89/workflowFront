@@ -1,4 +1,5 @@
 import React from 'react';
+import { Toast } from 'antd-mobile';
 import Tag from './tag.js';
 import { isJSON } from '../../../utils/util';
 import style from './index.less';
@@ -54,8 +55,13 @@ export default class TagGroup extends React.Component {
   }
 
   handleClose = (removedTag) => {
-    const tags = this.state.tags.filter(tag => `${tag}` !== `${removedTag}`);
-    this.setState({ tags });
+    const { range: { min } } = this.props;
+    const { tags } = this.state;
+    if (min && `${min}` >= `${tags.length}`) {
+      Toast.info(`请至少添加${min}个`, 1);
+    }
+    const newTags = tags.filter(tag => `${tag}` !== `${removedTag}`);
+    this.setState({ tags: newTags });
   }
 
   editTagValue = (value, index) => {
@@ -73,12 +79,13 @@ export default class TagGroup extends React.Component {
   }
 
   makeTagProps = (value, index) => {
-    const { readonly } = this.props;
+    const { readonly, range } = this.props;
     const props = {
       value,
       key: index,
       index,
       readonly,
+      range,
       handleClose: this.handleClose,
       onChange: this.editTagValue,
     };
@@ -97,13 +104,16 @@ export default class TagGroup extends React.Component {
     });
   }
   render() {
-    const { onEditing, inputValue } = this.state;
-    const { readonly } = this.props;
+    const { onEditing, inputValue, tags } = this.state;
+    const { readonly, range: { max } } = this.props;
     return (
       <div className={style.contain}>
         {this.renderTag()}
-        {!readonly && (
-        <div className={style.item} style={{ border: '1px dashed #c7c7c7' }}>
+        {!readonly && `${tags.length}` < `${max}` && (
+        <div
+          className={style.item}
+          style={{ border: '1px dashed #c7c7c7' }}
+        >
           {onEditing && (
           <input
             value={inputValue}
@@ -122,4 +132,5 @@ export default class TagGroup extends React.Component {
 
 TagGroup.defaultProps = {
   readonly: true,
+  range: { min: 1, max: 10 },
 };

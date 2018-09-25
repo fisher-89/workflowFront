@@ -5,7 +5,7 @@ import {
 
 const localIp= 'http://192.168.20.16:8006'
 const test= 'http://112.74.177.132:8006'
-const host= localIp;
+const host= test;
 
 // 是否禁用代理
 const noProxy = process.env.NO_PROXY === 'true';
@@ -796,7 +796,7 @@ export default !noProxy ? {
     'POST /api/(.*)': `${host}/api/`,
     'PATCH /api/(.*)': `${host}/api/`,
     'PUT /api/(.*)': `${host}/api/`,
-    'DELETE /api/(.*)': `${host}/api/`,
+    'DELETE /api/(.*)': `${host}/api/`, 
     // 'POST /oauth/(.*)': 'http://localhost.oaupdate.org/oauth/',
     'POST /oauth/(.*)': 'http://112.74.177.132:8002/oauth/',
 

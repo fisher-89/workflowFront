@@ -37,6 +37,7 @@ class Tag extends React.Component {
     this.setState({
       onEditing: false,
     }, () => {
+      console.log('value', value);
       if (!value) {
         handleClose(value);
       }
@@ -51,11 +52,10 @@ class Tag extends React.Component {
 
   render() {
     const { onEditing, inputValue } = this.state;
-    const { handleClose, range: { max }, readonly } = this.props;
+    const { handleClose, readonly } = this.props;
     const cls = classNames(style.item, {
       [style.readonly]: readonly,
     });
-    const width = max * 14;
     return (
       <div
         className={style.tag_item}
@@ -67,7 +67,7 @@ class Tag extends React.Component {
           <input
             value={`${inputValue || ''}`}
             ref={(e) => { this.textInput = e; }}
-            style={{ width: `${width}px` }}
+            // style={{ width: '180px' }}
             onChange={this.handleInputChange}
             onBlur={this.handleInputBlur}
           />
@@ -82,12 +82,5 @@ class Tag extends React.Component {
     );
   }
 }
-
-Tag.defaultProps = {
-  range: {
-    max: 10,
-    min: '',
-  },
-};
 
 export default Tag;

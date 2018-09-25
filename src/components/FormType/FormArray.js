@@ -9,6 +9,10 @@ class FormArray extends React.Component {
   render() {
     const { isEdit, field, data: { value },
       field: { name }, defaultValue, onChange } = this.props;
+    const { max, min } = field;
+    const range = {
+      min, max,
+    };
     const cls = classNames(style.title, {
       [style.readonly]: !isEdit,
     });
@@ -20,8 +24,8 @@ class FormArray extends React.Component {
             style={{ marginBottom: '10px' }}
             value={isEdit ? value || [] : defaultValue || []}
             {...(isEdit && { onChange: v => onChange(v, field) })}
+            range={range}
             readonly={!isEdit}
-
           />
         </div>
       </div>
