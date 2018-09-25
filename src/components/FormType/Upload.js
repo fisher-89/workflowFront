@@ -70,6 +70,7 @@ export default class Upload extends React.Component {
         payload: {
           data: imgformData,
           cb: (f) => {
+            alert(f);
             newFiles[newFiles.length - 1] = f.path;
             // obj.value = [...newFiles];
             onChange(newFiles, item);
