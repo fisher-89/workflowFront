@@ -48,7 +48,7 @@ export default class Upload extends React.Component {
   }
 
   filesOnchange = (files, type, index, item) => {
-    const { onChange } = this.props;
+    const { onChange, field: { id } } = this.props;
     const newFiles = files.map((its) => {
       return rebackImg(its.url, `${UPLOAD_PATH}`, '_thumb');
     });
@@ -64,6 +64,7 @@ export default class Upload extends React.Component {
       // 处理成功会执行
       const imgformData = new FormData();
       imgformData.append('upFile', files[files.length - 1].file);
+      imgformData.append('field_id', id);
       dispatch({
         type: 'start/fileUpload',
         payload: {
@@ -122,19 +123,19 @@ export default class Upload extends React.Component {
                 infinite
               >
                 {(reviewImg || []).map((val, i) => {
-                const idx = i;
-                return (
-                  <img
-                    src={val}
-                    key={idx}
-                    alt="carousel"
-                    style={{ width: '100%', verticalAlign: 'top' }}
-                    onLoad={() => {
-                      window.dispatchEvent(new Event('resize'));
-                    }}
-                  />
-                );
-              })}
+                  const idx = i;
+                  return (
+                    <img
+                      src={val}
+                      key={idx}
+                      alt="carousel"
+                      style={{ width: '100%', verticalAlign: 'top' }}
+                      onLoad={() => {
+                        window.dispatchEvent(new Event('resize'));
+                      }}
+                    />
+                  );
+                })}
               </Carousel>
             </div>
           </div>
