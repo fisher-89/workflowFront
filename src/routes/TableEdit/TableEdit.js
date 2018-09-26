@@ -56,7 +56,7 @@ class TableEdit extends Component {
   }
 
   // 列表控件内部fields
-  getGridItem = (key) => {
+  getGridItem = (key, ableAdd) => {
     const { start: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
@@ -79,13 +79,13 @@ class TableEdit extends Component {
     //   return newObj;
     // });
     const dataList = makeGridItemData(currentGridData, gridItem);
-    const extra = [
+    const extra = ableAdd ? [
       {
         text: '删除',
         style: { backgroundColor: 'rgb(218,81,85)', minWidth: '1.6rem', color: 'white', fontSize: '12px', borderTopRightRadius: '2px' },
         onPress: 'deleteItem',
       },
-    ];
+    ] : [];
     return dataList.map((item, i) => {
       const idx = i;
       const newExtra = extra.map((_) => {
@@ -135,7 +135,7 @@ class TableEdit extends Component {
               </a>
             )}
           </p>
-          {this.getGridItem(key)}
+          {this.getGridItem(key, ableAdd)}
         </div>
       );
     });

@@ -54,20 +54,20 @@ class ApproveDetail extends Component {
     }
   }
 
-  getGridItem = (key) => {
+  getGridItem = (key, ableAdd) => {
     const { approve: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
     // const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
     const dataList = makeGridItemData(currentGridData, gridItem);
-    const extra = [
+    const extra = ableAdd ? [
       {
         text: '删除',
         style: { backgroundColor: 'rgb(218,81,85)', minWidth: '1.6rem', color: 'white', fontSize: '12px', borderTopRightRadius: '2px' },
         onPress: 'deleteItem',
       },
-    ];
+    ] : [];
     return dataList.map((item, i) => {
       const idx = i;
       const newExtra = extra.map((_) => {
@@ -128,7 +128,7 @@ class ApproveDetail extends Component {
               </a>
             )}
           </p>
-          {this.getGridItem(key)}
+          {this.getGridItem(key, ableAdd)}
         </div>
       );
     });
@@ -187,14 +187,18 @@ class ApproveDetail extends Component {
   }
 
   // 保存到modal
-  saveData = () => {
-    const { formdata } = this.childComp.state;
+  saveData = (formdata) => {
+    // const { formdata } = this.childComp.state;
+    let newFormData = formdata;
+    if (newFormData === undefined) {
+      newFormData = this.childComp.state.formdata;
+    }
     const { dispatch } = this.props;
     dispatch({
       type: 'approve/save',
       payload: {
         store: 'formdata',
-        data: formdata,
+        data: newFormData,
       },
     });
     return formdata;

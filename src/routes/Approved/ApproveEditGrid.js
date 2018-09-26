@@ -26,7 +26,7 @@ class AddGridList extends Component {
 
   componentWillReceiveProps(nextprops) {
     const { match: { params }, approve } = nextprops;
-    const { startflow } = approve;
+    const { startflow, gridformdata } = approve;
     const { flag, key } = this.state;
 
     if (!key && flag && startflow) {
@@ -48,7 +48,7 @@ class AddGridList extends Component {
       const [editableFormObj] =
        getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
       const editableForm = editableFormObj.newFields;
-      let newFormData = start.form_data;
+      let newFormData = approve.form_data;
       let formdata = [];
       if (`${index}` === '-1') {
         const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${type}`);
@@ -171,10 +171,10 @@ class AddGridList extends Component {
   }
 
   render() {
-    const { approve, dispatch, loading } = this.props;
+    const { approve, dispatch } = this.props;
     const { key, index, formdata } = this.state;
     const { startflow, gridDefault } = approve;
-    spin(loading);
+    // spin(loading);
 
     // let formdata = [];
     // const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?

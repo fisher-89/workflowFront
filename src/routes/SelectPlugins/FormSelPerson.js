@@ -130,7 +130,7 @@ export default class SelPerson extends Component {
     const urlParams = getUrlParams();
     const paramsValue = urlParams.params;
     const params = JSON.parse(paramsValue);
-    const { key, type, max } = params;
+    const { key, type, max, min } = params;
     const multiple = !!type;
     const current = currentKey[`${key}`] || {};
     const data = current.data || (multiple ? [] : {});
@@ -145,6 +145,7 @@ export default class SelPerson extends Component {
         data: mutiData,
         total: max || 50,
         num: mutiData.length,
+        min: min || 1,
       },
       singleSelected,
       params,
