@@ -16,7 +16,7 @@ class TextInput extends React.Component {
       if (min !== '' && v.length < min) {
         Toast.info(`字符长度在${min || '0'}~${max}之间`);
       }
-      newValue = newValue.length > max ? newValue.slice(0, max) : newValue;
+      newValue = max && newValue.length > max ? newValue.slice(0, max) : newValue;
     } else if (type === 'int') {
       newValue = this.formatIntValue(newValue, field);
     }

@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { Button } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
+import { makeGridItemData } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
@@ -93,6 +94,11 @@ class StartDetail extends Component {
         flow_run_id: flowRun.id,
       },
     });
+  }
+
+  toEditGrid = (url) => {
+    const { history } = this.props;
+    history.push(url);
   }
   render() {
     const { start, loading } = this.props;

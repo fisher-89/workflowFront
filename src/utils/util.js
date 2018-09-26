@@ -526,13 +526,13 @@ export function makeGridItemData(currentGridData, gridItem) {
     };
     let num = 0;
     item.forEach((its) => { // 取前三个字段
-      const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
+      const [fieldsItem] = gridFields.filter(_ => {
+        return _.key === its.key
+      });
       const { type } = fieldsItem || {};
-      // if (num < 3 && (type === 'text' || type === 'int' || (type === 'select' && !fieldsItem.is_checkbox))) {
-      if (num < 3 && type !== 'file') {
+      if (num < 3 && type !== 'file' && fieldsItem) {
         const { value } = its;
         const multiple = fieldsItem.is_checkbox;
-        // newObj[`value_${num}`] = value || (num === 0 ? value0 : '');
         newObj[`value_${num}`] = renderGridValue(value, type, multiple) || (num === 0 ? value0 : '');
 
         num += 1;
