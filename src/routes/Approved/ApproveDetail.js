@@ -312,7 +312,7 @@ class ApproveDetail extends Component {
   }
 
   render() {
-    const { approve, dispatch, loading } = this.props;
+    const { approve, dispatch, loading, history } = this.props;
     const { startflow, formdata } = approve;
     const newFormData = approve.form_data;
     spin(loading);
@@ -341,6 +341,7 @@ class ApproveDetail extends Component {
               evtClick={this.saveData}
               onChange={this.handleOnchange}
               dispatch={dispatch}
+              history={history}
               show_form={showForm}
               editable_form={editableForm}
               form_data={newFormData}
