@@ -51,17 +51,22 @@ export default function ListView(ListItem) {
     }
 
     onRefresh = () => {
-      const { history, location: { pathname }, type, onRefresh } = this.props;
+      const { history, location: { pathname }, type, onRefresh, fetchDataSource } = this.props;
       if (type) {
         const urlParams = getUrlParams();
+        const { page } = urlParams;
         const filterUrl = getUrlString('filters');
         const newUrlParams = {
           ...urlParams,
           filters: filterUrl || '',
           page: 1,
         };
-        const url = parseParamsToUrl(newUrlParams);
-        history.replace(`${pathname}?${url}`);
+        if (`${page}` === '1') {
+          fetchDataSource(newUrlParams);
+        } else {
+          const url = parseParamsToUrl(newUrlParams);
+          history.replace(`${pathname}?${url}`);
+        }
       }
       onRefresh();
     }
@@ -114,6 +119,7 @@ export default function ListView(ListItem) {
         } else {
           const urlParams = getUrlParams();
           const filterUrl = getUrlString('filters');
+          delete urlParams.page;
           const newUrlParams = {
             ...urlParams,
             filters: filterUrl || '',

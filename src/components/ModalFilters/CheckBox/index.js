@@ -18,6 +18,7 @@ class CheckBox extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { value, multiple } = nextProps;
+    console.log(value);
 
     if (JSON.stringify(value) !== JSON.stringify(this.props.value)) {
       let newValue = [];
@@ -60,16 +61,20 @@ class CheckBox extends React.PureComponent {
       style,
       multiple,
     } = this.props;
-    const { value } = this.state;
+    const currentValue = this.state.value;
+    let value = currentValue;
+    if (multiple) {
+      value = (currentValue || []).map(item => `${item}`);
+    }
     return (
       <div className={Styles.check_status}>
         {options.map((option) => {
           let checked = false;
           const checkValue = option.value || option;
           if (multiple) {
-            checked = value.indexOf(checkValue) !== -1;
+            checked = value.indexOf(`${checkValue}`) !== -1;
           } else {
-            checked = value === checkValue;
+            checked = `${value}` === `${checkValue}`;
           }
           const className = [Styles.s_item, checked ? Styles.active : null, readonly ? Styles.readonly : null].join(' ');
           const itemStyle = { display: readonly && !checked ? 'none' : '', ...style };

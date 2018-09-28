@@ -31,7 +31,7 @@ const tabs = {
       { name: '发起时间降序', value: 'created_at-desc', icon: import('../../assets/filter/desc.svg') },
     ],
     defaultSort: 'created_at-asc',
-    showTime: 'end_at',
+    showTime: 'created_at',
   },
   approved: {
     filterColumns: [
@@ -47,7 +47,7 @@ const tabs = {
       { name: '发起时间升序', value: 'acted_at-asc', icon: import('../../assets/filter/asc.svg') },
       { name: '发起时间降序', value: 'acted_at-desc', icon: import('../../assets/filter/desc.svg') },
     ],
-    defaultSort: 'acted_at-asc',
+    defaultSort: 'acted_at-desc',
     showTime: 'acted_at',
   },
   deliver: {
@@ -64,7 +64,7 @@ const tabs = {
       { name: '发起时间升序', value: 'acted_at-asc', icon: import('../../assets/filter/asc.svg') },
       { name: '发起时间降序', value: 'acted_at-desc', icon: import('../../assets/filter/desc.svg') },
     ],
-    defaultSort: 'acted_at-asc',
+    defaultSort: 'acted_at-desc',
     showTime: 'acted_at',
   },
   rejected: {
@@ -81,12 +81,12 @@ const tabs = {
       { name: '发起时间升序', value: 'acted_at-asc', icon: import('../../assets/filter/asc.svg') },
       { name: '发起时间降序', value: 'acted_at-desc', icon: import('../../assets/filter/desc.svg') },
     ],
-    defaultSort: 'acted_at-asc',
+    defaultSort: 'acted_at-desc',
     showTime: 'acted_at',
   },
 };
 const searchColumns = {
-  name: 'name',
+  name: 'flow_name',
   defaultValue: '',
 };
 @connect(({ loading, list, common }) => ({
@@ -147,6 +147,7 @@ export default class StartList extends Component {
         totalpage={totalpage}
         timeKey={showTime}
         dataSource={data}
+        fetchDataSource={this.fetchDataSource}
         type={type}
         {...someProps}
         onHandleClick={value => this.redirectTo(value)}

@@ -32,7 +32,13 @@
     }
   }
 }
-
+.disabled {
+  :global {
+    .am-image-picker-list .am-image-picker-item .am-image-picker-item-remove {
+      opacity: 0;
+    }
+  }
+}
 .edit_form {
   .readonly {
     color:@readonly-color;

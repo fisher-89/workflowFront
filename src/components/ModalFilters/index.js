@@ -138,6 +138,7 @@ class ModalFilters extends React.Component {
     const keyValue = this.state.filters[name];
     const checkValue = keyValue ? keyValue.in : '';
     const newValue = checkValue;
+    console.log('newValue', newValue);
     return (
       <CheckBox
         {...props}

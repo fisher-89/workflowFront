@@ -3,6 +3,7 @@
 /* eslint-disable */
 import { Toast } from 'antd-mobile';
 import moment from 'moment'
+import 'moment/locale/zh-cn'
 import district from '../utils/district.js'
 
 const codeMessage = {
@@ -282,6 +283,25 @@ export function isToday(str) {
     iscurrentDay = true;
   }
   return iscurrentDay;
+}
+
+export function isSameWeek(old, now) {
+  var oneDayTime = 1000 * 60 * 60 * 24;
+  var old_count = parseInt(old.getTime() / oneDayTime);
+  var now_other = parseInt(now.getTime() / oneDayTime);
+  return parseInt((old_count + 4) / 7) == parseInt((now_other + 4) / 7);
+}
+
+export function converseTime(current) {
+  if (isToday(current)) {
+    return moment(current).format('HH:mm');
+  }
+  else if (isSameWeek(new Date(current), new Date())) {
+    return moment(current).format('dddd HH:mm')
+  }
+  else {
+    return current
+  }
 }
 
 export function isJSON(str) {

@@ -162,6 +162,7 @@ export default class StartList extends Component {
         dataSource={data}
         totalpage={totalpage}
         {...someProps}
+        fetchDataSource={this.fetchDataSource}
         type={type}
         timeKey={showTime}
         onPageChange={this.onPageChange}

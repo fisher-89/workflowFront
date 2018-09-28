@@ -85,7 +85,7 @@ export default class Upload extends React.Component {
     return (
       <div className={style.file} >
         <p className={style.title}>{name}</p>
-        <div className={style.picker_container}>
+        <div className={[style.picker_container, !isEdit ? style.disabled : null].join(' ')}>
           <ImagePicker
             files={data}
             {...(isEdit &&
