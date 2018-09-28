@@ -26,7 +26,7 @@ class AddGridList extends Component {
 
   componentWillReceiveProps(nextprops) {
     const { match: { params }, approve } = nextprops;
-    const { startflow, gridformdata } = approve;
+    const { startflow, gridformdata, gridDefault } = approve;
     const { flag, key } = this.state;
 
     if (!key && flag && startflow) {
@@ -46,7 +46,7 @@ class AddGridList extends Component {
       const { type, index } = params;
       const { fields: { grid } } = startflow;
       const [editableFormObj] =
-       getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
+       getGridFilter(grid, 'editable_fields', startflow.step).filter(item => `${item.key}` === `${type}`);
       const editableForm = editableFormObj.newFields;
       let newFormData = approve.form_data;
       let formdata = [];
@@ -108,9 +108,14 @@ class AddGridList extends Component {
   }
 
   // 将数据保存到modal的gridformdata中
-  saveData = () => {
-    const { formdata } = this.childComp.state;
-    const [result] = formdata.filter(item => item.msg);
+  saveData = (formdata) => {
+    // const { formdata } = this.childComp.state;
+    let newFormData = formdata;
+    if (newFormData === undefined) {
+      newFormData = this.childComp.state.formdata;
+    }
+    const [result] = newFormData.filter(item => item.msg);
+
     if (result) {
       Toast.fail(result.msg);
       return;
@@ -122,35 +127,26 @@ class AddGridList extends Component {
     const obj = {};
     obj.key = key;
     obj.fields = [
-      [...formdata],
+      [...newFormData],
     ];
     // 如果gridformdata为空
     if (gridformdata && !gridformdata.length) {
       newGridformdata.push(obj);
     } else if (gridformdata && gridformdata.length) { // 如果gridformdata不为空
       let keyIdx = -1;
-      // const keyItem = newGridformdata.find((item, i) => {
-      //   if (item.key === key) {
-      //     keyIdx = i;
-      //     return item;
-      //   }
-      //   return null;
-      // });
-      // let keyItem = null;
       newGridformdata.forEach((item, i) => {
-        if (item.key === key) {
+        if (`${item.key}` === `${key}`) {
           keyIdx = i;
-          // keyItem = item;
         }
       });
       if (index === '-1') { // 新增
         if (keyIdx === -1) { // 如果没有对应的key
           newGridformdata.push(obj);
         } else { // 如果有对应的key
-          newGridformdata[keyIdx].fields.push(formdata);
+          newGridformdata[keyIdx].fields.push(newFormData);
         }
       } else { // 修改
-        newGridformdata[keyIdx].fields[index] = [...formdata];
+        newGridformdata[keyIdx].fields[index] = [...newFormData];
       }
     }
     dispatch({
@@ -171,7 +167,7 @@ class AddGridList extends Component {
   }
 
   render() {
-    const { approve, dispatch } = this.props;
+    const { approve, dispatch, history } = this.props;
     const { key, index, formdata } = this.state;
     const { startflow, gridDefault } = approve;
     // spin(loading);
@@ -216,9 +212,11 @@ class AddGridList extends Component {
           <CreateForm
             onRef={(comp) => { this.childComp = comp; }}
             startflow={startflow}
+            required_form={requireForm}
             formdata={formdata}
             onChange={this.handleOnchange}
             evtClick={this.saveFormData}
+            history={history}
             dispatch={dispatch}
             form_data={newFormData}
             editable_form={editableForm}

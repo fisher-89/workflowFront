@@ -4,7 +4,8 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Tabs, SearchBar } from 'antd-mobile';
 // import filterImg from '../../assets/filter.svg';
-import { findInitIndex, excludeSpecial,
+import {
+  findInitIndex, excludeSpecial,
   getUrlParams, getUrlString, doConditionValue, parseParamsToUrl, makerFilters,
 } from '../../utils/util';
 
@@ -71,6 +72,7 @@ export default class ListControl extends Component {
     const { location: { search, pathname }, lists, defaultType, defaultSort } = props;
     const currentParams = getUrlParams(search);
     const { type = defaultType } = currentParams;
+    // console.log('receive:', { ...lists });
     this.setState({
       type,
     });
@@ -169,6 +171,7 @@ export default class ListControl extends Component {
     const { defaultType } = this.props;
     const { type = defaultType } = params;
     const { dispatch, location: { pathname } } = this.props;
+    // console.log('setModel:', type, params);
     dispatch({
       type: 'list/saveFilterTerm',
       payload: {
@@ -229,30 +232,31 @@ export default class ListControl extends Component {
     if (!sortItem) {
       [sortItem] = sortList;
     }
+    // console.log('renderFilter:', children);
     return (
       <React.Fragment>
         {filterColumns && (
-        <div className={style.filter_con}>
-          <div
-            className={[style.dosort].join(' ')}
-            onClick={() => this.handleVisible(true, 'sort')}
-          >
-            {sortItem.name}
-            <span style={{
-            backgroundImage: `url(${sortItem.icon})`,
-            backgroundPosition: 'right center',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: '0.4rem',
-          }}
-            />
+          <div className={style.filter_con}>
+            <div
+              className={[style.dosort].join(' ')}
+              onClick={() => this.handleVisible(true, 'sort')}
+            >
+              {sortItem.name}
+              <span style={{
+                backgroundImage: `url(${sortItem.icon})`,
+                backgroundPosition: 'right center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '0.4rem',
+              }}
+              />
+            </div>
+            <div
+              className={[style.filter, activeStyle].join(' ')}
+              onClick={() => this.handleVisible(true, 'filter')}
+            >筛选
+              <span />
+            </div>
           </div>
-          <div
-            className={[style.filter, activeStyle].join(' ')}
-            onClick={() => this.handleVisible(true, 'filter')}
-          >筛选
-            <span />
-          </div>
-        </div>
         )}
         {children}
       </React.Fragment>
@@ -274,23 +278,23 @@ export default class ListControl extends Component {
             onChange={value => this.searchOnchange(searchName, value)}
           />
         </div>
-        {tab && tab.length && (
-        <Tabs
-          tabs={tab}
-          swipeable={false}
-          renderTabBar={props => (
-            <Tabs.DefaultTabBar
-              {...props}
-              page={4}
-            />
+        {(tab && tab.length) ? (
+          <Tabs
+            tabs={tab}
+            swipeable={false}
+            renderTabBar={props => (
+              <Tabs.DefaultTabBar
+                {...props}
+                page={4}
+              />
             )}
-          onChange={this.statusChange}
-          initialPage={initIndex}
-        >
-          {this.renderFilter()}
-        </Tabs>
-        )}
-        {(!tab || (tab && !tab.length)) && this.renderFilter()}
+            onChange={this.statusChange}
+            initialPage={initIndex}
+          >
+            {this.renderFilter()}
+          </Tabs>
+        ) :
+          this.renderFilter()}
         <ModalFilters
           visible={this.state.visible}
           model={this.state.model}

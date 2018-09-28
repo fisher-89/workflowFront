@@ -31,7 +31,7 @@ class AddGridList extends Component {
       const { type, index } = params;
       const { fields: { grid } } = startflow;
       const [editableFormObj] =
-       getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
+       getGridFilter(grid, 'editable_fields', startflow.step).filter(item => `${item.key}` === `${type}`);
       const editableForm = editableFormObj.newFields;
       let newFormData = start.form_data;
       let formdata = [];
@@ -117,16 +117,14 @@ class AddGridList extends Component {
     if (gridformdata && !gridformdata.length) {
       newGridformdata.push(obj);
     } else if (gridformdata && gridformdata.length) { // 如果gridformdata不为空
-      let keyIdx = '';
-      const [keyItem] = newGridformdata.filter((item, i) => {
-        if (item.key === key) {
+      let keyIdx = -1;
+      newGridformdata.forEach((item, i) => {
+        if (`${item.key}` === `${key}`) {
           keyIdx = i;
-          return item;
         }
-        return null;
       });
-      if (index === '-1') { // 新增
-        if (!keyItem) { // 如果没有对应的key
+      if (`${index}` === '-1') { // 新增
+        if (keyIdx === -1) { // 如果没有对应的key
           newGridformdata.push(obj);
         } else { // 如果有对应的key
           newGridformdata[keyIdx].fields.push(newFormData);

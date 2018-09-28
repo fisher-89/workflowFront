@@ -37,7 +37,6 @@ class Tag extends React.Component {
     this.setState({
       onEditing: false,
     }, () => {
-      console.log('value', value);
       if (!value) {
         handleClose(value);
       }

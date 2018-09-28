@@ -7,7 +7,7 @@ import QueueAnim from 'rc-queue-anim';
 import nothing from '../../assets/nothing.png';
 import SmallLoader from '../General/Loader/SmallLoader';
 import spin from '../General/Loader';
-import { parseParamsToUrl, getUrlParams } from '../../utils/util';
+import { parseParamsToUrl, getUrlParams, getUrlString } from '../../utils/util';
 import { Nothing } from '../index';
 
 let startX;
@@ -21,8 +21,8 @@ onChange   选中回调函数
 multiple   false 是否多选
 name       require
  */
-@connect(({ loading }) => ({ loading }))
 export default function ListView(ListItem) {
+  @connect(({ loading }) => ({ loading }))
   class NewItem extends PureComponent {
     state = {
       muti: [],
@@ -42,6 +42,7 @@ export default function ListView(ListItem) {
 
     componentWillReceiveProps(nextProps) {
       const { selected } = nextProps;
+      this.listThis = nextProps.location;
       if (selected && JSON.stringify(selected) !== JSON.stringify(this.state.muti)) {
         this.setState({
           muti: [...nextProps.selected],
@@ -52,8 +53,15 @@ export default function ListView(ListItem) {
     onRefresh = () => {
       const { history, location: { pathname }, type, onRefresh } = this.props;
       if (type) {
-        const url = `${pathname}?type=${type}&page=1&pagesize=10`;
-        history.replace(url);
+        const urlParams = getUrlParams();
+        const filterUrl = getUrlString('filters');
+        const newUrlParams = {
+          ...urlParams,
+          filters: filterUrl || '',
+          page: 1,
+        };
+        const url = parseParamsToUrl(newUrlParams);
+        history.replace(`${pathname}?${url}`);
       }
       onRefresh();
     }
@@ -92,7 +100,12 @@ export default function ListView(ListItem) {
 
     doLoadMore = (str) => {
       const { history, totalpage, page, onPageChange } = this.props;
-      if (!(page < totalpage)) {
+      let currentPage = page;
+      if (!page) {
+        const urlParams = getUrlParams();
+        currentPage = urlParams.page;
+      }
+      if (!(currentPage < totalpage)) {
         return false;
       }
       if (str === 'up') {
@@ -100,9 +113,11 @@ export default function ListView(ListItem) {
           onPageChange();
         } else {
           const urlParams = getUrlParams();
+          const filterUrl = getUrlString('filters');
           const newUrlParams = {
             ...urlParams,
-            page: (page - 0) + 1,
+            filters: filterUrl || '',
+            page: (currentPage - 0) + 1,
           };
           const { location: { pathname } } = this.props;
           const url = parseParamsToUrl(newUrlParams);
@@ -194,19 +209,24 @@ export default function ListView(ListItem) {
 
     renderList = () => {
       const { dataSource, offsetBottom, heightNone,
-        loading, onRefresh, totalpage, page = 1 } = this.props;
+        loading, onRefresh, totalpage, page } = this.props;
+      let currentPage = this.props.page;
+      if (!page) {
+        const urlParams = getUrlParams();
+        currentPage = urlParams.page;
+      }
       const height = this.state.height - (offsetBottom || 0);
       const style = !heightNone ? { style: { minHeight: height } } : null;
       const nothingAble = !heightNone &&
         (!loading.global && ((dataSource && !dataSource.length) || !dataSource));
       const loader = (((!dataSource) || (dataSource && !dataSource.length)
-       || (`${page}` === '1'))
-       && loading.global);
+        || (`${currentPage}` === '1'))
+        && loading.global);
       spin(loader);
       return (
         <div
-          {...(page && { onTouchStart: this.handleStart })}
-          {...(page && { onTouchEnd: this.handleEnd })}
+          {...(currentPage && { onTouchStart: this.handleStart })}
+          {...(currentPage && { onTouchEnd: this.handleEnd })}
           ref={(el) => { this.ptr = el; }}
         >
           {
@@ -228,7 +248,7 @@ export default function ListView(ListItem) {
                       );
                     })}
                   </List>
-                  {!loading.global && onRefresh && page < totalpage &&
+                  {!loading.global && onRefresh && currentPage < totalpage &&
                     <div style={{ textAlign: 'center' }}>加载更多</div>
                   }
                   {loading.global && onRefresh && <SmallLoader />}
@@ -241,16 +261,17 @@ export default function ListView(ListItem) {
 
     render() {
       const { onRefresh } = this.props;
+      // console.log('onRefresh:', this.listThis);
       return (
         <React.Fragment>
           {onRefresh ? this.pullDownToRefresh() : this.renderList()}
         </React.Fragment>
       );
     }
-}
-NewItem.defaultProps = {
-  onRefresh: () => {},
-};
-return NewItem;
+  }
+  NewItem.defaultProps = {
+    onRefresh: () => { },
+  };
+  return NewItem;
 }
 

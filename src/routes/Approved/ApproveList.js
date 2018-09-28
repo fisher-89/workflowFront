@@ -133,8 +133,6 @@ export default class StartList extends Component {
 
   renderContent = () => {
     const { lists, location, history } = this.props;
-    const urlParams = getUrlParams();
-    const { page = 1 } = urlParams;
     const { pathname } = location;
     const { type } = this.state;
     const { showTime } = tabs[type];
@@ -147,7 +145,6 @@ export default class StartList extends Component {
     return (
       <Approve
         totalpage={totalpage}
-        page={page}
         timeKey={showTime}
         dataSource={data}
         type={type}

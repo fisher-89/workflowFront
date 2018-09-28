@@ -37,8 +37,8 @@ class ApproveDetail extends Component {
 
   componentWillReceiveProps(props) {
     const { approve: { startflow, gridformdata } } = props;
-    const oldstartflow = this.props.start.startflow;
-    if (JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) {
+    const oldstartflow = this.props.approve.startflow;
+    if (startflow && JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) {
       const formData = startflow.form_data;
       const { fields: { form } } = startflow;
       // 可编辑的form
@@ -46,7 +46,6 @@ class ApproveDetail extends Component {
         startflow.step.editable_fields.indexOf(item.key) !== -1);
       const formdata = initFormdata(formData, editableForm);
       const griddata = dealGridData(gridformdata);
-
       this.setState({
         formdata,
         griddata,
@@ -274,7 +273,7 @@ class ApproveDetail extends Component {
               onPress: v => this.submitStep(v, data),
             }], 'default', null, ['请输入备注']);
           } else {
-            history.push('/select_step');
+            history.replace('/select_step');
           }
         },
       },
@@ -333,6 +332,7 @@ class ApproveDetail extends Component {
       startflow.step.required_fields.indexOf(item.key) !== -1);
     const requiredGrid = grid.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
+
     const ableSubmit = isableSubmit(requiredForm, this.state.formdata)
       && judgeGridSubmit(requiredGrid, this.state.griddata);
     return (

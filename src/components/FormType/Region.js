@@ -91,7 +91,6 @@ class Region extends React.Component {
     const areaValue = this.makeValidValue(value);
     const { address } = value;
     const cols = `${field.region_level}` === '4' ? 3 : field.region_level;
-    console.log('areaValue', areaValue);
     const { name } = field;
     return (
       <div>
