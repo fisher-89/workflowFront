@@ -239,7 +239,6 @@ export function parseParamsToUrl(params) {
   return url;
 }
 
-
 // 找到相应元素的下标
 export const findInitIndex = (arr, key, value) => {
   let index = 0;
@@ -257,7 +256,6 @@ export function evil(fn) {
 
   return new Fn(`return ${fn}`)();
 }
-
 
 export function excludeSpecial(s) {
   // 去掉转义字符
@@ -278,7 +276,7 @@ export function formatDate(type) {
 
 export function isToday(str) {
   let iscurrentDay = false;
-  if (new Date(str).toDateString() === new Date().toDateString()) {
+  if (new Date(str.replace(/-/g, '/')).toDateString() === new Date().toDateString()) {
     // 今天
     iscurrentDay = true;
   }
@@ -296,7 +294,7 @@ export function converseTime(current) {
   if (isToday(current)) {
     return moment(current).format('HH:mm');
   }
-  else if (isSameWeek(new Date(current), new Date())) {
+  else if (isSameWeek(new Date(current.replace(/-/g, '/')), new Date())) {
     return moment(current).format('dddd HH:mm')
   }
   else {

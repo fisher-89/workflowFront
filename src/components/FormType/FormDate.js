@@ -28,9 +28,10 @@ export default class FormDate extends React.Component {
       newMin = min ? `2018-08-01 ${min}` : undefined;
       newValue = value ? `2018-08-01 ${value || max || nowTime}` : undefined;
     }
-    const maxDate = newMax ? new Date(newMax) : undefined;
-    const minDate = newMin ? new Date(newMin) : undefined;
-    const valueDate = newValue ? new Date(newValue) : undefined;
+
+    const maxDate = newMax ? new Date(newMax.replace(/-/g, '/')) : undefined;
+    const minDate = newMin ? new Date(newMin.replace(/-/g, '/')) : undefined;
+    const valueDate = newValue ? new Date(newValue.replace(/-/g, '/')) : undefined;
     return (
       <DatePicker
         mode={type}

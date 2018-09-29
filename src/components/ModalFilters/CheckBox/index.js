@@ -61,11 +61,12 @@ class CheckBox extends React.PureComponent {
       style,
       multiple,
     } = this.props;
-    const currentValue = this.state.value;
-    let value = currentValue;
-    if (multiple) {
-      value = (currentValue || []).map(item => `${item}`);
-    }
+    // const currentValue = this.state.value;
+    // let value = currentValue;
+    // if (multiple) {
+    //   value = (currentValue || []).map(item => `${item}`);
+    // }
+    const { value } = this.state;
     return (
       <div className={Styles.check_status}>
         {options.map((option) => {

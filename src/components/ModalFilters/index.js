@@ -1,6 +1,6 @@
 import React from 'react';
 import ListFilter from '../Filter/ListFilter';
-import { makerFilters } from '../../utils/util';
+import { makerFilters, isArray } from '../../utils/util';
 import InputRange from './InputRange';
 import CheckBox from './CheckBox';
 import PickerRange from './PickerRange';
@@ -133,15 +133,23 @@ class ModalFilters extends React.Component {
     );
   }
 
+
   makeCheckFilter = (props) => {
     const { name } = props;
     const keyValue = this.state.filters[name];
     const checkValue = keyValue ? keyValue.in : '';
-    const newValue = checkValue;
-    console.log('newValue', newValue);
+    const newValue = this.makeCheckBoxValue(checkValue);
+    const { options } = props;
+
+    const option = (options || []).map((item) => {
+      const obj = { ...item, value: `${item.value || ''}` };
+      return obj;
+    });
+
     return (
       <CheckBox
-        {...props}
+        // {...props}
+        options={option}
         value={newValue || []}
         onChange={value => this.handleFiltersOnChange(name, { in: value })}
       />
@@ -218,6 +226,17 @@ class ModalFilters extends React.Component {
     return resopnse;
   }
 
+  makeCheckBoxValue = (value) => {
+    let newValue = '';
+    if (isArray(value)) {
+      newValue = value.map((item) => {
+        return `${item}`;
+      });
+    } else {
+      newValue = `${value || ''}`;
+    }
+    return newValue;
+  }
   renderFiltersComponent = () => {
     const { filterColumns } = this.props;
     const renderFilter = filterColumns.map((item) => {
