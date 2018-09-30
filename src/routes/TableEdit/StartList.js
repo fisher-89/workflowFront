@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { startState } from '../../utils/convert';
 import ListControl from '../../components/ListView/ListControl';
 import { userStorage, dealFlowTypeOptions, getUrlParams } from '../../utils/util';
@@ -22,6 +23,15 @@ const tabs = {
         title: '流程类型',
         options: flowTypeOptions,
       },
+      {
+        name: 'end_at',
+        type: 'timerange',
+        title: '驳回时间',
+        range: {
+          max: moment().format('YYYY-MM-DD'),
+          min: '2018-01-01',
+        },
+      },
     ],
     sortList: [
       { name: '驳回时间升序', value: 'end_at-asc', icon: import('../../assets/filter/asc.svg') },
@@ -38,6 +48,15 @@ const tabs = {
         multiple: true,
         title: '流程类型',
         options: flowTypeOptions,
+      },
+      {
+        name: 'end_at',
+        type: 'timerange',
+        title: '撤回时间',
+        range: {
+          max: moment().format('YYYY-MM-DD'),
+          min: '2018-01-01',
+        },
       },
     ],
     sortList: [
@@ -57,6 +76,15 @@ const tabs = {
         title: '流程类型',
         options: flowTypeOptions,
       },
+      {
+        name: 'created_at',
+        type: 'timerange',
+        title: '发起时间',
+        range: {
+          max: moment().format('YYYY-MM-DD'),
+          min: '2018-01-01',
+        },
+      },
     ],
     sortList: [
       { name: '发起升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
@@ -74,6 +102,15 @@ const tabs = {
         title: '流程类型',
         multiple: true,
         options: flowTypeOptions,
+      },
+      {
+        name: 'end_at',
+        type: 'timerange',
+        title: '完成时间',
+        range: {
+          max: moment().format('YYYY-MM-DD'),
+          min: '2018-01-01',
+        },
       },
     ],
     sortList: [

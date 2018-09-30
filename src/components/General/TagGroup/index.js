@@ -18,6 +18,7 @@ export default class TagGroup extends React.Component {
       onEditing: false,
       inputValue: '',
       tags: newValue,
+      tagEdit: false,
     };
   }
 
@@ -26,50 +27,74 @@ export default class TagGroup extends React.Component {
     const oldValue = this.props.value;
     if (JSON.stringify(value) !== JSON.stringify(oldValue)) {
       const tags = value;
-      this.setState({
-        tags,
-      });
+      this.setState({ tags });
     }
+  }
+
+  uniqueValue = (e, index) => {
+    let { tags } = { ...this.state };
+    const { value } = e.target;
+    if (index !== undefined) {
+      tags = tags.filter((_, tagIndex) => tagIndex !== index);
+    }
+    return value && tags.indexOf(value) === -1;
   }
 
   handleInputChange = (e) => {
     const { value } = e.target;
-    this.setState({
-      inputValue: value,
-    });
+    this.setState({ inputValue: value });
   }
 
-  handleInputBlur = () => {
-    const { inputValue, tags } = this.state;
-    const { onChange } = this.props;
-    let newTags = [...tags];
-    if (inputValue && tags.indexOf(inputValue) === -1) {
-      newTags = [...tags, inputValue.length >= 10 ? inputValue.slice(0, 10) : inputValue];
-    }
-    this.setState({
-      onEditing: false,
-      tags: newTags,
-      inputValue: '',
-    });
-    onChange(newTags);
+  handleTagEditBlur = (index) => {
+    return (e) => {
+      const { value } = e.target;
+      if (this.uniqueValue(e, index)) {
+        this.setState({ tagEdit: false }, () => {
+          this.editTagValue(value, index);
+        });
+      } else {
+        e.preventDefault();
+        this.setState({ tagEdit: index }, () => {
+          Toast.info('请勿重复添加', 1.5);
+        });
+      }
+    };
   }
+
 
   handleClose = (removedTag) => {
-    const { range: { min } } = this.props;
+    const { range: { min }, onChange } = this.props;
     const { tags } = this.state;
     if (min && `${min}` >= `${tags.length}`) {
       Toast.info(`请至少添加${min}个`, 1);
     }
     const newTags = tags.filter(tag => `${tag}` !== `${removedTag}`);
-    this.setState({ tags: newTags });
+    this.setState({ tags: newTags }, () => {
+      onChange(newTags);
+    });
+  }
+
+  handleAddTageBlur = (e) => {
+    const { value } = e.target;
+    const { tags } = this.state;
+    const { onChange } = this.props;
+    let newTags = [...tags];
+    if (this.uniqueValue(e)) {
+      newTags = [...tags, value.length >= 10 ? value.slice(0, 10) : value];
+    } else {
+      e.preventDefault();
+      Toast.info('请勿重复添加', 1.5);
+      return;
+    }
+    this.setState({ onEditing: false, tags: newTags, inputValue: '' }, () => {
+      onChange(newTags);
+    });
   }
 
   editTagValue = (value, index) => {
     const { tags } = this.state;
     tags.splice(index, 1, value);
-    this.setState({
-      tags,
-    });
+    this.setState({ tags });
   }
 
   showInput = () => {
@@ -80,17 +105,22 @@ export default class TagGroup extends React.Component {
 
   makeTagProps = (value, index) => {
     const { readonly, range } = this.props;
+    const { tagEdit } = this.state;
     const props = {
-      value,
-      key: index,
       index,
-      readonly,
       range,
+      value,
+      readonly,
+      key: index,
+      onEditing: tagEdit === index,
       handleClose: this.handleClose,
-      onChange: this.editTagValue,
+      handleBlur: this.handleTagEditBlur,
+      onChange: v => this.editTagValue(v, index),
+      handleFocus: () => { this.setState({ tagEdit: index }); },
     };
     return props;
   }
+
 
   renderTag = () => {
     const { tags } = this.state;
@@ -110,20 +140,25 @@ export default class TagGroup extends React.Component {
       <div className={style.contain}>
         {this.renderTag()}
         {!readonly && `${tags.length}` < `${max}` && (
-        <div
-          className={style.item}
-          style={{ border: '1px dashed #c7c7c7' }}
-        >
-          {onEditing && (
-          <input
-            value={inputValue}
-            ref={(e) => { this.textInput = e; }}
-            onChange={this.handleInputChange}
-            onBlur={this.handleInputBlur}
-          />
-        )}
-          {!onEditing && <p onClick={this.showInput}>+添加</p>}
-        </div>
+          <div
+            className={style.item}
+            style={{ border: '1px dashed #c7c7c7' }}
+          >
+            {onEditing && (
+              <input
+                value={inputValue}
+                ref={(e) => { this.textInput = e; }}
+                onKeyDown={(e) => {
+                  if (e.keyCode === 13) {
+                    this.handleAddTageBlur(e);
+                  }
+                }}
+                onChange={this.handleInputChange}
+                onBlur={this.handleAddTageBlur}
+              />
+            )}
+            {!onEditing && <p onClick={this.showInput}>+添加</p>}
+          </div>
         )}
       </div>
     );

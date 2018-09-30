@@ -16,10 +16,13 @@ class FormArray extends React.Component {
     const cls = classNames(style.title, {
       [style.readonly]: !isEdit,
     });
+    const conCls = classNames(style.array_container, {
+      [style.readonly]: !isEdit,
+    });
     return (
       <div className={style.file}>
         <p className={cls}>{name}</p>
-        <div className={style.array_container}>
+        <div className={conCls}>
           <TagGroup
             style={{ marginBottom: '10px' }}
             value={isEdit ? value || [] : defaultValue || []}

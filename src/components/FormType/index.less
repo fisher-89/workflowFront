@@ -1,4 +1,5 @@
 @import '../../utils/var.less';
+
 .flex {
   display: flex;
   flex-wrap: wrap;
@@ -7,11 +8,11 @@
 .form {
   :global {
     .am-list-line {
-      border-bottom:none!important;
-      border-bottom-color: transparent!important;
+      border-bottom: none !important;
+      border-bottom-color: transparent !important;
     }
     .am-list-line::after {
-      content: none!important;
+      content: none !important;
     }
     .am-list-item.am-input-item.am-list-item-middle {
       border-bottom: 1px solid @split-line-color;
@@ -20,7 +21,7 @@
       border-bottom: 1px solid @split-line-color;
     }
     .am-list-item.am-textarea-item {
-      border-bottom: 1px solid @split-line-color !important;
+      border-bottom: 1px solid @split-line-color  !important;
     }
   }
 }
@@ -32,6 +33,7 @@
     }
   }
 }
+
 .disabled {
   :global {
     .am-image-picker-list .am-image-picker-item .am-image-picker-item-remove {
@@ -39,12 +41,13 @@
     }
   }
 }
+
 .edit_form {
   .readonly {
-    color:@readonly-color;
+    color: @readonly-color;
     :global {
       .am-textarea-control textarea {
-        color:@readonly-color!important;
+        color: @readonly-color  !important;
       }
       .am-textarea-control {
         background: url('../../assets/lock.png') no-repeat right !important;
@@ -52,7 +55,13 @@
       }
     }
   }
+  .array_container.readonly,
+  .disabled {
+    background: url('../../assets/lock.png') no-repeat right 10px; // background-size: 16px;
+    margin-right: 15px;
+  }
 }
+
 .title {
   .common_title();
 }
@@ -60,18 +69,17 @@
 .picker_container {
   //   padding-left: 7px;
   flex-grow: 1;
-  padding:4px 10px 4px 0;
+  padding: 4px 10px 4px 0;
 }
 
 .array_container {
   flex-grow: 1;
-  padding:10px 10px 0px 0;
+  padding: 10px 10px 0px 0;
 }
 
 .show_img {
   display: flex;
-  flex-wrap: wrap;
-  // padding-left: 7px;
+  flex-wrap: wrap; // padding-left: 7px;
   img {
     width: 120/75rem;
     margin-left: 5px;
@@ -84,15 +92,14 @@
 
 .file {
   display: flex;
-  background: #fff;
-  // box-shadow: @list-shadow;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  background: #fff; // box-shadow: @list-shadow;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   padding-left: 15px;
   min-height: @common-height;
   .title {
     flex-grow: 0;
     flex-shrink: 0; // padding-left: 15px;
-    color:@title-color;    
+    color: @title-color;
     .common_title();
   }
 }

@@ -3,16 +3,16 @@ import { DatePicker, Flex } from 'antd-mobile';
 import moment from 'moment';
 import style from '../index.less';
 
-const defaultValue = {
-  min: '',
-  max: moment(new Date()).format('YYYY-MM-DD'),
-};
+// const defaultValue = {
+//   min: '',
+//   max: moment(new Date()).format('YYYY-MM-DD'),
+// };
 class PickerRange extends React.Component {
   constructor(props) {
     super(props);
     const { value } = props;
     this.state = {
-      value: value || defaultValue,
+      value: value || {},
       // focus: 'start_at',
     };
   }
@@ -21,7 +21,7 @@ class PickerRange extends React.Component {
     const { value } = nextProps;
     if (JSON.stringify(value) !== JSON.stringify(this.props.value)) {
       this.setState({
-        value: value || defaultValue,
+        value: value || {},
       });
     }
   }
@@ -41,9 +41,11 @@ class PickerRange extends React.Component {
 
   render() {
     const { value: { min, max } } = this.state;
-    const { addonBefore } = this.props;
-    const valueMax = max.replace(/-/g, '/');
-    const valueMin = min.replace(/-/g, '/');
+    const { addonBefore, range } = this.props;
+    const valueMax = max ? max.replace(/-/g, '/') : '';
+    const valueMin = min ? min.replace(/-/g, '/') : '';
+    const rangeMax = (range.max || '').replace(/-/g, '/');
+    const rangeMin = (range.min || '').replace(/-/g, '/');
     return (
       <Flex
         className={style.pickerange}
@@ -54,9 +56,10 @@ class PickerRange extends React.Component {
         >
           <DatePicker
             mode="date"
-            value={new Date(valueMin)}
+            value={valueMin ? new Date(valueMin) : undefined}
             format="YYYY-MM-DD"
-            maxDate={new Date()}
+            maxDate={rangeMax ? new Date(rangeMax) : undefined}
+            minDate={rangeMin ? new Date(rangeMin) : undefined}
             onChange={date => this.handleOnChange('min', date)}
           >
             <div className={style.some_time}>{min}</div>
@@ -64,13 +67,13 @@ class PickerRange extends React.Component {
         </Flex.Item>
         <Flex.Item
           style={{ flex: '1 1' }}
-
         >
           <DatePicker
             mode="date"
-            value={new Date(valueMax)}
+            value={valueMax ? new Date(valueMax) : undefined}
             format="YYYY-MM-DD"
-            maxDate={new Date()}
+            minDate={rangeMin ? new Date(rangeMin) : undefined}
+            maxDate={rangeMax ? new Date(rangeMax) : undefined}
             onChange={date => this.handleOnChange('max', date)}
           >
             <div className={style.some_time}>{max}</div>

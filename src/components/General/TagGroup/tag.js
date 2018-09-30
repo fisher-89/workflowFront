@@ -13,33 +13,20 @@ class Tag extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    const { value } = props;
+    const { value, onEditing } = props;
     const oldValue = this.props.value;
     if (value !== oldValue) {
-      this.setState({
-        inputValue: value,
-      });
+      this.setState({ inputValue: value });
+    }
+    if (onEditing !== this.props.onEditing) {
+      this.setState({ onEditing });
     }
   }
 
   handleInputChange = (e) => {
     const { value } = e.target;
-    const { onChange, index } = this.props;
     this.setState({
       inputValue: value,
-    });
-    onChange(value, index);
-  }
-
-  handleInputBlur = (e) => {
-    const { value } = e.target;
-    const { handleClose } = this.props;
-    this.setState({
-      onEditing: false,
-    }, () => {
-      if (!value) {
-        handleClose(value);
-      }
     });
   }
 
@@ -65,10 +52,15 @@ class Tag extends React.Component {
         >
           <input
             value={`${inputValue || ''}`}
-            ref={(e) => { this.textInput = e; }}
-            // style={{ width: '180px' }}
             onChange={this.handleInputChange}
-            onBlur={this.handleInputBlur}
+            ref={(e) => { this.textInput = e; }}
+            onKeyDown={(e) => {
+              if (e.keyCode === 13) {
+                this.props.handleBlur(this.props.index)(e);
+              }
+            }}
+            onBlur={this.props.handleBlur(this.props.index)}
+            onFocus={() => this.props.handleFocus(this.props.index)}
           />
         </div>
         {!onEditing && (
@@ -76,7 +68,7 @@ class Tag extends React.Component {
             <p onClick={!readonly ? this.showInput : null}>{inputValue}</p>
             {!readonly && <span onClick={() => handleClose(inputValue)} />}
           </div>
-          )}
+        )}
       </div>
     );
   }

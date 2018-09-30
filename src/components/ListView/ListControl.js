@@ -34,7 +34,6 @@ export default class ListControl extends Component {
     const { lists, location: { pathname, search }, history, defaultType, defaultSort } = this.props;
     const urlParams = getUrlParams();
     this.filterUrl = getUrlString('filters', search ? search.slice(1) : '');
-    console.log('filterUrl', this.filterUrl);
     const { type = defaultType, page = 1 } = urlParams;
     const newParams = {
       ...urlParams,
@@ -270,7 +269,6 @@ export default class ListControl extends Component {
     const { type, searchValue } = this.state;
     const initIndex = findInitIndex(tab, 'type', type);
     const searchName = searchColumns.name;
-    console.log('this.filters', this.filters);
     return (
       <div className={styles.con}>
         <div>

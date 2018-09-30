@@ -155,7 +155,6 @@ export function doConditionValue(str = '') {
   // point_b<=10;changed_at>=2018-07-25;changed_at<=2018-07;';
   let arr = (str || '').split(';');
   const obj = {};
-
   for (let i = 0; i < arr.length; i += 1) {
     const item = arr[i];
     const keys = Object.keys(whereConfig);

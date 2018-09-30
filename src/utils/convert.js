@@ -17,17 +17,6 @@ import appro_ from '../assets/appro_.svg';
 import list from '../assets/list.svg';
 import more from '../assets/more.svg';
 import application from '../assets/application.svg';
-
-export const bankType = [
-  { value: '1', label: '中国工商银行' },
-  { value: '2', label: '中国农业银行' },
-  { value: '3', label: '中国建设银行' },
-  { value: '4', label: '中国银行' },
-  { value: '5', label: '交通银行' },
-  { value: '6', label: '招商银行' },
-  { value: '7', label: '中国邮政储蓄银行' },
-  { value: '8', label: '农村商业银行' },
-];
 // 底部菜单
 export const tabbar = [{
   title: '申请',
@@ -96,9 +85,10 @@ export const getStartState = (state) => {
 // 审批状态
 export const approvalState = [
   { title: '待审批', type: 'processing' },
-  { title: '已通过', type: 'approved' },
-  { title: '已转交', type: 'deliver' },
-  { title: '已驳回', type: 'rejected' },
+  { title: '已审批', type: 'approved' },
+  // { title: '已通过', type: 'approved' },
+  // { title: '已转交', type: 'deliver' },
+  // { title: '已驳回', type: 'rejected' },
 ];
 export const approConverSta = [
   { title: '已驳回', type: -1 },

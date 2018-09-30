@@ -157,13 +157,13 @@ class ModalFilters extends React.Component {
   }
 
   makeTimeRangeFilter = (props) => {
-    const { name, max } = props;
-    const rangaValue = this.state.filters[name];
+    const { name, range } = props;
+    const currentValue = this.state.filters[name];
     return (
       <PickerRange
         {...props}
-        value={rangaValue}
-        max={max}
+        value={currentValue}
+        range={range}
         onChange={value => this.handleFiltersOnChange(name, value)}
       />
     );

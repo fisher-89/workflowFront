@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { approvalState } from '../../utils/convert';
 import ListControl from '../../components/ListView/ListControl';
 import {
@@ -12,6 +13,11 @@ import style from './index.less';
 import './reset.less';
 import { Approve } from '../../common/ListView';
 
+// const approveState = [
+//   { label: '已驳回', value: -1 },
+//   { label: '已通过', value: 2 },
+//   { label: '已转交', value: 3 },
+// ];
 const flowList = userStorage('flowList');
 const flowTypeOptions = dealFlowTypeOptions(flowList);
 const defaultType = 'processing';
@@ -24,6 +30,15 @@ const tabs = {
         multiple: true,
         title: '流程类型',
         options: flowTypeOptions,
+      },
+      {
+        name: 'created_at',
+        type: 'timerange',
+        title: '发起时间',
+        range: {
+          max: moment().format('YYYY-MM-DD'),
+          min: '2018-01-01',
+        },
       },
     ],
     sortList: [
@@ -42,39 +57,21 @@ const tabs = {
         multiple: true,
         options: flowTypeOptions,
       },
-    ],
-    sortList: [
-      { name: '发起时间升序', value: 'acted_at-asc', icon: import('../../assets/filter/asc.svg') },
-      { name: '发起时间降序', value: 'acted_at-desc', icon: import('../../assets/filter/desc.svg') },
-    ],
-    defaultSort: 'acted_at-desc',
-    showTime: 'acted_at',
-  },
-  deliver: {
-    filterColumns: [
+      // {
+      //   name: 'flow_run.status',
+      //   type: 'checkBox',
+      //   multiple: true,
+      //   title: '状态',
+      //   options: approveState,
+      // },
       {
-        name: 'flow_type_id',
-        type: 'checkBox',
-        title: '流程类型',
-        multiple: true,
-        options: flowTypeOptions,
-      },
-    ],
-    sortList: [
-      { name: '发起时间升序', value: 'acted_at-asc', icon: import('../../assets/filter/asc.svg') },
-      { name: '发起时间降序', value: 'acted_at-desc', icon: import('../../assets/filter/desc.svg') },
-    ],
-    defaultSort: 'acted_at-desc',
-    showTime: 'acted_at',
-  },
-  rejected: {
-    filterColumns: [
-      {
-        name: 'flow_type_id',
-        type: 'checkBox',
-        title: '流程类型',
-        multiple: true,
-        options: flowTypeOptions,
+        name: 'acted_at',
+        type: 'timerange',
+        title: '审批时间',
+        range: {
+          max: moment().format('YYYY-MM-DD'),
+          min: '2018-01-01',
+        },
       },
     ],
     sortList: [

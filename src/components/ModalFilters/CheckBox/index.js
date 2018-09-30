@@ -18,7 +18,6 @@ class CheckBox extends React.PureComponent {
 
   componentWillReceiveProps(nextProps) {
     const { value, multiple } = nextProps;
-    console.log(value);
 
     if (JSON.stringify(value) !== JSON.stringify(this.props.value)) {
       let newValue = [];

@@ -113,7 +113,7 @@ class SelectComp extends React.Component {
           title={field.name}
           autoHeight
           editable={false}
-          value={this.renderCurrent(defaultValue || [], name).join('')}
+          value={this.renderCurrent(defaultValue || [], name, isMuti).join('')}
         />
       </div>
     );
