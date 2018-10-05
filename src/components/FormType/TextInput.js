@@ -25,7 +25,8 @@ class TextInput extends React.Component {
 
   formatIntValue = (v, field) => {
     const { scale, min } = field;
-    const newValue = Number(v === '' ? min : v).toFixed(scale);
+    const value = v === '' ? min : v;
+    const newValue = value.slice(0, value.indexOf('.') + (scale - 0) + 1);
     return newValue;
   }
 
@@ -39,7 +40,8 @@ class TextInput extends React.Component {
         newValue = max;
       } else if (reg.test(newValue)) {
         if (v.indexOf('.') > 0 && v.split('.')[1].length > scale) {
-          newValue = Number(v).toFixed(scale);
+          // newValue = Number(v).toFixed(scale);
+          newValue = v.slice(0, v.indexOf('.') + (scale - 0) + 1);
         }
       } else {
         newValue = parseFloat(v);
