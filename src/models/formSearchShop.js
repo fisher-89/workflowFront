@@ -108,19 +108,6 @@ export default {
         currentKey: { ...currentKey, [key]: current },
       };
     },
-    clearSelectStaff(state) {
-      const newState = {
-        selectStaff: {
-          first: [],
-          final: [],
-          participants: [],
-          copy: [],
-        },
-      };
-      return {
-        ...state,
-        ...newState,
-      };
-    },
+
   },
 };

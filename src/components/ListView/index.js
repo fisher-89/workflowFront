@@ -51,7 +51,8 @@ export default function ListView(ListItem) {
     }
 
     onRefresh = () => {
-      const { history, location: { pathname }, type, onRefresh, fetchDataSource } = this.props;
+      const { history, location: { pathname },
+        type, onRefresh, fetchDataSource } = this.props;
       if (type) {
         const urlParams = getUrlParams();
         const { page } = urlParams;

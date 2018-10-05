@@ -32,6 +32,11 @@ const tabs = {
           min: '2018-01-01',
         },
       },
+      {
+        name: 'name',
+        type: 'search',
+        title: '流程名称',
+      },
     ],
     sortList: [
       { name: '驳回时间升序', value: 'end_at-asc', icon: import('../../assets/filter/asc.svg') },
@@ -57,6 +62,11 @@ const tabs = {
           max: moment().format('YYYY-MM-DD'),
           min: '2018-01-01',
         },
+      },
+      {
+        name: 'name',
+        type: 'search',
+        title: '流程名称',
       },
     ],
     sortList: [
@@ -85,6 +95,11 @@ const tabs = {
           min: '2018-01-01',
         },
       },
+      {
+        name: 'name',
+        type: 'search',
+        title: '流程名称',
+      },
     ],
     sortList: [
       { name: '发起升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
@@ -92,7 +107,6 @@ const tabs = {
     ],
     defaultSort: 'created_at-desc',
     showTime: 'created_at',
-
   },
   finished: {
     filterColumns: [
@@ -111,6 +125,11 @@ const tabs = {
           max: moment().format('YYYY-MM-DD'),
           min: '2018-01-01',
         },
+      },
+      {
+        name: 'name',
+        type: 'search',
+        title: '流程名称',
       },
     ],
     sortList: [
@@ -177,8 +196,10 @@ export default class StartList extends Component {
 
   redirectTo = (item) => {
     const {
-      history,
+      history, location: { pathname, search },
     } = this.props;
+    const url = `${pathname}${search}#flag=1`;
+    history.replace(url);
     history.push(`/start_detail/${item.id}`);
   }
 

@@ -3,6 +3,7 @@ import Department from './Department';
 import Staff from './Staff';
 import Start from './Start';
 import Approve from './Approve';
+import Pending from './Pending';
 // import Point from './Point';
 // import EventList from './EventList';
 // import EventType from './EventType';
@@ -18,12 +19,15 @@ import FinalStaff from './FinalStaff';
 // import Auditted from './Auditted';
 import SelDep from './SelDep';
 import Shop from './Shop';
+import ApiItem from './ApiItem';
 
 export {
   Department,
   Staff,
   Start,
   Approve,
+  Pending,
+  ApiItem,
   // Point,
   // EventType,
   // EventName,

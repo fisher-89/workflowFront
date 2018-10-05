@@ -27,7 +27,6 @@
 .title_name {
   display: inline-block;
   line-height: 24px;
-  margin-left: 5px;
   width: 7rem;
   color: @title-color;
   font-size: @middle-size;
@@ -268,7 +267,6 @@
   font-size: 16px;
   border-bottom: 1px solid rgb(250, 250, 250);
   .baseinfo {
-    
     width: 590/75rem;
     .textLineOverFlow()
   }
@@ -280,6 +278,9 @@
     align-items: center;
     background: url(../../assets/select_icon/unseled.png) no-repeat right center;
     background-size: 44/75rem;
+    &.single {
+      background: none;
+    }
     &.checked {
       background: url(../../assets/select_icon/selected.png) no-repeat right center;
       background-size: 44/75rem;

@@ -4,6 +4,7 @@ import { makerFilters, isArray } from '../../utils/util';
 import InputRange from './InputRange';
 import CheckBox from './CheckBox';
 import PickerRange from './PickerRange';
+import InputSearch from './InputSearch';
 import ModalSorter from './ModalSorter';
 import style from './index.less';
 
@@ -51,6 +52,7 @@ class ModalFilters extends React.Component {
     const speciPams = [];
     let url = '';
     let newParams = {};
+    console.log(filters);
     Object.keys(filters).forEach((key) => {
       const [speciColumn] = filterColumns.filter(item => item.name === key);
       if (speciColumn && speciColumn.notusename) { // 不使用key
@@ -169,6 +171,21 @@ class ModalFilters extends React.Component {
     );
   }
 
+  makeInputSearchFilter = (props) => {
+    const { name, range } = props;
+    const currentValue = this.state.filters[name];
+    const newValue = currentValue ? currentValue.like : '';
+    return (
+      <InputSearch
+        {...props}
+        value={newValue}
+        range={range}
+        onChange={value => this.handleInputOnChange(name, { like: value })}
+      />
+    );
+  }
+
+
   makeFilterComponent = (item) => {
     let component;
     switch (item.type) {
@@ -180,6 +197,9 @@ class ModalFilters extends React.Component {
         break;
       case 'timerange':
         component = this.makeTimeRangeFilter(item);
+        break;
+      case 'search':
+        component = this.makeInputSearchFilter(item);
         break;
       default:
         break;

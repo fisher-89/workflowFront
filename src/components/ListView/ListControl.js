@@ -69,13 +69,14 @@ export default class ListControl extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const { location: { search, pathname }, lists, defaultType, defaultSort } = props;
+    const { location: { search, pathname, hash }, lists, defaultType, defaultSort } = props;
     const currentParams = getUrlParams(search);
     const { type = defaultType } = currentParams;
     // console.log('receive:', { ...lists });
     // this.setState({
     //   type,
     // });
+    console.log('search', search, this.props);
     if (search !== this.props.location.search) {
       this.currentFilter(search ? search.slice(1) : '');
       const params = getUrlParams(search);
@@ -95,7 +96,7 @@ export default class ListControl extends Component {
       const current = lists[`${pathname}_${type}`];
       const { url } = current;
       if (
-        (JSON.stringify(url) === JSON.stringify(newParams))) { // 有数据，不调接口
+        (JSON.stringify(url) === JSON.stringify(newParams) && !hash)) { // 有数据，不调接口
         return;
       }
       this.fetchDataSource(newParams);

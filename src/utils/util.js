@@ -275,7 +275,7 @@ export function formatDate(type) {
 
 export function isToday(str) {
   let iscurrentDay = false;
-  if (new Date(str.replace(/-/g, '/')).toDateString() === new Date().toDateString()) {
+  if (new Date((str || '').replace(/-/g, '/')).toDateString() === new Date().toDateString()) {
     // 今天
     iscurrentDay = true;
   }
@@ -289,7 +289,8 @@ export function isSameWeek(old, now) {
   return parseInt((old_count + 4) / 7) == parseInt((now_other + 4) / 7);
 }
 
-export function converseTime(current) {
+export function converseTime(time) {
+  const current = time || '';
   if (isToday(current)) {
     return moment(current).format('HH:mm');
   }

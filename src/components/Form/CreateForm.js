@@ -136,7 +136,7 @@ class CreateForm extends Component {
           />
         );
       }
-      if (item.type === 'department' || item.type === 'staff' || item.type === 'shop') {
+      if (item.type === 'department' || item.type === 'staff' || item.type === 'shop' || item.type === 'api') {
         const { evtClick, history } = this.props;
         return (
           <SelectComp

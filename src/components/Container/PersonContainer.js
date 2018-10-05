@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, List, SearchBar, Toast } from 'antd-mobile';
 import ReactDOM from 'react-dom';
-import { PersonIcon } from '../../components/index.js';
 import { Bread } from '../../components/General/index';
 import style from './index.less';
 
@@ -128,18 +127,11 @@ export default class PersonContainer extends Component {
               <div className={style.sel_result}>
                 <div className={style.person_list}>
                   {selected.data.map((item, i) => {
-                    const idx = i;
-                    return (
-                      <PersonIcon
-                        key={idx}
-                        value={item}
-                        nameKey={name}
-                        showNum={2}
-                        itemStyle={{ marginBottom: 0 }}
-                        footer={false}
-                      />
-                    );
-                  })}
+                const idx = i;
+                return (
+                  <span style={{ flexShrink: 0 }} key={idx}>{item[name]}、</span>
+                );
+              })}
                 </div>
                 <div className={style.opt}>
                   <Button

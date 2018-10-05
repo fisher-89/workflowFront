@@ -11,13 +11,13 @@ import {
 import styles from '../common.less';
 import style from './index.less';
 import './reset.less';
-import { Approve } from '../../common/ListView';
+import { Approve, Pending } from '../../common/ListView';
 
-// const approveState = [
-//   { label: '已驳回', value: -1 },
-//   { label: '已通过', value: 2 },
-//   { label: '已转交', value: 3 },
-// ];
+const approveState = [
+  { label: '已驳回', value: -1 },
+  { label: '已通过', value: 2 },
+  { label: '已转交', value: 3 },
+];
 const flowList = userStorage('flowList');
 const flowTypeOptions = dealFlowTypeOptions(flowList);
 const defaultType = 'processing';
@@ -40,6 +40,11 @@ const tabs = {
           min: '2018-01-01',
         },
       },
+      {
+        name: 'name',
+        type: 'search',
+        title: '流程名称',
+      },
     ],
     sortList: [
       { name: '发起时间升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
@@ -57,13 +62,13 @@ const tabs = {
         multiple: true,
         options: flowTypeOptions,
       },
-      // {
-      //   name: 'flow_run.status',
-      //   type: 'checkBox',
-      //   multiple: true,
-      //   title: '状态',
-      //   options: approveState,
-      // },
+      {
+        name: 'action_type',
+        type: 'checkBox',
+        multiple: true,
+        title: '状态',
+        options: approveState,
+      },
       {
         name: 'acted_at',
         type: 'timerange',
@@ -72,6 +77,11 @@ const tabs = {
           max: moment().format('YYYY-MM-DD'),
           min: '2018-01-01',
         },
+      },
+      {
+        name: 'name',
+        type: 'search',
+        title: '流程名称',
       },
     ],
     sortList: [
@@ -140,15 +150,26 @@ export default class StartList extends Component {
       history,
     };
     return (
-      <Approve
-        totalpage={totalpage}
-        timeKey={showTime}
-        dataSource={data}
-        fetchDataSource={this.fetchDataSource}
-        type={type}
-        {...someProps}
-        onHandleClick={value => this.redirectTo(value)}
-      />
+      type === 'approved' ? (
+        <Approve
+          totalpage={totalpage}
+          timeKey={showTime}
+          dataSource={data}
+          fetchDataSource={this.fetchDataSource}
+          type={type}
+          {...someProps}
+          onHandleClick={value => this.redirectTo(value)}
+        />) : (
+          <Pending
+            totalpage={totalpage}
+            timeKey={showTime}
+            dataSource={data}
+            fetchDataSource={this.fetchDataSource}
+            type={type}
+            {...someProps}
+            onHandleClick={value => this.redirectTo(value)}
+          />
+      )
     );
   }
 

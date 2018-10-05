@@ -204,8 +204,8 @@ class AddGridList extends Component {
         newFormData = gridItemDefault.fieldDefault || {};
       }
     }
-    const ableSubmit = isableSubmit(requireForm, this.state.formdata);
-
+    let ableSubmit = isableSubmit(requireForm, this.state.formdata);
+    ableSubmit = true;
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>

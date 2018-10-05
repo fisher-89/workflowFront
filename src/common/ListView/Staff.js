@@ -6,7 +6,9 @@ import style from './index.less';
 export default class Staff extends Component {
   render() {
     const { value, onClick, checked, multiple, renderName = 'realname', isFinal = false } = this.props;
-    const className = [style.item, checked ? (multiple ? style.checked : style.single_item) : null].join(' ');
+    // const className = [style.item, checked ?
+    // (multiple ? style.checked : style.single_item) : null].join(' ');
+    const className = [style.item, multiple ? null : style.single, checked ? (multiple ? style.checked : style.single_item) : null].join(' ');
 
     return (
       <div

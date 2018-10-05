@@ -1,48 +1,31 @@
 import {
-  getDepartment,
+  getApiDataSource,
 } from '../services/formStaff';
 import defaultReducers from './reducers/default';
-import { makerFilters } from '../utils/util';
 
 export default {
-  namespace: 'formSearchDep',
+  namespace: 'formSearchApi',
   state: {
-    department: [],
-    isConfig: true,
-    breadCrumb: [{ name: '选择部门', id: -1 }],
+    apiSource: [],
     currentKey: {
     },
   },
   effects: {
-    * fetchFirstDepartment({ payload }, { put, call }) { // 一级部门列表
-      const { breadCrumb, reqData } = payload;
-      const params = makerFilters(reqData);
-      const response = yield call(getDepartment, params);
+    * getApiDataSource({ payload }, { put, call }) { // 一级部门列表
+      const { cb, id } = payload;
+      const response = yield call(getApiDataSource, id);
       if (response && !response.error) {
-        const { data } = response;
-        const isConfig = response.is_config;
         yield put({
           type: 'save',
           payload: {
-            store: 'department',
-            data,
+            store: 'apiSource',
+            data: response,
           },
         });
-        yield put({
-          type: 'save',
-          payload: {
-            store: 'isConfig',
-            data: isConfig,
-          },
-        });
+        if (cb) {
+          cb(response);
+        }
       }
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'breadCrumb',
-          data: breadCrumb,
-        },
-      });
     },
 
   },
@@ -69,7 +52,7 @@ export default {
       };
     },
 
-    saveSelectDepartment(state, action) {
+    saveSelectData(state, action) {
       const { value, key } = action.payload;
       const { currentKey } = state;
       const current = { ...currentKey[key] || {} };

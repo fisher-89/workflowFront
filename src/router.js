@@ -132,12 +132,6 @@ function RouterConfig({
     component: () =>
       import('./routes/SelectPlugins/FormSelPerson'),
   },
-  // {
-  //   path: '/form_sel_department/:key/:type/:fieldId',
-  //   models: ['formSearchDep'],
-  //   component: () =>
-  //     import('./routes/SelectPlugins/SelDepartment'),
-  // },
   {
     path: '/form_sel_department',
     models: ['formSearchDep'],
@@ -149,6 +143,12 @@ function RouterConfig({
     models: ['formSearchShop'],
     component: () =>
       import('./routes/SelectPlugins/SelShop'),
+  },
+  {
+    path: '/form_api_datasource',
+    models: ['formSearchApi'],
+    component: () =>
+      import('./routes/SelectPlugins/SelDataSource'),
   },
   {
     path: '/my',
@@ -170,9 +170,6 @@ function RouterConfig({
       import('./routes/login/Extrance'),
   }, {
     path: '/get_access_token',
-    // models: () => [
-    //   import('./models/oauth'),
-    // ],
     models: ['oauth'],
 
     component: () =>

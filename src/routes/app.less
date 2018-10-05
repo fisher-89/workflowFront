@@ -42,10 +42,10 @@ input::-webkit-input-placeholder {
     content: none !important;
   }
   .am-textarea-control textarea {
-    color: @edit-color !important;
+    color: @edit-color  !important;
   }
   .am-list-item .am-input-control input {
-    color:@edit-color !important;
+    color: @edit-color  !important;
   }
   .am-tabs-tab-bar-wrap {
     height: 88/75rem;
@@ -87,7 +87,6 @@ input::-webkit-input-placeholder {
     max-height: 30px !important;
     overflow: hidden;
   }
- 
   .am-textarea-label.am-textarea-label-5 {
     width: 96px !important;
     color: @title-color  !important;
@@ -165,18 +164,30 @@ input::-webkit-input-placeholder {
   }
   ::-webkit-input-placeholder {
     /* WebKit browsers */
-    color:@place-holder-color !important;
+    color: @place-holder-color  !important;
   }
   ::-moz-placeholder {
     /* Mozilla Firefox 4 to 18 */
-    color: @place-holder-color !important;
+    color: @place-holder-color  !important;
   }
   ::-moz-placeholder {
     /* Mozilla Firefox 19+ */
-    color: @place-holder-color !important;
+    color: @place-holder-color  !important;
   }
   :-ms-input-placeholder {
     /* Internet Explorer 10+ */
-    color: @place-holder-color !important;
+    color: @place-holder-color  !important;
+  }
+  .am-image-picker-list>.am-flexbox {
+    overflow: visible;
+  }
+  .am-image-picker-list .am-flexbox .am-flexbox-item {
+    margin-right: 10px !important;
+  }
+  .am-image-picker-list .am-image-picker-item .am-image-picker-item-remove {
+    right: -7px !important;
+    top: -7px !important;
+    background-repeat:no-repeat;
+    background-size: 14px !important;
   }
 }

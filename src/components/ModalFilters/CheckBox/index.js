@@ -1,5 +1,6 @@
 import React from 'react';
 import Styles from './index.less';
+import { isArray } from '../../../utils/util';
 
 class CheckBox extends React.PureComponent {
   constructor(props) {
@@ -28,15 +29,17 @@ class CheckBox extends React.PureComponent {
 
   handleOnChange = (changeValue) => {
     const { onChange, multiple, range: { max } } = this.props;
+    let value = changeValue;
     if (multiple) {
-      let newValue = [...this.state.value];
+      const stateValue = this.state.value;
+      const isarray = isArray(stateValue);
+      let newValue = isarray ? [...this.state.value] : [stateValue];
       let pushAble = true;
       newValue.forEach((item) => {
         if (`${changeValue}` === `${item}`) {
           pushAble = false;
         }
       });
-
       if (pushAble) {
         const { length } = newValue;
         if (max > 0 && `${length}` === `${max}`) {
@@ -47,10 +50,13 @@ class CheckBox extends React.PureComponent {
       } else {
         newValue = newValue.filter(item => `${changeValue}` !== `${item}`);
       }
-      onChange(newValue);
-      return;
+      value = newValue;
     }
-    onChange(changeValue);
+    this.setState({
+      value,
+    }, () => {
+      onChange(value);
+    });
   }
 
   render() {

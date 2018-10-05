@@ -8,7 +8,9 @@ export default class searchStaff extends Component {
     const { value, onClick, checked, multiple, renderName = 'realname', isFinal = false } = this.props;
     // const className = multiple ?
     // { className: [style.item, checked ? style.checked : null].join(' ') } : null;
-    const className = multiple ? { className: [style.item, checked ? style.checked : null].join(' ') } : { className: style.single_item };
+    // const className = multiple ? { className: [style.item,
+    // checked ? style.checked : null].join(' ') } : { className: style.single_item };
+    const className = [style.item, multiple ? null : style.single, checked ? (multiple ? style.checked : style.single_item) : null].join(' ');
 
     return (
       <div
@@ -16,7 +18,7 @@ export default class searchStaff extends Component {
         onClick={() => onClick(value)}
       >
         <div
-          {...className}
+          className={className}
         >
           <div className={style.baseinfo}>
             <span>{value[renderName]}</span>

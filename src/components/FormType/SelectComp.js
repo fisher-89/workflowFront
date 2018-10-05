@@ -29,6 +29,14 @@ const dispatchColumn = {
     value: 'shop_sn',
     text: 'name',
   },
+  api: {
+    modal: 'formSearchApi',
+    reduce: 'saveSelectData',
+    to: 'form_api_datasource',
+    name: 'text',
+    value: 'value',
+    text: 'text',
+  },
 };
 
 class SelectComp extends React.Component {
@@ -69,6 +77,7 @@ class SelectComp extends React.Component {
       id,
       max: max || 50,
       min: min || 1,
+      fetchId: field.field_api_configuration_id,
     };
     const urlParams = JSON.stringify(params);
     // history.push(`/${to}/${newKey}/${isMuti}/${id}`);
