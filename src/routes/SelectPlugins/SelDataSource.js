@@ -177,7 +177,7 @@ export default class SelDataSource extends Component {
     const selectedData = selected.data;
     const depSn = curDataSource.map(item => item.id);
     const checkAble = selectedData.filter(item =>
-      depSn.indexOf(item.id) > -1).length === curDataSource.length;
+      depSn.indexOf(item.id) > -1).length === curDataSource.length && curDataSource.length;
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
@@ -185,13 +185,11 @@ export default class SelDataSource extends Component {
           name="text"
           checkAble={checkAble}
           selected={selected}
-          all={false}
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
         >
-
           <ApiItem
             {...someProps}
             link=""
