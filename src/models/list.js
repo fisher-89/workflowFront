@@ -28,7 +28,6 @@ const initLists = {
     url: {
       type: 'processing',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },
@@ -37,7 +36,6 @@ const initLists = {
     url: {
       type: 'approved',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },
@@ -46,7 +44,6 @@ const initLists = {
     url: {
       type: 'deliver',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },
@@ -55,7 +52,6 @@ const initLists = {
     url: {
       type: 'rejected',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },
@@ -64,7 +60,6 @@ const initLists = {
     url: {
       type: 'all',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },
@@ -73,7 +68,7 @@ const initLists = {
     url: {
       type: 'rejected',
       page: 1,
-      // totalpage: 10,
+      sort: 'end_at-edsc',
     },
     datas: { ...initDatas },
   },
@@ -82,7 +77,6 @@ const initLists = {
     url: {
       type: 'withdraw',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },
@@ -92,7 +86,6 @@ const initLists = {
     url: {
       type: 'finished',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },
@@ -101,7 +94,6 @@ const initLists = {
     url: {
       type: 'processing',
       page: 1,
-      // totalpage: 10,
     },
     datas: { ...initDatas },
   },

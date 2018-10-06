@@ -5,7 +5,6 @@ import {
 } from 'antd-mobile';
 import style from './index.less';
 import { userStorage } from '../../utils/util';
-import listIcon from '../../../src/assets/img/icon.png';
 
 class IndexPage extends React.Component {
   componentDidMount() {
@@ -29,37 +28,30 @@ class IndexPage extends React.Component {
     const startList = [
       {
         text: '我发起的',
-        icon: listIcon,
-        id: '-1',
+        icon: '/img/originate.png',
+        id: '1',
+        url: '/start_list?type=processing&page=1',
         description: '这是发起的列表',
       },
-    ];
-    const testList = [
       {
-        text: '测试',
-        icon: listIcon,
-        id: '-1',
-        description: '测试',
+        text: '审批列表',
+        url: '/approvelist?type=processing&page=1',
+        icon: '/img/Approval.png',
+        id: '2',
+        description: '审批列表',
       },
     ];
+
     return (
       <div>
         <WhiteSpace size="md" />
         <WingBlank>
           <div className={style.entrance}>
             <Grid
-          // 我发起的
               square={false}
               data={startList}
               hasLine={false}
-              onClick={() => history.push('/start_list?type=processing&page=1')}
-            />
-            <Grid
-            // 我发起的
-              square={false}
-              data={testList}
-              hasLine={false}
-              onClick={() => history.push('/test')}
+              onClick={el => history.push(el.url)}
             />
           </div>
         </WingBlank>
@@ -68,7 +60,7 @@ class IndexPage extends React.Component {
           (flowListData || []).map((item) => {
             const data = item.flow.map((i) => {
               const obj = {};
-              obj.icon = listIcon;
+              obj.icon = '/img/icon.png';
               obj.text = i.name;
               obj.id = i.id;
               obj.description = i.description;

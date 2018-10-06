@@ -2,7 +2,7 @@ import React from 'react';
 import Animate from 'rc-animate';
 import velocity from 'velocity-animate';
 import SortView from './Sort';
-import '../../assets/css/index.less';
+import '../../public/css/index.less';
 import style from './index.less';
 
 export default class AnimateSort extends React.Component {

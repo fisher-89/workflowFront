@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import ReactDOM from 'react-dom';
 import { List, PullToRefresh } from 'antd-mobile';
 import QueueAnim from 'rc-queue-anim';
-import nothing from '../../assets/nothing.png';
+import nothing from '../../../public/img/nothing.png';
 import SmallLoader from '../General/Loader/SmallLoader';
 import spin from '../General/Loader';
 import { parseParamsToUrl, getUrlParams, getUrlString } from '../../utils/util';
@@ -52,16 +52,19 @@ export default function ListView(ListItem) {
 
     onRefresh = () => {
       const { history, location: { pathname },
-        type, onRefresh, fetchDataSource } = this.props;
+        type, onRefresh, fetchDataSource, defaultSort } = this.props;
       if (type) {
         const urlParams = getUrlParams();
-        const { page } = urlParams;
+        const { page, sort } = urlParams;
         const filterUrl = getUrlString('filters');
         const newUrlParams = {
           ...urlParams,
           filters: filterUrl || '',
           page: 1,
         };
+        if (!sort) {
+          newUrlParams.sort = defaultSort;
+        }
         if (`${page}` === '1') {
           fetchDataSource(newUrlParams);
         } else {

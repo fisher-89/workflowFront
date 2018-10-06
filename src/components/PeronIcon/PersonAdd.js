@@ -1,5 +1,4 @@
 import React from 'react';
-import defaultAvatar from '../../assets/default_avatar.png';
 import style from './index.less';
 
 class PersonAdd extends React.Component {
@@ -10,7 +9,7 @@ class PersonAdd extends React.Component {
         <div className={[style.person_icon, style.spe].join(' ')} onClick={handleClick}>
           <div className={style.name}>
             <img
-              src={defaultAvatar}
+              src="/img/my.svg"
               alt="添加"
             />
           </div>

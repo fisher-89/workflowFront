@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { List, SearchBar } from 'antd-mobile';
 import { Nothing } from '../../components/index';
-import nothing from '../../assets/nothing.png';
 import style from './index.less';
 import styles from '../common.less';
 
@@ -70,7 +69,7 @@ class SelectStep extends Component {
     const { searchList } = this.state;
     if (searchList && !searchList.length) {
       return (
-        <Nothing src={nothing} />
+        <Nothing src="/img/nothing.png" />
       );
     }
     const reasult = [];

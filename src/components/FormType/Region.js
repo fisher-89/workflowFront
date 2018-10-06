@@ -6,8 +6,8 @@ import {
 } from 'antd-mobile';
 import style from './index.less';
 import { isJSON } from '../../utils/util';
-import districtTree from '../../utils/district.json';
-import district from '../../utils/district.js';
+import districtTree from '../../../public/district.json';
+import district from '../../../public/district.js';
 
 const region = ['province_id', 'city_id', 'county_id', 'address'];
 const regionSelect = ['province_id', 'city_id', 'county_id'];

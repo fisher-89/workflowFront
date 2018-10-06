@@ -39,8 +39,8 @@ const tabs = {
       },
     ],
     sortList: [
-      { name: '驳回时间升序', value: 'end_at-asc', icon: import('../../assets/filter/asc.svg') },
-      { name: '驳回时间降序', value: 'end_at-desc', icon: import('../../assets/filter/desc.svg') },
+      { name: '驳回时间升序', value: 'end_at-asc', icon: '/filter/asc.svg' },
+      { name: '驳回时间降序', value: 'end_at-desc', icon: '/filter/desc.svg' },
     ],
     defaultSort: 'end_at-desc',
     showTime: 'end_at',
@@ -70,8 +70,8 @@ const tabs = {
       },
     ],
     sortList: [
-      { name: '撤回时间升序', value: 'end_at-asc', icon: import('../../assets/filter/asc.svg') },
-      { name: '撤回时间降序', value: 'end_at-desc', icon: import('../../assets/filter/desc.svg') },
+      { name: '撤回时间升序', value: 'end_at-asc', icon: '/filter/asc.svg' },
+      { name: '撤回时间降序', value: 'end_at-desc', icon: '/filter/desc.svg' },
     ],
     defaultSort: 'end_at-desc',
     showTime: 'end_at',
@@ -102,8 +102,8 @@ const tabs = {
       },
     ],
     sortList: [
-      { name: '发起升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
-      { name: '发起降序', value: 'created_at-desc', icon: import('../../assets/filter/desc.svg') },
+      { name: '发起升序', value: 'created_at-asc', icon: 'filter/asc.svg' },
+      { name: '发起降序', value: 'created_at-desc', icon: '/filter/desc.svg' },
     ],
     defaultSort: 'created_at-desc',
     showTime: 'created_at',
@@ -133,8 +133,8 @@ const tabs = {
       },
     ],
     sortList: [
-      { name: '完成时间升序', value: 'end_at-asc', icon: import('../../assets/filter/asc.svg') },
-      { name: '完成时间降序', value: 'end_at-desc', icon: import('../../assets/filter/desc.svg') },
+      { name: '完成时间升序', value: 'end_at-asc', icon: '/filter/asc.svg' },
+      { name: '完成时间降序', value: 'end_at-desc', icon: '/filter/desc.svg' },
     ],
     defaultSort: 'end_at-desc',
     showTime: 'end_at',
@@ -207,7 +207,7 @@ export default class StartList extends Component {
     const { lists, location, history } = this.props;
     const { pathname } = location;
     const { type } = this.state;
-    const { showTime } = tabs[type];
+    const { showTime, defaultSort } = tabs[type];
     const currentDatas = lists[`${pathname}_${type}`].datas;
     const { totalpage, data } = currentDatas;
     const someProps = {
@@ -218,6 +218,8 @@ export default class StartList extends Component {
       <Start
         dataSource={data}
         totalpage={totalpage}
+        defaultSort={defaultSort}
+
         {...someProps}
         fetchDataSource={this.fetchDataSource}
         type={type}

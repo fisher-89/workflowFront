@@ -47,8 +47,8 @@ const tabs = {
       },
     ],
     sortList: [
-      { name: '发起时间升序', value: 'created_at-asc', icon: import('../../assets/filter/asc.svg') },
-      { name: '发起时间降序', value: 'created_at-desc', icon: import('../../assets/filter/desc.svg') },
+      { name: '发起时间升序', value: 'created_at-asc', icon: '/filter/asc.svg' },
+      { name: '发起时间降序', value: 'created_at-desc', icon: '/filter/desc.svg' },
     ],
     defaultSort: 'created_at-asc',
     showTime: 'created_at',
@@ -85,8 +85,8 @@ const tabs = {
       },
     ],
     sortList: [
-      { name: '发起时间升序', value: 'acted_at-asc', icon: import('../../assets/filter/asc.svg') },
-      { name: '发起时间降序', value: 'acted_at-desc', icon: import('../../assets/filter/desc.svg') },
+      { name: '发起时间升序', value: 'acted_at-asc', icon: '/filter/asc.svg' },
+      { name: '发起时间降序', value: 'acted_at-desc', icon: '/filter/desc.svg' },
     ],
     defaultSort: 'acted_at-desc',
     showTime: 'acted_at',
@@ -142,7 +142,7 @@ export default class StartList extends Component {
     const { lists, location, history } = this.props;
     const { pathname } = location;
     const { type } = this.state;
-    const { showTime } = tabs[type];
+    const { showTime, defaultSort } = tabs[type];
     const currentDatas = lists[`${pathname}_${type}`].datas;
     const { totalpage, data } = currentDatas;
     const someProps = {
@@ -154,6 +154,7 @@ export default class StartList extends Component {
         <Approve
           totalpage={totalpage}
           timeKey={showTime}
+          defaultSort={defaultSort}
           dataSource={data}
           fetchDataSource={this.fetchDataSource}
           type={type}
@@ -163,6 +164,7 @@ export default class StartList extends Component {
           <Pending
             totalpage={totalpage}
             timeKey={showTime}
+            defaultSort={defaultSort}
             dataSource={data}
             fetchDataSource={this.fetchDataSource}
             type={type}

@@ -17,7 +17,7 @@ export function fileUpload(data) {
     body: data,
   });
 }
-// 法强1列表
+// 发起列表
 export function getStartList(data) {
   return request('/api/sponsor', {
     method: 'GET',

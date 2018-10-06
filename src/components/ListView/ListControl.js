@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Tabs, SearchBar } from 'antd-mobile';
-// import filterImg from '../../assets/filter.svg';
 import {
   findInitIndex, excludeSpecial,
   getUrlParams, getUrlString, doConditionValue, parseParamsToUrl, makerFilters,
