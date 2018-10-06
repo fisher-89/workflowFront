@@ -41,7 +41,7 @@ const tabs = {
         },
       },
       {
-        name: 'name',
+        name: 'flow_name',
         type: 'search',
         title: '流程名称',
       },
@@ -79,7 +79,7 @@ const tabs = {
         },
       },
       {
-        name: 'name',
+        name: 'flow_name',
         type: 'search',
         title: '流程名称',
       },
