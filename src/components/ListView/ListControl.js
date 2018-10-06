@@ -72,11 +72,9 @@ export default class ListControl extends Component {
     const { location: { search, pathname, hash }, lists, defaultType, defaultSort } = props;
     const currentParams = getUrlParams(search);
     const { type = defaultType } = currentParams;
-    // console.log('receive:', { ...lists });
     // this.setState({
     //   type,
     // });
-    console.log('search', search, this.props);
     if (search !== this.props.location.search) {
       this.currentFilter(search ? search.slice(1) : '');
       const params = getUrlParams(search);
@@ -227,6 +225,24 @@ export default class ListControl extends Component {
     });
   }
 
+  switchCurSort = () => {
+    const { location: { search, pathname }, defaultSort, history } = this.props;
+    const urlParams = getUrlParams();
+    const sortUrl = getUrlString('sort', search ? search.slice(1) : '') || defaultSort;
+    const index = sortUrl.lastIndexOf('-');
+    const sort = sortUrl.slice(index + 1);
+    const sortname = sortUrl.slice(0, index);
+    const newSort = `${sortname}-${sort === 'desc' ? 'asc' : 'desc'}`;
+    const newParams = {
+      ...urlParams,
+      sort: newSort,
+      filters: this.filterUrl || '',
+      page: 1,
+    };
+    const paramsUrl = parseParamsToUrl(newParams);
+    history.replace(`${pathname}?${paramsUrl}`);
+  }
+
   renderFilter = () => {
     const { filterColumns, children, sortList = [] } = this.props;
     const activeStyle = Object.keys(this.filters || {}).length ? style.active : null;
@@ -234,7 +250,6 @@ export default class ListControl extends Component {
     if (!sortItem) {
       [sortItem] = sortList;
     }
-    // console.log('renderFilter:', children);
     return (
       <React.Fragment>
         {filterColumns && (
@@ -244,12 +259,17 @@ export default class ListControl extends Component {
               onClick={() => this.handleVisible(true, 'sort')}
             >
               {sortItem.name}
-              <span style={{
+              <span
+                style={{
                 backgroundImage: `url(${sortItem.icon})`,
                 backgroundPosition: 'right center',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: '0.4rem',
               }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  this.switchCurSort();
+                }}
               />
             </div>
             <div

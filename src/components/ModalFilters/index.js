@@ -52,7 +52,6 @@ class ModalFilters extends React.Component {
     const speciPams = [];
     let url = '';
     let newParams = {};
-    console.log(filters);
     Object.keys(filters).forEach((key) => {
       const [speciColumn] = filterColumns.filter(item => item.name === key);
       if (speciColumn && speciColumn.notusename) { // 不使用key

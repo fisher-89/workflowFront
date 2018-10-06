@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, WhiteSpace, WingBlank, Flex, List } from 'antd-mobile';
 import PersonInfo from '../../components/PersonInfo';
+import { userStorage } from '../../utils/util';
 import style from './index.less';
 import styles from '../TableEdit/index.less';
 
@@ -17,12 +18,20 @@ class My extends React.Component {
   }
 
   render() {
+    const userInfo = userStorage('userInfo');
+    const info = {
+      realname: userInfo.realname,
+      staff_sn: userInfo.staff_sn,
+      department_name: userInfo.department ? userInfo.department.full_name : '',
+      brand_name: userInfo.brand ? userInfo.brand.name : '',
+      shop_name: userInfo.shop ? userInfo.shop.name : '',
+    };
     return (
       <Flex direction="column">
         <Flex.Item className={style.header}>
           <WhiteSpace size="md" />
           <WingBlank size="lg">
-            <PersonInfo />
+            <PersonInfo userInfo={info} />
           </WingBlank>
           <WhiteSpace size="md" />
           <WingBlank size="lg" className={styles.con_step}>

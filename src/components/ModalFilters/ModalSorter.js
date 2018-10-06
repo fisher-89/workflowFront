@@ -33,7 +33,10 @@ class ModalSorter extends React.PureComponent {
               <div
                 className={style.sort_item}
                 key={idx}
-                onClick={(e) => { onCancel(e, filterKey); onChange(item.value); }}
+                onClick={(e) => {
+                  onCancel(e, filterKey);
+                  onChange(item.value);
+                }}
               >{item.name}
               </div>
             );
