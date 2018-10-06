@@ -214,7 +214,6 @@ export default class StartList extends Component {
       location,
       history,
     };
-    // console.log('renderContent:', type);
     return (
       <Start
         dataSource={data}

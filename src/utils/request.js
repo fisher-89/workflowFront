@@ -17,7 +17,6 @@ const fetch = (url, options) => {
     headers,
   });
 
-  // console.log('url', url, 'options', options);
   const newMethod = method.toLowerCase();
   switch (true) {
     case newMethod === 'get':

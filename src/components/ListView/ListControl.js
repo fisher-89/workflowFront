@@ -171,7 +171,6 @@ export default class ListControl extends Component {
     const { defaultType } = this.props;
     const { type = defaultType } = params;
     const { dispatch, location: { pathname } } = this.props;
-    // console.log('setModel:', type, params);
     dispatch({
       type: 'list/saveFilterTerm',
       payload: {
