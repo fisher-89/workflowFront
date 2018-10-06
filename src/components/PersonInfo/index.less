@@ -12,9 +12,15 @@
 .cur_info {
   flex-grow: 1;
 }
+
 .cur_info p {
   height: 50/75rem;
   line-height: 50/75rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling:touch;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: scroll;
+  span {
+    flex-shrink: 0;
+  }
 }
+

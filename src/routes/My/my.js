@@ -40,6 +40,7 @@ class My extends React.Component {
               <List.Item arrow="horizontal" onClick={() => this.redirectTo('/approvelist?type=processing')}>审批列表</List.Item>
             </List>
           </WingBlank>
+
           <WhiteSpace size="md" />
           <WingBlank size="lg">
             <Button type="primary" onClick={e => this.toExit(e)}>退出</Button>

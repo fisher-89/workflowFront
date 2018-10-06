@@ -16,8 +16,12 @@ class PersonInfo extends React.Component {
           />
           <div className={style.cur_info}>
             <p style={{ fontSize: '14px' }}>{userInfo.realname}({userInfo.staff_sn})</p>
-            <p style={{ fontSize: '12px' }}>{userInfo.department_name}/{userInfo.brand_name}</p>
-            {userInfo.shop_name && <p style={{ fontSize: '12px' }}>{userInfo.shop_name}使肌肤的基本符合的白癜风是减肥的规范的国际法版本的健康法规是否</p>}
+            <p style={{ fontSize: '12px' }}><span>{userInfo.department_name}/{userInfo.brand_name}</span></p>
+            {userInfo.shop_name && (
+            <p style={{ fontSize: '12px' }}>
+              <span>{userInfo.shop_name}</span>
+            </p>
+            )}
           </div>
         </div>
       </div>
