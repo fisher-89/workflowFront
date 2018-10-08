@@ -47,7 +47,7 @@ export default class Upload extends React.Component {
     }
   }
 
-  filesOnchange = (files, type, index, item) => {
+  filesOnchange = (files, type) => {
     const { onChange, field: { id } } = this.props;
     const newFiles = files.map((its) => {
       return rebackImg(its.url, `${UPLOAD_PATH}`, '_thumb');
@@ -56,7 +56,7 @@ export default class Upload extends React.Component {
     const { dispatch } = this.props;
     if (type === 'remove') {
       // onChange(obj, item);
-      onChange(newFiles, item);
+      onChange(newFiles);
     }
     if (type === 'add') {
       // lrz(files[files.length - 1].url, { width: 500 })
@@ -72,7 +72,7 @@ export default class Upload extends React.Component {
           cb: (f) => {
             newFiles[newFiles.length - 1] = f.path;
             // obj.value = [...newFiles];
-            onChange(newFiles, item);
+            onChange(newFiles);
           },
         },
       });
@@ -89,7 +89,7 @@ export default class Upload extends React.Component {
           <ImagePicker
             files={data}
             {...(isEdit &&
-              { onChange: (file, type, index) => this.filesOnchange(file, type, index, field) })}
+              { onChange: (file, type) => this.filesOnchange(file, type) })}
             onImageClick={e => this.reviewImg(e, data)}
             selectable={isEdit && data ? data.length < (max || 5) : false}
             accept="image/gif,image/jpeg,image/jpg,image/png"

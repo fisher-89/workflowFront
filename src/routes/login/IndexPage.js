@@ -36,7 +36,7 @@ class IndexPage extends React.Component {
       {
         text: '审批列表',
         url: '/approvelist?type=processing&page=1',
-        icon: '/img/Approval.png',
+        icon: '/img/Approval1.png',
         id: '2',
         description: '审批列表',
       },

@@ -42,9 +42,6 @@ class ListFilter extends Component {
           onClick={(e) => { onCancel(e, filterKey); }}
         >
           <div className={style.filter_con}>
-            <div className={style.header}>
-              <p className={style.title}>筛选</p>
-            </div>
             <div
               className={style.con_content}
               onClick={(e) => { e.stopPropagation(); return false; }}

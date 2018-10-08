@@ -132,7 +132,7 @@ class CreateForm extends Component {
             isEdit={isEdit}
             defaultValue={newFormData[item.key]}
             data={itemkey || {}}
-            onChange={this.onChange}
+            onChange={v => this.onChange(v, item)}
           />
         );
       }
@@ -159,7 +159,7 @@ class CreateForm extends Component {
             isEdit={isEdit}
             defaultValue={newFormData[item.key]}
             data={itemkey || {}}
-            onChange={this.onChange}
+            onChange={v => this.onChange(v, item)}
           />
         );
       }
@@ -178,13 +178,13 @@ class CreateForm extends Component {
             defaultValue={newFormData[item.key]}
             data={itemkey || {}}
             options={options}
-            onChange={this.onChange}
+            onChange={v => this.onChange(v, item)}
           />
         );
       } else if (item.type === 'text' || item.type === 'int') {
         return (
           <TextInput
-            onChange={this.onChange}
+            onChange={v => this.onChange(v, item)}
             field={item}
             key={i}
             isEdit={isEdit}
@@ -198,7 +198,7 @@ class CreateForm extends Component {
       if (item.type === 'date' || item.type === 'time' || item.type === 'datetime') {
         return (
           <FormDate
-            onChange={this.onChange}
+            onChange={v => this.onChange(v, item)}
             field={item}
             key={i}
             isEdit={isEdit}
@@ -209,7 +209,7 @@ class CreateForm extends Component {
       } else if (item.type === 'file') {
         return (
           <Upload
-            onChange={this.onChange}
+            onChange={v => this.onChange(v, item)}
             field={item}
             key={i}
             isEdit={isEdit}

@@ -255,7 +255,7 @@ export default class SelPerson extends Component {
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
           multiple={multiple}
-          name="shop_sn"
+          name="name"
           bread={breadCrumb}
           checkAble={checkAble}
           selected={selected}

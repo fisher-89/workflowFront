@@ -16,7 +16,9 @@ class SelectCheckbox extends React.Component {
         cols={1}
         value={[value]}
         data={options}
-        onChange={e => onChange(e[0], item)}
+        dismissText="删除"
+        onChange={e => onChange(e[0])}
+        onDismiss={() => { onChange(''); }}
       >
         <List.Item
           arrow="horizontal"
@@ -44,7 +46,7 @@ class SelectCheckbox extends React.Component {
               options={options}
               range={{ max, min }}
               value={isEdit ? value || [] : defaultValue || []}
-              {...(isEdit && { onChange: v => onChange(v, field) })}
+              {...(isEdit && { onChange: v => onChange(v) })}
               readonly={!isEdit}
             />
           </div>

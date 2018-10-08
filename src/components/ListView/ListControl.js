@@ -1,6 +1,7 @@
 // 发起列表
 
 import React, { Component } from 'react';
+import { debounce } from 'lodash';
 import { connect } from 'dva';
 import { Tabs, SearchBar } from 'antd-mobile';
 import {
@@ -27,6 +28,9 @@ export default class ListControl extends Component {
       model: 'filters',
       searchValue: '',
     };
+    this.fetchFiltersDataSource = debounce((params) => {
+      this.dealDebounce(params);
+    }, 500);
   }
 
   componentWillMount() {
@@ -94,7 +98,6 @@ export default class ListControl extends Component {
       const { url } = current;
       if (
         (JSON.stringify(url) === JSON.stringify(newParams) && !hash)) { // 有数据，不调接口
-        return;
       }
       this.fetchDataSource(newParams);
     }
@@ -154,7 +157,7 @@ export default class ListControl extends Component {
     this.filters = doConditionValue(filterParams);
   }
 
-  fetchFiltersDataSource = (params) => {
+  dealDebounce = (params) => {
     const { type } = this.state;
     const { lists, location: { pathname }, history } = this.props;
     const current = lists[`${pathname}_${type}`];

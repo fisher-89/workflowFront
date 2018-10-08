@@ -57,11 +57,12 @@ class Region extends React.Component {
   }
 
   onChangeCallback = (value) => {
-    const { onChange, field } = this.props;
+    const { onChange } = this.props;
     this.setState({
       address: value,
+    }, () => {
+      onChange(value);
     });
-    onChange(value, field);
   }
 
   makeValidValue = (value) => {
@@ -86,7 +87,16 @@ class Region extends React.Component {
     return obj;
   }
 
-
+  clearRegion = () => {
+    const { address } = this.state;
+    const newAddress = {
+      ...address,
+      province_id: '',
+      city_id: '',
+      county_id: '',
+    };
+    this.onChangeCallback(newAddress);
+  }
   renderFormRegion = (value, field) => {
     const areaValue = this.makeValidValue(value);
     const { address } = value;
@@ -107,6 +117,9 @@ class Region extends React.Component {
         value={value}
         data={districtTree}
         onOk={e => this.onHandlePickerChange(e)
+        }
+        dismissText="删除"
+        onDismiss={() => { this.clearRegion(); }
         }
       >
         <List.Item

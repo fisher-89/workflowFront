@@ -8,16 +8,24 @@ import style from './index.less';
 
 @connect()
 export default class FormDate extends React.Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+
+  //   };
+  // }
+
+
   handleOnChange = (v, field) => {
     const { type } = field;
     const { onChange } = this.props;
     const formatStr = formatDate(type);
     const value = moment(v).format(formatStr);
-    onChange(value, field);
+    onChange(value);
   }
 
   renderFormDate = () => {
-    const { data: { value }, field } = this.props;
+    const { data: { value }, field, onChange } = this.props;
     const { name, type, max, min } = field;
     const nowTime = moment().format(formatDate('time'));
     let newMax = max;
@@ -35,10 +43,12 @@ export default class FormDate extends React.Component {
     return (
       <DatePicker
         mode={type}
+        value={valueDate}
         minDate={minDate}
         maxDate={maxDate}
+        dismissText="删除"
         onChange={e => this.handleOnChange(e, field)}
-        value={valueDate}
+        onDismiss={() => { onChange(''); }}
       >
         <List.Item arrow="horizontal">{name}</List.Item>
       </DatePicker>

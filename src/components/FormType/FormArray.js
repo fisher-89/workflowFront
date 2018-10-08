@@ -26,7 +26,7 @@ class FormArray extends React.Component {
           <TagGroup
             style={{ marginBottom: '10px' }}
             value={isEdit ? value || [] : defaultValue || []}
-            {...(isEdit && { onChange: v => onChange(v, field) })}
+            {...(isEdit && { onChange: v => onChange(v) })}
             range={range}
             readonly={!isEdit}
           />

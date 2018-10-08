@@ -13,7 +13,6 @@ export default class PersonContainer extends Component {
     };
   }
 
-
   componentDidMount() {
     const htmlDom = ReactDOM.findDOMNode(this.ptr);
     const offetTop = htmlDom.getBoundingClientRect().top;
@@ -56,82 +55,90 @@ export default class PersonContainer extends Component {
     });
   }
 
- handleOk = () => {
-   const { selected, selectOk } = this.props;
-   if (selected.num < selected.min) {
-     Toast.info(`请至少选择${selected.min}个`, 1.5);
-   } else {
-     selectOk();
-   }
- }
- render() {
-   const {
-     bread = [],
-     children, fetchDataSource, multiple, all = true,
-     name, selected, checkedAll, checkAble, handleBread, isFinal = false,
-   } = this.props;
-   return (
-     <div className={style.con}>
-       <div className={style.header}>
-         <SearchBar
-           value={this.state.value}
-           placeholder="请输入名称"
-           showCancelButton={this.state.value}
-           onChange={this.onChange}
-           onCancel={
-                this.state.value ? this.onCancel :
-                  () => { }
-              }
-           onSubmit={this.onSubmit}
-         />
-         {this.state.value || isFinal || !bread.length ? null : (
-           <Bread
-             bread={bread}
-             handleBread={handleBread}
-           />
+  handleOk = () => {
+    const { selected, selectOk } = this.props;
+    if (selected.num < selected.min) {
+      Toast.info(`请至少选择${selected.min}个`, 1.5);
+    } else {
+      selectOk();
+    }
+  }
+
+  render() {
+    const {
+      bread = [],
+      children, fetchDataSource, multiple, all = true,
+      name, selected, checkedAll, checkAble, handleBread, isFinal = false,
+    } = this.props;
+    return (
+      <div className={style.con}>
+        <div className={style.header}>
+          <SearchBar
+            value={this.state.value}
+            placeholder="请输入名称"
+            showCancelButton={this.state.value}
+            onChange={this.onChange}
+            onCancel={
+              this.state.value ? this.onCancel :
+                () => { }
+            }
+            onSubmit={this.onSubmit}
+          />
+          {this.state.value || isFinal || !bread.length ? null : (
+            <Bread
+              bread={bread}
+              handleBread={handleBread}
+            />
           )}
-         {this.state.value || isFinal || !all ? null : (
-           <div style={{ borderBottom: '1px solid rgb(245, 245, 245)' }}>
-             <List >
-               <List.Item
-                 arrow="horizontal"
-                 onClick={fetchDataSource}
-               >全部
-               </List.Item>
-             </List>
-           </div>
+          {this.state.value || isFinal || !all ? null : (
+            <div style={{ borderBottom: '1px solid rgb(245, 245, 245)' }}>
+              <List >
+                <List.Item
+                  arrow="horizontal"
+                  onClick={fetchDataSource}
+                >全部
+                </List.Item>
+              </List>
+            </div>
           )}
-         {multiple && !this.state.value ? (
-           <div className={style.action}>
-             <div className={style.action_item}>
-               <div
-                 className={[style.item, checkAble ? style.checked : null].join(' ')}
-                 onClick={checkedAll}
-               >
-                 <span>全选</span>
-               </div>
-             </div>
-           </div>
+          {multiple && !this.state.value ? (
+            <div className={style.action}>
+              <div className={style.action_item}>
+                <div
+                  className={[style.item, checkAble ? style.checked : null].join(' ')}
+                  onClick={checkedAll}
+                >
+                  <span>全选</span>
+                </div>
+              </div>
+            </div>
           ) : null}
-       </div>
-       <div
-         className={style.con_content}
-         ref={(e) => { this.ptr = e; }}
-         style={{ overflow: 'auto', height: this.state.height }}
-       >
-         {children}
-       </div>
-       {
+        </div>
+        <div
+          className={style.con_content}
+          ref={(e) => { this.ptr = e; }}
+          style={{ overflow: 'auto', height: this.state.height }}
+        >
+          {children}
+        </div>
+        {
           multiple ? (
             <div className={style.footer}>
               <div className={style.sel_result}>
                 <div className={style.person_list}>
                   {selected.data.map((item, i) => {
-                const idx = i;
-                return (
-                  <span style={{ flexShrink: 0 }} key={idx}>{item[name]}、</span>
-                );
-              })}
+                    const idx = i;
+                    return (
+                      <div
+                        style={{ flexShrink: 0 }}
+                        className={style.list_item}
+                        key={idx}
+                      >
+                        {item[name]}
+                        <span />
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className={style.opt}>
                   <Button
@@ -148,9 +155,9 @@ export default class PersonContainer extends Component {
           ) : null
         }
 
-     </div>
-   );
- }
+      </div>
+    );
+  }
 }
 
 PersonContainer.defaultProps = {

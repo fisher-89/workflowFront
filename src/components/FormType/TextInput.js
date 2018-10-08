@@ -47,7 +47,7 @@ class TextInput extends React.Component {
         newValue = parseFloat(v);
       }
     }
-    onChange(newValue, item);
+    onChange(newValue);
   }
 
   renderFormInput = () => {
