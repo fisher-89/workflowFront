@@ -134,7 +134,13 @@ export default class SelPerson extends Component {
     const multiple = !!type;
     const current = currentKey[`${key}`] || {};
     const data = current.data || (multiple ? [] : {});
-    const newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
+    // const newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
+    let newData = [];
+    if (!multiple && !Object.keys(data || {}).length) {
+      newData = {};
+    } else {
+      newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
+    }
     let mutiData = [];
     if (multiple) {
       mutiData = newData;
@@ -213,25 +219,6 @@ export default class SelPerson extends Component {
     const { staff } = this.props;
     const staffSn = staff.map(item => item.staff_sn);
     const { selectAll, selected, params: { max } } = this.state;
-    // const { data } = selected;
-    // if (selectAll) {
-    //   const newData = data.filter(item => staffSn.indexOf(item.staff_sn) === -1);
-    //   selected.data = newData;
-    //   selected.num = newData.length;
-    // } else {
-    //   const newData = [...data, ...staff];
-    //   const result = [];
-    //   const obj = {};
-    //   for (let i = 0; i < newData.length; i += 1) {
-    //     if (!obj[newData[i].staff_sn]) { // 如果能查找到，证明数组元素重复了
-    //       obj[newData[i].staff_sn] = 1;
-    //       result.push(newData[i]);
-    //     }
-    //   }
-    //   selected.data = result;
-    //   selected.num = result.length;
-    // }
-    // selected.total = max || 50;
     const newSelected = dealCheckAll(selected, staffSn, 'staff_sn', selectAll, staff, max);
 
     this.setState({
@@ -249,9 +236,6 @@ export default class SelPerson extends Component {
     if (breadCrumb && breadCrumb.length) {
       this.selDepartment(breadCrumb[breadCrumb.length - 1]);
     }
-    //  else {
-    //   this.fetchDataSource();
-    // }
   }
 
   selectOk = () => {
@@ -290,7 +274,9 @@ export default class SelPerson extends Component {
         <PersonContainer
           multiple={multiple}
           name="realname"
+          all={false}
           bread={breadCrumb}
+          singleSelected={singleSelected}
           checkAble={checkAble}
           selected={selected}
           checkedAll={this.checkedAll}
@@ -299,6 +285,7 @@ export default class SelPerson extends Component {
           handleBread={this.selDepartment}
           fetchDataSource={() => this.fetchDataSource()}
           selectOk={this.selectOk}
+          handleDelete={this.getSelectResult}
           searchOncancel={this.searchOncancel}
         >
           <div

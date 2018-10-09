@@ -55,6 +55,21 @@ export default class PersonContainer extends Component {
     });
   }
 
+  onDelete = (i) => {
+    const { selected: { data }, handleDelete, multiple } = this.props;
+    let newData = [];
+    if (multiple) {
+      if (data.length === i + 1) {
+        newData = data.slice(0, i);
+      } else {
+        newData = data.slice(0, i).concat(data.slice(i + 1));
+      }
+    } else {
+      newData = '';
+    }
+    handleDelete(newData);
+  }
+
   handleOk = () => {
     const { selected, selectOk } = this.props;
     if (selected.num < selected.min) {
@@ -64,10 +79,11 @@ export default class PersonContainer extends Component {
     }
   }
 
+
   render() {
     const {
       bread = [],
-      children, fetchDataSource, multiple, all = true,
+      children, fetchDataSource, multiple, all = true, singleSelected,
       name, selected, checkedAll, checkAble, handleBread, isFinal = false,
     } = this.props;
     return (
@@ -121,12 +137,13 @@ export default class PersonContainer extends Component {
         >
           {children}
         </div>
-        {
-          multiple ? (
-            <div className={style.footer}>
-              <div className={style.sel_result}>
-                <div className={style.person_list}>
-                  {selected.data.map((item, i) => {
+
+        <div className={style.footer}>
+          {
+              multiple ? (
+                <div className={style.sel_result}>
+                  <div className={style.person_list}>
+                    {selected.data.map((item, i) => {
                     const idx = i;
                     return (
                       <div
@@ -134,26 +151,39 @@ export default class PersonContainer extends Component {
                         className={style.list_item}
                         key={idx}
                       >
-                        {item[name]}
-                        <span />
+                        {item[name].slice(-6)}
+                        <span onClick={() => {
+                         this.onDelete(i);
+                        }}
+                        />
                       </div>
                     );
                   })}
+                  </div>
+                  <div className={style.opt}>
+                    <Button
+                      size="small"
+                      type={selected.num > selected.total ? 'dashed' : 'primary'}
+                      disabled={selected.num > selected.total}
+                      onClick={this.handleOk}
+                    >
+                      {selected.num}/{selected.total}确认
+                    </Button>
+                  </div>
                 </div>
-                <div className={style.opt}>
-                  <Button
-                    size="small"
-                    type={selected.num > selected.total ? 'dashed' : 'primary'}
-                    disabled={selected.num > selected.total}
-                    onClick={this.handleOk}
-                  >
-                    {selected.num}/{selected.total}确认
-                  </Button>
-                </div>
-              </div>
+          ) : (
+            <div style={{ flexGrow: 1 }}>
+              <Button
+                type="warning"
+                onClick={this.onDelete}
+                disabled={!Object.keys(singleSelected || {}).length}
+              >删除
+              </Button>
             </div>
-          ) : null
+)
         }
+        </div>
+
 
       </div>
     );
@@ -164,4 +194,6 @@ PersonContainer.defaultProps = {
   multiple: false,
   name: 'name',
   checkAble: false,
+  handleDelete: () => {},
+  singleSelected: {},
 };

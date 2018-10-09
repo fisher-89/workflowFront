@@ -66,7 +66,7 @@ class SelectComp extends React.Component {
           const obj = {};
           obj[originKey] = 'value';
           obj[originValue] = 'text';
-          const newSource = makeFieldValue(source, obj, isMuti, false);
+          const newSource = (!isMuti && !Object.keys(source || {}).length) ? '' : makeFieldValue(source, obj, isMuti, false);
           selComponentCb(data, newSource);
         },
       },

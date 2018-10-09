@@ -75,6 +75,7 @@ class IndexPage extends React.Component {
                     <Grid
                       data={data}
                       square={false}
+                      isCarousel
                       onClick={el => history.push(`/table_edit/${el.id}`)}
                       activeStyle={{ background: '#f5f5f5' }}
                       hasLine={false}

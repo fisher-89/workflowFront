@@ -131,7 +131,12 @@ export default class SelDepartment extends Component {
     const current = currentKey[key] || {};
     const multiple = type;
     const data = current.data || (multiple ? [] : {});
-    const newData = makeFieldValue(data, { value: 'id', text: 'name' }, multiple);
+    let newData = [];
+    if (!multiple && !Object.keys(data || {}).length) {
+      newData = {};
+    } else {
+      newData = makeFieldValue(data, { value: 'id', text: 'name' }, multiple);
+    }
     let mutiData = [];
     if (multiple) {
       mutiData = newData;
@@ -312,6 +317,7 @@ export default class SelDepartment extends Component {
       <div className={[styles.con, style.sel_person].join(' ')}>
         <DepContainer
           multiple={multiple}
+          singleSelected={singleSelected}
           name="name"
           bread={breadCrumb}
           checkAble={checkAble}
@@ -324,6 +330,7 @@ export default class SelDepartment extends Component {
           selectOk={this.selectOk}
           onSwitchChange={(check) => { this.setState({ switchState: check }); }}
           searchOncancel={this.searchOncancel}
+          handleDelete={this.getSelectResult}
         >
 
           {!currentDep.length && !loading && (

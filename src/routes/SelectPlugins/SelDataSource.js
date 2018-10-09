@@ -183,12 +183,15 @@ export default class SelDataSource extends Component {
         <PersonContainer
           multiple={multiple}
           name="text"
+          singleSelected={singleSelected}
           checkAble={checkAble}
           selected={selected}
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
+          handleDelete={this.getSelectResult}
+
         >
           <ApiItem
             {...someProps}

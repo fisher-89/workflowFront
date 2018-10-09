@@ -401,7 +401,7 @@ export function makeFieldValue(value, name, multiple = false, include = false) {
     })
     return newValue;
   }
-  const newValue = getFieldValue(value, keys, name, include)
+  const newValue = getFieldValue(value, keys, name, include) 
   return newValue;
 }
 

@@ -59,6 +59,21 @@ export default class DepContainer extends Component {
     });
   }
 
+  onDelete = (i, item) => {
+    const { selected: { data }, handleDelete, multiple } = this.props;
+    let newData = [];
+    if (multiple) {
+      if (data.length === i + 1) {
+        newData = data.slice(0, i);
+      } else {
+        newData = data.slice(0, i).concat(data.slice(i + 1));
+      }
+    } else {
+      newData = '';
+    }
+    handleDelete(newData, item);
+  }
+
   handleSwitchChange = (check) => {
     const { onSwitchChange } = this.props;
     this.setState({
@@ -79,7 +94,7 @@ export default class DepContainer extends Component {
   render() {
     const {
       bread = [], children, multiple, name, selected, checkedAll, checkAble,
-      handleBread,
+      singleSelected, handleBread,
     } = this.props;
     const { switchState } = this.state;
     return (
@@ -129,15 +144,26 @@ export default class DepContainer extends Component {
         >
           {children}
         </div>
-        {
-          multiple ? (
-            <div className={style.footer}>
+
+        <div className={style.footer}>
+          {
+            multiple ? (
               <div className={style.sel_result}>
                 <div className={style.person_list}>
                   {selected.data.map((item, i) => {
                     const idx = i;
                     return (
-                      <span style={{ flexShrink: 0 }} key={idx}>{item[name]}、</span>
+                      <div
+                        style={{ flexShrink: 0 }}
+                        className={style.list_item}
+                        key={idx}
+                      >
+                        {item[name].slice(-6)}
+                        <span onClick={() => {
+                          this.onDelete(i, item);
+                        }}
+                        />
+                      </div>
                     );
                   })}
                 </div>
@@ -151,10 +177,18 @@ export default class DepContainer extends Component {
                     {selected.num}/{selected.total}确认
                   </Button>
                 </div>
-              </div>
-            </div>
-          ) : null
-        }
+              </div>) : (
+                <div style={{ flexGrow: 1 }}>
+                  <Button
+                    type="warning"
+                    onClick={this.onDelete}
+                    disabled={!Object.keys(singleSelected || {}).length}
+                  >删除
+                  </Button>
+                </div>
+              )}
+        </div>
+
 
       </div>
     );
@@ -165,4 +199,7 @@ DepContainer.defaultProps = {
   multiple: false,
   name: 'name',
   checkAble: false,
+  handleDelete: () => {
+
+  },
 };

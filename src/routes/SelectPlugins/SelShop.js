@@ -122,7 +122,12 @@ export default class SelPerson extends Component {
     const current = currentKey[`${key}`] || {};
     const multiple = `${type}` === '1';
     const data = current.data || (multiple ? [] : {});
-    const newData = makeFieldValue(data, { value: 'shop_sn', text: 'name' }, multiple);
+    let newData = [];
+    if (!multiple && !Object.keys(data || {}).length) {
+      newData = {};
+    } else {
+      newData = makeFieldValue(data, { value: 'shop_sn', text: 'name' }, multiple);
+    }
     let mutiData = [];
     if (multiple) {
       mutiData = newData;
@@ -256,6 +261,7 @@ export default class SelPerson extends Component {
         <PersonContainer
           multiple={multiple}
           name="name"
+          singleSelected={singleSelected}
           bread={breadCrumb}
           checkAble={checkAble}
           selected={selected}
@@ -264,6 +270,7 @@ export default class SelPerson extends Component {
           handleSearch={this.onSearch}
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
+          handleDelete={this.getSelectResult}
         >
           <div
             style={{ ...(loading ? { display: 'none' } : null) }}
