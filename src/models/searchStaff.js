@@ -32,6 +32,9 @@ export default {
         0: [],
       },
     },
+    currentKey: {
+
+    },
   },
   effects: {
     * getFinalStaff(payload, { select, put, call }) { // 自己部门员工列表

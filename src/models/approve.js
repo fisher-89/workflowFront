@@ -4,6 +4,7 @@ import * as s from '../services/start';
 import * as a from '../services/approve';
 import defaultReducers from './reducers/default';
 import flowReducers from './reducers/flow';
+import { makeFieldValue } from '../utils/util';
 
 export default {
 
@@ -171,12 +172,13 @@ export default {
     *saveStaff({ payload }, { put }) {
       const { value } = payload;
       const { stepRunId } = localStorage;
-      const newStaff = value.map((item) => {
-        const obj = {};
-        obj.approver_sn = item.staff_sn;
-        obj.approver_name = item.realname || item.staff_name;
-        return obj;
-      });
+      // const newStaff = value.map((item) => {
+      //   const obj = {};
+      //   obj.approver_sn = item.staff_sn;
+      //   obj.approver_name = item.realname || item.staff_name;
+      //   return obj;
+      // });
+      const newStaff = makeFieldValue(value, { staff_sn: 'approver_sn', realname: 'approver_name' }, false);
       yield put({
         type: 'doDeliver',
         payload: {

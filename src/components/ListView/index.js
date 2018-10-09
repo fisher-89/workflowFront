@@ -189,7 +189,7 @@ export default function ListView(ListItem) {
 
     makeListItemProps = (item) => {
       const { muti } = this.state;
-      const { multiple, onChange, name, singleSelected } = this.props;
+      const { multiple, onChange, name, singleSelected = {} } = this.props;
       const response = {
         ...this.props,
         value: item,
@@ -279,6 +279,7 @@ export default function ListView(ListItem) {
   }
   NewItem.defaultProps = {
     onRefresh: () => { },
+    singleSelected: {},
   };
   return NewItem;
 }

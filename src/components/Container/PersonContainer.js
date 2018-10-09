@@ -82,7 +82,7 @@ export default class PersonContainer extends Component {
 
   render() {
     const {
-      bread = [],
+      bread = [], deleteAble,
       children, fetchDataSource, multiple, all = true, singleSelected,
       name, selected, checkedAll, checkAble, handleBread, isFinal = false,
     } = this.props;
@@ -140,7 +140,7 @@ export default class PersonContainer extends Component {
 
         <div className={style.footer}>
           {
-              multiple ? (
+              multiple && (
                 <div className={style.sel_result}>
                   <div className={style.person_list}>
                     {selected.data.map((item, i) => {
@@ -171,17 +171,17 @@ export default class PersonContainer extends Component {
                     </Button>
                   </div>
                 </div>
-          ) : (
-            <div style={{ flexGrow: 1 }}>
-              <Button
-                type="warning"
-                onClick={this.onDelete}
-                disabled={!Object.keys(singleSelected || {}).length}
-              >删除
-              </Button>
-            </div>
-)
-        }
+            )}
+          {deleteAble && (
+          <div style={{ flexGrow: 1, padding: '6px 15px' }} >
+            <Button
+              type="warning"
+              onClick={this.onDelete}
+              disabled={!Object.keys(singleSelected || {}).length}
+            >删除
+            </Button>
+          </div>
+          )}
         </div>
 
 
@@ -196,4 +196,5 @@ PersonContainer.defaultProps = {
   checkAble: false,
   handleDelete: () => {},
   singleSelected: {},
+  deleteAble: true,
 };

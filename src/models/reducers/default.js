@@ -82,5 +82,14 @@ export default {
       ...state,
     };
   },
-
+  saveCback(state, action) {
+    const { cb, key } = action.payload;
+    const { currentKey } = state;
+    const current = { ...currentKey[key] || {} };
+    current.cb = cb;
+    return {
+      ...state,
+      currentKey: { ...currentKey, [key]: current },
+    };
+  },
 };

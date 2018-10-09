@@ -88,6 +88,12 @@ function RouterConfig({
       import('./routes/Approved/ApproveEditGrid'),
   },
   {
+    path: '/remark',
+    models: [],
+    component: () =>
+      import('./routes/Approved/Remark'),
+  },
+  {
     path: '/select_step',
     models: ['start'],
 
@@ -121,7 +127,7 @@ function RouterConfig({
       import('./routes/TableEdit/StartDetail'),
   },
   {
-    path: '/sel_person/:key/:type/:modal',
+    path: '/sel_person',
     models: ['approve', 'start', 'searchStaff'],
     component: () =>
       import('./routes/SelectPlugins/SelPerson'),
@@ -162,6 +168,7 @@ function RouterConfig({
     component: () =>
       import('./components/General/TagGroup/index.js'),
   },
+
   ];
   const speRoutes = [{
     path: '/extrance',

@@ -94,7 +94,7 @@ export default {
         if (type === 'staff') {
           staffs = data;
         } else {
-          const { children, staff } = data;
+          const { children, staff } = response;
           department = children;
           staffs = staff;
         }
@@ -149,16 +149,16 @@ export default {
   },
   reducers: {
     ...defaultReducers,
-    saveCback(state, action) {
-      const { cb, key } = action.payload;
-      const { currentKey } = state;
-      const current = { ...currentKey[key] || {} };
-      current.cb = cb;
-      return {
-        ...state,
-        currentKey: { ...currentKey, [key]: current },
-      };
-    },
+    // saveCback(state, action) {
+    //   const { cb, key } = action.payload;
+    //   const { currentKey } = state;
+    //   const current = { ...currentKey[key] || {} };
+    //   current.cb = cb;
+    //   return {
+    //     ...state,
+    //     currentKey: { ...currentKey, [key]: current },
+    //   };
+    // },
     saveFetch(state, action) {
       const { fetch, key } = action.payload;
       const { currentKey } = state;

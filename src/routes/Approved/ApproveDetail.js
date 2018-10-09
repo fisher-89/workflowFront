@@ -309,9 +309,30 @@ class ApproveDetail extends Component {
 
   doDeliver = () => { // 转交
     const {
-      history,
+      history, dispatch,
     } = this.props;
-    history.push('/sel_person/deliver/1/approve');
+    const obj = {
+      key: 'deliver',
+      type: 0,
+      singleDelete: 0,
+      modal: 'approve',
+    };
+    const url = JSON.stringify(obj);
+    dispatch({
+      type: 'searchStaff/saveCback',
+      payload: {
+        key: 'deliver',
+        cb: (source) => {
+          dispatch({
+            type: 'approve/saveStaff',
+            payload: {
+              value: source,
+            },
+          });
+        },
+      },
+    });
+    history.push(`/sel_person?params=${url}`);
   }
 
   render() {

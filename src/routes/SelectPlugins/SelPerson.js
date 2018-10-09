@@ -4,11 +4,12 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff, FinalStaff } from '../../common/ListView/index.js';
-import { userStorage, isArray, dealCheckAll } from '../../utils/util';
+import { userStorage, isArray, dealCheckAll, getUrlParams, makeFieldValue } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
 @connect(({ searchStaff, loading }) => ({
+  searchStaff,
   department: searchStaff.department,
   staff: searchStaff.staff,
   finalStaff: searchStaff.finalStaff,
@@ -20,22 +21,28 @@ import style from './index.less';
   searchLoding: loading.effects['searchStaff/serachStaff'],
 }))
 export default class SelPerson extends Component {
-  state = {
-    selected: {
-      data: [],
-      total: 50,
-      num: 0,
-    },
-    selectAll: false,
-    search: '',
-    key: '', // 选的什么人
-    type: 1, // 选的类型，单选还是多选
-    page: 1,
-  };
+  // state = {
+  //   selected: {
+  //     data: [],
+  //     total: 50,
+  //     num: 0,
+  //   },
+  //   selectAll: false,
+  //   search: '',
+  //   key: '', // 选的什么人
+  //   type: 1, // 选的类型，单选还是多选
+  //   page: 1,
+  // };
 
+  constructor(props) {
+    super(props);
+    const state = this.getInitState();
+    this.state = {
+      ...state,
+    };
+  }
   componentWillMount() {
-    const { match: { params } } = this.props;
-    const { key, type } = params;
+    const { params: { key } } = this.state;
     // const key = analyzePath(this.props.location.pathname, 1);
     // const type = analyzePath(this.props.location.pathname, 2);
     if (key === 'final') { // 终审人
@@ -43,10 +50,6 @@ export default class SelPerson extends Component {
     } else {
       this.fetchSelfDepStaff();
     }
-    this.setState({
-      key,
-      type,
-    });
   }
 
   componentWillUnmount() {
@@ -100,7 +103,7 @@ export default class SelPerson extends Component {
     });
     dispatch({
       type: 'searchStaff/serachStaff',
-      payload: `page=${page + 1}&pagesize=15&status_id>=0&filters=realname~${search};status_id>=0`,
+      payload: `page=${page + 1}&pagesize=15&status_id>=0&filters=realname~${search};`,
     });
   }
 
@@ -113,9 +116,49 @@ export default class SelPerson extends Component {
     });
   }
 
+  getInitState = () => {
+    const { searchStaff: { currentKey } } = this.props;
+    const urlParams = getUrlParams();
+    const paramsValue = urlParams.params;
+    const params = JSON.parse(paramsValue);
+    const { key, type, max, min } = params;
+    const multiple = !!type;
+    const current = currentKey[`${key}`] || {};
+    const data = current.data || (multiple ? [] : {});
+    // const newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
+    let newData = [];
+    if (!multiple && !Object.keys(data || {}).length) {
+      newData = {};
+    } else {
+      newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
+    }
+    let mutiData = [];
+    if (multiple) {
+      mutiData = newData;
+    }
+    const singleSelected = multiple ? {} : newData;
+    const obj = {
+      selected: {
+        data: mutiData,
+        total: max || 50,
+        num: mutiData.length,
+        min: min || 1,
+      },
+      singleSelected,
+      params,
+      page: 1,
+      selectAll: false,
+      search: '',
+      // key, // 选的什么人
+      // type, // 选的类型，单选还是多选
+      multiple,
+    };
+    return obj;
+  }
+
   getSelectResult = (result) => {
-    const { selected, type } = this.state;
-    if (`${type}` !== '1') {
+    const { selected, multiple } = this.state;
+    if (!multiple) {
       this.getSingleSelect(result);
     } else {
       this.setState({
@@ -129,18 +172,13 @@ export default class SelPerson extends Component {
   }
 
   getSingleSelect = (result) => {
-    const { dispatch, history, match: { params } } = this.props;
-    const { modal } = params;
-    const { key, type } = this.state;
-    dispatch({
-      type: `${modal}/saveStaff`,
-      payload: {
-        key,
-        type,
-        value: result,
-      },
-    });
-    history.goBack(-1);
+    const { searchStaff: { currentKey } } = this.props;
+    const { params: { key } } = this.state;
+    const current = { ...currentKey[`${key}`] || {} };
+    const { cb } = current;
+    if (cb) {
+      cb(result);
+    }
   }
 
   getFinalStaff = () => {
@@ -243,20 +281,33 @@ export default class SelPerson extends Component {
     }
   }
 
-  selectOk = () => {
-    const { dispatch, match: { params } } = this.props;
-    const { modal } = params;
-    const { selected, key, type } = this.state;
-    const newSelectstaff = selected.data;
-    dispatch({
-      type: `${modal}/saveStaff`,
-      payload: {
-        key,
-        type,
-        value: newSelectstaff,
-      },
-    });
+  // selectOk = () => {
+  //   const { dispatch } = this.props;
+  //   const { params: { modal, key, type }, selected } = this.state;
+  //   const newSelectstaff = selected.data;
+  //   dispatch({
+  //     type: `${modal}/saveStaff`,
+  //     payload: {
+  //       key,
+  //       type,
+  //       value: newSelectstaff,
+  //     },
+  //   });
 
+  //   // history.goBack(-1);
+  // }
+
+
+  selectOk = () => {
+    const { searchStaff: { currentKey } } = this.props;
+    const { params, selected } = this.state;
+    const { key } = params;
+    const current = { ...currentKey[`${key}`] || {} };
+    const { cb } = current;
+    const newSelectstaff = selected.data;
+    if (cb) {
+      cb(newSelectstaff);
+    }
     // history.goBack(-1);
   }
 
@@ -272,7 +323,8 @@ export default class SelPerson extends Component {
       location,
       history,
     };
-    const { selected, type, search, key, selectAll } = this.state;
+    const { selected, search, selectAll,
+      singleSelected, params: { singleDelete = true, type, key } } = this.state;
     const selectedData = selected.data;
     const isFinal = key === 'final';
     const { page, totalpage, data = [] } = searStaff;
@@ -285,6 +337,7 @@ export default class SelPerson extends Component {
         <PersonContainer
           multiple={`${type}` === '1'}
           name={isFinal ? 'staff_name' : 'realname'}
+          singleSelected={singleSelected}
           isFinal={isFinal}
           bread={breadCrumb}
           checkAble={checkAble}
@@ -295,6 +348,8 @@ export default class SelPerson extends Component {
           fetchDataSource={this.firstDepartment}
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
+          handleDelete={this.getSelectResult}
+          deleteAble={!!singleDelete}
         >
           <div
             style={{ ...(loading1 || loading2 || loading3 ? { display: 'none' } : null) }}
@@ -322,6 +377,7 @@ export default class SelPerson extends Component {
                 dispatch={this.props.dispatch}
                 multiple={`${type}` === '1'}
                 selected={selected.data}
+                singleSelected={singleSelected}
                 dataSource={staff}
                 onChange={this.getSelectResult}
               />
@@ -330,6 +386,7 @@ export default class SelPerson extends Component {
               <SeStaff
                 {...someProps}
                 type={key}
+                singleSelected={singleSelected}
                 link=""
                 heightNone
                 isFinal={isFinal}
