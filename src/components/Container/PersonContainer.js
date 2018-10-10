@@ -172,7 +172,7 @@ export default class PersonContainer extends Component {
                   </div>
                 </div>
             )}
-          {deleteAble && (
+          {!multiple && deleteAble && (
           <div style={{ flexGrow: 1, padding: '6px 15px' }} >
             <Button
               type="warning"
@@ -197,4 +197,5 @@ PersonContainer.defaultProps = {
   handleDelete: () => {},
   singleSelected: {},
   deleteAble: true,
+  all: false,
 };

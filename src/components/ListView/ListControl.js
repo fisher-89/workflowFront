@@ -295,7 +295,7 @@ export default class ListControl extends Component {
       <div className={styles.con}>
         <div>
           <SearchBar
-            placeholder="Search"
+            placeholder="请输入搜索内容"
             value={searchValue}
             onChange={value => this.searchOnchange(searchName, value)}
           />

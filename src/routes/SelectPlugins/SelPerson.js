@@ -48,7 +48,8 @@ export default class SelPerson extends Component {
     if (key === 'final') { // 终审人
       this.getFinalStaff();
     } else {
-      this.fetchSelfDepStaff();
+      // this.fetchSelfDepStaff();
+      this.fetchStaffs();
     }
   }
 
@@ -91,7 +92,7 @@ export default class SelPerson extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'searchStaff/serachStaff',
-      payload: `page=1&pagesize=15&filters=realname~${search};status_id>=0`,
+      payload: `page=1&pagesize=15&filters=realname~${search}`,
     });
   }
 
@@ -132,6 +133,7 @@ export default class SelPerson extends Component {
     } else {
       newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
     }
+    console.log('newData', newData, data);
     let mutiData = [];
     if (multiple) {
       mutiData = newData;
@@ -229,7 +231,7 @@ export default class SelPerson extends Component {
       selectAll: false,
     });
     if (parentId === '-1') {
-      this.firstDepartment();
+      this.fetchStaffs();
     } else {
       this.fetchSearchStaff({
         parentId,
@@ -258,7 +260,7 @@ export default class SelPerson extends Component {
     });
   }
 
-  firstDepartment = () => {
+  fetchStaffs = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'searchStaff/fetchFirstDepartment',
@@ -323,8 +325,8 @@ export default class SelPerson extends Component {
       location,
       history,
     };
-    const { selected, search, selectAll,
-      singleSelected, params: { singleDelete = true, type, key } } = this.state;
+    const { selected, search, selectAll, multiple,
+      singleSelected, params: { singleDelete = true, key } } = this.state;
     const selectedData = selected.data;
     const isFinal = key === 'final';
     const { page, totalpage, data = [] } = searStaff;
@@ -335,7 +337,7 @@ export default class SelPerson extends Component {
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
-          multiple={`${type}` === '1'}
+          multiple={multiple}
           name={isFinal ? 'staff_name' : 'realname'}
           singleSelected={singleSelected}
           isFinal={isFinal}
@@ -345,7 +347,7 @@ export default class SelPerson extends Component {
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
           handleBread={this.selDepartment}
-          fetchDataSource={this.firstDepartment}
+          fetchDataSource={this.fetchStaffs}
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
           handleDelete={this.getSelectResult}
@@ -375,7 +377,7 @@ export default class SelPerson extends Component {
                 name="staff_sn"
                 renderName={isFinal ? 'staff_name' : 'realname'}
                 dispatch={this.props.dispatch}
-                multiple={`${type}` === '1'}
+                multiple={multiple}
                 selected={selected.data}
                 singleSelected={singleSelected}
                 dataSource={staff}
@@ -385,7 +387,6 @@ export default class SelPerson extends Component {
             {search && !isFinal ? (
               <SeStaff
                 {...someProps}
-                type={key}
                 singleSelected={singleSelected}
                 link=""
                 heightNone
@@ -396,7 +397,7 @@ export default class SelPerson extends Component {
                 totalpage={totalpage}
                 onPageChange={this.onPageChange}
                 dispatch={this.props.dispatch}
-                multiple={`${type}` === '1'}
+                multiple={multiple}
                 selected={selected.data}
                 dataSource={data}
                 onRefresh={this.onRefresh}

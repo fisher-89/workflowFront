@@ -1,8 +1,7 @@
 import {
   department,
   getStaff,
-  firstDepartment,
-  serachStaff,
+  getSomeStaffs,
   getFinalStaff,
 } from '../services/department';
 import defaultReducers from './reducers/default';
@@ -116,21 +115,22 @@ export default {
       }
     },
     * fetchFirstDepartment({ payload }, { put, call }) { // 一级部门列表
-      const { breadCrumb } = payload;
-      const response = yield call(firstDepartment);
+      const { breadCrumb, search } = payload;
+      const response = yield call(getSomeStaffs, search);
       if (response && !response.error) {
+        const { children, staff } = response;
         yield put({
           type: 'save',
           payload: {
             store: 'department',
-            data: response || [],
+            data: children || [],
           },
         });
         yield put({
           type: 'save',
           payload: {
             store: 'staff',
-            data: [],
+            data: staff || [],
           },
         });
       }
@@ -142,9 +142,9 @@ export default {
         },
       });
     },
-    * serachStaff({ payload }, { put, call, select }) { // 一级部门列表
+    * serachStaff({ payload }, { put, call, select }) { // 搜索列表
       const { searStaff } = yield select(_ => _.searchStaff);
-      const response = yield call(serachStaff, payload);
+      const response = yield call(getSomeStaffs, payload);
       if (response && !response.error) {
         const { data, page, totalpage } = response;
         let newStaff = null;
@@ -167,11 +167,23 @@ export default {
   },
   reducers: {
     ...defaultReducers,
+    // saveSelectStaff(state, action) {
+    //   const newState = { ...state };
+    //   newState[action.payload.key] = action.payload.value;
+    //   return {
+    //     ...state, ...newState,
+    //   };
+    // },
+
     saveSelectStaff(state, action) {
-      const newState = { ...state };
-      newState[action.payload.key] = action.payload.value;
+      const { value, key } = action.payload;
+      const { currentKey } = state;
+      const current = { ...currentKey[key] || {} };
+      current.data = value;
+
       return {
-        ...state, ...newState,
+        ...state,
+        currentKey: { ...currentKey, [key]: current },
       };
     },
     clearSelectStaff(state) {

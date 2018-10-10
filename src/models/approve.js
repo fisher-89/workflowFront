@@ -4,7 +4,6 @@ import * as s from '../services/start';
 import * as a from '../services/approve';
 import defaultReducers from './reducers/default';
 import flowReducers from './reducers/flow';
-import { makeFieldValue } from '../utils/util';
 
 export default {
 
@@ -51,12 +50,17 @@ export default {
   effects: {
     * doDeliver({ payload }, {
       call,
-      put,
     }) {
-      const data = yield call(a.doDeliver, payload);
+      const { params, cb } = payload;
+      console.log('params', params);
+      const data = yield call(a.doDeliver, params);
       if (data && !data.error) {
-        yield put(routerRedux.goBack(-2));
-        // Toast.success('转交成功');
+        // yield put(routerRedux.goBack(-2));
+        if (cb) {
+          cb(data);
+        }
+
+        Toast.success('转交成功');
       }
     },
     * doReject({ payload }, {
@@ -178,12 +182,13 @@ export default {
       //   obj.approver_name = item.realname || item.staff_name;
       //   return obj;
       // });
-      const newStaff = makeFieldValue(value, { staff_sn: 'approver_sn', realname: 'approver_name' }, false);
+      // const newStaff =
+      //  makeFieldValue(value, { staff_sn: 'approver_sn', realname: 'approver_name' }, false);
       yield put({
         type: 'doDeliver',
         payload: {
           step_run_id: stepRunId,
-          deliver: newStaff,
+          deliver: value,
         },
       });
     },

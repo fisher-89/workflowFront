@@ -182,7 +182,7 @@ export default class SelPerson extends Component {
     if (`${parentId}` !== '-1') {
       payload = {
         breadCrumb: newBread,
-        reqData: { field_id: fieldId, department: parentId },
+        reqData: { field_id: fieldId, department_id: parentId },
       };
     }
     this.fetchDataSource(payload);

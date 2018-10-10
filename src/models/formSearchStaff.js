@@ -29,33 +29,6 @@ export default {
 
   },
   effects: {
-    * fetchSearchStaff({ payload }, { put, call }) {
-      const { reqData, breadCrumb } = payload;
-      const params = makerFilters(reqData);
-      const response = yield call(firstDepartment, params);
-      const { children, staff } = response;
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'staff',
-          data: staff,
-        },
-      });
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'breadCrumb',
-          data: breadCrumb,
-        },
-      });
-      yield put({
-        type: 'save',
-        payload: {
-          store: 'department',
-          data: children,
-        },
-      });
-    },
     * fetchSelfDepStaff({ payload }, { put, call }) { // 自己部门员工列表
       const { departmentId } = payload;
       yield put({
@@ -121,12 +94,12 @@ export default {
         },
       });
     },
-    * serachStaff({ payload }, { put, call, select }) {
+    * serachStaff({ payload }, { put, call, select }) { // 搜索
       const { searStaff } = yield select(_ => _.formSearchStaff);
       const params = makerFilters(payload);
       const response = yield call(firstDepartment, params);
       if (response && !response.error) {
-        const res = response.data;
+        const res = response;
         const { page, totalpage, data } = res;
         let newStaff = null;
         if (`${page}` !== '1') {

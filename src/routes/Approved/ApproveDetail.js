@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Modal, SwipeAction } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
-import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData } from '../../utils/util';
+import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData, makeFieldValue } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
@@ -309,8 +309,9 @@ class ApproveDetail extends Component {
 
   doDeliver = () => { // 转交
     const {
-      history, dispatch,
+      history, dispatch, approve: { startflow },
     } = this.props;
+    const { step_run: { id } } = startflow;
     const obj = {
       key: 'deliver',
       type: 0,
@@ -323,12 +324,20 @@ class ApproveDetail extends Component {
       payload: {
         key: 'deliver',
         cb: (source) => {
-          dispatch({
-            type: 'approve/saveStaff',
-            payload: {
-              value: source,
-            },
-          });
+          // dispatch({
+          //   type: 'approve/saveStaff',
+          //   payload: {
+          //     value: source,
+          //   },
+          // });
+          const newStaff =
+       makeFieldValue(source, { staff_sn: 'approver_sn', realname: 'approver_name' }, false);
+          const params = {
+            ...newStaff,
+            step_run_id: id,
+          };
+          const urlParams = JSON.stringify(params);
+          history.push(`/remark?params=${urlParams}`);
         },
       },
     });

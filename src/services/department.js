@@ -12,10 +12,15 @@ export async function firstDepartment() {
   return request('/api/oa/departments?filters=parent_id=0');
 }
 
+export async function getSomeStaffs(search) {
+  const url = search ? `?${search}` : '';
+  return request(`/api/approve-staff${url}`);
+}
 
 export async function serachStaff(search) {
   return request(`/api/oa/staff?${search}`, null, false);
 }
+
 export async function getFinalStaff() {
   return request('/api/event/final-staff', null, false);
 }

@@ -94,7 +94,7 @@ export default class DepContainer extends Component {
   render() {
     const {
       bread = [], children, multiple, name, selected, checkedAll, checkAble,
-      singleSelected, handleBread,
+      singleSelected, handleBread, deleteAble,
     } = this.props;
     const { switchState } = this.state;
     return (
@@ -177,16 +177,17 @@ export default class DepContainer extends Component {
                     {selected.num}/{selected.total}确认
                   </Button>
                 </div>
-              </div>) : (
-                <div style={{ flexGrow: 1 }}>
-                  <Button
-                    type="warning"
-                    onClick={this.onDelete}
-                    disabled={!Object.keys(singleSelected || {}).length}
-                  >删除
-                  </Button>
-                </div>
-              )}
+              </div>) :
+                deleteAble ? (
+                  <div style={{ flexGrow: 1 }}>
+                    <Button
+                      type="warning"
+                      onClick={this.onDelete}
+                      disabled={!Object.keys(singleSelected || {}).length}
+                    >删除
+                    </Button>
+                  </div>) : null
+              }
         </div>
 
 
@@ -202,4 +203,6 @@ DepContainer.defaultProps = {
   handleDelete: () => {
 
   },
+  deleteAble: true,
+
 };

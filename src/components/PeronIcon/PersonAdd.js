@@ -9,12 +9,11 @@ class PersonAdd extends React.Component {
         <div className={[style.person_icon, style.spe].join(' ')} onClick={handleClick}>
           <div className={style.name}>
             <img
-              src="/img/my.svg"
+              src="/img/default_avatar.png"
               alt="添加"
             />
           </div>
         </div>
-        <div className={style.user_info}>&nbsp;</div>
       </div>
     );
   }

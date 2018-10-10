@@ -2,36 +2,33 @@ import React, {
   Component,
 } from 'react';
 import { connect } from 'dva';
-import { List, Toast, Button, Modal } from 'antd-mobile';
+import { List, Toast, TextareaItem, WhiteSpace } from 'antd-mobile';
+import { createForm } from 'rc-form';
+import moment from 'moment';
+import { makeFieldValue } from '../../utils/util';
 import spin from '../../components/General/Loader';
 
 import style from './index.less';
 import styles from '../common.less';
 
-const { prompt } = Modal;
+@connect(({
+  start,
+  loading,
+}) => ({
+  start,
+  loading: loading.global,
+}))
 class SelectStep extends Component {
   state = {
     steps: [],
     preStepData: null,
-    init: false,
-  }
-  componentDidMount() {
-    const { start: { preType }, history, dispatch } = this.props;
-    if (preType) {
-      dispatch({
-        type: 'start/updateModal',
-      });
-    } else {
-      history.goBack(-1);
-    }
   }
 
-  componentWillReceiveProps(nextprops) {
-    const { start } = nextprops;
+  componentWillMount() {
+    const { start } = this.props;
     const { preStepData, steps } = start;
-    const { init } = this.state;
     let step = null;
-    if (steps && !steps.length && !init) { // 当steps还没有被初始化过，里面为[]
+    if (steps && !steps.length) { // 当steps还没有被初始化过，里面为[]
       step = (preStepData.available_steps || []).map((item) => {
         const obj = {
           id: item.id,
@@ -44,9 +41,18 @@ class SelectStep extends Component {
     }
     this.setState({
       steps: step || steps,
-      init: true,
       preStepData,
     });
+  }
+  componentDidMount() {
+    const { start: { preType }, history, dispatch } = this.props;
+    if (preType) {
+      dispatch({
+        type: 'start/updateModal',
+      });
+    } else {
+      history.goBack(-1);
+    }
   }
 
   getSteps = () => { // 生成步骤
@@ -83,8 +89,32 @@ class SelectStep extends Component {
       );
     });
   }
+
+  choseCback = (el, id) => {
+    const { dispatch, history } = this.props;
+    const { steps } = this.state;
+    const newSteps = steps.map((item) => {
+      let obj = { ...item };
+      if (`${id}` === `${item.id}`) {
+        obj = {
+          ...item,
+          approvers: { ...el },
+        };
+      }
+      return obj;
+    });
+    dispatch({
+      type: 'start/save',
+      payload: {
+        store: 'steps',
+        data: newSteps,
+      },
+    });
+    history.goBack(-1);
+  }
+
   choseApprover = (el) => { // 去选择审批人
-    const { history, dispatch } = this.props;
+    const { history, dispatch, start } = this.props;
     const {
       steps,
     } = this.state;
@@ -95,7 +125,42 @@ class SelectStep extends Component {
         data: steps,
       },
     });
-    history.push(`/select_approver/${el.id}`);
+
+    const { id } = el;
+
+    const { preStepData } = start;
+    const [step] = (preStepData.available_steps || []).filter(item => `${item.id}` === `${id}`);
+    const approverType = step.approver_type;
+    if (!approverType) {
+      const key = `approver${moment.unix()}`;
+      const obj = {
+        key,
+        type: 0, // 单选
+      };
+      const url = JSON.stringify(obj);
+      dispatch({
+        type: 'searchStaff/saveCback',
+        payload: {
+          key,
+          cb: (source) => {
+            this.choseCback(source, id);
+            // const urlParams = JSON.stringify(source);
+            // history.push(`/remark?params=${urlParams}`);
+            const newData = makeFieldValue(source, { staff_sn: 'value', realname: 'text' }, false);
+            dispatch({
+              type: 'searchStaff/saveSelectStaff',
+              payload: {
+                key,
+                value: newData,
+              },
+            });
+          },
+        },
+      });
+      history.push(`/sel_person?params=${url}`);
+    } else {
+      history.push(`/select_approver/${el.id}`);
+    }
   }
 
   choseItem = (el) => { // 选择某项
@@ -123,7 +188,14 @@ class SelectStep extends Component {
     });
   }
 
-  submitStep = (v) => { // 提交步骤
+  submitStep = (e) => { // 提交步骤
+    e.preventDefault();
+    let v = '';
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        v = values.remark;
+      }
+    });
     const { dispatch, history, start: { preType },
     } = this.props;
     const { steps, preStepData } = this.state;
@@ -211,35 +283,23 @@ class SelectStep extends Component {
           <List renderHeader={() => <span>执行步骤<a style={{ color: 'red' }}>{info}</a></span>}>
             {this.getSteps()}
           </List>
+
+          <WhiteSpace size="md" />
+          {preType === 'approve' && (
+          <TextareaItem
+            placeholder="请输入备注"
+            {...getFieldProps('remark')}
+            rows={5}
+            count={100}
+          />
+          )}
+
         </div>
         <div className={styles.footer}>
-
-          {preType === 'start' ?
-
-            <a onClick={this.submitStep}><span>提交</span></a> : (
-              <Button onClick={() => prompt('填写备注', '',
-              [
-                {
-                  text: '取消',
-                },
-                {
-                  text: '确定',
-                  onPress: this.submitStep,
-                },
-              ], 'default', null, ['请输入备注'])}
-              >提交
-              </Button>
-)}
-
+          <a onClick={this.submitStep}><span>提交</span></a>
         </div>
       </div>
     );
   }
 }
-export default connect(({
-  start,
-  loading,
-}) => ({
-  start,
-  loading: loading.global,
-}))(SelectStep);
+export default createForm()(SelectStep);

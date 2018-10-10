@@ -102,13 +102,14 @@ class SelectStep extends Component {
       );
     });
   }
+
   choseItem = (el) => { // 选择，type来标志是单选还是多选0:单选，1:多选
     const { dispatch, start, history } = this.props;
     const { steps } = start;
     const { id } = this.state;
     const newSteps = steps.map((item) => {
       let obj = { ...item };
-      if (Number(id) === Number(item.id)) {
+      if (`${id}` === `${item.id}`) {
         obj = {
           ...item,
           approvers: { ...el },
@@ -125,6 +126,7 @@ class SelectStep extends Component {
     });
     history.goBack(-1);
   }
+
   serachDep = (e) => { // 搜索
     const { approverList } = this.state;
     const result = approverList.filter(item => item.realname.indexOf(e) > -1);

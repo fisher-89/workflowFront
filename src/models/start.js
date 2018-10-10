@@ -117,9 +117,9 @@ export default {
             data: payload.preType,
           },
         });
-        yield put({
-          type: 'resetStart', // 重置发起表单
-        });
+        // yield put({
+        //   type: 'resetStart', // 重置发起表单
+        // });
         if (payload.cb) {
           payload.cb(data);
         }

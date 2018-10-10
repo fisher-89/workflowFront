@@ -9,6 +9,8 @@ import PersonContainer from './Container/PersonContainer';
 import DepContainer from './Container/DepContainer';
 
 import PersonIcon from './PeronIcon/PersonIcon';
+import PersonAdd from './PeronIcon/PersonAdd';
+
 
 export {
   General, // 通用组件
@@ -20,5 +22,6 @@ export {
   ListSort,
   PersonContainer,
   PersonIcon,
+  PersonAdd,
   DepContainer,
 };
