@@ -266,12 +266,14 @@ class ApproveDetail extends Component {
         preType: 'approve',
         cb: (data) => {
           if (data.step_end === 1) { // 不选步骤
-            prompt('填写备注', '', [{
-              text: '取消',
-            }, {
-              text: '确定',
-              onPress: v => this.submitStep(v, data),
-            }], 'default', null, ['请输入备注']);
+            // prompt('填写备注', '', [{
+            //   text: '取消',
+            // }, {
+            //   text: '确定',
+            //   onPress: v => this.submitStep(v, data),
+            // }], 'default', null, ['请输入备注']);
+            const url = JSON.stringify(data);
+            history.push(`/remark?params=${url}&type=2`);
           } else {
             history.replace('/select_step');
           }
@@ -291,20 +293,22 @@ class ApproveDetail extends Component {
     }], 'default', null, ['input your name']);
   }
 
-  doReject = (v) => {
-    const {
-      dispatch,
-    } = this.props;
+  doReject = () => {
     const {
       flowId,
     } = this.state;
-    dispatch({
-      type: 'approve/doReject',
-      payload: {
-        step_run_id: flowId,
-        remark: v,
-      },
-    });
+    // dispatch({
+    //   type: 'approve/doReject',
+    //   payload: {
+    //     step_run_id: flowId,
+    //     remark: v,
+    //   },
+    // });
+    const payload = {
+      step_run_id: flowId,
+    };
+    const url = JSON.stringify(payload);
+    history.push(`/remark?params=${url}&type=3`);
   }
 
   doDeliver = () => { // 转交
@@ -331,7 +335,7 @@ class ApproveDetail extends Component {
           //   },
           // });
           const newStaff =
-       makeFieldValue(source, { staff_sn: 'approver_sn', realname: 'approver_name' }, false);
+            makeFieldValue(source, { staff_sn: 'approver_sn', realname: 'approver_name' }, false);
           const params = {
             ...newStaff,
             step_run_id: id,
@@ -411,7 +415,7 @@ class ApproveDetail extends Component {
           )}
           {startflow.step.reject_type !== 0 && startflow.step_run.action_type === 0 && (
             <a
-              onClick={this.fillRemark}
+              onClick={this.doReject}
             >
               <span>驳回</span>
             </a>

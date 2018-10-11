@@ -1,5 +1,5 @@
 import { Toast } from 'antd-mobile';
-import { routerRedux } from 'dva/router';
+// import { routerRedux } from 'dva/router';
 import * as s from '../services/start';
 import * as a from '../services/approve';
 import defaultReducers from './reducers/default';
@@ -66,10 +66,12 @@ export default {
       call,
       put,
     }) {
-      const data = yield call(a.doReject, payload);
+      const { params, cb } = payload;
+      const data = yield call(a.doReject, params);
       if (data && !data.error) {
-        yield put(routerRedux.goBack(-1));
-        Toast.success('操作成功');
+        if (cb) {
+          cb(data);
+        }
       }
     },
     * getFlowList(payload, {

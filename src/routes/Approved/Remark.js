@@ -84,6 +84,28 @@ export default class Remark extends Component {
             },
           });
         }
+        if (`${type}` === '3') {
+          dispatch({
+            type: 'approve/doReject',
+            payload: {
+              params: {
+                ...params,
+                ...values,
+              },
+              cb: (datas) => {
+                dispatch({
+                  type: 'list/updateLists',
+                  payload: {
+                    data: datas,
+                    start: '/approvelist_processing',
+                    end: '/approvelist_approved',
+                  },
+                });
+                window.history.go(-1);
+              },
+            },
+          });
+        }
       }
     });
   }
@@ -91,10 +113,12 @@ export default class Remark extends Component {
   render() {
     const { getFieldProps } = this.props.form;
     const urlParams = getUrlParams();
+    const { type } = urlParams;
     const params = JSON.parse(urlParams.params);
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>
+          {`${type}` === '1' && (
           <div className={style.players}>
             <Flex className={style.title} id="participants">
               <Flex.Item>转交给：</Flex.Item>
@@ -113,6 +137,7 @@ export default class Remark extends Component {
               />
             </Flex>
           </div>
+          )}
           <WhiteSpace size="md" />
           <TextareaItem
             placeholder="请输入备注"

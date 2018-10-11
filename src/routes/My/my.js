@@ -36,8 +36,8 @@ class My extends React.Component {
           <WhiteSpace size="md" />
           <WingBlank size="lg" className={styles.con_step}>
             <List>
-              <List.Item arrow="horizontal" onClick={() => this.redirectTo('/start_list?type=processing')}>我发起的</List.Item>
-              <List.Item arrow="horizontal" onClick={() => this.redirectTo('/approvelist?type=processing')}>审批列表</List.Item>
+              <List.Item arrow="horizontal" onClick={() => this.redirectTo('/start_list?type=processing&page=1')}>我发起的</List.Item>
+              <List.Item arrow="horizontal" onClick={() => this.redirectTo('/approvelist?type=processing&page=1')}>审批列表</List.Item>
             </List>
           </WingBlank>
 
