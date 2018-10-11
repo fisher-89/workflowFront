@@ -1,7 +1,7 @@
 
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { List, PullToRefresh } from 'antd-mobile';
 import QueueAnim from 'rc-queue-anim';
 import nothing from '../../../public/img/nothing.png';

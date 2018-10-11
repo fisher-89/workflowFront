@@ -133,7 +133,6 @@ export default class SelPerson extends Component {
     } else {
       newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
     }
-    console.log('newData', newData, data);
     let mutiData = [];
     if (multiple) {
       mutiData = newData;
@@ -319,11 +318,12 @@ export default class SelPerson extends Component {
       staff, searStaff,
       breadCrumb, loading1,
       loading2, loading3,
-      history, location,
+      history, location, dispatch,
     } = this.props;
     const someProps = {
       location,
       history,
+      dispatch,
     };
     const { selected, search, selectAll, multiple,
       singleSelected, params: { singleDelete = true, key } } = this.state;
@@ -341,6 +341,7 @@ export default class SelPerson extends Component {
           name={isFinal ? 'staff_name' : 'realname'}
           singleSelected={singleSelected}
           isFinal={isFinal}
+          search={search}
           bread={breadCrumb}
           checkAble={checkAble}
           selected={selected}
@@ -366,8 +367,7 @@ export default class SelPerson extends Component {
                 name="id"
               />
             ) : null}
-            {((search && data && !data.length && !tempFinal.length)
-              || (!search && !staff.length && !department.length)) ? <Nothing /> : null}
+            {((!search && !staff.length && !department.length)) ? <Nothing /> : null}
             {!search && !isFinal ? (
               <Staff
                 link=""
@@ -376,7 +376,6 @@ export default class SelPerson extends Component {
                 onRefresh={false}
                 name="staff_sn"
                 renderName={isFinal ? 'staff_name' : 'realname'}
-                dispatch={this.props.dispatch}
                 multiple={multiple}
                 selected={selected.data}
                 singleSelected={singleSelected}
@@ -389,14 +388,12 @@ export default class SelPerson extends Component {
                 {...someProps}
                 singleSelected={singleSelected}
                 link=""
-                heightNone
                 isFinal={isFinal}
                 name="staff_sn"
                 renderName={isFinal ? 'staff_name' : 'realname'}
                 page={page}
                 totalpage={totalpage}
                 onPageChange={this.onPageChange}
-                dispatch={this.props.dispatch}
                 multiple={multiple}
                 selected={selected.data}
                 dataSource={data}

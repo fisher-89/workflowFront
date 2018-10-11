@@ -54,7 +54,7 @@ export default class ListControl extends Component {
       this.sorter = newParams.sort;
       this.handleChangeFilter(newParams);
       this.currentFilter(search ? search.slice(1) : parseParamsToUrl(url));
-      if (!data || (data && data.length)) { // 有数据，不调接口
+      if ((!data || (data && data.length)) && `${page}` === '1') { // 有数据，不调接口
         return;
       }
       // 没有数据：初次进入页面或刷新了
@@ -78,6 +78,7 @@ export default class ListControl extends Component {
     // this.setState({
     //   type,
     // });
+
     if (search !== this.props.location.search) {
       this.currentFilter(search ? search.slice(1) : '');
       const params = getUrlParams(search);
@@ -96,6 +97,7 @@ export default class ListControl extends Component {
       this.fetchSearchValue();
       const current = lists[`${pathname}_${type}`];
       const { url } = current;
+      console.log('url', url, newParams, hash);
       if (
         (JSON.stringify(url) === JSON.stringify(newParams) && !hash)) { // 有数据，不调接口
       }
@@ -262,11 +264,11 @@ export default class ListControl extends Component {
               {sortItem.name}
               <span
                 style={{
-                backgroundImage: `url(${sortItem.icon})`,
-                backgroundPosition: 'right center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '0.4rem',
-              }}
+                  backgroundImage: `url(${sortItem.icon})`,
+                  backgroundPosition: 'right center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '0.4rem',
+                }}
                 onClick={(e) => {
                   e.stopPropagation();
                   this.switchCurSort();

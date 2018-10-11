@@ -44,7 +44,6 @@ export default class Remark extends Component {
                 ...params,
                 ...values,
               },
-              back: -2,
               cb: (datas) => {
                 dispatch({
                   type: 'approve/resetStart',
@@ -62,29 +61,29 @@ export default class Remark extends Component {
             },
           });
         }
-        // if (`${type}` === '2') {
-        //   dispatch({
-        //     type: 'approve/getThrough',
-        //     payload: {
-        //       data: {
-        //         ...params,
-        //         ...values,
-        //       },
-        //       id: params.flow_id,
-        //       cb: (datas) => {
-        //         dispatch({
-        //           type: 'list/updateLists',
-        //           payload: {
-        //             data: datas,
-        //             start: '/approvelist_processing',
-        //             end: '/approvelist_approved',
-        //           },
-        //         });
-        //         history.goBack(-1);
-        //       },
-        //     },
-        //   });
-        // }
+        if (`${type}` === '2') {
+          dispatch({
+            type: 'approve/getThrough',
+            payload: {
+              data: {
+                ...params,
+                ...values,
+              },
+              id: params.flow_id,
+              cb: (datas) => {
+                dispatch({
+                  type: 'list/updateLists',
+                  payload: {
+                    data: datas,
+                    start: '/approvelist_processing',
+                    end: '/approvelist_approved',
+                  },
+                });
+                window.history.go(-1);
+              },
+            },
+          });
+        }
       }
     });
   }

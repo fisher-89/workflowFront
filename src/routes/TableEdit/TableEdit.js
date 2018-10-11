@@ -234,7 +234,7 @@ class TableEdit extends Component {
         // id: flowId,
         preType: 'start',
         cb: () => {
-          history.push('/select_step');
+          history.replace('/select_step');
         },
       },
     });

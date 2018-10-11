@@ -52,15 +52,14 @@ export default {
       call,
     }) {
       const { params, cb } = payload;
-      console.log('params', params);
       const data = yield call(a.doDeliver, params);
       if (data && !data.error) {
-        // yield put(routerRedux.goBack(-2));
-        if (cb) {
-          cb(data);
-        }
-
         Toast.success('转交成功');
+        setTimeout(() => {
+          if (cb) {
+            cb(data);
+          }
+        }, 1000);
       }
     },
     * doReject({ payload }, {
