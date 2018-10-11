@@ -293,7 +293,7 @@ export default class ListControl extends Component {
     const searchName = searchColumns.name;
     return (
       <div className={styles.con}>
-        <div>
+        <div id="header">
           <SearchBar
             placeholder="请输入搜索内容"
             value={searchValue}

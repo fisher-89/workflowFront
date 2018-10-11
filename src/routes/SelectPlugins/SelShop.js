@@ -40,7 +40,7 @@ export default class SelPerson extends Component {
       clearInterval(this.timer);
     }
     this.setState({
-      search,
+      search, page: 1,
     });
     this.timer = setInterval(() => {
       this.onSearchSubmit(search.trim());
@@ -250,7 +250,7 @@ export default class SelPerson extends Component {
       history,
     };
     const { totalpage, data } = shop;
-    const { selected, selectAll, singleSelected, page, multiple } = this.state;
+    const { selected, selectAll, singleSelected, page, multiple, search } = this.state;
     const selectedData = selected.data;
     const shopSn = (data || []).map(item => item.shop_sn);
     const checkAble = selectedData.filter(item =>
@@ -261,6 +261,7 @@ export default class SelPerson extends Component {
         <PersonContainer
           multiple={multiple}
           name="name"
+          search={search}
           singleSelected={singleSelected}
           bread={breadCrumb}
           checkAble={checkAble}

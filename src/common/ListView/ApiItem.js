@@ -16,7 +16,7 @@ export default class Shop extends Component {
         <div
           // {...className}
           className={className}
-        >{value[renderName]}
+        ><span>{value[renderName]}</span>
         </div>
 
       </div>

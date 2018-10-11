@@ -27,22 +27,23 @@ export default class DepContainer extends Component {
 
   componentWillReceiveProps(props) {
     const oldSwitchState = this.props.switchState;
-    const { switchState } = props;
+    const { switchState, search } = props;
     if (switchState !== oldSwitchState) {
       this.setState({
         switchState,
       });
     }
+    if (search !== undefined && search !== this.props.search) {
+      this.setState({
+        value: search,
+      });
+    }
   }
 
   onChange = (value) => {
-    const { searchOncancel, handleSearch } = this.props;
+    const { handleSearch } = this.props;
     this.setState({ value });
-    if (value === '') {
-      searchOncancel();
-    } else {
-      handleSearch(value);
-    }
+    handleSearch(value);
   };
 
   onSubmit = () => {

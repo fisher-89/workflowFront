@@ -44,6 +44,7 @@ export default class SelPerson extends Component {
     }
     this.setState({
       search,
+      page: 1,
     });
     if (search) {
       this.timer = setInterval(() => {
@@ -255,13 +256,14 @@ export default class SelPerson extends Component {
     const {
       department,
       staff, searStaff,
-      breadCrumb,
+      breadCrumb, dispatch,
       loading, globalLoading,
       history, location,
     } = this.props;
     const someProps = {
       location,
       history,
+      dispatch,
     };
     const { selected, search, selectAll, singleSelected, multiple, page } = this.state;
     const selectedData = selected.data;
@@ -269,6 +271,7 @@ export default class SelPerson extends Component {
     const staffSn = staff.map(item => item.staff_sn);
     const checkAble = selectedData.filter(item =>
       staffSn.indexOf(item.staff_sn) > -1).length === staffSn.length && selectAll;
+
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
@@ -300,8 +303,7 @@ export default class SelPerson extends Component {
                 name="id"
               />
             ) : null}
-            {(((search && data && !data.length)
-              || (!search && !staff.length && !department.length))
+            {(((!search && !staff.length && !department.length))
               && !globalLoading) ? <Nothing /> : null}
             {!search ? (
               <Staff
@@ -311,7 +313,6 @@ export default class SelPerson extends Component {
                 name="staff_sn"
                 renderName="realname"
                 singleSelected={singleSelected}
-                dispatch={this.props.dispatch}
                 multiple={multiple}
                 selected={selected.data}
                 dataSource={staff}
@@ -322,13 +323,11 @@ export default class SelPerson extends Component {
               <SeStaff
                 {...someProps}
                 link=""
-                heightNone
                 name="staff_sn"
                 renderName="realname"
                 page={page}
                 totalpage={totalpage}
                 onPageChange={this.onPageChange}
-                dispatch={this.props.dispatch}
                 multiple={multiple}
                 singleSelected={singleSelected}
                 selected={selected.data}

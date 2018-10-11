@@ -50,6 +50,7 @@ export default class SelDataSource extends Component {
     });
     this.setState({
       curDataSource: result,
+      search,
     });
   }
 
@@ -87,7 +88,7 @@ export default class SelDataSource extends Component {
     const params = JSON.parse(paramsValue);
     const { key, type, max, min } = params;
     const current = currentKey[key] || {};
-    const multiple = type;
+    const multiple = !!type;
     const data = current.data || (multiple ? [] : {});
     // const newData = makeFieldValue(data, { value: 'id', text: 'name' }, multiple);
     const newData = data;
@@ -144,7 +145,9 @@ export default class SelDataSource extends Component {
 
   searchOncancel = () => {
     const { apiSource } = this.props;
+    console.log('searchOncancel');
     this.setState({
+      search: '',
       curDataSource: apiSource,
     });
   }
@@ -166,13 +169,14 @@ export default class SelDataSource extends Component {
 
   render() {
     const {
-      location, history,
+      location, history, dispatch,
     } = this.props;
     const someProps = {
       location,
       history,
+      dispatch,
     };
-    const { selected, multiple, curDataSource,
+    const { selected, multiple, curDataSource, search,
       singleSelected } = this.state;
     const selectedData = selected.data;
     const depSn = curDataSource.map(item => item.id);
@@ -183,6 +187,7 @@ export default class SelDataSource extends Component {
         <PersonContainer
           multiple={multiple}
           name="text"
+          search={search}
           singleSelected={singleSelected}
           checkAble={checkAble}
           selected={selected}
@@ -191,7 +196,6 @@ export default class SelDataSource extends Component {
           selectOk={this.selectOk}
           searchOncancel={this.searchOncancel}
           handleDelete={this.getSelectResult}
-
         >
           <ApiItem
             {...someProps}
@@ -199,7 +203,6 @@ export default class SelDataSource extends Component {
             name="value"
             renderName="text"
             singleSelected={singleSelected}
-            dispatch={this.props.dispatch}
             multiple={multiple}
             selected={selected.data}
             dataSource={curDataSource}

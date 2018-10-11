@@ -33,14 +33,11 @@ export default class PersonContainer extends Component {
   }
 
   onChange = (value) => {
-    const { searchOncancel, handleSearch } = this.props;
+    const { handleSearch } = this.props;
     this.setState({ value });
-    if (value === '') {
-      searchOncancel();
-    } else {
-      handleSearch(value);
-    }
+    handleSearch(value);
   };
+
   onSubmit = () => {
     const { handleSearch } = this.props;
     handleSearch(this.state.value);
@@ -88,7 +85,7 @@ export default class PersonContainer extends Component {
     } = this.props;
     return (
       <div className={style.con}>
-        <div className={style.header}>
+        <div className={style.header} id="header">
           <SearchBar
             value={this.state.value}
             placeholder="请输入名称"
@@ -138,7 +135,7 @@ export default class PersonContainer extends Component {
           {children}
         </div>
 
-        <div className={style.footer}>
+        <div className={style.footer} id="footer">
           {
               multiple && (
                 <div className={style.sel_result}>

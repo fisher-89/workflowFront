@@ -31,22 +31,28 @@ export default function ListView(ListItem) {
 
     componentDidMount() {
       if (this.ptr) {
-        const htmlDom = ReactDOM.findDOMNode(this.ptr);
-        const offetTop = htmlDom.getBoundingClientRect().top;
-        const hei = this.state.height - offetTop;
-        setTimeout(() => this.setState({
-          height: hei,
-        }), 0);
+        // const htmlDom = ReactDOM.findDOMNode(this.ptr);
+        // const offetTop = htmlDom.getBoundingClientRect().top;
+        // const hei = this.state.height - offetTop;
+        // setTimeout(() => this.setState({
+        //   height: hei,
+        // }), 0);
+        this.getElementHeight();
       }
     }
 
     componentWillReceiveProps(nextProps) {
-      const { selected } = nextProps;
+      const { selected, dataSource } = nextProps;
       this.listThis = nextProps.location;
       if (selected && JSON.stringify(selected) !== JSON.stringify(this.state.muti)) {
         this.setState({
           muti: [...nextProps.selected],
         });
+      }
+      if (JSON.stringify(dataSource) !== JSON.stringify(this.props.dataSource) && this.ptr) {
+        // const htmlDom = ReactDOM.findDOMNode(this.ptr);
+        // const offetTop = htmlDom.getBoundingClientRect().top;
+        this.getElementHeight();
       }
     }
 
@@ -73,6 +79,15 @@ export default function ListView(ListItem) {
         }
       }
       onRefresh();
+    }
+
+    getElementHeight = () => {
+      const offetTop = (document.getElementById('header') || {}).offsetHeight || 0;
+      const offetBottom = (document.getElementById('footer') || {}).offsetHeight || 0;
+      const hei = document.documentElement.clientHeight - offetTop - offetBottom;
+      setTimeout(() => this.setState({
+        height: hei,
+      }), 0);
     }
     // 返回角度
     GetSlideAngle = (dx, dy) => {
@@ -225,6 +240,7 @@ export default function ListView(ListItem) {
         currentPage = urlParams.page;
       }
       const height = this.state.height - (offsetBottom || 0);
+
       const style = !heightNone ? { style: { minHeight: height } } : null;
       const nothingAble = !heightNone &&
         (!loading.global && ((dataSource && !dataSource.length) || !dataSource));
@@ -257,7 +273,7 @@ export default function ListView(ListItem) {
                       );
                     })}
                   </List>
-                  {!loading.global && onRefresh && currentPage < totalpage &&
+                  {!loading.global && currentPage < totalpage &&
                     <div style={{ textAlign: 'center' }}>加载更多</div>
                   }
                   {loading.global && onRefresh && <SmallLoader />}

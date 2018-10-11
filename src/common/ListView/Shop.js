@@ -6,8 +6,7 @@ import style from './index.less';
 export default class Shop extends Component {
   render() {
     const { value, onClick, checked, multiple, renderName = 'name' } = this.props;
-    const className = [style.item, multiple ? null : style.single, checked ? (multiple ? style.checked : style.single_item) : null].join(' ');
-
+    const className = [style.item, style.shop_item, multiple ? null : style.single, checked ? (multiple ? style.checked : style.single_item) : null].join(' ');
     return (
       <div
         onClick={() => onClick(value)}
@@ -16,7 +15,8 @@ export default class Shop extends Component {
         <div
           // {...className}
           className={className}
-        >{value[renderName]}
+        >
+          <span>{value[renderName]}</span>
         </div>
 
       </div>
