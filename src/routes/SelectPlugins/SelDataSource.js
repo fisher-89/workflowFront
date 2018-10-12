@@ -145,7 +145,6 @@ export default class SelDataSource extends Component {
 
   searchOncancel = () => {
     const { apiSource } = this.props;
-    console.log('searchOncancel');
     this.setState({
       search: '',
       curDataSource: apiSource,

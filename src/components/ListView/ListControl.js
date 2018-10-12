@@ -97,7 +97,6 @@ export default class ListControl extends Component {
       this.fetchSearchValue();
       const current = lists[`${pathname}_${type}`];
       const { url } = current;
-      console.log('url', url, newParams, hash);
       if (
         (JSON.stringify(url) === JSON.stringify(newParams) && !hash)) { // 有数据，不调接口
       }

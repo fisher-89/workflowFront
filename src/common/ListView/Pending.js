@@ -40,6 +40,7 @@ export default class Pending extends Component {
         <div className={style.label_title}>
           <span className={style.title_name}>{value.flow_name}</span>
         </div>
+        <div className={style.desc}>发起人：{value ? value.flow_run.creator_name : ''}</div>
         {this.renderFormData()}
         <div className={style.desc}>{time}</div>
       </div>

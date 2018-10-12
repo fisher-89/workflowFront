@@ -110,7 +110,6 @@ class CreateForm extends Component {
     const editKey = editableForm.map((item) => {
       return item.key;
     });
-    console.log('showForm', showForm);
     const requireKey = requiredForm.map(item => item.key);
     return showForm.map((item, idx) => {
       const isEdit = editKey.indexOf(item.key) > -1;
@@ -119,7 +118,6 @@ class CreateForm extends Component {
       const [itemkey] = formdata.filter(its => item.key === its.key);
       let itemValue = [];
       if (itemkey && item.type === 'file') {
-        console.log('itemkey', itemkey);
         itemValue = (itemkey.value || []).map((its) => {
           return {
             url: `${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}`,
