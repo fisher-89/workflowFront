@@ -193,7 +193,7 @@ class SelectStep extends Component {
     let v = '';
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        v = values.remark;
+        v = values.remark || '';
       }
     });
     const { dispatch, history, start: { preType },
@@ -249,6 +249,7 @@ class SelectStep extends Component {
         },
       });
     } else {
+      console.log('v', v);
       dispatch({
         type: 'approve/getThrough',
         payload: {
@@ -288,9 +289,9 @@ class SelectStep extends Component {
           {preType === 'approve' && (
           <TextareaItem
             placeholder="请输入备注"
-            {...getFieldProps('remark')}
             rows={5}
             count={100}
+            {...getFieldProps('remark', { initialValue: '' })}
           />
           )}
 
