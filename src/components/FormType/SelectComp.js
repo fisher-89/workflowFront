@@ -92,9 +92,11 @@ class SelectComp extends React.Component {
       newData = isJSON(newData);
     }
     if (isMuti) {
-      return (newData || []).map(item => (item[name] ? `${item[name]}、` : ''));
+      const names = (newData || []).map(item => `${item[name]}`);
+      return names.join('、');
+      // return names;
     } else {
-      return newData[name] ? [newData[name]] : [];
+      return (newData[name] ? [newData[name]] : []).join('、');
     }
   }
 
@@ -122,7 +124,7 @@ class SelectComp extends React.Component {
           title={field.name}
           autoHeight
           editable={false}
-          value={this.renderCurrent(defaultValue || [], name, isMuti).join('')}
+          value={this.renderCurrent(defaultValue || [], name, isMuti)}
         />
       </div>
     );
