@@ -274,7 +274,7 @@ class SelectStep extends Component {
   }
   render() {
     const { preStepData } = this.state;
-    const { start: { preType }, loading } = this.props;
+    const { start: { preType }, loading, form: { getFieldProps } } = this.props;
     const info = preStepData ? (preStepData.concurrent_type === 0 ? '（请任选一个步骤）' : preStepData.concurrent_type === 2 ? '（请选择全部步骤）' : '') : '';
     spin(loading);
     return (
