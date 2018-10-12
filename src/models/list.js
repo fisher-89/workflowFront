@@ -142,7 +142,6 @@ export default {
   reducers: {
     // ...defaultReducers,
     updateLists(state, action) {
-      console.log('updateLists');
       const { data, start, end } = action.payload;
       const { lists } = state;
       const fromA = lists[start];
