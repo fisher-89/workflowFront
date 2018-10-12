@@ -54,7 +54,7 @@ export default class ListControl extends Component {
       this.sorter = newParams.sort;
       this.handleChangeFilter(newParams);
       this.currentFilter(search ? search.slice(1) : parseParamsToUrl(url));
-      if ((!data || (data && data.length)) && `${page}` === '1') { // 有数据，不调接口
+      if ((!data || (data && data.length)) && `${page}` !== '1') { // 有数据，不调接口
         return;
       }
       // 没有数据：初次进入页面或刷新了
