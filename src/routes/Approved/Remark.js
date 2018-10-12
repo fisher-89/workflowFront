@@ -45,18 +45,20 @@ export default class Remark extends Component {
                 ...values,
               },
               cb: (datas) => {
-                dispatch({
-                  type: 'approve/resetStart',
+                // dispatch({
+                //   type: 'approve/resetStart',
+                // });
+                // dispatch({
+                //   type: 'list/updateLists',
+                //   payload: {
+                //     data: datas,
+                //     start: '/approvelist_processing',
+                //     end: '/approvelist_approved',
+                //   },
+                // });
+                this.optCback(datas, () => {
+                  window.history.go(-2);
                 });
-                dispatch({
-                  type: 'list/updateLists',
-                  payload: {
-                    data: datas,
-                    start: '/approvelist_processing',
-                    end: '/approvelist_approved',
-                  },
-                });
-                window.history.go(-2);
               },
             },
           });
@@ -71,15 +73,21 @@ export default class Remark extends Component {
               },
               id: params.flow_id,
               cb: (datas) => {
-                dispatch({
-                  type: 'list/updateLists',
-                  payload: {
-                    data: datas,
-                    start: '/approvelist_processing',
-                    end: '/approvelist_approved',
-                  },
+                // dispatch({
+                //   type: 'approve/resetStart',
+                // });
+                // dispatch({
+                //   type: 'list/updateLists',
+                //   payload: {
+                //     data: datas,
+                //     start: '/approvelist_processing',
+                //     end: '/approvelist_approved',
+                //   },
+                // });
+                // window.history.go(-1);
+                this.optCback(datas, () => {
+                  window.history.go(-1);
                 });
-                window.history.go(-1);
               },
             },
           });
@@ -93,21 +101,45 @@ export default class Remark extends Component {
                 ...values,
               },
               cb: (datas) => {
-                dispatch({
-                  type: 'list/updateLists',
-                  payload: {
-                    data: datas,
-                    start: '/approvelist_processing',
-                    end: '/approvelist_approved',
-                  },
+                // dispatch({
+                //   type: 'approve/resetStart',
+                // });
+                // dispatch({
+                //   type: 'list/updateLists',
+                //   payload: {
+                //     data: datas,
+                //     start: '/approvelist_processing',
+                //     end: '/approvelist_approved',
+                //   },
+                // });
+                // window.history.go(-1);
+                this.optCback(datas, () => {
+                  window.history.go(-1);
                 });
-                window.history.go(-1);
               },
             },
           });
         }
       }
     });
+  }
+
+  optCback = (datas, cb) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'approve/resetStart',
+    });
+    dispatch({
+      type: 'list/updateLists',
+      payload: {
+        data: datas,
+        start: '/approvelist_processing',
+        end: '/approvelist_approved',
+      },
+    });
+    if (cb) {
+      cb();
+    }
   }
 
   render() {

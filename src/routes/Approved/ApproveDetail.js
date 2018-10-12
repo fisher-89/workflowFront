@@ -297,6 +297,7 @@ class ApproveDetail extends Component {
     const {
       flowId,
     } = this.state;
+    const { history } = this.props;
     // dispatch({
     //   type: 'approve/doReject',
     //   payload: {
