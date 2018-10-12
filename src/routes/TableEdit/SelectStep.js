@@ -249,7 +249,6 @@ class SelectStep extends Component {
         },
       });
     } else {
-      console.log('v', v);
       dispatch({
         type: 'approve/getThrough',
         payload: {
@@ -267,7 +266,7 @@ class SelectStep extends Component {
                 end: '/approvelist_approved',
               },
             });
-            history.goBack(-2);
+            window.history.go(-2);
           },
         },
       });
