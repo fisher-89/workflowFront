@@ -219,7 +219,7 @@ export default class StartList extends Component {
         dataSource={data}
         totalpage={totalpage}
         defaultSort={defaultSort}
-
+        offetTop={88}
         {...someProps}
         fetchDataSource={this.fetchDataSource}
         type={type}

@@ -82,9 +82,10 @@ export default function ListView(ListItem) {
     }
 
     getElementHeight = () => {
-      const offetTop = (document.getElementById('header') || {}).offsetHeight || 0;
+      const { offetTop = 0 } = this.props;
+      const offetTop2 = (document.getElementById('header') || {}).offsetHeight || 0;
       const offetBottom = (document.getElementById('footer') || {}).offsetHeight || 0;
-      const hei = document.documentElement.clientHeight - offetTop - offetBottom;
+      const hei = document.documentElement.clientHeight - offetTop - offetBottom - offetTop2;
       setTimeout(() => this.setState({
         height: hei,
       }), 0);

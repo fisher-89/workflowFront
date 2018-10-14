@@ -156,6 +156,7 @@ export default class StartList extends Component {
           timeKey={showTime}
           defaultSort={defaultSort}
           dataSource={data}
+          offetTop={88}
           fetchDataSource={this.fetchDataSource}
           type={type}
           {...someProps}
@@ -164,6 +165,7 @@ export default class StartList extends Component {
           <Pending
             totalpage={totalpage}
             timeKey={showTime}
+            offetTop={88}
             defaultSort={defaultSort}
             dataSource={data}
             fetchDataSource={this.fetchDataSource}

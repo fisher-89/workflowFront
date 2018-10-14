@@ -16,7 +16,7 @@ export default class Start extends Component {
       const idx = i;
       return (
         <div
-          className={style.desc}
+          className={style.form_desc}
           key={idx}
         >{item}
         </div>

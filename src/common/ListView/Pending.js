@@ -17,7 +17,7 @@ export default class Pending extends Component {
       const idx = i;
       return (
         <div
-          className={style.desc}
+          className={style.form_desc}
           key={idx}
         >{item}
         </div>
@@ -38,9 +38,10 @@ export default class Pending extends Component {
         onClick={() => onHandleClick(value)}
       >
         <div className={style.label_title}>
-          <span className={style.title_name}>{value.flow_name}</span>
+          <span className={style.title_name}>
+            {value && value.flow_run ? `${value.flow_run.creator_name}的` : ''}{value.flow_name}
+          </span>
         </div>
-        <div className={style.desc}>发起人：{value && value.flow_run ? value.flow_runcreator_name : ''}</div>
         {this.renderFormData()}
         <div className={style.desc}>{time}</div>
       </div>

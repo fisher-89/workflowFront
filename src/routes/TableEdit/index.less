@@ -59,13 +59,15 @@
 
 .list_title {
   display: flex;
+  overflow: auto;
+  width:610/75rem;
   >div {
     line-height: 24px;
     height: 24px;
     font-size: @middle-size;
-    flex-grow: 1;
+    // flex-grow: 1;
     flex-shrink: 0;
-    .textLineOverFlow()
+    .textLineOverFlow();
   }
   div+div {
     color: @extra-color;

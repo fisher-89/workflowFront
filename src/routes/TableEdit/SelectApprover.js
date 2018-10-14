@@ -57,9 +57,9 @@ class SelectStep extends Component {
           <div className={style.list_item}>
             <div className={style.list_title}>
               <div>{its.realname}</div>
-              <div>{its.department_full_name}</div>
+              <div>（{its.department.full_name}）</div>
             </div>
-            <div className={style.list_desc}>{its.position_name}</div>
+            <div className={style.list_desc}>{its.position.name}</div>
           </div>
         </div>
       );
@@ -85,7 +85,7 @@ class SelectStep extends Component {
       };
       const group = searchList.filter(its => its.department_id === item);
       obj.data = group;
-      obj.department_name = group[0].department_full_name;
+      obj.department_name = group[0].department.full_name;
       return obj;
     });
     return groupList.map((item, idx) => {
