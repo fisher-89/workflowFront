@@ -1,5 +1,6 @@
 import React from 'react';
 // import classNames from 'classnames';
+import ImageViewer from 'react-wx-images-viewer';
 import { connect } from 'dva';
 import { ImagePicker, Modal, Carousel } from 'antd-mobile';
 import { rebackImg, reAgainImg } from '../../utils/convert';
@@ -37,14 +38,14 @@ export default class Upload extends React.Component {
     });
   }
 
-  hideModal = (e) => {
-    e.preventDefault();
-    const attr = e.target.getAttribute('data-preview');
-    if (attr === 'preview') {
-      this.setState({
-        preview: false,
-      });
-    }
+  hideModal = () => {
+    // e.preventDefault();
+    // const attr = e.target.getAttribute('data-preview');
+    // if (attr === 'preview') {
+    this.setState({
+      preview: false,
+    });
+    // }
   }
 
   filesOnchange = (files, type) => {
@@ -102,45 +103,54 @@ export default class Upload extends React.Component {
 
   render() {
     const { preview, reviewImg } = this.state;
+    // <Modal
+    //       visible={preview}
+    //       popup
+    //       maskClosable
+    //       wrapClassName={style.wrap}
+    //       onClose={() => this.setState({ preview: false })}
+    //     >
+    //       <div
+    //         className={style.preview}
+    //         data-preview="preview"
+    //         onClick={this.hideModal}
+    //       >
+    //         <div className={style.caroul}>
+    //           <Carousel
+    //             autoplay={false}
+    //             infinite
+    //           >
+    //             {(reviewImg || []).map((val, i) => {
+    //               const idx = i;
+    //               return (
+    //                 <img
+    //                   src={val}
+    //                   key={idx}
+    //                   alt="carousel"
+    //                   style={{ width: '100%', verticalAlign: 'top' }}
+    //                   onLoad={() => {
+    //                     window.dispatchEvent(new Event('resize'));
+    //                   }}
+    //                 />
+    //               );
+    //             })}
+    //           </Carousel>
+    //         </div>
+    //       </div>
+
+    //     </Modal>
     return (
       <div>
         {this.renderFormDate()}
-        <Modal
-          visible={preview}
-          popup
-          maskClosable
-          wrapClassName={style.wrap}
-          onClose={() => this.setState({ preview: false })}
-        >
-          <div
-            className={style.preview}
-            data-preview="preview"
-            onClick={this.hideModal}
-          >
-            <div className={style.caroul}>
-              <Carousel
-                autoplay={false}
-                infinite
-              >
-                {(reviewImg || []).map((val, i) => {
-                  const idx = i;
-                  return (
-                    <img
-                      src={val}
-                      key={idx}
-                      alt="carousel"
-                      style={{ width: '100%', verticalAlign: 'top' }}
-                      onLoad={() => {
-                        window.dispatchEvent(new Event('resize'));
-                      }}
-                    />
-                  );
-                })}
-              </Carousel>
-            </div>
-          </div>
 
-        </Modal>
+        {preview && (
+        <ImageViewer
+          onClose={this.hideModal}
+          urls={reviewImg}
+          index={1}
+        />
+        )}
+
       </div>
     );
   }

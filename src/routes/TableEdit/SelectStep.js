@@ -266,7 +266,7 @@ class SelectStep extends Component {
                 end: '/approvelist_approved',
               },
             });
-            window.history.go(-2);
+            window.history.go(-1);
           },
         },
       });

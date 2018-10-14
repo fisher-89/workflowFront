@@ -26,7 +26,9 @@ class TextInput extends React.Component {
   formatIntValue = (v, field) => {
     const { scale, min } = field;
     const value = v === '' ? min : v;
-    const newValue = value.slice(0, value.indexOf('.') + (scale - 0) + 1);
+    const idx = value.indexOf('.');
+    const curScale = idx > -1 ? value.slice(idx + 1).length : 0;
+    const newValue = curScale > scale ? (value.slice(0, value.indexOf('.') + (scale - 0) + 1)) : Number(value).toFixed(scale);
     return newValue;
   }
 

@@ -24,6 +24,7 @@
         "rc-tween-one": "^1.7.8",
         "react": "^16.3.2",
         "react-dom": "^16.3.2",
+        "react-wx-images-viewer": "^1.0.6",
         "velocity-animate": "^1.5.1"
     },
     "devDependencies": {
