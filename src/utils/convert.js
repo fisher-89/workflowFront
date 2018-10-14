@@ -121,6 +121,27 @@ export const reverseState = (state) => {
   }
 };
 
+export const reverseStaffState = (state) => {
+  switch (state - 0) {
+    case 1:
+      return '试用期';
+    case 2:
+      return '在职';
+    case 3:
+      return '停薪留职';
+    case -1:
+      return '离职';
+    case -2:
+      return '自动离职';
+    case -3:
+      return '开除';
+    case -4:
+      return '劝退';
+    default:
+      return '其他';
+  }
+};
+
 export function getGridFilter(fields, name, step, flag) {
   return fields.map((item) => {
     let str = '';

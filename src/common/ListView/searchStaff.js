@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import ListView from '../../components/ListView';
+import { Label } from '../../components/General';
+import { reverseStaffState } from '../../utils/convert';
+
 import style from './index.less';
 
 @ListView
@@ -21,6 +24,14 @@ export default class searchStaff extends Component {
           className={className}
         >
           <div className={style.baseinfo}>
+            <Label
+              content={reverseStaffState(value.status_id)}
+              styles={{
+            borderRadius: '0.05333rem',
+            margin: 0,
+            marginRight: '10px',
+           }}
+            />
             <span>{value[renderName]}</span>
             <span style={{ color: '#969696' }}>
               {value && value.department ? `（${value.department.full_name}）` : ''}

@@ -130,6 +130,9 @@ export default class Remark extends Component {
       type: 'approve/resetStart',
     });
     dispatch({
+      type: 'start/resetStart',
+    });
+    dispatch({
       type: 'list/updateLists',
       payload: {
         data: datas,
@@ -164,7 +167,6 @@ export default class Remark extends Component {
                 type="1"
                 nameKey="approver_name"
                 showNum={2}
-                footer={false}
                 handleClick={this.remove}
               />
             </Flex>

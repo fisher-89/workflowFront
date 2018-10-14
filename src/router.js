@@ -122,9 +122,14 @@ function RouterConfig({
   {
     path: '/search_staff/:dep_id',
     models: ['start'],
-
     component: () =>
       import('./routes/TableEdit/StartDetail'),
+  },
+  {
+    path: '/imageview',
+    models: [],
+    component: () =>
+      import('./routes/TableEdit/ImageViewer'),
   },
   {
     path: '/sel_person',

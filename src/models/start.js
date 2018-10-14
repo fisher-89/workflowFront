@@ -93,6 +93,8 @@ export default {
       const data = yield call(c.fileUpload, payload.data);
       if (data && !data.error) {
         payload.cb(data);
+      } else {
+        Toast.info('上传失败');
       }
     },
     // 预提交
@@ -214,6 +216,7 @@ export default {
         gridformdata: [], // 列表控件里表单的数据
         form_data: null, // 表单默认值
         steps: [],
+        preStepData: {},
       };
     },
     // save(state, action) {

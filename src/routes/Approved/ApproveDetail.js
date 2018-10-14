@@ -1,6 +1,6 @@
 // 审批的表单
 import React, { Component } from 'react';
-import { Modal, SwipeAction } from 'antd-mobile';
+import { SwipeAction } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
 import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData, makeFieldValue } from '../../utils/util';
@@ -8,7 +8,6 @@ import spin from '../../components/General/Loader';
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
 
-const { prompt } = Modal;
 class ApproveDetail extends Component {
   state = {
     flowId: '',
@@ -281,16 +280,6 @@ class ApproveDetail extends Component {
       },
     });
     // }, 500);
-  }
-
-  fillRemark = () => {
-    prompt('填写备注', '', [{
-      text: '取消',
-      // onPress: this.submitStep
-    }, {
-      text: '确定',
-      onPress: this.doReject,
-    }], 'default', null, ['input your name']);
   }
 
   doReject = () => {
