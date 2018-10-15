@@ -1,7 +1,7 @@
 import React from 'react';
 // import classNames from 'classnames';
 import { connect } from 'dva';
-import { TextareaItem, Toast } from 'antd-mobile';
+import { TextareaItem, Toast, InputItem } from 'antd-mobile';
 import style from './index.less';
 
 
@@ -54,21 +54,33 @@ class TextInput extends React.Component {
 
   renderFormInput = () => {
     const { data: { value, hasError }, field } = this.props;
-    const { name, description } = field;
-    return (
-
-      <TextareaItem
-        clear
-        title={name}
-        autoHeight
-        placeholder={description}
-        error={hasError}
-        onChange={e => this.handleOnChange(e, field)}
-        onBlur={this.onHandleBlur}
-        value={`${value || ''}`}
-      />
-    );
+    const { name, description, max } = field;
+    return max && max < 10 ?
+      (
+        <InputItem
+          clear
+          maxLength={max}
+          placeholder={description}
+          error={hasError}
+          onChange={e => this.handleOnChange(e, field)}
+          onBlur={this.onHandleBlur}
+          value={`${value || ''}`}
+        >{name}
+        </InputItem>
+      ) : (
+        <TextareaItem
+          clear
+          title={name}
+          autoHeight
+          placeholder={description}
+          error={hasError}
+          onChange={e => this.handleOnChange(e, field)}
+          onBlur={this.onHandleBlur}
+          value={`${value || ''}`}
+        />
+      );
   }
+
 
   render() {
     const { isEdit, field: { name }, defaultValue } = this.props;

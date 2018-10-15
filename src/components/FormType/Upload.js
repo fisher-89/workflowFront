@@ -1,6 +1,4 @@
 import React from 'react';
-// import classNames from 'classnames';
-import ImageViewer from 'react-wx-images-viewer';
 import { connect } from 'dva';
 import { ImagePicker } from 'antd-mobile';
 import { rebackImg, reAgainImg, dealThumbImg } from '../../utils/convert';
@@ -12,8 +10,6 @@ export default class Upload extends React.Component {
     super(props);
     const { data } = this.props;
     this.state = {
-      reviewImg: '',
-      preview: false,
       imgs: data || [],
     };
   }
@@ -43,27 +39,15 @@ export default class Upload extends React.Component {
     const bigImgs = imgs.map((item) => {
       return reAgainImg(item.url, '_thumb');
     });
-    this.setState({
-      reviewImg: newImgs,
-      preview: true,
-    });
     const params = {
       reviewImg: bigImgs,
       curIndex: i,
     };
     const urlparams = JSON.stringify(params);
-    evtClick();
+    if (evtClick) {
+      evtClick();
+    }
     history.push(`/imageview?params=${urlparams}`);
-  }
-
-  hideModal = () => {
-    // e.preventDefault();
-    // const attr = e.target.getAttribute('data-preview');
-    // if (attr === 'preview') {
-    this.setState({
-      preview: false,
-    });
-    // }
   }
 
   filesOnchange = (files, type) => {
@@ -106,21 +90,7 @@ export default class Upload extends React.Component {
     }
   }
 
-uploadFile = () => {
-  dispatch({
-    type: 'start/fileUpload',
-    payload: {
-      data: imgformData,
-      cb: (f) => {
-        newFiles[newFiles.length - 1] = f.path;
-        // obj.value = [...newFiles];
-        onChange(newFiles);
-      },
-    },
-  });
-}
-
-  renderFormDate = () => {
+  renderFormFile = () => {
     const { field, isEdit } = this.props;
     const { name, max } = field;
     const { imgs } = this.state;
@@ -134,7 +104,7 @@ uploadFile = () => {
             {...(isEdit &&
               { onChange: (file, type) => this.filesOnchange(file, type) })}
             onImageClick={this.reviewImg}
-            selectable={isEdit && imgs ? imgs.length < (max || 10) : false}
+            selectable={isEdit && imgs ? imgs.length < (max || 9) : false}
             accept="image/gif,image/jpeg,image/jpg,image/png"
           />
         </div>
@@ -144,7 +114,6 @@ uploadFile = () => {
 
 
   render() {
-    const { preview, reviewImg } = this.state;
     // <Modal
     //       visible={preview}
     //       popup
@@ -181,18 +150,10 @@ uploadFile = () => {
     //       </div>
 
     //     </Modal>
+
     return (
       <div>
-        {this.renderFormDate()}
-
-        {preview && (
-        <ImageViewer
-          onClose={this.hideModal}
-          urls={reviewImg}
-          index={1}
-        />
-        )}
-
+        {this.renderFormFile()}
       </div>
     );
   }

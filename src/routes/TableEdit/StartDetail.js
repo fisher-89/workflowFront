@@ -119,6 +119,7 @@ class StartDetail extends Component {
           <FormDetail
             form_data={formData}
             show_form={showForm}
+            history={this.props.history}
           />
           <div style={{ marginBottom: '20px' }}>
             {this.getGridList()}

@@ -43,8 +43,10 @@ class FormDetail extends Component {
       }
       if (item.type === 'file') { // 文件
         const files = (formData[item.key] || []).map((its) => { return { url: dealThumbImg(`${UPLOAD_PATH}${its}`, '_thumb') }; });
+        const { history } = this.props;
         return (
           <Upload
+            history={history}
             field={item}
             key={idx}
             isEdit={false}

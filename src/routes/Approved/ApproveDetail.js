@@ -1,6 +1,6 @@
 // 审批的表单
 import React, { Component } from 'react';
-import { SwipeAction } from 'antd-mobile';
+import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
 import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData, makeFieldValue } from '../../utils/util';
@@ -274,7 +274,7 @@ class ApproveDetail extends Component {
             const url = JSON.stringify(data);
             history.push(`/remark?params=${url}&type=2`);
           } else {
-            history.replace('/select_step');
+            history.push('/select_step');
           }
         },
       },
@@ -362,6 +362,8 @@ class ApproveDetail extends Component {
     ableSubmit = true;
     return (
       <div className={styles.con}>
+        <WhiteSpace size="xl" />
+
         <div className={styles.con_content} >
           {startflow.step_run.action_type === 0 ? (
             <CreateForm
@@ -380,13 +382,13 @@ class ApproveDetail extends Component {
             <FormDetail
               form_data={newFormData}
               show_form={showForm}
+              history={history}
             />
             )}
           <div style={{ marginBottom: '20px' }}>
             {this.getGridList()}
           </div>
         </div>
-
         <div className={styles.footer}>
           {startflow.step_run.action_type === 0 && (
             <a

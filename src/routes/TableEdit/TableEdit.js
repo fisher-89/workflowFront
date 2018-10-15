@@ -1,6 +1,6 @@
 // 发起页面
 import React, { Component } from 'react';
-import { Button, SwipeAction } from 'antd-mobile';
+import { Button, SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
@@ -234,7 +234,7 @@ class TableEdit extends Component {
         // id: flowId,
         preType: 'start',
         cb: () => {
-          history.replace('/select_step');
+          history.push('/select_step');
         },
       },
     });
@@ -260,6 +260,8 @@ class TableEdit extends Component {
     ableSubmit = true;
     return (
       <div className={styles.con}>
+        <WhiteSpace size="xl" />
+
         <div className={styles.con_content}>
           <CreateForm
             history={history}

@@ -20,6 +20,7 @@ class IndexPage extends React.Component {
   }
   render() {
     const { history } = this.props;
+    console.log('his: ', history);
     let flowList = userStorage('flowList');
     if (!(flowList instanceof Array)) {
       flowList = [];

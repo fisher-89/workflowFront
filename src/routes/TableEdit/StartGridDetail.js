@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { WhiteSpace } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import { getGridFilter } from '../../utils/convert';
 import styles from '../common.less';
@@ -47,10 +48,12 @@ class StartGridDetail extends Component {
     }
     return (
       <div className={styles.con}>
+        <WhiteSpace size="xl" />
         <div className={styles.con_content}>
           <FormDetail
             form_data={formData[key] ? formData[key][index] : {}}
             show_form={showGrid}
+            history={this.props.history}
           />
         </div>
       </div>

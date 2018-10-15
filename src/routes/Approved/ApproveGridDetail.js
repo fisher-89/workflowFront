@@ -65,6 +65,7 @@ class ApproveGridDetail extends Component {
           <FormDetail
             form_data={formData[key] ? formData[key][index] : {}}
             show_form={showGrid}
+            history={history}
           />
         </div>
       </div>

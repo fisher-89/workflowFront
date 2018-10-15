@@ -31,6 +31,9 @@ export default class Staff extends Component {
            }}
             />
             <span>{value[renderName]}</span>
+            <span style={{ color: '#969696', fontSize: '12px' }}>
+              {value && value.department ? `（${value.department.full_name}）` : ''}
+            </span>
           </div>
         </div>
 

@@ -58,14 +58,12 @@ function RouterConfig({
     path: '/addgridlist/:type/:index',
     // models: () => [import('./models/start')],
     models: ['start'],
-
     component: () =>
       import('./routes/TableEdit/AddGridList'),
   },
   {
     path: '/approvelist',
     models: ['approve', 'list'],
-
     component: () =>
       import('./routes/Approved/ApproveList'),
   },
@@ -115,7 +113,6 @@ function RouterConfig({
   {
     path: '/start_detail/:id',
     models: ['start'],
-
     component: () =>
       import('./routes/TableEdit/StartDetail'),
   },

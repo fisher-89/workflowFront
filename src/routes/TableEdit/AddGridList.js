@@ -1,6 +1,6 @@
 // 编辑或新增列表控件数据页面
 import React, { Component } from 'react';
-import { Toast, Button } from 'antd-mobile';
+import { Toast, Button, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
 import { getGridFilter } from '../../utils/convert';
@@ -190,6 +190,8 @@ class AddGridList extends Component {
     ableSubmit = true;
     return (
       <div className={styles.con}>
+        <WhiteSpace size="xl" />
+
         <div className={styles.con_content}>
           <CreateForm
             history={history}

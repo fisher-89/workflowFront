@@ -12,7 +12,7 @@ export function getStartFlow(id) {
 
 // 上传图片
 export function fileUpload(data) {
-  return request(`${UPLOAD_PATH}/api/files`, {
+  return request('/api/files', {
     method: 'POST',
     body: data,
   });

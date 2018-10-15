@@ -175,7 +175,9 @@ export default class Remark extends Component {
           <WhiteSpace size="md" />
           <TextareaItem
             placeholder="请输入备注"
-            {...getFieldProps('remark')}
+            {...getFieldProps('remark',
+              { initialValue: '' }
+            )}
             rows={5}
             count={100}
           />

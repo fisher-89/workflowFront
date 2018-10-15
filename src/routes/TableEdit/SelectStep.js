@@ -244,7 +244,19 @@ class SelectStep extends Component {
           },
           // id: preStepData.flow_id,
           cb: () => {
-            history.replace('/start_list?type=processing&page=1');
+            dispatch({
+              type: 'start/resetStart',
+            });
+            // history.goBack(-1);
+            history.go(-2);
+            // window.history.go(-2);
+            // window.location.href = '/start_list?type=processing&page=1';
+            // console.log(1111);
+            setTimeout(() => {
+              history.push('/start_list?type=processing&page=1');
+            }, 1);
+            // history.replace('/start_list?type=processing&page=1');
+            // console.log(2222);
           },
         },
       });
@@ -258,6 +270,9 @@ class SelectStep extends Component {
           },
           id: preStepData.flow_id,
           cb: (data) => {
+            dispatch({
+              type: 'start/resetStart',
+            });
             dispatch({
               type: 'list/updateLists',
               payload: {

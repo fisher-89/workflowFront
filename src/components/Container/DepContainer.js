@@ -95,7 +95,7 @@ export default class DepContainer extends Component {
   render() {
     const {
       bread = [], children, multiple, name, selected, checkedAll, checkAble,
-      singleSelected, handleBread, deleteAble,
+      singleSelected, handleBread, deleteAble, isIncludeNext,
     } = this.props;
     const { switchState } = this.state;
     return (
@@ -126,6 +126,7 @@ export default class DepContainer extends Component {
               >
                 <span>全选</span>
               </div>
+              {isIncludeNext && (
               <div className={style.right}>
                 <span style={{ marginRight: '15px' }}>包含下级</span>
                 <Switch
@@ -134,6 +135,8 @@ export default class DepContainer extends Component {
                   onClick={this.handleSwitchChange}
                 />
               </div>
+              )}
+
             </div>
 
           ) : null}
@@ -201,9 +204,7 @@ DepContainer.defaultProps = {
   multiple: false,
   name: 'name',
   checkAble: false,
-  handleDelete: () => {
-
-  },
+  handleDelete: () => { },
   deleteAble: true,
-
+  isIncludeNext: true,
 };

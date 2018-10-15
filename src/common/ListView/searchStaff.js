@@ -27,13 +27,13 @@ export default class searchStaff extends Component {
             <Label
               content={reverseStaffState(value.status_id)}
               styles={{
-            borderRadius: '0.05333rem',
-            margin: 0,
-            marginRight: '10px',
+              borderRadius: '0.05333rem',
+              margin: 0,
+              marginRight: '10px',
            }}
             />
             <span>{value[renderName]}</span>
-            <span style={{ color: '#969696' }}>
+            <span style={{ color: '#969696', fontSize: '12px' }}>
               {value && value.department ? `（${value.department.full_name}）` : ''}
             </span>
           </div>

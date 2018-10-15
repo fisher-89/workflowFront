@@ -208,14 +208,13 @@ class CreateForm extends Component {
         );
       } else if (item.type === 'file') {
         const files = (newFormData[item.key] || []).map((its) => { return { url: `${UPLOAD_PATH}${dealThumbImg(its, '_thumb')}` }; });
-        const { history, evtClick } = this.props;
-
+        const { evtClick, history } = this.props;
         return (
           <Upload
             onChange={v => this.onChange(v, item)}
             field={item}
-            history={history}
             evtClick={evtClick}
+            history={history}
             key={i}
             isEdit={isEdit}
             data={isEdit ? itemValue : files}

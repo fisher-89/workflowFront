@@ -27,13 +27,14 @@ export default class SelDepartment extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { department } = nextProps;
+    const { department, isConfig } = nextProps;
     const oldDep = this.props.department;
     const { init } = this.state;
+    console.log(isConfig, JSON.stringify(department) !== JSON.stringify(oldDep), !init);
     if (JSON.stringify(department) !== JSON.stringify(oldDep) || !init) {
       const tree = markTreeData(department, 0, { parentId: 'parent_id', key: 'id' });
       this.setState({
-        currentDep: tree,
+        currentDep: isConfig ? department : tree,
         init: true,
       });
     }
@@ -316,6 +317,7 @@ export default class SelDepartment extends Component {
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <DepContainer
+          isIncludeNext={!isConfig}
           multiple={multiple}
           singleSelected={singleSelected}
           name="name"

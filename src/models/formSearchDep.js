@@ -19,21 +19,9 @@ export default {
       const params = makerFilters(reqData);
       const response = yield call(getDepartment, params);
       if (response && !response.error) {
-        const { data } = response;
-        const isConfig = response.is_config;
         yield put({
-          type: 'save',
-          payload: {
-            store: 'department',
-            data,
-          },
-        });
-        yield put({
-          type: 'save',
-          payload: {
-            store: 'isConfig',
-            data: isConfig,
-          },
+          type: 'saveDataSource',
+          payload: response,
         });
       }
       yield put({
@@ -48,6 +36,16 @@ export default {
   },
   reducers: {
     ...defaultReducers,
+    saveDataSource(state, action) {
+      const response = action.payload;
+      const { data } = response;
+      const isConfig = response.is_config;
+      return {
+        ...state,
+        isConfig,
+        department: data,
+      };
+    },
     saveCback(state, action) {
       const { cb, key } = action.payload;
       const { currentKey } = state;
