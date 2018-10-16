@@ -1,4 +1,3 @@
-import { Toast } from 'antd-mobile';
 
 import { getApiDataSource } from '../services/formStaff';
 import defaultReducers from './reducers/default';
@@ -21,7 +20,6 @@ export default {
       put, select,
     }) {
       const { id, cb } = payload;
-      Toast.info(`fetchid:${id}`);
       const { sourceDetails } = yield select(_ => _.api);
       if (sourceDetails[id] && sourceDetails[id].length) {
         return;

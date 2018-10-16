@@ -310,6 +310,7 @@ export default class SelPerson extends Component {
                 link=""
                 heightNone
                 onRefresh={false}
+                page="1"
                 name="staff_sn"
                 renderName="realname"
                 singleSelected={singleSelected}

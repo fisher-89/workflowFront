@@ -25,7 +25,6 @@ export default class SelectComp extends React.Component {
   componentWillMount() {
     const { dispatch, field } = this.props;
     this.id = field.field_api_configuration_id;
-    Toast.info(`${this.id}`);
     dispatch({
       type: 'api/fetchApi',
       payload: {
