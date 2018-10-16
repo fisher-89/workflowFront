@@ -37,7 +37,7 @@ const fetch = (url, options) => {
 };
 
 function checkStatus(response) {
-  Toast.hide();
+  // Toast.hide();
   return response;
   // status === 422 表单验证
   // const errortext = codeMessage[status] || response.statusText;
