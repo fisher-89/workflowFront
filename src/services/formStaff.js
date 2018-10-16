@@ -32,7 +32,6 @@ export async function getShopList(params) {
   });
 }
 
-
 export async function serachStaff(search) {
   return request(`/api/oa/staff?${search}`, null, false);
 }
@@ -42,6 +41,5 @@ export async function getFinalStaff() {
 }
 
 export async function getApiDataSource(id) {
-  Toast.info(`/api/oa-api/${id}`, 5);
   return request(`/api/oa-api/${id}/`, null, false);
 }
