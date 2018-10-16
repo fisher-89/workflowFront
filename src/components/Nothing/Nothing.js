@@ -1,9 +1,6 @@
 import React from 'react';
-
-import {
-  connect,
-} from 'dva';
-import nothing from '../../../img/nothing.png';
+import { connect } from 'dva';
+import nothing from '../../../public/img/nothing.png';
 import style from './index.less';
 
 class Nothing extends React.Component {
