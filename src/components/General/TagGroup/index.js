@@ -48,28 +48,36 @@ export default class TagGroup extends React.Component {
   handleTagEditBlur = (index) => {
     return (e) => {
       const { value } = e.target;
-      if (this.uniqueValue(e, index)) {
-        this.setState({ tagEdit: false }, () => {
-          this.editTagValue(value, index);
-        });
+      if (value) {
+        if (value && this.uniqueValue(e, index)) {
+          this.setState({ tagEdit: false }, () => {
+            this.editTagValue(value, index);
+          });
+        } else {
+          e.preventDefault();
+          this.setState({ tagEdit: index }, () => {
+            Toast.info('请勿重复添加', 1.5);
+          });
+          e.target.focus();
+        }
       } else {
-        e.preventDefault();
-        this.setState({ tagEdit: index }, () => {
-          Toast.info('请勿重复添加', 1.5);
-        });
+        const { tags } = this.state;
+        const tag = tags[index];
+        console.log('tag', tag);
+        this.handleClose(tag, index);
       }
     };
   }
 
-
-  handleClose = (removedTag) => {
+  handleClose = (removedTag, index) => {
     const { range: { min }, onChange } = this.props;
     const { tags } = this.state;
     if (min && `${min}` >= `${tags.length}`) {
       Toast.info(`请至少添加${min}个`, 1);
     }
-    const newTags = tags.filter(tag => `${tag}` !== `${removedTag}`);
-    this.setState({ tags: newTags }, () => {
+    // const newTags = tags.filter((tag,index) => `${tag}` !== `${removedTag}`);
+    const newTags = tags.filter((tag, i) => `${i}` !== `${index}`);
+    this.setState({ tags: newTags, tagEdit: false }, () => {
       onChange(newTags);
     });
   }
@@ -79,16 +87,20 @@ export default class TagGroup extends React.Component {
     const { tags } = this.state;
     const { onChange } = this.props;
     let newTags = [...tags];
-    if (this.uniqueValue(e)) {
-      newTags = [...tags, value.length >= 10 ? value.slice(0, 10) : value];
-    } else {
-      e.preventDefault();
-      Toast.info('请勿重复添加', 1.5);
-      return;
+    if (value) {
+      if (this.uniqueValue(e)) {
+        newTags = [...tags, value.length >= 10 ? value.slice(0, 10) : value];
+      } else {
+        e.preventDefault();
+        Toast.info('请勿重复添加', 1.5);
+        e.target.focus();
+      }
     }
-    this.setState({ onEditing: false, tags: newTags, inputValue: '' }, () => {
-      onChange(newTags);
-    });
+    if (!value || (value && this.uniqueValue(e))) {
+      this.setState({ onEditing: false, tags: newTags, inputValue: '' }, () => {
+        onChange(newTags);
+      });
+    }
   }
 
   editTagValue = (value, index) => {
@@ -113,8 +125,8 @@ export default class TagGroup extends React.Component {
       readonly,
       key: index,
       onEditing: tagEdit === index,
-      handleClose: this.handleClose,
-      handleBlur: this.handleTagEditBlur,
+      handleClose: v => this.handleClose(v, index),
+      handleBlur: () => this.handleTagEditBlur(index),
       onChange: v => this.editTagValue(v, index),
       handleFocus: () => { this.setState({ tagEdit: index }); },
     };
