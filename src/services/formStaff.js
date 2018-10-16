@@ -42,6 +42,6 @@ export async function getFinalStaff() {
 }
 
 export async function getApiDataSource(id) {
-  // Toast.info(`id:${id}`);
+  Toast.info(`/api/oa-api/${id}`);
   return request(`/api/oa-api/${id}`, null, false);
 }

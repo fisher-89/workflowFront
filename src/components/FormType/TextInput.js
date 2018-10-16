@@ -59,7 +59,7 @@ class TextInput extends React.Component {
       (
         <InputItem
           clear
-          maxLength={max}
+          maxLength={max || (type === 'int' ? 10 : max)}
           placeholder={description}
           error={hasError}
           onChange={e => this.handleOnChange(e, field)}
