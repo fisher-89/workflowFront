@@ -4,7 +4,7 @@ import { connect } from 'dva';
 // import ReactDOM from 'react-dom';
 import { List, PullToRefresh } from 'antd-mobile';
 import QueueAnim from 'rc-queue-anim';
-import nothing from '../../../public/img/nothing.png';
+import nothing from '../../../img/nothing.png';
 import SmallLoader from '../General/Loader/SmallLoader';
 import spin from '../General/Loader';
 import { parseParamsToUrl, getUrlParams, getUrlString } from '../../utils/util';

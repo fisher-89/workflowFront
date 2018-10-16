@@ -21,11 +21,11 @@ export default {
       put, select,
     }) {
       const { id, cb } = payload;
+      Toast.info(`fetchid:${id}`);
       const { sourceDetails } = yield select(_ => _.api);
       if (sourceDetails[id] && sourceDetails[id].length) {
         return;
       }
-      Toast.info(`fetchid:${id}`);
       const data = yield call(getApiDataSource, id);
       if (data && !data.error) {
         yield put({

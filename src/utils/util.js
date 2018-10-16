@@ -4,7 +4,7 @@
 import { Toast } from 'antd-mobile';
 import moment from 'moment'
 import 'moment/locale/zh-cn'
-import district from '../../public/district.js'
+import district from '../../district.js'
 
 const codeMessage = {
   200: '服务器成功返回请求的数据',

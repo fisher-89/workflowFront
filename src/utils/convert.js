@@ -2,21 +2,21 @@
 // 银行类型
 // 中国农业银行,中国工商银行,中国建设银行,中国银行,交通银行,招商银行,中国邮政储蓄银行,农村商业银行
 
-import stastic from '../../public/img/stastic.svg';
-import stastic_ from '../../public/img/stastic_.svg';
+import stastic from '../../img/stastic.svg';
+import stastic_ from '../../img/stastic_.svg';
 
-import home from '../../public/img/home.svg';
-import home_ from '../../public/img/home_.svg';
+import home from '../../img/home.svg';
+import home_ from '../../img/home_.svg';
 
-import my from '../../public/img/my.svg';
-import my_ from '../../public/img/my_.svg';
+import my from '../../img/my.svg';
+import my_ from '../../img/my_.svg';
 
-import appro from '../../public/img/appro.svg';
-import appro_ from '../../public/img/appro_.svg';
+import appro from '../../img/appro.svg';
+import appro_ from '../../img/appro_.svg';
 
-import list from '../../public/img/list.svg';
-import more from '../../public/img/more.svg';
-import application from '../../public/img/application.svg';
+import list from '../../img/list.svg';
+import more from '../../img/more.svg';
+import application from '../../img/application.svg';
 // 底部菜单
 export const tabbar = [{
   title: '申请',

@@ -1,7 +1,7 @@
 import React from 'react';
 import Animate from 'rc-animate';
 import velocity from 'velocity-animate';
-import '../../../public/css/index.less';
+import '../../../css/index.less';
 
 import SortView from './Sort';
 import style from './index.less';
