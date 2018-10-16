@@ -19,5 +19,4 @@ class Nothing extends React.Component {
   }
 }
 
-
 export default connect()(Nothing);

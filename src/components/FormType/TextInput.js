@@ -54,8 +54,8 @@ class TextInput extends React.Component {
 
   renderFormInput = () => {
     const { data: { value, hasError }, field } = this.props;
-    const { name, description, max } = field;
-    return max && max < 10 ?
+    const { name, description, max, type } = field;
+    return ((max && max < 10) || type === 'int') ?
       (
         <InputItem
           clear
