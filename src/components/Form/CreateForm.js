@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { List, Toast } from 'antd-mobile';
 import { connect } from 'dva';
-import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region, FormArray } from '../FormType';
+import { SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region, FormArray, FormApi } from '../FormType';
 import {
   dealThumbImg,
 } from '../../utils/convert';
@@ -136,7 +136,7 @@ class CreateForm extends Component {
           />
         );
       }
-      if (item.type === 'department' || item.type === 'staff' || item.type === 'shop' || item.type === 'api') {
+      if (item.type === 'department' || item.type === 'staff' || item.type === 'shop') {
         const { evtClick, history } = this.props;
         return (
           <SelectComp
@@ -150,6 +150,20 @@ class CreateForm extends Component {
             selComponentCb={this.selComponentCb}
           />
         );
+      }
+      if (item.type === 'api') {
+        const { evtClick, history } = this.props;
+        return (
+          <FormApi
+            history={history}
+            isEdit={isEdit}
+            evtClick={evtClick}
+            field={item}
+            defaultValue={newFormData[item.key]}
+            data={itemkey}
+            key={i}
+            selComponentCb={this.selComponentCb}
+          />);
       }
       if (item.type === 'array') {
         return (

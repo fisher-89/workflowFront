@@ -24,9 +24,12 @@ name       require
 export default function ListView(ListItem) {
   @connect(({ loading }) => ({ loading }))
   class NewItem extends PureComponent {
-    state = {
-      muti: [],
-      height: document.documentElement.clientHeight,
+    constructor(props) {
+      super(props);
+      this.state = {
+        muti: props.selected || [],
+        height: document.documentElement.clientHeight,
+      };
     }
 
     componentDidMount() {
@@ -43,7 +46,6 @@ export default function ListView(ListItem) {
 
     componentWillReceiveProps(nextProps) {
       const { selected, dataSource } = nextProps;
-      this.listThis = nextProps.location;
       if (selected && JSON.stringify(selected) !== JSON.stringify(this.state.muti)) {
         this.setState({
           muti: [...nextProps.selected],

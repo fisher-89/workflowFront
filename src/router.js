@@ -30,7 +30,7 @@ function RouterConfig({
   const routes = [{
     path: '/home',
     // models: () => [],
-    models: ['common'],
+    models: ['common', 'api'],
     component: () =>
       import('./routes/login/IndexPage'),
   },
@@ -50,7 +50,6 @@ function RouterConfig({
     //   import('./models/start'),
     // ],
     models: ['start'],
-
     component: () =>
       import('./routes/TableEdit/StartGridDetail'),
   },
@@ -70,16 +69,15 @@ function RouterConfig({
   {
     path: '/approve/:id',
     models: ['approve', 'start'],
-
     component: () =>
       import('./routes/Approved/ApproveDetail'),
   }, {
     path: '/approve_grid/:type/:index',
     models: ['approve'],
-
     component: () =>
       import('./routes/Approved/ApproveGridDetail'),
-  }, {
+  },
+  {
     path: '/approve_grid_edit/:type/:index',
     models: ['approve'],
     component: () =>
@@ -94,13 +92,11 @@ function RouterConfig({
   {
     path: '/select_step',
     models: ['start'],
-
     component: () =>
       import('./routes/TableEdit/SelectStep'),
   }, {
     path: '/select_approver/:id',
     models: ['start'],
-
     component: () =>
       import('./routes/TableEdit/SelectApprover'),
   },
@@ -190,7 +186,6 @@ function RouterConfig({
     //   import('./models/oauth'),
     // ],
     models: ['oauth'],
-
     component: () =>
       import('./routes/Oauth/RefreshAccessToken'),
   },
@@ -200,7 +195,6 @@ function RouterConfig({
     //   import('./models/oauth'),
     // ],
     models: ['oauth'],
-
     component: () =>
       import('./routes/Oauth/RedirectToAuthorize'),
   }];

@@ -6,8 +6,7 @@ import {
   connect,
 } from 'dva';
 import { dealThumbImg } from '../../utils/convert';
-import { SelectComp, SelectCheckbox, Region, TextInput, Upload, FormArray } from '../FormType';
-
+import { SelectComp, SelectCheckbox, Region, TextInput, Upload, FormArray, FormApi } from '../FormType';
 import style from '../FormType/index.less';
 
 class FormDetail extends Component {
@@ -40,6 +39,15 @@ class FormDetail extends Component {
             key={idx}
           />
         );
+      }
+      if (item.type === 'api') {
+        return (
+          <FormApi
+            isEdit={false}
+            field={item}
+            defaultValue={formData[item.key]}
+            key={idx}
+          />);
       }
       if (item.type === 'file') { // 文件
         const files = (formData[item.key] || []).map((its) => { return { url: dealThumbImg(`${UPLOAD_PATH}${its}`, '_thumb') }; });

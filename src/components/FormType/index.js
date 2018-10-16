@@ -5,8 +5,9 @@ import FormDate from './FormDate';
 import Upload from './Upload';
 import Region from './Region';
 import FormArray from './FormArray';
+import FormApi from './FormApi';
 
 export {
-  SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region, FormArray,
+  SelectComp, SelectCheckbox, TextInput, FormDate, Upload, Region, FormArray, FormApi,
 };
 

@@ -6,10 +6,9 @@ import { getUrlParams, dealCheckAll } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
-@connect(({ formSearchApi, loading, api }) => ({
-  // apiSource: formSearchApi.apiSource,
-  sourceDetails: api.sourceDetails,
-  currentKey: formSearchApi.currentKey,
+@connect(({ api, loading }) => ({
+  apiSource: api.sourceDetails,
+  currentKey: api.currentKey,
   loading: loading.global,
 }))
 export default class SelDataSource extends Component {
@@ -44,7 +43,7 @@ export default class SelDataSource extends Component {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    const { apiSource } = this.state;
+    const { apiSource } = this.props;
     const result = apiSource.filter((item) => {
       const { text } = item;
       return text.indexOf(search) > -1;
@@ -83,28 +82,16 @@ export default class SelDataSource extends Component {
   }
 
   getInitState = () => {
-    const { currentKey, sourceDetails } = this.props;
+    const { currentKey } = this.props;
     const urlParams = getUrlParams();
     const paramsValue = urlParams.params;
     const params = JSON.parse(paramsValue);
-    const { key, type, max, min, fetchId } = params;
+    const { key, type, max, min } = params;
     const current = currentKey[key] || {};
     const multiple = !!type;
     const data = current.data || (multiple ? [] : {});
-    let editValue;
-    const dataSource = sourceDetails[fetchId] || [];
-    if (multiple) {
-      editValue = data.map((item) => {
-        const [curItem = {}] = dataSource.filter(its => `${its.value}` === `${item}`);
-        const obj = {};
-        obj.value = item;
-        obj.text = curItem.text;
-        return obj;
-      });
-    } else {
-      editValue = { value: data, text: data };
-    }
-    const newData = editValue;
+    // const newData = makeFieldValue(data, { value: 'id', text: 'name' }, multiple);
+    const newData = data;
     let mutiData = [];
     if (multiple) {
       mutiData = newData;
@@ -122,8 +109,7 @@ export default class SelDataSource extends Component {
       search: '',
       // key, // 选的什么人
       // type, // 选的类型，单选还是多选
-      apiSource: dataSource,
-      curDataSource: dataSource,
+      curDataSource: [],
       multiple,
       params,
     };
@@ -134,7 +120,7 @@ export default class SelDataSource extends Component {
     const { params: { fetchId } } = this.state;
     const { dispatch } = this.props;
     dispatch({
-      type: 'api/fetchApi',
+      type: 'formSearchApi/getApiDataSource',
       payload: {
         cb: (data) => {
           this.setState({
@@ -147,7 +133,7 @@ export default class SelDataSource extends Component {
   }
 
   checkedAll = () => { // 全选
-    const { apiSource } = this.state;
+    const { apiSource } = this.props;
     const staffSn = apiSource.map(item => item.value);
     const { selectAll, selected, params: { max } } = this.state;
     const newSelected = dealCheckAll(selected, staffSn, 'value', selectAll, apiSource, max);
@@ -158,7 +144,7 @@ export default class SelDataSource extends Component {
   }
 
   searchOncancel = () => {
-    const { apiSource } = this.state;
+    const { apiSource } = this.props;
     this.setState({
       search: '',
       curDataSource: apiSource,
@@ -217,7 +203,7 @@ export default class SelDataSource extends Component {
             renderName="text"
             singleSelected={singleSelected}
             multiple={multiple}
-            selected={selectedData}
+            selected={selected.data}
             dataSource={curDataSource}
             onRefresh={this.onRefresh}
             onChange={this.getSelectResult}

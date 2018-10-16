@@ -30,7 +30,6 @@ export default class SelDepartment extends Component {
     const { department, isConfig } = nextProps;
     const oldDep = this.props.department;
     const { init } = this.state;
-    console.log(isConfig, JSON.stringify(department) !== JSON.stringify(oldDep), !init);
     if (JSON.stringify(department) !== JSON.stringify(oldDep) || !init) {
       const tree = markTreeData(department, 0, { parentId: 'parent_id', key: 'id' });
       this.setState({
