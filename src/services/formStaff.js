@@ -1,3 +1,4 @@
+import { Toast } from 'antd-mobile';
 import request from '../utils/request';
 
 export async function department(id) {
@@ -41,5 +42,6 @@ export async function getFinalStaff() {
 }
 
 export async function getApiDataSource(id) {
+  Toast.info(`id:${id}`);
   return request(`/api/oa-api/${id}`, null, false);
 }

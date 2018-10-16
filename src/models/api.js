@@ -1,3 +1,5 @@
+import { Toast } from 'antd-mobile';
+
 import { getApiDataSource } from '../services/formStaff';
 import defaultReducers from './reducers/default';
 
@@ -23,6 +25,7 @@ export default {
       if (sourceDetails[id] && sourceDetails[id].length) {
         return;
       }
+      Toast.info(`fetchid:${id}`);
       const data = yield call(getApiDataSource, id);
       if (data && !data.error) {
         yield put({
