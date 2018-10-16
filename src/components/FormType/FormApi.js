@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, TextareaItem } from 'antd-mobile';
+import { List, TextareaItem, Toast } from 'antd-mobile';
 import { connect } from 'dva';
 import { isJSON } from '../../utils/util';
 import style from './index.less';
@@ -25,6 +25,7 @@ export default class SelectComp extends React.Component {
   componentWillMount() {
     const { dispatch, field } = this.props;
     this.id = field.field_api_configuration_id;
+    Toast.info(`${this.id}`);
     dispatch({
       type: 'api/fetchApi',
       payload: {
