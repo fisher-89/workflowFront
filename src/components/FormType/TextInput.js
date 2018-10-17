@@ -6,13 +6,6 @@ import style from './index.less';
 
 
 class TextInput extends React.Component {
-  componentWillMount() {
-    window.addEventListener('resize', (e) => {
-      const winHeight = window.innerHeight;
-      console.log(e);
-    }, false);
-  }
-
   onHandleBlur = (v) => {
     const { isRequire, field, onChange } = this.props;
     const { name, type, min, max } = field;
