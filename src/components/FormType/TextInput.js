@@ -83,6 +83,7 @@ class TextInput extends React.Component {
           onChange={e => this.handleOnChange(e, field)}
           onBlur={this.onHandleBlur}
           value={`${value || ''}`}
+          type={type === 'int' ? 'number' : ''}
         >{name}
         </InputItem>
       ) : (
