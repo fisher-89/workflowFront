@@ -42,6 +42,7 @@ export default class Remark extends Component {
             payload: {
               params: {
                 ...params,
+                host: `${window.location.origin}/approve`,
                 ...values,
               },
               cb: (datas) => {
@@ -70,6 +71,7 @@ export default class Remark extends Component {
               data: {
                 ...params,
                 ...values,
+                host: `${window.location.origin}/approve`,
               },
               id: params.flow_id,
               cb: (datas) => {

@@ -208,6 +208,7 @@ class ApproveDetail extends Component {
       step_run_id: data.step_run_id,
       timestamp: data.timestamp,
       next_step: [],
+      host: `${window.location.origin}/approve`,
     };
     dispatch({
       type: 'approve/getThrough',
@@ -271,6 +272,7 @@ class ApproveDetail extends Component {
             //   text: '确定',
             //   onPress: v => this.submitStep(v, data),
             // }], 'default', null, ['请输入备注']);
+
             const url = JSON.stringify(data);
             history.push(`/remark?params=${url}&type=2`);
           } else {
