@@ -9,6 +9,18 @@ import style from './index.less';
 
 
 class SelectCheckbox extends React.Component {
+  makeTitleTips = () => {
+    const { field: { min, max } } = this.props;
+    let tip = '';
+    if (min && max) {
+      tip = `(${min}~${max}项)`;
+    } else if (min) {
+      tip = `(至少${min}项)`;
+    } else if (max) {
+      tip = `(至多${max}项)`;
+    }
+    return tip;
+  }
   renderFormPicker = (value, options, item) => {
     const { onChange } = this.props;
     return (
@@ -29,6 +41,7 @@ class SelectCheckbox extends React.Component {
     );
   }
 
+
   render() {
     const { isEdit, field, data: { value },
       field: { name, max, min }, options, defaultValue, onChange } = this.props;
@@ -37,9 +50,13 @@ class SelectCheckbox extends React.Component {
     });
     const multiple = field.is_checkbox;
     if (multiple) {
+      const tip = this.makeTitleTips();
       return (
         <div className={style.file}>
-          <p className={cls}>{name}</p>
+          <div >
+            <p className={cls}><span>{name}</span></p>
+            <span style={{ fontSize: '12px', color: '#c7c7c7' }}>{tip}</span>
+          </div>
           <div className={style.array_container}>
             <CheckBoxs
               style={{ marginBottom: '10px' }}

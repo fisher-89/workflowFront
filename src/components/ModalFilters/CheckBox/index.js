@@ -1,4 +1,5 @@
 import React from 'react';
+import { Toast } from 'antd-mobile';
 import Styles from './index.less';
 import { isArray } from '../../../utils/util';
 
@@ -42,8 +43,8 @@ class CheckBox extends React.PureComponent {
       });
       if (pushAble) {
         const { length } = newValue;
-        if (max > 0 && `${length}` === `${max}`) {
-          Toast.info(`最多选择${length}项`);
+        if (max > 0 && length - max >= 0) {
+          Toast.info(`最多选择${max}项`, 1);
         } else {
           newValue.push(changeValue);
         }
