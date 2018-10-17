@@ -34,7 +34,7 @@ class TextInput extends React.Component {
     // const newValue = curScale > scale ? (value.slice(0, value.indexOf('.') + (scale - 0) + 1))
     // : Number(value).toFixed(scale);
     let newValue;
-    if (v !== '') {
+    if (v !== '' && !isNaN(v)) {
       const tmpValue = `${Number(value)}`;
       newValue = curScale > scale ? (tmpValue.slice(0, tmpValue.indexOf('.') + (scale - 0) + 1)) : Number(value).toFixed(scale);
     } else {
@@ -49,7 +49,7 @@ class TextInput extends React.Component {
     let newValue = v;
     if (item.type === 'int') {
       const reg = /^(-|\d)\d*(\.)?(\d)*$/;
-      if (max !== '' && (parseFloat(v) - max > 0)) {
+      if (max !== '' && reg.test(v) && (parseFloat(v) - max > 0)) {
         newValue = max;
       } else if (reg.test(v)) {
         if (v.indexOf('.') > 0 && (v.split('.')[1].length > scale)) {
@@ -76,7 +76,6 @@ class TextInput extends React.Component {
           onChange={e => this.handleOnChange(e, field)}
           onBlur={this.onHandleBlur}
           value={`${value || ''}`}
-          type={type === 'int' ? 'number' : ''}
         >{name}
         </InputItem>
       ) : (
