@@ -56,7 +56,7 @@ export default class TagGroup extends React.Component {
         } else {
           e.preventDefault();
           this.setState({ tagEdit: index }, () => {
-            Toast.info('请勿重复添加', 1.5);
+            Toast.info('请勿重复添加', 1);
           });
           e.target.focus();
         }
@@ -91,7 +91,7 @@ export default class TagGroup extends React.Component {
         newTags = [...tags, value.length >= 10 ? value.slice(0, 10) : value];
       } else {
         e.preventDefault();
-        Toast.info('请勿重复添加', 1.5);
+        Toast.info('请勿重复添加', 1);
         e.target.focus();
       }
     }

@@ -14,7 +14,7 @@ class TextInput extends React.Component {
       Toast.info(`请输入${name}`, 1.5);
     } else if (type === 'text') {
       if (min !== '' && v.length < min) {
-        Toast.info(`字符长度在${min || '0'}~${max}之间`);
+        Toast.info(`字符长度在${min || '0'}~${max}之间`, 1);
       }
       newValue = max && newValue.length > max ? newValue.slice(0, max) : newValue;
     } else if (type === 'int') {

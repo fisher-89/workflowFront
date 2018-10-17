@@ -54,7 +54,7 @@ export default {
       const { params, cb } = payload;
       const data = yield call(a.doDeliver, params);
       if (data && !data.error) {
-        Toast.success('转交成功');
+        Toast.success('转交成功', 1.5);
         setTimeout(() => {
           if (cb) {
             cb(data);
@@ -145,7 +145,7 @@ export default {
         yield put({
           type: 'resetStart',
         });
-        Toast.success('操作成功');
+        Toast.success('操作成功', 1.5);
         payload.cb(data);
       }
     },

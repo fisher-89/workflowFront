@@ -216,7 +216,7 @@ class SelectStep extends Component {
     if (errMsg.length) {
       errMsg.map((item, i) => {
         setTimeout(() => {
-          Toast.fail(item);
+          Toast.fail(item, 1.5);
         }, (i) * 1000);
         return item;
       });

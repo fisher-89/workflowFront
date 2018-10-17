@@ -70,7 +70,7 @@ export default class PersonContainer extends Component {
   handleOk = () => {
     const { selected, selectOk } = this.props;
     if (selected.num < selected.min) {
-      Toast.info(`请至少选择${selected.min}个`, 1.5);
+      Toast.info(`请至少选择${selected.min}个`, 1);
     } else {
       selectOk();
     }
