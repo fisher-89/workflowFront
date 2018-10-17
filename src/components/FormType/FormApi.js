@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, TextareaItem, Toast } from 'antd-mobile';
+import { List, TextareaItem } from 'antd-mobile';
 import { connect } from 'dva';
 import { isJSON } from '../../utils/util';
 import style from './index.less';

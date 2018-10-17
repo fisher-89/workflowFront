@@ -51,7 +51,6 @@ export default class Upload extends React.Component {
   }
 
   filesOnchange = (files, type) => {
-    console.log(files);
     const { onChange, field: { id } } = this.props;
     const newFiles = files.map((its) => {
       return rebackImg(its.url, `${UPLOAD_PATH}`, '_thumb');

@@ -6,6 +6,13 @@ import style from './index.less';
 
 
 class TextInput extends React.Component {
+  componentWillMount() {
+    window.addEventListener('resize', (e) => {
+      const winHeight = window.innerHeight;
+      console.log(e);
+    }, false);
+  }
+
   onHandleBlur = (v) => {
     const { isRequire, field, onChange } = this.props;
     const { name, type, min, max } = field;
@@ -23,12 +30,23 @@ class TextInput extends React.Component {
     onChange(newValue, field);
   }
 
+  onFocus = () => {
+
+  }
   formatIntValue = (v, field) => {
     const { scale, min } = field;
-    const value = v === '' ? min : v;
+    const value = (v !== '' && (min - v > 0)) ? min : v;
     const idx = value.indexOf('.');
     const curScale = idx > -1 ? value.slice(idx + 1).length : 0;
-    const newValue = curScale > scale ? (value.slice(0, value.indexOf('.') + (scale - 0) + 1)) : Number(value).toFixed(scale);
+    // const newValue = curScale > scale ? (value.slice(0, value.indexOf('.') + (scale - 0) + 1))
+    // : Number(value).toFixed(scale);
+    let newValue;
+    if (v !== '') {
+      const tmpValue = `${Number(value)}`;
+      newValue = curScale > scale ? (tmpValue.slice(0, tmpValue.indexOf('.') + (scale - 0) + 1)) : Number(value).toFixed(scale);
+    } else {
+      newValue = '';
+    }
     return newValue;
   }
 
@@ -38,10 +56,10 @@ class TextInput extends React.Component {
     let newValue = v;
     if (item.type === 'int') {
       const reg = /^(-|\d)\d*(\.)?(\d)*$/;
-      if (max !== '' && parseFloat(v) > max) {
+      if (max !== '' && (parseFloat(v) - max > 0)) {
         newValue = max;
-      } else if (reg.test(newValue)) {
-        if (v.indexOf('.') > 0 && v.split('.')[1].length > scale) {
+      } else if (reg.test(v)) {
+        if (v.indexOf('.') > 0 && (v.split('.')[1].length > scale)) {
           // newValue = Number(v).toFixed(scale);
           newValue = v.slice(0, v.indexOf('.') + (scale - 0) + 1);
         }
@@ -59,7 +77,7 @@ class TextInput extends React.Component {
       (
         <InputItem
           clear
-          maxLength={max || (type === 'int' ? 10 : max)}
+          maxLength={max || (type === 'int' ? 16 : max)}
           placeholder={description}
           error={hasError}
           onChange={e => this.handleOnChange(e, field)}
@@ -76,6 +94,8 @@ class TextInput extends React.Component {
           error={hasError}
           onChange={e => this.handleOnChange(e, field)}
           onBlur={this.onHandleBlur}
+          onFocus={this.onFocus}
+
           value={`${value || ''}`}
         />
       );

@@ -1,4 +1,3 @@
-import { Toast } from 'antd-mobile';
 import request from '../utils/request';
 
 export async function department(id) {

@@ -63,7 +63,6 @@ export default class TagGroup extends React.Component {
       } else {
         const { tags } = this.state;
         const tag = tags[index];
-        console.log('tag', tag);
         this.handleClose(tag, index);
       }
     };
