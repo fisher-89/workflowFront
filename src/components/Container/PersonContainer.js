@@ -115,12 +115,12 @@ export default class PersonContainer extends Component {
               </List>
             </div>
           )}
-          {multiple && !this.state.value ? (
+          {multiple && !this.state.value && all ? (
             <div className={style.action}>
               <div className={style.action_item}>
                 <div
                   className={[style.item, checkAble ? style.checked : null].join(' ')}
-                  onClick={checkedAll}
+                  onClick={() => checkedAll(!checkAble)}
                 >
                   <span>全选</span>
                 </div>

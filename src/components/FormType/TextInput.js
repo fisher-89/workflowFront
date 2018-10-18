@@ -43,10 +43,6 @@ class TextInput extends React.Component {
     });
   }
 
-  onFocus = () => {
-
-  }
-
   formatIntValue = (v, field) => {
     const { scale, min } = field;
     const value = (v !== '' && (min - v > 0)) ? min : v;
@@ -99,7 +95,6 @@ class TextInput extends React.Component {
           clear
           maxLength={max || (type === 'int' ? 16 : max)}
           placeholder={description}
-          type={type === 'int' ? 'digit' : 'text'}
           error={hasError}
           onChange={e => this.handleOnChange(e, field)}
           onBlur={this.onHandleBlur}
@@ -138,6 +133,7 @@ class TextInput extends React.Component {
 }
 TextInput.defaultProps = {
   isEdit: true,
+  data: { value: '' },
 };
 
 export default connect()(TextInput);

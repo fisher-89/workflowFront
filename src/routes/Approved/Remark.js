@@ -4,12 +4,18 @@ import { connect } from 'dva';
 import { Button, TextareaItem, WhiteSpace, Flex } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import { PersonIcon } from '../../components';
+import spin from '../../components/General/Loader';
+
 import { getUrlParams } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
 @createForm()
-@connect()
+@connect(({
+  loading,
+}) => ({
+  loading: loading.effects['approve/doDeliver'] || loading.effects['approve/getThrough'] || loading.effects['approve/doReject'],
+}))
 export default class Remark extends Component {
   state={
     params: {},
@@ -58,7 +64,7 @@ export default class Remark extends Component {
                 //   },
                 // });
                 this.optCback(datas, () => {
-                  window.history.go(-2);
+                  window.history.go(-3);
                 });
               },
             },
@@ -88,7 +94,7 @@ export default class Remark extends Component {
                 // });
                 // window.history.go(-1);
                 this.optCback(datas, () => {
-                  window.history.go(-1);
+                  window.history.go(-2);
                 });
               },
             },
@@ -116,7 +122,7 @@ export default class Remark extends Component {
                 // });
                 // window.history.go(-1);
                 this.optCback(datas, () => {
-                  window.history.go(-1);
+                  window.history.go(-2);
                 });
               },
             },
@@ -148,10 +154,11 @@ export default class Remark extends Component {
   }
 
   render() {
-    const { getFieldProps } = this.props.form;
+    const { loading, form: { getFieldProps } } = this.props;
     const urlParams = getUrlParams();
     const { type } = urlParams;
     const params = JSON.parse(urlParams.params);
+    spin(loading);
     return (
       <div className={styles.con}>
         <div className={styles.con_content}>

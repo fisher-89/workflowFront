@@ -362,7 +362,6 @@ export default class SelPerson extends Component {
                 dataSource={department}
                 heightNone
                 onRefresh={false}
-
                 fetchDataSource={this.selDepartment}
                 name="id"
               />

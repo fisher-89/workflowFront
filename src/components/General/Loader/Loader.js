@@ -13,7 +13,7 @@ export default class Loader extends React.PureComponent {
       >
         <div className="warpper">
           <div className="inner" />
-          <div className="text" >加载中</div>
+          <div className="text" id="text">加载中</div>
         </div>
       </div>
     );

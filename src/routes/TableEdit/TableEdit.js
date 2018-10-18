@@ -241,10 +241,10 @@ class TableEdit extends Component {
   };
 
   render() {
-    const { start, dispatch, loading, history } = this.props;
+    const { start, dispatch, loading, history, fileLoading } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
-    spin(loading);
+    spin(loading || fileLoading, fileLoading ? '上传中' : '加载中');
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 可编辑的form
@@ -296,5 +296,6 @@ export default connect(({
   start, loading,
 }) => ({
   start,
-  loading: loading.global,
+  loading: loading.effects['start/getStartFlow'] || loading.effects['api/fetchApi'],
+  fileLoading: loading.effects['start/fileUpload'],
 }))(TableEdit);

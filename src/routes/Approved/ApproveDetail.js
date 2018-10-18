@@ -341,10 +341,11 @@ class ApproveDetail extends Component {
   }
 
   render() {
-    const { approve, dispatch, loading, history } = this.props;
+    const { approve, dispatch, loading, fileLoading, history } = this.props;
     const { startflow, formdata } = approve;
     const newFormData = approve.form_data;
-    spin(loading);
+    spin(loading || fileLoading, fileLoading ? '上传中' : '加载中');
+
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 只需要展示的（不包括可编辑的）
@@ -422,5 +423,8 @@ class ApproveDetail extends Component {
 export default connect(({
   approve, start, loading,
 }) => ({
-  approve, start, loading: loading.global,
+  approve,
+  start,
+  loading: loading.effects['approve/getStartFlow'] || loading.effects['api/fetchApi'],
+  fileLoading: loading.effects['start/fileUpload'],
 }))(ApproveDetail);

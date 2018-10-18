@@ -140,7 +140,6 @@ export default class SelPerson extends Component {
         min: min || 1,
         num: mutiData.length,
       },
-      selectAll: false,
       search: '',
       params,
       page: 1,
@@ -166,12 +165,12 @@ export default class SelPerson extends Component {
     });
   }
 
-  checkedAll = () => { // 全选
+  checkedAll = (selectAll) => { // 全选
     const name = 'shop_sn';
     const { shop } = this.props;
     const shopData = shop.data || [];
     const shopSn = shopData.map(item => item[name]);
-    const { selectAll, selected } = this.state;
+    const { selected } = this.state;
     const { data } = selected;
     if (selectAll) {
       const newData = data.filter(item => shopSn.indexOf(item[name]) === -1);
@@ -194,7 +193,6 @@ export default class SelPerson extends Component {
 
     this.setState({
       selected,
-      selectAll: !selectAll,
     });
   }
 
@@ -250,11 +248,11 @@ export default class SelPerson extends Component {
       history,
     };
     const { totalpage, data } = shop;
-    const { selected, selectAll, singleSelected, page, multiple, search } = this.state;
+    const { selected, singleSelected, page, multiple, search } = this.state;
     const selectedData = selected.data;
-    const shopSn = (data || []).map(item => item.shop_sn);
+    const shopSn = (data || []).map(item => `${item.shop_sn}`);
     const checkAble = selectedData.filter(item =>
-      shopSn.indexOf(item.shop_sn) > -1).length === shopSn.length && selectAll;
+      shopSn.indexOf(`${item.shop_sn}`) > -1).length === shopSn.length && shopSn.length.length;
 
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>

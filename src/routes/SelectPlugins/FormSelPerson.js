@@ -157,7 +157,6 @@ export default class SelPerson extends Component {
       singleSelected,
       params,
       page: 1,
-      selectAll: false,
       search: '',
       // key, // 选的什么人
       // type, // 选的类型，单选还是多选
@@ -176,9 +175,6 @@ export default class SelPerson extends Component {
     const fieldId = params.id;
     const newBread = this.makeBreadCrumb(data);
     const parentId = data.id;
-    this.setState({
-      selectAll: false,
-    });
     let payload = null;
     if (`${parentId}` !== '-1') {
       payload = {
@@ -216,15 +212,13 @@ export default class SelPerson extends Component {
     });
   }
 
-  checkedAll = () => { // 全选
+  checkedAll = (selectAll) => { // 全选
     const { staff } = this.props;
     const staffSn = staff.map(item => item.staff_sn);
-    const { selectAll, selected, params: { max } } = this.state;
+    const { selected, params: { max } } = this.state;
     const newSelected = dealCheckAll(selected, staffSn, 'staff_sn', selectAll, staff, max);
-
     this.setState({
       selected: newSelected,
-      selectAll: !selectAll,
     });
   }
 
@@ -265,13 +259,13 @@ export default class SelPerson extends Component {
       history,
       dispatch,
     };
-    const { selected, search, selectAll, singleSelected, multiple, page } = this.state;
+    const { selected, search, singleSelected, multiple, page } = this.state;
     const selectedData = selected.data;
     const { totalpage, data = [] } = searStaff;
-    const staffSn = staff.map(item => item.staff_sn);
+    const staffSn = staff.map(item => `${item.staff_sn}`);
     const checkAble = selectedData.filter(item =>
-      staffSn.indexOf(item.staff_sn) > -1).length === staffSn.length && selectAll;
-
+      staffSn.indexOf(`${item.staff_sn}`) > -1).length === staffSn.length && staffSn.length;
+    console.log(checkAble);
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
@@ -310,7 +304,6 @@ export default class SelPerson extends Component {
                 link=""
                 heightNone
                 onRefresh={false}
-                page="1"
                 name="staff_sn"
                 renderName="realname"
                 singleSelected={singleSelected}

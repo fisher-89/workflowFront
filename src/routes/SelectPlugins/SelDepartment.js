@@ -189,7 +189,7 @@ export default class SelDepartment extends Component {
       newParams = { ...payload };
     } else {
       newParams = {
-        breadCrumb: [{ name: '选择部门', id: '-1' }],
+        breadCrumb: [{ name: '一级部门', id: '-1' }],
         reqData: { field_id: id },
       };
     }
@@ -294,9 +294,16 @@ export default class SelDepartment extends Component {
     });
   }
 
+  isHasNextDep=(item) => {
+    const currentChild = item.children || [];
+    return currentChild.length;
+  }
+
   renderExtraContent = (value) => {
+    const next = this.isHasNextDep(value);
     const extra = (
-      <div className={style.extra} onClick={() => this.fetchNextDep(value)} />
+      next ?
+        <div className={style.extra} onClick={() => this.fetchNextDep(value)} /> : null
     );
     return extra;
   }

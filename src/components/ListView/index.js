@@ -235,7 +235,7 @@ export default function ListView(ListItem) {
     }
 
     renderList = () => {
-      const { dataSource, offsetBottom, heightNone,
+      const { dataSource, offsetBottom, heightNone, hasLoading = true,
         loading, onRefresh, totalpage, page } = this.props;
       let currentPage = this.props.page;
       if (!page) {
@@ -248,7 +248,7 @@ export default function ListView(ListItem) {
       const nothingAble = !heightNone &&
         (!loading.global && ((dataSource && !dataSource.length) || !dataSource));
       const loader = (((!dataSource) || (dataSource && !dataSource.length)
-        || (`${currentPage}` === '1'))
+        || (`${currentPage}` === '1') || hasLoading)
         && loading.global);
       spin(loader);
       return (
@@ -299,6 +299,7 @@ export default function ListView(ListItem) {
   NewItem.defaultProps = {
     onRefresh: () => { },
     singleSelected: {},
+    hasLoading: true,
   };
   return NewItem;
 }
