@@ -6,6 +6,24 @@ import style from './index.less';
 
 
 class TextInput extends React.Component {
+  constructor(props) {
+    const { data: { value } } = props;
+    super(props);
+    this.state = {
+      value,
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    const { data } = props;
+    const { value, key } = data;
+    if (key === this.props.data.key && value !== this.props.data) {
+      this.setState({
+        value,
+      });
+    }
+  }
+
   onHandleBlur = (v) => {
     const { isRequire, field, onChange } = this.props;
     const { name, type, min, max } = field;
@@ -20,7 +38,9 @@ class TextInput extends React.Component {
     } else if (type === 'int') {
       newValue = this.formatIntValue(newValue, field);
     }
-    onChange(newValue, field);
+    this.setState({ value: newValue }, () => {
+      onChange(newValue, field);
+    });
   }
 
   onFocus = () => {
@@ -48,10 +68,8 @@ class TextInput extends React.Component {
     const { onChange } = this.props;
     const { max, scale } = item;
     let newValue = v;
-    console.log('type', item.type);
     if (item.type === 'int') {
       const reg = /^(-|\d)\d*(\.)?(\d)*$/;
-      console.log('reg.test(v)', reg.test(v));
       if (max !== '' && reg.test(v) && (parseFloat(v) - max > 0)) {
         newValue = max;
       } else if (reg.test(v)) {
@@ -63,12 +81,18 @@ class TextInput extends React.Component {
         newValue = parseFloat(v);
       }
     }
-    onChange(newValue);
+    this.setState({
+      value: newValue,
+    }, () => {
+      onChange(newValue);
+    });
   }
 
   renderFormInput = () => {
-    const { data: { value, hasError }, field } = this.props;
+    const { data: { hasError }, field } = this.props;
+    const { value } = this.state;
     const { name, description, max, type } = field;
+
     return ((max && max < 10) || type === 'int') ?
       (
         <InputItem
@@ -92,7 +116,6 @@ class TextInput extends React.Component {
           onChange={e => this.handleOnChange(e, field)}
           onBlur={this.onHandleBlur}
           onFocus={this.onFocus}
-
           value={`${value || ''}`}
         />
       );
