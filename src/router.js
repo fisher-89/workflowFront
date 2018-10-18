@@ -119,6 +119,12 @@ function RouterConfig({
       import('./routes/TableEdit/StartDetail'),
   },
   {
+    path: '/test',
+    models: ['start'],
+    component: () =>
+      import('./routes/TableEdit/test'),
+  },
+  {
     path: '/imageview',
     models: [],
     component: () =>

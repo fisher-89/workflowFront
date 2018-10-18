@@ -148,7 +148,6 @@ export default class SelPerson extends Component {
       singleSelected,
       params,
       page: 1,
-      selectAll: false,
       search: '',
       // key, // 选的什么人
       // type, // 选的类型，单选还是多选
@@ -226,9 +225,6 @@ export default class SelPerson extends Component {
   selDepartment = (params) => {
     const newBread = this.makeBreadCrumbData(params);
     const parentId = params.id;
-    this.setState({
-      selectAll: false,
-    });
     if (parentId === '-1') {
       this.fetchStaffs();
     } else {
@@ -239,10 +235,10 @@ export default class SelPerson extends Component {
     }
   }
 
-  checkedAll = () => { // 全选
+  checkedAll = (selectAll) => { // 全选
     const { staff } = this.props;
     const staffSn = staff.map(item => item.staff_sn);
-    const { selectAll, selected } = this.state;
+    const { selected } = this.state;
     // const { data } = selected;
     // if (selectAll) {
     //   selected.data = [];
@@ -255,7 +251,6 @@ export default class SelPerson extends Component {
     const newSelected = dealCheckAll(selected, staffSn, 'staff_sn', selectAll, staff);
     this.setState({
       selected: newSelected,
-      selectAll: !selectAll,
     });
   }
 
@@ -325,15 +320,15 @@ export default class SelPerson extends Component {
       history,
       dispatch,
     };
-    const { selected, search, selectAll, multiple,
+    const { selected, search, multiple,
       singleSelected, params: { singleDelete = true, key } } = this.state;
     const selectedData = selected.data;
     const isFinal = key === 'final';
     const { page, totalpage, data = [] } = searStaff;
     const tempFinal = this.onFinalSearch(search);
-    const staffSn = staff.map(item => item.staff_sn);
+    const staffSn = staff.map(item => `${item.staff_sn}`);
     const checkAble = selectedData.filter(item =>
-      staffSn.indexOf(item.staff_sn) > -1).length === staffSn.length && selectAll;
+      staffSn.indexOf(`${item.staff_sn}`) > -1).length === staffSn.length && staffSn.length;
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
