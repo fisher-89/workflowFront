@@ -26,6 +26,7 @@ class TextInput extends React.Component {
   onFocus = () => {
 
   }
+
   formatIntValue = (v, field) => {
     const { scale, min } = field;
     const value = (v !== '' && (min - v > 0)) ? min : v;
@@ -47,8 +48,10 @@ class TextInput extends React.Component {
     const { onChange } = this.props;
     const { max, scale } = item;
     let newValue = v;
+    console.log('type', item.type);
     if (item.type === 'int') {
       const reg = /^(-|\d)\d*(\.)?(\d)*$/;
+      console.log('reg.test(v)', reg.test(v));
       if (max !== '' && reg.test(v) && (parseFloat(v) - max > 0)) {
         newValue = max;
       } else if (reg.test(v)) {
@@ -72,6 +75,7 @@ class TextInput extends React.Component {
           clear
           maxLength={max || (type === 'int' ? 16 : max)}
           placeholder={description}
+          type={type === 'int' ? 'digit' : 'text'}
           error={hasError}
           onChange={e => this.handleOnChange(e, field)}
           onBlur={this.onHandleBlur}
