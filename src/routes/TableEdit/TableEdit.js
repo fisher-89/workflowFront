@@ -244,7 +244,14 @@ class TableEdit extends Component {
     const { start, dispatch, loading, history, fileLoading } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
-    spin(loading || fileLoading, fileLoading ? '上传中' : '加载中');
+    // spin(loading || fileLoading, fileLoading ? '上传中' : 'yy');
+    // console.log(loading, fileLoading);
+    // if (loading) {
+    spin(loading);
+    // }
+    // if (fileLoading) {
+    spin(fileLoading, '上传中');
+    // }
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 可编辑的form
