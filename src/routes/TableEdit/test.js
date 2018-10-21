@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 import React, { Component } from 'react';
 import { connect } from 'dva';
@@ -55,14 +56,108 @@ const testData = [
     ],
   },
 ];
+
+const test = [
+  { id: 1, time: '', next: [2, 3, 4], prev: [] },
+  { id: 2, time: '', next: [8], prev: [1] },
+  { id: 3, time: '', next: [5, 6], prev: [1] },
+  { id: 4, time: '', next: [8], prev: [1] },
+  { id: 5, time: '', next: [7], prev: [3] },
+  { id: 6, time: '', next: [7], prev: [3] },
+  { id: 7, time: '', next: [8], prev: [5, 6] },
+  { id: 8, time: '', next: [9, 10], prev: [2, 4, 7] },
+  { id: 9, time: '', next: [11], prev: [8] },
+  { id: 10, time: '', next: [11], prev: [8] },
+  { id: 11, time: '', next: [], prev: [9, 10] },
+];
+
+const cols = {};
+const testKeyById = {};
+let colIndex = 1;
+
 @connect()
 export default class Test extends Component {
   componentDidMount() {
     this.canvas = document.getElementById('myCanvas');
     this.ctx = this.canvas.getContext('2d');
-    this.draw(testData, 20, 1, 0);
+    test.forEach((step, index) => {
+      testKeyById[step.id] = step;
+      step.y = index + 1;
+      //绑定点的X坐标
+      if (step.prev.length === 0) {//主节点
+        step.x = cols;
+        step.max = cols;
+      } else if (step.prev.length > 1) {//合并
+        const separateStepId = this.getCommonPrevStep(step.prev);
+        const separateStep = testKeyById[separateStepId];
+        step.x = separateStep.x;
+        step.max = separateStep.max;
+      } else {//不分叉
+        const prevStep = testKeyById[step.prev[0]];
+        if (prevStep.next.length > 1) {
+          const subIndex = prevStep.next.indexOf(step.id);
+          step.x = prevStep.x[subIndex];
+          step.max = prevStep.x[prevStep.next.length - 1];
+        } else {
+          step.x = prevStep.x;
+          step.max = prevStep.max;
+        }
+      }
+      // 生成cols分支
+      if (step.next.length > 1) {
+        step.next.forEach((next_id, next_index) => {
+          step.x[next_index] = step.x[next_index] || {};
+        });
+      }
+    });
+    this.fillColsIndex(cols);
+    console.log('test:', test);
+    console.log('cols:', cols);
+
+    // this.draw(testData, 20, 1, 0);
     // this.drawArc(20, 20, 5, 0, 2 * Math.PI);
     // this.drawLine(25, 20, 50, 20);
+  }
+
+  getCommonPrevStep = (stepIds) => {
+    const prevLength = stepIds.length;
+    let baseLength = prevLength;
+    const steps = test.filter(item => stepIds.indexOf(item.id) !== -1);
+    // const step = steps[0];
+    let prevStepIds = [];
+    steps.forEach((step) => {
+      if (step.prev.length > 1) {
+        prevStepIds.concat(step.prev);
+      } else {
+        prevStepIds.push(step.prev[0]);
+      }
+    })
+    prevStepIds = prevStepIds.unique();
+    if (prevStepIds.length > 1) {
+      return this.getCommonPrevStep(prevStepIds);
+    } else {
+      return prevStepIds[0];
+    }
+
+    //  if(step.prev.length)
+    // baseLength = baseLength - step.next.length + 1;
+    // baseLength = baseLength + step.prev.length - 1;
+    // prevStepIds.push(step.prev[0])
+    // if (baseLength!==step.prev.length){
+    //   return this.getCommonPrevStep(prevStepIds)
+    // }
+    // else {
+    //   return prevStepIds
+    // }
+  }
+
+  fillColsIndex = (cols) => {
+    const index = colIndex;
+    Object.keys(cols).forEach((key) => {
+      if (key > 0) colIndex += 1;
+      this.fillColsIndex(cols[key]);
+    });
+    cols.index = index;
   }
 
   vertivalGap = (start, end, height) => {
