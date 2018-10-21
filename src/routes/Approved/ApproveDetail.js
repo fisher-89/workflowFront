@@ -276,9 +276,10 @@ class ApproveDetail extends Component {
             // }], 'default', null, ['请输入备注']);
 
             const url = JSON.stringify(data);
+
             history.push(`/remark?params=${url}&type=2&source=${this.source}`);
           } else {
-            history.push('/select_step');
+            history.push(`/select_step?source=${this.source}`);
           }
         },
       },
@@ -302,7 +303,7 @@ class ApproveDetail extends Component {
       step_run_id: flowId,
     };
     const url = JSON.stringify(payload);
-    history.push(`/remark?params=${url}&type=3`);
+    history.push(`/remark?params=${url}&type=3&source=${this.source}`);
   }
 
   doDeliver = () => { // 转交
@@ -335,7 +336,7 @@ class ApproveDetail extends Component {
             step_run_id: id,
           };
           const urlParams = JSON.stringify(params);
-          history.push(`/remark?params=${urlParams}`);
+          history.push(`/remark?params=${urlParams}&source=${this.source}`);
         },
       },
     });

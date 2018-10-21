@@ -155,7 +155,7 @@ export default class Remark extends Component {
     });
     history.go(index);
     setTimeout(() => {
-      history.push('/approvelist?type=processing&page=1');
+      history.replace('/approvelist?type=processing&page=1');
     }, 1);
   }
 
@@ -185,6 +185,7 @@ export default class Remark extends Component {
     const urlParams = getUrlParams();
     const { type } = urlParams;
     const params = JSON.parse(urlParams.params);
+    console.log(this.state.source);
     spin(loading);
     return (
       <div className={styles.con}>

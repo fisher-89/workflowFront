@@ -286,9 +286,10 @@ class SelectStep extends Component {
               },
             });
             if (source === 'dingtalk') {
+              console.log('dingtalk');
               history.go(-1);
               setTimeout(() => {
-                history.push('/approvelist?type=processing&page=1');
+                history.replace('/approvelist?type=processing&page=1');
               }, 1);
             } else {
               history.go(-2);
@@ -303,6 +304,7 @@ class SelectStep extends Component {
     const { start: { preType }, loading, form: { getFieldProps } } = this.props;
     const info = preStepData ? (preStepData.concurrent_type === 0 ? '（请任选一个步骤）' : preStepData.concurrent_type === 2 ? '（请选择全部步骤）' : '') : '';
     spin(loading);
+
     return (
       <div className={styles.con}>
         <div className={[styles.con_content, style.con_step].join(' ')} >
