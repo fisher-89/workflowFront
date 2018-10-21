@@ -18,6 +18,7 @@ const app = dva({
   history: createHistory(),
   onError(error) {
     // request走catch时
+    console.log('onerror');
     Toast.fail(error.message);
   },
 });

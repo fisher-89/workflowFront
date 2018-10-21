@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import { List, Toast, TextareaItem, WhiteSpace } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import moment from 'moment';
-import { makeFieldValue } from '../../utils/util';
+import { makeFieldValue, getUrlParams } from '../../utils/util';
 import spin from '../../components/General/Loader';
 
 import style from './index.less';
