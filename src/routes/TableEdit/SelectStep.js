@@ -26,6 +26,8 @@ class SelectStep extends Component {
 
   componentWillMount() {
     const { start } = this.props;
+    const urlParams = getUrlParams();
+    const { source } = urlParams;
     const { preStepData, steps } = start;
     let step = null;
     if (steps && !steps.length) { // 当steps还没有被初始化过，里面为[]
@@ -42,6 +44,7 @@ class SelectStep extends Component {
     this.setState({
       steps: step || steps,
       preStepData,
+      source: source || '',
     });
   }
   componentDidMount() {
@@ -198,7 +201,7 @@ class SelectStep extends Component {
     });
     const { dispatch, history, start: { preType },
     } = this.props;
-    const { steps, preStepData } = this.state;
+    const { steps, preStepData, source } = this.state;
     const checkedSteps = steps.filter(item => item.checked);
     const errMsg = [];
     const nextSteps = checkedSteps.map((item) => {
@@ -227,7 +230,7 @@ class SelectStep extends Component {
       timestamp: preStepData.timestamp,
       next_step: [...nextSteps],
       flow_id: preStepData.flow_id,
-      host: `${window.location.origin}/approve`,
+      host: `${window.location.origin}/approve?source=dingtalk`,
     };
     dispatch({
       type: 'start/save',
@@ -282,7 +285,14 @@ class SelectStep extends Component {
                 end: '/approvelist_approved',
               },
             });
-            history.go(-2);
+            if (source === 'dingtalk') {
+              history.go(-1);
+              setTimeout(() => {
+                history.push('/approvelist?type=processing&page=1');
+              }, 1);
+            } else {
+              history.go(-2);
+            }
           },
         },
       });

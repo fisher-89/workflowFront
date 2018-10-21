@@ -17,17 +17,18 @@ import styles from '../common.less';
   loading: loading.effects['approve/doDeliver'] || loading.effects['approve/getThrough'] || loading.effects['approve/doReject'],
 }))
 export default class Remark extends Component {
-  state={
+  state = {
     params: {},
     type: 1, // 1:转交2:审批
   }
   componentWillMount() {
     const urlParams = getUrlParams();
     const params = JSON.parse(urlParams.params);
-    const { type } = urlParams;
+    const { type, source } = urlParams;
     this.setState({
       params,
       type: type || 1,
+      source: source || '',
     });
   }
 
@@ -38,7 +39,7 @@ export default class Remark extends Component {
 
   handleSubmit = (e) => {
     const { dispatch } = this.props;
-    const { params, type } = this.state;
+    const { params, type, source } = this.state;
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
@@ -48,7 +49,7 @@ export default class Remark extends Component {
             payload: {
               params: {
                 ...params,
-                host: `${window.location.origin}/approve`,
+                host: `${window.location.origin}/approve?source=dingtalk`,
                 ...values,
               },
               cb: (datas) => {
@@ -63,9 +64,13 @@ export default class Remark extends Component {
                 //     end: '/approvelist_approved',
                 //   },
                 // });
-                this.optCback(datas, () => {
-                  window.history.go(-3);
-                });
+                if (source === 'dingtalk') {
+                  this.dingtalkCback(-2);
+                } else {
+                  this.optCback(datas, () => {
+                    window.history.go(-3);
+                  });
+                }
               },
             },
           });
@@ -77,7 +82,7 @@ export default class Remark extends Component {
               data: {
                 ...params,
                 ...values,
-                host: `${window.location.origin}/approve`,
+                host: `${window.location.origin}/approve?source=dingtalk`,
               },
               id: params.flow_id,
               cb: (datas) => {
@@ -93,9 +98,13 @@ export default class Remark extends Component {
                 //   },
                 // });
                 // window.history.go(-1);
-                this.optCback(datas, () => {
-                  window.history.go(-2);
-                });
+                if (source === 'dingtalk') {
+                  this.dingtalkCback(-1);
+                } else {
+                  this.optCback(datas, () => {
+                    window.history.go(-2);
+                  });
+                }
               },
             },
           });
@@ -121,15 +130,33 @@ export default class Remark extends Component {
                 //   },
                 // });
                 // window.history.go(-1);
-                this.optCback(datas, () => {
-                  window.history.go(-2);
-                });
+                if (source === 'dingtalk') {
+                  this.dingtalkCback(-1);
+                } else {
+                  this.optCback(datas, () => {
+                    window.history.go(-2);
+                  });
+                }
               },
             },
           });
         }
       }
     });
+  }
+
+  dingtalkCback = (index) => {
+    const { dispatch, history } = this.props;
+    dispatch({
+      type: 'approve/resetStart',
+    });
+    dispatch({
+      type: 'start/resetStart',
+    });
+    history.go(index);
+    setTimeout(() => {
+      history.push('/approvelist?type=processing&page=1');
+    }, 1);
   }
 
   optCback = (datas, cb) => {
@@ -163,23 +190,23 @@ export default class Remark extends Component {
       <div className={styles.con}>
         <div className={styles.con_content}>
           {`${type}` === '1' && (
-          <div className={style.players}>
-            <Flex className={style.title} id="participants">
-              <Flex.Item>转交给：</Flex.Item>
-            </Flex>
-            <Flex
-              className={style.person_list}
-              wrap="wrap"
-            >
-              <PersonIcon
-                value={params}
-                type="1"
-                nameKey="approver_name"
-                showNum={2}
-                handleClick={this.remove}
-              />
-            </Flex>
-          </div>
+            <div className={style.players}>
+              <Flex className={style.title} id="participants">
+                <Flex.Item>转交给：</Flex.Item>
+              </Flex>
+              <Flex
+                className={style.person_list}
+                wrap="wrap"
+              >
+                <PersonIcon
+                  value={params}
+                  type="1"
+                  nameKey="approver_name"
+                  showNum={2}
+                  handleClick={this.remove}
+                />
+              </Flex>
+            </div>
           )}
           <WhiteSpace size="md" />
           <TextareaItem

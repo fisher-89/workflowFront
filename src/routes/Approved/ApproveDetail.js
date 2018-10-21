@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
-import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData, makeFieldValue } from '../../utils/util';
+import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData, makeFieldValue, getUrlParams } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
@@ -17,6 +17,8 @@ class ApproveDetail extends Component {
   componentWillMount() {
     const { approve: { gridformdata, startflow, formdata }, dispatch,
       match: { params } } = this.props;
+    const urlParams = getUrlParams();
+    this.source = urlParams.source || '';
     const { id } = params;
     localStorage.stepRunId = id;
     let griddata = [];
@@ -274,7 +276,7 @@ class ApproveDetail extends Component {
             // }], 'default', null, ['请输入备注']);
 
             const url = JSON.stringify(data);
-            history.push(`/remark?params=${url}&type=2`);
+            history.push(`/remark?params=${url}&type=2&source=${this.source}`);
           } else {
             history.push('/select_step');
           }

@@ -25,6 +25,7 @@ const codeMessage = {
 };
 export function dealErrorData(data, code) {
   const { errors } = data;
+  console.log('errors', errors, code)
   let msg = '网络异常';
   if (code === 422) {
     const errs = [];
@@ -39,6 +40,7 @@ export function dealErrorData(data, code) {
   } else {
     msg = codeMessage[code];
   }
+  // console.log('msg', msg)
   Toast.fail(msg);
   return msg;
 }
@@ -401,7 +403,7 @@ export function makeFieldValue(value, name, multiple = false, include = false) {
     })
     return newValue;
   }
-  const newValue = getFieldValue(value, keys, name, include) 
+  const newValue = getFieldValue(value, keys, name, include)
   return newValue;
 }
 

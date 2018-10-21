@@ -94,7 +94,7 @@ export default {
       if (data && !data.error) {
         payload.cb(data);
       } else {
-        Toast.info('上传失败');
+        // Toast.info(data.message, 1.5);
       }
     },
     // 预提交
