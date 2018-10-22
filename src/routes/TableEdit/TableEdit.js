@@ -208,6 +208,7 @@ class TableEdit extends Component {
   // 提交数据
   submitData = (e) => {
     e.preventDefault();
+    this.saveData();
     const { flowId } = this.state;
     const { dispatch, history } = this.props;
     const { start: { gridformdata } } = this.props;

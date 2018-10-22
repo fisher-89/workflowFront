@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { remove } from 'lodash';
 
 const horizontal = 30;
 const startPoint = [30, 30];
@@ -73,8 +74,9 @@ const test = [
 
 const cols = {};
 const testKeyById = {};
+const lines = [];
+const unfinishedLines = [];
 let colIndex = 1;
-
 @connect()
 export default class Test extends Component {
   componentDidMount() {
@@ -85,70 +87,142 @@ export default class Test extends Component {
       step.y = index + 1;
       //绑定点的X坐标
       if (step.prev.length === 0) {//主节点
-        step.x = cols;
-        step.max = cols;
+        const firstLine = this.createNewColLine(cols, '0.');
+        step.line = firstLine;
+        step.unfinishedLines = [...unfinishedLines];
       } else if (step.prev.length > 1) {//合并
-        const separateStepId = this.getCommonPrevStep(step.prev);
-        const separateStep = testKeyById[separateStepId];
-        step.x = separateStep.x;
-        step.max = separateStep.max;
+        const prevSteps = test.filter(item => step.prev.indexOf(item.id) !== -1);
+        let max = '0';
+        let min = '1';
+        prevSteps.forEach((prevStep) => {
+          const { colIndex } = prevStep;
+          this.finishColLine(prevStep.line, step.y - 0.5);
+          max = colIndex - max >= 0 ? colIndex : max;
+          min = colIndex - min <= 0 ? colIndex : min;
+        });
+        unfinishedLines.forEach((line) => {
+          if (line.colIndex > min && line.colIndex < max) {
+            line.crossingPoint.push(step.y - 0.5);
+          }
+        });
+        const prevLines = prevSteps.map(item => item.line);
+        const basicLine = this.findBasicLine(prevLines);
+        const newLine = this.createNewColLine(basicLine.col, basicLine.colIndex, step.y - 0.5, prevLines);
+        step.line = newLine;
+        step.unfinishedLines = [...unfinishedLines];
       } else {//不分叉
         const prevStep = testKeyById[step.prev[0]];
         if (prevStep.next.length > 1) {
           const subIndex = prevStep.next.indexOf(step.id);
-          step.x = prevStep.x[subIndex];
-          step.max = prevStep.x[prevStep.next.length - 1];
+          const newLine = this.separateColLine(prevStep.line, prevStep.y + 0.5, subIndex);
+          step.line = newLine;
+          step.unfinishedLines = [...unfinishedLines];
         } else {
-          step.x = prevStep.x;
-          step.max = prevStep.max;
+          step.line = prevStep.line;
+          step.unfinishedLines = prevStep.unfinishedLines;
         }
       }
       // 生成cols分支
       if (step.next.length > 1) {
+        this.finishColLine(step.line, step.y + 0.5);
         step.next.forEach((next_id, next_index) => {
-          step.x[next_index] = step.x[next_index] || {};
+          step.line.col[next_index] = step.line.col[next_index] || {};
         });
       }
     });
     this.fillColsIndex(cols);
     console.log('test:', test);
     console.log('cols:', cols);
-
-    // this.draw(testData, 20, 1, 0);
-    // this.drawArc(20, 20, 5, 0, 2 * Math.PI);
-    // this.drawLine(25, 20, 50, 20);
+    console.log('lines:', lines);
   }
 
-  getCommonPrevStep = (stepIds) => {
-    const prevLength = stepIds.length;
-    let baseLength = prevLength;
-    const steps = test.filter(item => stepIds.indexOf(item.id) !== -1);
-    // const step = steps[0];
-    let prevStepIds = [];
-    steps.forEach((step) => {
-      if (step.prev.length > 1) {
-        prevStepIds.concat(step.prev);
-      } else {
-        prevStepIds.push(step.prev[0]);
-      }
-    })
-    prevStepIds = prevStepIds.unique();
-    if (prevStepIds.length > 1) {
-      return this.getCommonPrevStep(prevStepIds);
-    } else {
-      return prevStepIds[0];
-    }
+  createNewColLine = (col, colIndex, start = 1, prev = []) => {
+    const line = { col, colIndex, start, end: '', prev, next: [], crossingPoint: [] };
+    lines.push(line);
+    unfinishedLines.push(line);
+    return line;
+  }
 
-    //  if(step.prev.length)
-    // baseLength = baseLength - step.next.length + 1;
-    // baseLength = baseLength + step.prev.length - 1;
-    // prevStepIds.push(step.prev[0])
-    // if (baseLength!==step.prev.length){
-    //   return this.getCommonPrevStep(prevStepIds)
-    // }
-    // else {
-    //   return prevStepIds
-    // }
+  /**
+   * 生成线分支
+   */
+  separateColLine = (prevLine, startY, subIndex) => {
+    const col = prevLine.col[subIndex];
+    const line = {
+      col,
+      colIndex: `${prevLine.colIndex}${subIndex >= 10 ? subIndex : `0${subIndex}`}`,
+      start: startY,
+      end: '',
+      prev: [prevLine],
+      next: [],
+      crossingPoint: [],
+    };
+    prevLine.next.push(line);
+    lines.push(line);
+    unfinishedLines.push(line);
+    return line;
+  }
+
+  findBasicLine = (prevLines) => {
+    const basicLines = this.findBasicLines({ prev: prevLines });
+    let response = basicLines.shift();
+    basicLines.forEach((basicLine) => {
+      response = basicLine.colIndex - response.colIndex >= 0 ? response : basicLine;
+    });
+    return response;
+  }
+
+  findBasicLines = (line, basicLines = []) => {
+    const prevLines = line.prev;
+    if (prevLines.length === 0) {
+      basicLines.push(line);
+    } else if (prevLines.length > 1) {
+      prevLines.forEach((prevLine) => {
+        basicLines = this.findBasicLines(prevLine, basicLines);
+      });
+    } else if (prevLines.length === 1) {
+      const prevLine = prevLines[0];
+      if (prevLine.next.length === 1) {
+        basicLines = this.findBasicLines(prevLine, basicLines);
+      } else if (prevLine.next.length > 1) {
+        let prevNextLine;
+        let flag = true;
+        const newBasicLines = [...basicLines];
+        for (let i in prevLine.next) {
+          prevNextLine = prevLine.next[i];
+          if (basicLines.indexOf(prevNextLine) === -1 && prevNextLine !== line) {
+            basicLines.push(line);
+            flag = false;
+            break;
+          }
+          remove(newBasicLines, (item => item === prevNextLine));
+        }
+        if (flag) {
+          basicLines = this.findBasicLines(prevLine, newBasicLines);
+        }
+      }
+    }
+    return basicLines;
+  }
+
+  finishColLine = (line, endY) => {
+    line.end = endY;
+    remove(unfinishedLines, item => item === line);
+    return line;
+  }
+
+  maxColIndex(indexGroup) {
+    let max = '0';
+    indexGroup.forEach((colIndex) => {
+      max = colIndex - max >= 0 ? colIndex : max;
+    });
+  }
+
+  minColIndex(indexGroup) {
+    let min = '1';
+    indexGroup.forEach((colIndex) => {
+      min = colIndex - min <= 0 ? colIndex : min;
+    });
   }
 
   fillColsIndex = (cols) => {

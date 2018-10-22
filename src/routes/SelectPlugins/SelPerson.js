@@ -321,10 +321,11 @@ export default class SelPerson extends Component {
       dispatch,
     };
     const { selected, search, multiple,
-      singleSelected, params: { singleDelete = true, key } } = this.state;
+      singleSelected, params: { singleDelete = true, key }, page } = this.state;
+    console.log('page', page);
     const selectedData = selected.data;
     const isFinal = key === 'final';
-    const { page, totalpage, data = [] } = searStaff;
+    const { totalpage, data = [] } = searStaff;
     const tempFinal = this.onFinalSearch(search);
     const staffSn = staff.map(item => `${item.staff_sn}`);
     const checkAble = selectedData.filter(item =>

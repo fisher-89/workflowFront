@@ -286,7 +286,6 @@ class SelectStep extends Component {
               },
             });
             if (source === 'dingtalk') {
-              console.log('dingtalk');
               history.go(-1);
               setTimeout(() => {
                 history.replace('/approvelist?type=processing&page=1');
