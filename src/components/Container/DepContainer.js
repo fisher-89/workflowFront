@@ -41,10 +41,15 @@ export default class DepContainer extends Component {
   }
 
   onChange = (value) => {
-    console.log('onChange');
-    const { handleSearch } = this.props;
-    this.setState({ value });
-    handleSearch(value);
+    console.log('onChange', value);
+    const { handleSearch, searchOncancel } = this.props;
+    this.setState({ value }, () => {
+      if (value) {
+        handleSearch(value);
+      } else {
+        searchOncancel();
+      }
+    });
   };
 
   onSubmit = () => {
@@ -108,7 +113,7 @@ export default class DepContainer extends Component {
             showCancelButton={this.state.value}
             onChange={this.onChange}
             onCancel={
-              () => this.onChange('')
+              this.onCancel
             }
             onSubmit={this.onSubmit}
           />

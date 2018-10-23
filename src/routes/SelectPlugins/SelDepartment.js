@@ -274,7 +274,7 @@ export default class SelDepartment extends Component {
   }
 
   fetchNextDep = (item) => {
-    const { department, dispatch } = this.props;
+    const { department, dispatch, isConfig } = this.props;
     let currentChild = [];
     let breadCrumb = [{ name: '一级部门', id: -1 }];
     if (`${item.id}` === '-1') {
@@ -284,7 +284,7 @@ export default class SelDepartment extends Component {
       breadCrumb = this.makeBreadCrumbData(item);
     }
     this.setState({
-      currentDep: currentChild,
+      currentDep: isConfig ? department : currentChild,
     });
     dispatch({
       type: 'formSearchDep/save',
