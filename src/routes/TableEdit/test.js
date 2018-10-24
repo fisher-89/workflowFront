@@ -96,13 +96,13 @@ export default class Test extends Component {
         let min = '1';
         prevSteps.forEach((prevStep) => {
           const { colIndex } = prevStep;
-          this.finishColLine(prevStep.line, step.y - 0.5);
+          this.finishColLine(prevStep.line, step.y - 0.5); //上一条线的结束点
           max = colIndex - max >= 0 ? colIndex : max;
           min = colIndex - min <= 0 ? colIndex : min;
         });
-        unfinishedLines.forEach((line) => {
+        unfinishedLines.forEach((line) => {//交叉
           if (line.colIndex > min && line.colIndex < max) {
-            line.crossingPoint.push(step.y - 0.5);
+            line.crossingPoint.push(step.y - 0.5);//交叉点
           }
         });
         const prevLines = prevSteps.map(item => item.line);
@@ -188,7 +188,7 @@ export default class Test extends Component {
         let prevNextLine;
         let flag = true;
         const newBasicLines = [...basicLines];
-        for (let i in prevLine.next) {
+        for (let i = 0; i < prevLine.next.length; i += 1) {
           prevNextLine = prevLine.next[i];
           if (basicLines.indexOf(prevNextLine) === -1 && prevNextLine !== line) {
             basicLines.push(line);
