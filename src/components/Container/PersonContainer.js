@@ -81,9 +81,8 @@ export default class PersonContainer extends Component {
     const {
       bread = [], deleteAble,
       children, fetchDataSource, multiple, all = true, singleSelected,
-      name, selected, checkedAll, checkAble, handleBread, isFinal = false,
+      name, selected, checkedAll, checkAble, handleBread, isFinal = false, ableSelectAll,
     } = this.props;
-
     return (
       <div className={style.con}>
         <div className={style.header} id="header">
@@ -115,7 +114,7 @@ export default class PersonContainer extends Component {
               </List>
             </div>
           )}
-          {multiple && !this.state.value && all ? (
+          {multiple && ableSelectAll ? (
             <div className={style.action}>
               <div className={style.action_item}>
                 <div
@@ -196,4 +195,5 @@ PersonContainer.defaultProps = {
   singleSelected: {},
   deleteAble: true,
   all: false,
+  ableSelectAll: true,
 };

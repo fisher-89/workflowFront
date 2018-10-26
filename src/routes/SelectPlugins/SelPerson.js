@@ -21,19 +21,6 @@ import style from './index.less';
   searchLoding: loading.effects['searchStaff/serachStaff'],
 }))
 export default class SelPerson extends Component {
-  // state = {
-  //   selected: {
-  //     data: [],
-  //     total: 50,
-  //     num: 0,
-  //   },
-  //   selectAll: false,
-  //   search: '',
-  //   key: '', // 选的什么人
-  //   type: 1, // 选的类型，单选还是多选
-  //   page: 1,
-  // };
-
   constructor(props) {
     super(props);
     const state = this.getInitState();
@@ -43,12 +30,9 @@ export default class SelPerson extends Component {
   }
   componentWillMount() {
     const { params: { key } } = this.state;
-    // const key = analyzePath(this.props.location.pathname, 1);
-    // const type = analyzePath(this.props.location.pathname, 2);
     if (key === 'final') { // 终审人
       this.getFinalStaff();
     } else {
-      // this.fetchSelfDepStaff();
       this.fetchStaffs();
     }
   }
@@ -239,15 +223,6 @@ export default class SelPerson extends Component {
     const { staff } = this.props;
     const staffSn = staff.map(item => item.staff_sn);
     const { selected } = this.state;
-    // const { data } = selected;
-    // if (selectAll) {
-    //   selected.data = [];
-    //   selected.num = 0;
-    // } else {
-    //   selected.data = [...staff];
-    //   selected.num = staff.length;
-    // }
-    // selected.total = 50;
     const newSelected = dealCheckAll(selected, staffSn, 'staff_sn', selectAll, staff);
     this.setState({
       selected: newSelected,
@@ -337,6 +312,7 @@ export default class SelPerson extends Component {
           singleSelected={singleSelected}
           isFinal={isFinal}
           search={search}
+          ableSelectAll={!search}
           bread={breadCrumb}
           checkAble={checkAble}
           selected={selected}

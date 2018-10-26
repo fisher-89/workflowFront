@@ -263,8 +263,9 @@ export default class SelPerson extends Component {
     const selectedData = selected.data;
     const { totalpage, data = [] } = searStaff;
     const staffSn = staff.map(item => `${item.staff_sn}`);
-    const checkAble = selectedData.filter(item =>
-      staffSn.indexOf(`${item.staff_sn}`) > -1).length === staffSn.length && staffSn.length;
+    const checkAble = !!(selectedData.filter(item =>
+      staffSn.indexOf(`${item.staff_sn}`) > -1).length === staffSn.length && staffSn.length);
+
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
@@ -275,6 +276,7 @@ export default class SelPerson extends Component {
           singleSelected={singleSelected}
           checkAble={checkAble}
           selected={selected}
+          ableSelectAll={!search}
           checkedAll={this.checkedAll}
           handleSearch={this.onSearch}
           search={search}

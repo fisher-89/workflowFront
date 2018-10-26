@@ -108,7 +108,7 @@ const text = {
 //   { id: 6, time: '6', next: [], prev: [4, 5] },
 // ];
 const test = [
-  { id: 1, time: '1', next: [2, 3, 4], prev: [], },
+  { id: 1, time: '1', next: [2, 3, 4], prev: [],status:1,approver:'xx', operate_at:'xx','staff_sn':'xxx'},
   { id: 2, time: '2', next: [5, 6], prev: [1] },
   { id: 3, time: '3', next: [7, 8], prev: [1] },
   { id: 4, time: '4', next: [9, 10], prev: [1] },

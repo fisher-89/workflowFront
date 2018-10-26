@@ -236,7 +236,6 @@ export default class SelDepartment extends Component {
     this.setState({
       search: '',
     });
-    console.log('searchOncancel');
     const { breadCrumb } = this.props;
     const item = breadCrumb[breadCrumb.length - 1];
     this.fetchNextDep(item);

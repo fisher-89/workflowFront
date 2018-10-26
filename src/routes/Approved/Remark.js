@@ -185,7 +185,6 @@ export default class Remark extends Component {
     const urlParams = getUrlParams();
     const { type } = urlParams;
     const params = JSON.parse(urlParams.params);
-    console.log(this.state.source);
     spin(loading);
     return (
       <div className={styles.con}>
@@ -216,7 +215,7 @@ export default class Remark extends Component {
               { initialValue: '' }
             )}
             rows={5}
-            count={100}
+            count={200}
           />
         </div>
         <div style={{ padding: '10px' }}>

@@ -250,7 +250,6 @@ export default function ListView(ListItem) {
       const loader = (((!dataSource) || (dataSource && !dataSource.length)
         || (`${currentPage}` === '1') || hasLoading)
         && loading.global);
-      console.log(currentPage, hasLoading, dataSource, loader);
       spin(loader);
       return (
         <div

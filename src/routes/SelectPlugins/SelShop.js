@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { PersonContainer } from '../../components/index';
 import { Shop } from '../../common/ListView/index.js';
-import { makeFieldValue, getUrlParams } from '../../utils/util';
+import { makeFieldValue, getUrlParams, dealCheckAll } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -170,29 +170,10 @@ export default class SelPerson extends Component {
     const { shop } = this.props;
     const shopData = shop.data || [];
     const shopSn = shopData.map(item => item[name]);
-    const { selected } = this.state;
-    const { data } = selected;
-    if (selectAll) {
-      const newData = data.filter(item => shopSn.indexOf(item[name]) === -1);
-      selected.data = newData;
-      selected.num = newData.length;
-    } else {
-      const newData = [...data, ...shopData];
-      const result = [];
-      const obj = {};
-      for (let i = 0; i < newData.length; i += 1) {
-        if (!obj[newData[i][name]]) { // 如果能查找到，证明数组元素重复了
-          obj[newData[i][name]] = 1;
-          result.push(newData[i]);
-        }
-      }
-      selected.data = result;
-      selected.num = result.length;
-    }
-    // selected.total = max || 50;
-
+    const { selected, params: { max } } = this.state;
+    const newSelected = dealCheckAll(selected, shopSn, 'shop_sn', selectAll, shop.data, max);
     this.setState({
-      selected,
+      selected: newSelected,
     });
   }
 
@@ -251,9 +232,8 @@ export default class SelPerson extends Component {
     const { selected, singleSelected, page, multiple, search } = this.state;
     const selectedData = selected.data;
     const shopSn = (data || []).map(item => `${item.shop_sn}`);
-    const checkAble = selectedData.filter(item =>
-      shopSn.indexOf(`${item.shop_sn}`) > -1).length === shopSn.length && shopSn.length.length;
-
+    const checkAble = !!(selectedData.filter(item =>
+      shopSn.indexOf(`${item.shop_sn}`) > -1).length === shopSn.length && shopSn.length);
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer

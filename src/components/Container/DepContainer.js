@@ -41,7 +41,6 @@ export default class DepContainer extends Component {
   }
 
   onChange = (value) => {
-    console.log('onChange', value);
     const { handleSearch, searchOncancel } = this.props;
     this.setState({ value }, () => {
       if (value) {

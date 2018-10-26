@@ -316,7 +316,7 @@ class SelectStep extends Component {
           <TextareaItem
             placeholder="请输入备注"
             rows={5}
-            count={100}
+            count={200}
             {...getFieldProps('remark', { initialValue: '' })}
           />
           )}

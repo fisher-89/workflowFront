@@ -607,15 +607,10 @@ export function dealCheckAll(selects, snArr, name, selectAll, source, max) {
   const selected = { ...selects }
   const { data } = selects;
   if (selectAll) {
-    const newData = data.filter(item => snArr.indexOf(item[name]) === -1);
-    selected.data = newData;
-    selected.num = newData.length;
-  } else {
     const newData = [...data, ...source];
     const result = [];
     const obj = {};
     for (let i = 0; i < newData.length; i += 1) {
-
       if (!obj[newData[i][name]]) { // 如果能查找到，证明数组元素重复了
         obj[newData[i][name]] = 1;
         result.push(newData[i]);
@@ -623,11 +618,14 @@ export function dealCheckAll(selects, snArr, name, selectAll, source, max) {
     }
     selected.data = result;
     selected.num = result.length;
+  } else {
+    const newData = data.filter(item => snArr.indexOf(item[name]) === -1);
+    selected.data = newData;
+    selected.num = newData.length;
   }
   selected.total = max || 50;
   return selected
 }
-
 
 String.prototype.trim = function () {
   return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
