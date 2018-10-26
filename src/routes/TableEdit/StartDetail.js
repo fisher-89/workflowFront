@@ -1,10 +1,12 @@
 // 审批的表单
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Button } from 'antd-mobile';
+import { Button, WhiteSpace } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
 import { makeGridItemData } from '../../utils/util';
+import FlowChart from '../../components/FlowChart/chart';
+
 import style from './index.less';
 import styles from '../common.less';
 
@@ -12,11 +14,17 @@ class StartDetail extends Component {
   componentWillMount() {
     const { dispatch, match: { params } } = this.props;
     const { id } = params;
-    // const flowId = analyzePath(this.props.location.pathname, 1);
-    // const step_id = analyzePath(this.props.location.pathname, 2)
     dispatch({
       type: 'start/getStartDetail',
-      payload: id,
+      payload: {
+        id,
+        cb: (detail) => {
+          dispatch({
+            type: 'start/getFlowChart',
+            payload: { id: detail.step_run.id },
+          });
+        },
+      },
     });
   }
 
@@ -102,7 +110,9 @@ class StartDetail extends Component {
   }
   render() {
     const { start, loading } = this.props;
-    const { startflow } = start;
+    const { startflow, flowChart } = start;
+    console.log('flowChart:', flowChart);
+
     const formData = start.form_data;
     spin(loading);
     if (!startflow) return null;
@@ -124,16 +134,19 @@ class StartDetail extends Component {
           <div style={{ marginBottom: '20px' }}>
             {this.getGridList()}
           </div>
+          <FlowChart dataSource={flowChart} />
         </div>
+        <WhiteSpace size="xl" />
+
         {flowRun && flowRun.status === 0 && (
-        <div style={{ padding: '10px' }}>
-          <Button
-            type="primary"
-            onClick={this.doWithDraw}
-          >撤回
-          </Button>
-        </div>
-)}
+          <div style={{ padding: '10px' }}>
+            <Button
+              type="primary"
+              onClick={this.doWithDraw}
+            >撤回
+            </Button>
+          </div>
+        )}
 
       </div>
     );

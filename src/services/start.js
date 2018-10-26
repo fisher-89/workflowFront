@@ -55,3 +55,4 @@ export function doWithdraw(data) {
 export async function getUserInfo() {
   return request('/api/oa/current-user');
 }
+

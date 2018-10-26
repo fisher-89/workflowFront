@@ -41,6 +41,7 @@ export default {
     },
     delever: [],
     gridDefault: [],
+    flowChart: [],
   },
 
   subscriptions: {
@@ -105,11 +106,7 @@ export default {
     },
 
     * getStartFlow({ payload }, { call, put, select }) {
-      // yield put({
-      //   type: 'resetStart',
-      // });
       const {
-        // gridformdata,
         startflow,
       } = yield select(_ => _.approve);
       if (startflow && (`${startflow.step_run.id}` === `${payload}`)) {
@@ -128,6 +125,20 @@ export default {
         });
       }
     },
+    * getFlowChart({ payload }, { call, put }) {
+      const { id } = payload;
+      const data = yield call(a.getFlowChart, id);
+      if (data && !data.error) {
+        yield put({
+          type: 'save',
+          payload: {
+            store: 'flowChart',
+            data,
+          },
+        });
+      }
+    },
+
 
     * getThrough({
       payload,
@@ -160,26 +171,12 @@ export default {
             value: data,
           },
         });
-        // yield put({
-        //   type: 'resetStart', //重置发起表单
-        // })
-        // if (payload.cb) {
-        //   payload.cb()
-        // }
       }
     },
 
     *saveStaff({ payload }, { put }) {
       const { value } = payload;
       const { stepRunId } = localStorage;
-      // const newStaff = value.map((item) => {
-      //   const obj = {};
-      //   obj.approver_sn = item.staff_sn;
-      //   obj.approver_name = item.realname || item.staff_name;
-      //   return obj;
-      // });
-      // const newStaff =
-      //  makeFieldValue(value, { staff_sn: 'approver_sn', realname: 'approver_name' }, false);
       yield put({
         type: 'doDeliver',
         payload: {

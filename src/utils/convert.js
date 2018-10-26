@@ -142,6 +142,47 @@ export const reverseStaffState = (state) => {
   }
 };
 
+
+export const flowchartStatus = (status) => {
+  switch (status - 0) {
+    case 0:
+      return '待审批';
+    case 1:
+      return '发起';
+    case 2:
+      return '通过';
+    case 3:
+      return '转交';
+    case -1:
+      return '驳回';
+    case -2:
+      return '撤回';
+    case -3:
+      return '取消';
+    default:
+      return '其他';
+  }
+};
+
+export const flowchartStatusColor = (status) => {
+  switch (status - 0) {
+    case 0:
+      return 'rgb(245,166,35)';
+    case 1:
+      return 'rgb(102,102,102)';
+    case 2:
+    case 3:
+      return 'rgb(89,195,195)';
+    case -1:
+      return 'rgb(245,34,45)';
+    case -2:
+      return 'rgb(245,34,45)';
+    case -3:
+      return 'rgb(245,34,45)';
+    default:
+      return 'rgb(245,34,45)';
+  }
+};
 export function getGridFilter(fields, name, step, flag) {
   return fields.map((item) => {
     let str = '';

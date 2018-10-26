@@ -232,7 +232,6 @@ class TableEdit extends Component {
           form_data: formData,
           flow_id: flowId,
         },
-        // id: flowId,
         preType: 'start',
         cb: () => {
           history.push('/select_step');
@@ -245,8 +244,6 @@ class TableEdit extends Component {
     const { start, dispatch, loading, history, fileLoading } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
-    // spin(loading || fileLoading, fileLoading ? '上传中' : 'yy');
-    // console.log(loading, fileLoading);
 
     if (fileLoading) {
       spin(fileLoading, '上传中');
@@ -304,6 +301,6 @@ export default connect(({
   start, loading,
 }) => ({
   start,
-  loading: loading.effects['start/getStartFlow'] || loading.effects['api/fetchApi'],
+  loading: loading.effects['start/getStartFlow'] || loading.effects['api/fetchApi'] || loading.effects['start/preSet'],
   fileLoading: loading.effects['start/fileUpload'],
 }))(TableEdit);

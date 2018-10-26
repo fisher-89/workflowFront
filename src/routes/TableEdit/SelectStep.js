@@ -62,6 +62,7 @@ class SelectStep extends Component {
     const { steps } = this.state;
     return steps.map((item, i) => {
       const idx = i;
+      console.log(item);
       return (
         <div
           className={style.step}
@@ -83,7 +84,7 @@ class SelectStep extends Component {
                 onClick={(e) => {
                   e.stopPropagation();
                   this.choseItem(item);
-              }}
+                }}
               >{item.name}
               </div>
             </List.Item>
@@ -246,21 +247,14 @@ class SelectStep extends Component {
           data: {
             ...params,
           },
-          // id: preStepData.flow_id,
           cb: () => {
             dispatch({
               type: 'start/resetStart',
             });
-            // history.goBack(-1);
             history.go(-2);
-            // window.history.go(-2);
-            // window.location.href = '/start_list?type=processing&page=1';
-            // console.log(1111);
             setTimeout(() => {
               history.push('/start_list?type=processing&page=1');
             }, 1);
-            // history.replace('/start_list?type=processing&page=1');
-            // console.log(2222);
           },
         },
       });
@@ -303,22 +297,23 @@ class SelectStep extends Component {
     const { start: { preType }, loading, form: { getFieldProps } } = this.props;
     const info = preStepData ? (preStepData.concurrent_type === 0 ? '（请任选一个步骤）' : preStepData.concurrent_type === 2 ? '（请选择全部步骤）' : '') : '';
     spin(loading);
-
     return (
       <div className={styles.con}>
         <div className={[styles.con_content, style.con_step].join(' ')} >
-          <List renderHeader={() => <span>执行步骤<a style={{ color: 'red' }}>{info}</a></span>}>
-            {this.getSteps()}
-          </List>
-
+          {!((preStepData.step_end === 1 && preStepData.available_steps.length)
+            || (preStepData.step_end === 0 && !preStepData.available_steps.length)) && (
+              <List renderHeader={() => <span>执行步骤<a style={{ color: 'red' }}>{info}</a></span>}>
+                {this.getSteps()}
+              </List>
+            )}
           <WhiteSpace size="md" />
           {preType === 'approve' && (
-          <TextareaItem
-            placeholder="请输入备注"
-            rows={5}
-            count={200}
-            {...getFieldProps('remark', { initialValue: '' })}
-          />
+            <TextareaItem
+              placeholder="请输入备注"
+              rows={5}
+              count={200}
+              {...getFieldProps('remark', { initialValue: '' })}
+            />
           )}
 
         </div>

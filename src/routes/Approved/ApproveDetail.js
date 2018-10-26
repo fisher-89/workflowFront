@@ -3,8 +3,12 @@ import React, { Component } from 'react';
 import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
-import { initFormdata, isableSubmit, dealGridData, judgeGridSubmit, makeGridItemData, makeFieldValue, getUrlParams } from '../../utils/util';
+import {
+  initFormdata, isableSubmit, dealGridData, judgeGridSubmit,
+  makeGridItemData, makeFieldValue, getUrlParams,
+} from '../../utils/util';
 import spin from '../../components/General/Loader';
+import FlowChart from '../../components/FlowChart/chart';
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
 
@@ -33,6 +37,10 @@ class ApproveDetail extends Component {
     dispatch({
       type: 'approve/getStartFlow',
       payload: id,
+    });
+    dispatch({
+      type: 'approve/getFlowChart',
+      payload: { id },
     });
   }
 
@@ -286,13 +294,6 @@ class ApproveDetail extends Component {
       flowId,
     } = this.state;
     const { history } = this.props;
-    // dispatch({
-    //   type: 'approve/doReject',
-    //   payload: {
-    //     step_run_id: flowId,
-    //     remark: v,
-    //   },
-    // });
     const payload = {
       step_run_id: flowId,
     };
@@ -317,12 +318,6 @@ class ApproveDetail extends Component {
       payload: {
         key: 'deliver',
         cb: (source) => {
-          // dispatch({
-          //   type: 'approve/saveStaff',
-          //   payload: {
-          //     value: source,
-          //   },
-          // });
           const newStaff =
             makeFieldValue(source, { staff_sn: 'approver_sn', realname: 'approver_name' }, false);
           const params = {
@@ -339,7 +334,7 @@ class ApproveDetail extends Component {
 
   render() {
     const { approve, dispatch, loading, fileLoading, history } = this.props;
-    const { startflow, formdata } = approve;
+    const { startflow, formdata, flowChart } = approve;
     const newFormData = approve.form_data;
     if (fileLoading) {
       spin(fileLoading, '上传中');
@@ -366,7 +361,6 @@ class ApproveDetail extends Component {
     return (
       <div className={styles.con}>
         <WhiteSpace size="xl" />
-
         <div className={styles.con_content} >
           {startflow.step_run.action_type === 0 ? (
             <CreateForm
@@ -391,6 +385,9 @@ class ApproveDetail extends Component {
           <div style={{ marginBottom: '20px' }}>
             {this.getGridList()}
           </div>
+          <FlowChart dataSource={flowChart} />
+          <WhiteSpace size="xl" />
+
         </div>
         <div className={styles.footer}>
           {startflow.step_run.action_type === 0 && (

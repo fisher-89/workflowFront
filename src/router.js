@@ -122,7 +122,7 @@ function RouterConfig({
     path: '/test2',
     models: ['start'],
     component: () =>
-      import('./routes/TableEdit/test2'),
+      import('./routes/TableEdit/flowChart'),
   },
   {
     path: '/imageview',
