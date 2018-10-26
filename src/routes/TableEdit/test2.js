@@ -60,11 +60,11 @@ const testData = [
 ];
 const curveRadius = 4;
 const nodeRadius = 5;
-const colGap = 20;
+const colGap = 12;
 const verticalRate = 30;
 const lineStyle = {
   color: 'rgb(202,233,233)',
-  width: 1,
+  width: 2,
 };
 const firstColLineStyle = {
   color: 'rgb(202,233,233)',
@@ -73,7 +73,7 @@ const firstColLineStyle = {
 const node = {
   radius: 5,
   color: 'rgb(89,195,195)',
-  width: 1
+  width: 2
 }
 const firstNode = {
   radius: 5,
@@ -215,7 +215,7 @@ export default class Test extends Component {
     const { y } = endPoint;
     this.canvas.height = (y + 0.5) * verticalRate + 40;
     this.canvas.width = maxIndex * colGap + 20;
-    this.drawRect(colGap, verticalRate, maxIndex * colGap + 20, (y + 0.5) * verticalRate + 40)
+    this.drawRect(0, 0, (maxIndex + 1) * colGap + 20, (y + 0.5) * verticalRate + 40)
     this.recombineRows();
     this.setState({
       test,
@@ -390,29 +390,31 @@ export default class Test extends Component {
     }
   }
 
-  drawLine = (x1, y1, x2, y2, color) => {
+  drawLine = (x1, y1, x2, y2, color, width = lineStyle.width) => {
     if (this.canvas) {
       const { ctx } = this;
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
-      ctx.lineWidth = 2;
+      ctx.lineWidth = width;
       ctx.strokeStyle = color;
       ctx.stroke();
     }
   }
 
-  drawArc = (x, y, r, sAngle = 0, eAngle = 2 * Math.PI, color, counterclockwise = false, fill = true) => {
+  drawArc = (x, y, r, sAngle = 0, eAngle = 2 * Math.PI, color, counterclockwise = false, fill = true, width = lineStyle.width) => {
     const { ctx } = this;
     ctx.beginPath();
     ctx.arc(x, y, r, sAngle, eAngle, counterclockwise);
-    ctx.closePath();
+    // ctx.closePath();
     if (fill) {
       ctx.fillStyle = color;
+      ctx.lineWidth = width;
       ctx.fill();
     }
     else {
       ctx.strokeStyle = color;
+      ctx.lineWidth = width;
       ctx.stroke();
     }
   }
@@ -429,7 +431,7 @@ export default class Test extends Component {
   drawCrossPoint = (crossingPoint, index, c1, c2) => {
     crossingPoint.forEach(point => {
       this.drawArc((index * colGap) - 1, point * verticalRate, 5, -0.5 * Math.PI, 0.5 * Math.PI, c1);
-      this.drawArc((index * colGap) - 1, point * verticalRate, 4, -0.5 * Math.PI, 0.5 * Math.PI, c2);
+      this.drawArc((index * colGap) - 1, point * verticalRate, 3, -0.5 * Math.PI, 0.5 * Math.PI, c2);
     })
   }
 
@@ -439,7 +441,6 @@ export default class Test extends Component {
   }
 
   drawGeneralArc = (x, y, r, color) => {
-    console.log('drawGeneralArc', x, y, color)
     this.drawArc(x, y, r, 0, 2 * Math.PI, color, false)
   }
 
@@ -450,7 +451,7 @@ export default class Test extends Component {
     }
     this.drawLine(x1 * colGap, y1 * verticalRate, x2 * colGap, y1 * verticalRate, '#fff');
     this.drawLine(x2 * colGap, y1 * verticalRate, x2 * colGap, y2 * verticalRate, '#fff');
-    this.drawArc(c.x * colGap, c.y * verticalRate, r, 0, direction > 0 ? -0.5 * Math.PI : 0.5 * Math.PI, lineStyle.color, !!(direction > 0));
+    this.drawArc(c.x * colGap, c.y * verticalRate, r, 0, direction > 0 ? -0.5 * Math.PI : 0.5 * Math.PI, lineStyle.color, !!(direction > 0), false);
   }
 
   draw = () => {
@@ -459,8 +460,7 @@ export default class Test extends Component {
       this.drawLine(start * colGap, y * verticalRate, end * colGap, y * verticalRate, lineStyle.color);
     })
     lines.forEach((line, i) => {
-      // || test[test.length - 1].y + 0.5
-      const { col: { index }, start, end, pointY, crossingPoint } = line;
+      const { col: { index }, start, end, crossingPoint } = line;
       const color = index === 1 ? firstColLineStyle.color : lineStyle.color;
       this.drawLine(index * colGap, start * verticalRate, index * colGap, end * verticalRate, color);
       if (crossingPoint.length) {
@@ -496,7 +496,6 @@ export default class Test extends Component {
         height: '22px', lineHeight: '22px',
         display: 'flex',
         justifyContent: 'space-between',
-
       }
       const fisrtDivStyle = {
         fontSize: '14px',
@@ -505,7 +504,6 @@ export default class Test extends Component {
       const timeStyle = {
         fontSize: '12px',
         color: 'rgb(136,136,136)',
-
       }
       return (
         <div style={{ ...style, background: '#fff' }} key={id} >
@@ -523,7 +521,7 @@ export default class Test extends Component {
   render() {
     const { test } = this.state;
     return (
-      <div className={style.flow_chart}>
+      <div className={style.flow_chart} style={{ background: '#fff' }}>
         <canvas id="myCanvas" width="300" height="600" />
         {test.length &&
           this.renderTimeLine()}

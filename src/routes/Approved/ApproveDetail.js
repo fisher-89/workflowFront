@@ -269,13 +269,6 @@ class ApproveDetail extends Component {
         preType: 'approve',
         cb: (data) => {
           if (data.step_end === 1) { // 不选步骤
-            // prompt('填写备注', '', [{
-            //   text: '取消',
-            // }, {
-            //   text: '确定',
-            //   onPress: v => this.submitStep(v, data),
-            // }], 'default', null, ['请输入备注']);
-
             const url = JSON.stringify(data);
 
             history.push(`/remark?params=${url}&type=2&source=${this.source}`);
@@ -348,8 +341,11 @@ class ApproveDetail extends Component {
     const { approve, dispatch, loading, fileLoading, history } = this.props;
     const { startflow, formdata } = approve;
     const newFormData = approve.form_data;
-    spin(loading || fileLoading, fileLoading ? '上传中' : '加载中');
-
+    if (fileLoading) {
+      spin(fileLoading, '上传中');
+    } else {
+      spin(loading, '加载中');
+    }
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 只需要展示的（不包括可编辑的）
@@ -429,6 +425,6 @@ export default connect(({
 }) => ({
   approve,
   start,
-  loading: loading.effects['approve/getStartFlow'] || loading.effects['api/fetchApi'],
+  loading: loading.effects['approve/getStartFlow'] || loading.effects['api/fetchApi'] || loading.effects['start/preSet'],
   fileLoading: loading.effects['start/fileUpload'],
 }))(ApproveDetail);

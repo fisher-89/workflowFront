@@ -322,7 +322,6 @@ export default class SelPerson extends Component {
     };
     const { selected, search, multiple,
       singleSelected, params: { singleDelete = true, key }, page } = this.state;
-    console.log('page', page);
     const selectedData = selected.data;
     const isFinal = key === 'final';
     const { totalpage, data = [] } = searStaff;
@@ -358,6 +357,7 @@ export default class SelPerson extends Component {
                 dataSource={department}
                 heightNone
                 onRefresh={false}
+                hasLoading
                 fetchDataSource={this.selDepartment}
                 name="id"
               />
@@ -369,6 +369,7 @@ export default class SelPerson extends Component {
                 heightNone
                 isFinal={isFinal}
                 onRefresh={false}
+                hasLoading
                 name="staff_sn"
                 renderName={isFinal ? 'staff_name' : 'realname'}
                 multiple={multiple}

@@ -265,7 +265,6 @@ export default class SelPerson extends Component {
     const staffSn = staff.map(item => `${item.staff_sn}`);
     const checkAble = selectedData.filter(item =>
       staffSn.indexOf(`${item.staff_sn}`) > -1).length === staffSn.length && staffSn.length;
-    console.log(checkAble);
     return (
       <div className={[styles.con, style.sel_person].join(' ')}>
         <PersonContainer
@@ -293,6 +292,7 @@ export default class SelPerson extends Component {
                 onRefresh={false}
                 dataSource={department}
                 heightNone
+                hasLoading
                 fetchDataSource={this.selDepartment}
                 name="id"
               />
@@ -306,6 +306,7 @@ export default class SelPerson extends Component {
                 onRefresh={false}
                 name="staff_sn"
                 renderName="realname"
+                hasLoading
                 singleSelected={singleSelected}
                 multiple={multiple}
                 selected={selected.data}
