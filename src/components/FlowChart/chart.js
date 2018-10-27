@@ -80,7 +80,6 @@ const unfinishedLines = [];
 export default class FlowChart extends Component {
   constructor(props) {
     super(props);
-    const { dataSource } = props;
     this.state = {
       chartData: [],
       lines: [],
@@ -89,9 +88,9 @@ export default class FlowChart extends Component {
       uniqueRows: [],
     }
 
-    if (dataSource.length) {
-      this.makeChartData(props.dataSource)
-    }
+    // if (dataSource.length) {
+    //   this.makeChartData(props.dataSource)
+    // }
   }
 
   componentWillReceiveProps(props) {
@@ -119,18 +118,17 @@ export default class FlowChart extends Component {
     rows = [];
     uniqueRows = [];
     curves = [];
-    datas = [...dataSource]
-    // datas = [...test]
+    // datas = [...dataSource]
+    datas = [...test]
     datas.forEach((step, index) => {
       testKeyById[step.id] = step;
       step.y = index + 1;
+      let row = {};
+      let line = {};
       //绑定点的X坐标
       if (step.prev_id.length === 0) {//主节点
-        const firstLine = this.createNewColLine(cols, '0.');
-        const row = this.createNewRowLine('0.', '0.', step.y + 0.5);
-        step.row = row;
-        step.line = firstLine;
-        // step.unfinishedLines = [...unfinishedLines];
+        line = this.createNewColLine(cols, '0.');
+        row = this.createNewRowLine('0.', '0.', step.y + 0.5);
       } else if (step.prev_id.length > 1) {//合并
         const prevSteps = datas.filter(item => step.prev_id.indexOf(item.id) !== -1);
         let max = '0';
@@ -138,45 +136,47 @@ export default class FlowChart extends Component {
         prevSteps.forEach((prevStep) => {
           const { colIndex } = prevStep.line;
           this.finishColLine(prevStep.line, step.y - 0.5); //上一条线的结束点
-          max = colIndex - max >= 0 ? colIndex : max;
-          min = colIndex - min <= 0 ? colIndex : min;
+          // max = colIndex - max >= 0 ? colIndex : max;
+          max = this.terminalColIndex(colIndex, max);
+          // min = colIndex - min <= 0 ? colIndex : min;
+          min = this.terminalColIndex(colIndex, min, 'min')
+          console.log(max, min)
+
         });
-        const row = this.createNewRowLine(min, max, step.y - 0.5);
-        step.row = row;
-        unfinishedLines.forEach((line) => {//交叉
-          if (line.colIndex > min && line.colIndex < max) {
-            line.crossingPoint.push(step.y - 0.5);//交叉点
+        row = this.createNewRowLine(min, max, step.y - 0.5);
+        unfinishedLines.forEach((unline) => {//交叉
+          if (unline.colIndex > min && unline.colIndex < max) {
+            unline.crossingPoint.push(step.y - 0.5);//交叉点
           }
         });
         const prevLines = prevSteps.map(item => item.line);
         const basicLine = this.findBasicLine(prevLines);
-        const newLine = this.createNewColLine(basicLine.col, basicLine.colIndex, step.y - 0.5, prevLines);
-        step.line = newLine;
-        // step.unfinishedLines = [...unfinishedLines];
+        line = this.createNewColLine(basicLine.col, basicLine.colIndex, step.y - 0.5, prevLines);
       } else {//不分叉
         const prevStep = testKeyById[step.prev_id[0]];
         let max = '0';
         let min = '1';
-        if (prevStep.next_id.length > 1) {
-          const subIndex = prevStep.next_id.indexOf(step.id);
-          prevStep.next_id.forEach((next, i) => {
-            const colIndex = `${prevStep.line.colIndex}${i >= 10 ? i : `0${i}`}`;
-            max = colIndex - max >= 0 ? colIndex : max;
-            min = colIndex - min <= 0 ? colIndex : min;
+        const prevNext = prevStep.next_id;
+        const prevLine = prevStep.line;
+        if (prevNext.length > 1) {
+          const subIndex = prevNext.indexOf(step.id);
+          prevNext.forEach((next, i) => {
+            const colIndex = `${prevLine.colIndex}${i >= 10 ? i : `0${i}`}`;
+            // max = colIndex - max >= 0 ? colIndex : max;
+            max = this.terminalColIndex(colIndex, max);
+            min = this.terminalColIndex(colIndex, min, 'min')
+            // min = colIndex - min <= 0 ? colIndex : min;
           })
-          const newLine = prevStep.line.next_id[subIndex];
-          const row = this.createNewRowLine(min, max, prevStep.y + 0.5);
-          step.line = newLine;
-          step.row = row;
-          // step.unfinishedLines = [...unfinishedLines];
+          line = prevLine.next_id[subIndex];
+          row = this.createNewRowLine(min, max, prevStep.y + 0.5);
         } else {
           const { row: { start, end } } = prevStep;
-          const row = this.createNewRowLine(start, end, step.y + 0.5);
-          step.row = row;
-          step.line = prevStep.line;
-          // step.unfinishedLines = [...unfinishedLines];
+          row = this.createNewRowLine(start, end, step.y + 0.5);
+          line = prevLine;
         }
       }
+      step.line = line;
+      step.row = row;
       step.unfinishedLines = [...unfinishedLines];
       // 生成cols分支
       if (step.next_id.length > 1) {
@@ -187,17 +187,14 @@ export default class FlowChart extends Component {
       }
     });
     const maxIndex = this.fillColsIndex(cols);
-    console.log('test:', datas);
-    console.log('cols:', cols);
-    console.log('lines:', lines);
-    console.log('rows:', rows);
-    const endPoint = last(datas);
-    const { y } = endPoint;
+    const { y } = last(datas);
+    const width = maxIndex * colGap + 20;
+    const height = (y + 0.5) * verticalRate + 40;
     if (this.canvas) {
-      this.canvas.height = (y + 0.5) * verticalRate + 40;
-      this.canvas.width = maxIndex * colGap + 20;
+      this.canvas.height = height;
+      this.canvas.width = width;
     }
-    this.drawRect(0, 0, (maxIndex + 1) * colGap + 20, (y + 0.5) * verticalRate + 40)
+    this.drawRect(0, 0, width, height);
     this.recombineRows();
     this.setState({
       chartData: [...datas],
@@ -210,6 +207,7 @@ export default class FlowChart extends Component {
       this.draw();
     })
   }
+
   createNewRowLine = (min, max, y) => {
     const row = { start: min, end: max, y };
     rows.push(row);
@@ -265,14 +263,15 @@ export default class FlowChart extends Component {
       });
     } else if (prevLines.length === 1) {
       const prevLine = prevLines[0];
-      if (prevLine.next_id.length === 1) {
+      const prevLineNext = prevLine.next_id;
+      if (prevLineNext.length === 1) {
         basicLines = this.findBasicLines(prevLine, basicLines);
-      } else if (prevLine.next_id.length > 1) {
+      } else if (prevLineNext.length > 1) {
         let prevNextLine;
         let flag = true;
         const newBasicLines = [...basicLines];
-        for (let i = 0; i < prevLine.next_id.length; i += 1) {
-          prevNextLine = prevLine.next_id[i];
+        for (let i = 0; i < prevLineNext.length; i += 1) {
+          prevNextLine = prevLineNext[i];
           if (basicLines.indexOf(prevNextLine) === -1 && prevNextLine !== line) {
             basicLines.push(line);
             flag = false;
@@ -294,20 +293,6 @@ export default class FlowChart extends Component {
     return line;
   }
 
-  maxColIndex(indexGroup) {
-    let max = '0';
-    indexGroup.forEach((colIndex) => {
-      max = colIndex - max >= 0 ? colIndex : max;
-    });
-  }
-
-  minColIndex(indexGroup) {
-    let min = '1';
-    indexGroup.forEach((colIndex) => {
-      min = colIndex - min <= 0 ? colIndex : min;
-    });
-  }
-
   fillColsIndex = (cols, colIndex = 1) => {
     const index = colIndex;
     Object.keys(cols).forEach((key) => {
@@ -316,6 +301,17 @@ export default class FlowChart extends Component {
     });
     cols.index = index;
     return colIndex;
+  }
+
+  terminalColIndex(start, end, type = 'max') {
+    return type === 'max' ? (start - end >= 0 ? start : end) : (start - end >= 0 ? end : start);
+  }
+
+  minColIndex(indexGroup) {
+    let min = '1';
+    indexGroup.forEach((colIndex) => {
+      min = colIndex - min <= 0 ? colIndex : min;
+    });
   }
 
   recombineRows = () => {//uniqueRows
@@ -514,7 +510,7 @@ export default class FlowChart extends Component {
     const { chartData } = this.state;
     return (
       <div style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }}>
-        <canvas id="myCanvas" width="300" height="600" />
+        <canvas id="myCanvas" />
         {chartData.length &&
           this.renderTimeLine()}
       </div>
