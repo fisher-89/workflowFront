@@ -7,11 +7,11 @@
 .form {
   :global {
     .am-list-line {
-      border-bottom:none!important;
-      border-bottom-color: transparent!important;
+      border-bottom: none !important;
+      border-bottom-color: transparent !important;
     }
     .am-list-line::after {
-      content: none!important;
+      content: none !important;
     }
     .am-list-item.am-input-item.am-list-item-middle {
       border-bottom: 1px solid @split-line-color;
@@ -20,14 +20,14 @@
       border-bottom: 1px solid @split-line-color;
     }
     .am-list-item.am-textarea-item {
-      border-bottom: 1px solid @split-line-color !important;
+      border-bottom: 1px solid @split-line-color  !important;
     }
   }
   .readonly {
-    color:@readonly-color;
+    color: @readonly-color;
     :global {
       .am-textarea-control textarea {
-        color:@readonly-color!important;
+        color: @readonly-color  !important;
       }
       .am-textarea-control {
         background: url('/img/lock.png') no-repeat right !important;
@@ -44,14 +44,23 @@
     }
   }
   .readonly {
-    color:@edit-color;
+    color: @edit-color;
     :global {
       .am-textarea-control textarea {
-        color:@edit-color!important;
+        color: @edit-color  !important;
       }
       .am-textarea-control {
         background: none !important;
       }
+    }
+  }
+}
+
+.form_detail,
+.edit_form {
+  :global {
+    .am-list-item.am-list-item-middle {
+      height: 100/75rem !important;
     }
   }
 }

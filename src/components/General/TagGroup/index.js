@@ -71,7 +71,7 @@ export default class TagGroup extends React.Component {
   handleClose = (removedTag, index) => {
     const { range: { min }, onChange } = this.props;
     const { tags } = this.state;
-    if (min && `${min}` >= `${tags.length}`) {
+    if (min && (min - tags.length >= 0)) {
       Toast.info(`请至少添加${min}个`, 1);
     }
     // const newTags = tags.filter((tag,index) => `${tag}` !== `${removedTag}`);
@@ -132,7 +132,6 @@ export default class TagGroup extends React.Component {
     return props;
   }
 
-
   renderTag = () => {
     const { tags } = this.state;
     return tags.map((item, i) => {
@@ -150,7 +149,7 @@ export default class TagGroup extends React.Component {
     return (
       <div className={style.contain}>
         {this.renderTag()}
-        {!readonly && `${tags.length}` < `${max}` && (
+        {!readonly && (tags.length - max < 0) && (
           <div
             className={style.item}
             style={{ border: '1px dashed #c7c7c7' }}

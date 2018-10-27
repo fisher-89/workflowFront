@@ -1,8 +1,16 @@
 @import '../../utils/var.less';
-
 .flex {
   display: flex;
   flex-wrap: wrap;
+}
+
+.form_detail,
+.edit_form {
+  :global {
+    .am-list-item.am-list-item-middle {
+      height: 100/75rem !important;
+    }
+  }
 }
 
 .form {

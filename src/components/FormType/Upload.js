@@ -2,9 +2,14 @@ import React from 'react';
 import { connect } from 'dva';
 import { ImagePicker } from 'antd-mobile';
 import { rebackImg, reAgainImg, dealThumbImg } from '../../utils/convert';
+import spin from '../General/Loader';
 import style from './index.less';
 
-@connect()
+@connect(
+  ({ loading }) => ({
+    loading: loading.effects['start/fileUpload'],
+  })
+)
 export default class Upload extends React.Component {
   constructor(props) {
     super(props);
@@ -45,6 +50,7 @@ export default class Upload extends React.Component {
     };
     const urlparams = JSON.stringify(params);
     if (evtClick) {
+      console.log(evtClick);
       evtClick();
     }
     history.push(`/imageview?params=${urlparams}`);
@@ -114,43 +120,8 @@ export default class Upload extends React.Component {
 
 
   render() {
-    // <Modal
-    //       visible={preview}
-    //       popup
-    //       maskClosable
-    //       wrapClassName={style.wrap}
-    //       onClose={() => this.setState({ preview: false })}
-    //     >
-    //       <div
-    //         className={style.preview}
-    //         data-preview="preview"
-    //         onClick={this.hideModal}
-    //       >
-    //         <div className={style.caroul}>
-    //           <Carousel
-    //             autoplay={false}
-    //             infinite
-    //           >
-    //             {(reviewImg || []).map((val, i) => {
-    //               const idx = i;
-    //               return (
-    //                 <img
-    //                   src={val}
-    //                   key={idx}
-    //                   alt="carousel"
-    //                   style={{ width: '100%', verticalAlign: 'top' }}
-    //                   onLoad={() => {
-    //                     window.dispatchEvent(new Event('resize'));
-    //                   }}
-    //                 />
-    //               );
-    //             })}
-    //           </Carousel>
-    //         </div>
-    //       </div>
-
-    //     </Modal>
-
+    const { loading } = this.props;
+    spin(loading);
     return (
       <div>
         {this.renderFormFile()}

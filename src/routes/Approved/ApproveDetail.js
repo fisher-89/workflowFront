@@ -333,14 +333,10 @@ class ApproveDetail extends Component {
   }
 
   render() {
-    const { approve, dispatch, loading, fileLoading, history } = this.props;
+    const { approve, dispatch, loading, history } = this.props;
     const { startflow, formdata, flowChart } = approve;
     const newFormData = approve.form_data;
-    if (fileLoading) {
-      spin(fileLoading, '上传中');
-    } else {
-      spin(loading, '加载中');
-    }
+    spin(loading);
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 只需要展示的（不包括可编辑的）
@@ -382,12 +378,10 @@ class ApproveDetail extends Component {
               history={history}
             />
             )}
+          {this.getGridList()}
           <div style={{ marginBottom: '20px' }}>
-            {this.getGridList()}
+            <FlowChart dataSource={flowChart} />
           </div>
-          <FlowChart dataSource={flowChart} />
-          <WhiteSpace size="xl" />
-
         </div>
         <div className={styles.footer}>
           {startflow.step_run.action_type === 0 && (
@@ -423,5 +417,4 @@ export default connect(({
   approve,
   start,
   loading: loading.effects['approve/getStartFlow'] || loading.effects['api/fetchApi'] || loading.effects['start/preSet'],
-  fileLoading: loading.effects['start/fileUpload'],
 }))(ApproveDetail);

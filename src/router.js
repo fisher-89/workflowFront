@@ -137,6 +137,12 @@ function RouterConfig({
       import('./routes/SelectPlugins/SelPerson'),
   },
   {
+    path: '/sel_local_person',
+    models: [],
+    component: () =>
+      import('./routes/SelectPlugins/LocalSelPerson'),
+  },
+  {
     path: '/form_sel_person',
     models: ['formSearchStaff'],
     component: () =>

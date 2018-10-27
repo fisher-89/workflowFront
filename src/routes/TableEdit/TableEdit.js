@@ -241,15 +241,10 @@ class TableEdit extends Component {
   };
 
   render() {
-    const { start, dispatch, loading, history, fileLoading } = this.props;
+    const { start, dispatch, loading, history } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
-
-    if (fileLoading) {
-      spin(fileLoading, '上传中');
-    } else {
-      spin(loading, '加载中');
-    }
+    spin(loading);
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 可编辑的form
@@ -266,7 +261,6 @@ class TableEdit extends Component {
     return (
       <div className={styles.con}>
         <WhiteSpace size="xl" />
-
         <div className={styles.con_content}>
           <CreateForm
             history={history}
@@ -302,5 +296,4 @@ export default connect(({
 }) => ({
   start,
   loading: loading.effects['start/getStartFlow'] || loading.effects['api/fetchApi'] || loading.effects['start/preSet'],
-  fileLoading: loading.effects['start/fileUpload'],
 }))(TableEdit);

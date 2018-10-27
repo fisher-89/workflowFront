@@ -23,45 +23,51 @@ const node = {
 }
 
 // const test = [
-//   { id: 1, time: '1', next: [2, 3, 4], prev: [] },
-//   { id: 2, time: '2', next: [8], prev: [1] },
-//   { id: 3, time: '3', next: [5, 6], prev: [1] },
-//   { id: 4, time: '4', next: [8], prev: [1] },
-//   { id: 5, time: '5', next: [7], prev: [3] },
-//   { id: 6, time: '6', next: [7], prev: [3] },
-//   { id: 7, time: '7', next: [8], prev: [5, 6] },
-//   { id: 8, time: '8', next: [9, 10], prev: [2, 4, 7] },
-//   { id: 9, time: '9', next: [11], prev: [8] },
-//   { id: 10, time: '10', next: [11], prev: [8] },
-//   { id: 11, time: '11', next: [12, 13], prev: [9, 10] },
-//   { id: 12, time: '9', next: [14], prev: [11] },
-//   { id: 13, time: '10', next: [14], prev: [11] },
-//   { id: 14, time: '11', next: [], prev: [12, 13] },
+//   { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [] },
+//   { id: 2, time: '2', next_id: [8], prev_id: [1] },
+//   { id: 3, time: '3', next_id: [5, 6], prev_id: [1] },
+//   { id: 4, time: '4', next_id: [8], prev_id: [1] },
+//   { id: 5, time: '5', next_id: [7], prev_id: [3] },
+//   { id: 6, time: '6', next_id: [7], prev_id: [3] },
+//   { id: 7, time: '7', next_id: [8], prev_id: [5, 6] },
+//   { id: 8, time: '8', next_id: [9, 10], prev_id: [2, 4, 7] },
+//   { id: 9, time: '9', next_id: [11], prev_id: [8] },
+//   { id: 10, time: '10', next_id: [11], prev_id: [8] },
+//   { id: 11, time: '11', next_id: [12, 13], prev_id: [9, 10] },
+//   { id: 12, time: '9', next_id: [14], prev_id: [11] },
+//   { id: 13, time: '10', next_id: [14], prev_id: [11] },
+//   { id: 14, time: '11', next_id: [], prev_id: [12, 13] },
 // ];
 
 // const test = [
-//   { id: 1, time: '1', next: [2, 3, 4], prev: [] },
-//   { id: 2, time: '2', next: [5], prev: [1] },
-//   { id: 3, time: '3', next: [5], prev: [1] },
-//   { id: 4, time: '4', next: [6], prev: [1] },
-//   { id: 5, time: '5', next: [6], prev: [2, 3] },
-//   { id: 6, time: '6', next: [], prev: [4, 5] },
+//   { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [] },
+//   { id: 2, time: '2', next_id: [5], prev_id: [1] },
+//   { id: 3, time: '3', next_id: [5], prev_id: [1] },
+//   { id: 4, time: '4', next_id: [6], prev_id: [1] },
+//   { id: 5, time: '5', next_id: [6], prev_id: [2, 3] },
+//   { id: 6, time: '6', next_id: [], prev_id: [4, 5] },
 // ];
 // const test = [
-//   { id: 1, time: '1', next: [2, 3, 4], prev: [], status: 1, approver: 'xx', operate_at: 'xx', 'staff_sn': 'xxx' },
-//   { id: 2, time: '2', next: [5, 6], prev: [1] },
-//   { id: 3, time: '3', next: [7, 8], prev: [1] },
-//   { id: 4, time: '4', next: [9, 10], prev: [1] },
-//   { id: 5, time: '5', next: [12], prev: [2] },
-//   { id: 6, time: '6', next: [11], prev: [2] },
-//   { id: 7, time: '6', next: [13], prev: [3] },
-//   { id: 8, time: '6', next: [11], prev: [3] },
-//   { id: 9, time: '6', next: [], prev: [4] },
-//   { id: 10, time: '6', next: [11], prev: [4] },
-//   { id: 11, time: '6', next: [13], prev: [6, 8, 10] },
-//   { id: 12, time: '6', next: [13], prev: [5] },
-//   { id: 13, time: '6', next: [], prev: [12, 11, 7] },
-// ];
+//   { id: 1, time: '2', next_id: [2], prev_id: [] },
+//   { id: 2, time: '2', next_id: [3], prev_id: [1] },
+//   { id: 3, time: '2', next_id: [4], prev_id: [2] },
+//   { id: 4, next_id: [], prev_id: [3] }
+// ]
+const test = [
+  { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [], status: 1, approver: 'xx', operate_at: 'xx', 'staff_sn': 'xxx' },
+  { id: 2, time: '2', next_id: [5, 6], prev_id: [1] },
+  { id: 3, time: '3', next_id: [7, 8], prev_id: [1] },
+  { id: 4, time: '4', next_id: [9, 10], prev_id: [1] },
+  { id: 5, time: '5', next_id: [12], prev_id: [2] },
+  { id: 6, time: '6', next_id: [11], prev_id: [2] },
+  { id: 7, time: '6', next_id: [13], prev_id: [3] },
+  { id: 8, time: '6', next_id: [11], prev_id: [3] },
+  { id: 9, time: '6', next_id: [], prev_id: [4] },
+  { id: 10, time: '6', next_id: [11], prev_id: [4] },
+  { id: 11, time: '6', next_id: [13], prev_id: [6, 8, 10] },
+  { id: 12, time: '6', next_id: [13], prev_id: [5] },
+  { id: 13, time: '6', next_id: [], prev_id: [12, 11, 7] },
+];
 let datas = [];
 let cols = {};
 let testKeyById = {};
@@ -87,13 +93,16 @@ export default class FlowChart extends Component {
       this.makeChartData(props.dataSource)
     }
   }
+
   componentWillReceiveProps(props) {
-    const { dataSource } = props;
-    console.log('dataSource:', dataSource)
-    if (dataSource.length) {
-      this.makeChartData(dataSource)
+    const { dataSource = [] } = props;
+    if (JSON.stringify(dataSource || []) !== JSON.stringify(this.props.dataSource || []) && dataSource && dataSource.length) {
+      if (dataSource.length) {
+        this.makeChartData(dataSource)
+      }
     }
   }
+
   componentDidMount() {
     this.canvas = document.getElementById('myCanvas');
     this.ctx = this.canvas.getContext('2d');
@@ -111,18 +120,19 @@ export default class FlowChart extends Component {
     uniqueRows = [];
     curves = [];
     datas = [...dataSource]
+    // datas = [...test]
     datas.forEach((step, index) => {
       testKeyById[step.id] = step;
       step.y = index + 1;
       //绑定点的X坐标
-      if (step.prev.length === 0) {//主节点
+      if (step.prev_id.length === 0) {//主节点
         const firstLine = this.createNewColLine(cols, '0.');
         const row = this.createNewRowLine('0.', '0.', step.y + 0.5);
         step.row = row;
         step.line = firstLine;
-        step.unfinishedLines = [...unfinishedLines];
-      } else if (step.prev.length > 1) {//合并
-        const prevSteps = datas.filter(item => step.prev.indexOf(item.id) !== -1);
+        // step.unfinishedLines = [...unfinishedLines];
+      } else if (step.prev_id.length > 1) {//合并
+        const prevSteps = datas.filter(item => step.prev_id.indexOf(item.id) !== -1);
         let max = '0';
         let min = '1';
         prevSteps.forEach((prevStep) => {
@@ -142,37 +152,37 @@ export default class FlowChart extends Component {
         const basicLine = this.findBasicLine(prevLines);
         const newLine = this.createNewColLine(basicLine.col, basicLine.colIndex, step.y - 0.5, prevLines);
         step.line = newLine;
-        step.unfinishedLines = [...unfinishedLines];
+        // step.unfinishedLines = [...unfinishedLines];
       } else {//不分叉
-        const prevStep = testKeyById[step.prev[0]];
+        const prevStep = testKeyById[step.prev_id[0]];
         let max = '0';
         let min = '1';
-        if (prevStep.next.length > 1) {
-          const subIndex = prevStep.next.indexOf(step.id);
-          const newLine = prevStep.line.next[subIndex];
-          step.line = newLine;
-          prevStep.next.forEach((next, i) => {
+        if (prevStep.next_id.length > 1) {
+          const subIndex = prevStep.next_id.indexOf(step.id);
+          prevStep.next_id.forEach((next, i) => {
             const colIndex = `${prevStep.line.colIndex}${i >= 10 ? i : `0${i}`}`;
             max = colIndex - max >= 0 ? colIndex : max;
             min = colIndex - min <= 0 ? colIndex : min;
           })
+          const newLine = prevStep.line.next_id[subIndex];
           const row = this.createNewRowLine(min, max, prevStep.y + 0.5);
+          step.line = newLine;
           step.row = row;
-          step.unfinishedLines = [...unfinishedLines];
+          // step.unfinishedLines = [...unfinishedLines];
         } else {
-          const { row: { start, end, y } } = prevStep;
-          const row = this.createNewRowLine(start, end, y + 1);
+          const { row: { start, end } } = prevStep;
+          const row = this.createNewRowLine(start, end, step.y + 0.5);
           step.row = row;
           step.line = prevStep.line;
-          step.unfinishedLines = [...unfinishedLines];
+          // step.unfinishedLines = [...unfinishedLines];
         }
       }
-
+      step.unfinishedLines = [...unfinishedLines];
       // 生成cols分支
-      if (step.next.length > 1) {
+      if (step.next_id.length > 1) {
         this.separateColLine(step, step.y + 0.5)
       }
-      if (step.next.length === 0) {
+      if (step.next_id.length === 0) {
         this.finishColLine(step.line, step.y);
       }
     });
@@ -200,67 +210,17 @@ export default class FlowChart extends Component {
       this.draw();
     })
   }
-  recombineRows = () => {//uniqueRows
-    let obj = {};
-    rows.forEach(row => {
-      const { start, end, y } = row;
-      const [newStartLine] = lines.filter(item => item.colIndex === start);
-      const [newEndLine] = lines.filter(item => item.colIndex === end);
-      const newStart = newStartLine.col.index;
-      const newEnd = newEndLine.col.index;
-      row.start = newStart;
-      row.end = newEnd;
-      if (newStart !== newEnd) {
-        obj[y] = []
-      }
-    })
-    rows.forEach(row => {
-      const { start, end, y } = row;
-      if (start !== end) {
-        obj[y].push({ start, end, y });
-      }
-    })
-    Object.keys(obj).forEach(key => {
-      const value = obj[key];
-      let min = value[0].start;
-      let max = value[0].end;
-      value.slice(1).forEach(item => {
-        const { start, end } = item;
-        min = start - min <= 0 ? start : min;
-        max = end - max > 0 ? end : max;
-      })
-      uniqueRows.push({ start: min, end: max, y: key });
-      this.makeCurves(min, max, key)
-    })
-  }
-
-  makeCurves = (start, end, y) => {//curves 
-    const startPoint = { x: start, y };
-    const line = lines.filter(line => (`${line.col.index}` === `${end}` && (`${y}` === `${line.start}` || `${y}` === `${line.end}`)));
-    console.log('makeCurves:', lines, end, start, y)
-    const endPoint = { x: end, y: line[0].end };
-    let p1 = { x: end - (curveRadius / colGap), y };
-    let p2 = { x: end, y: y - 0 + (curveRadius / verticalRate) };
-    let direction = 1;
-    if ((startPoint.x - endPoint.x) * (startPoint.y - endPoint.y) <= 0) {
-      p1 = { x: end - (curveRadius / colGap), y };
-      p2 = { x: end, y: y - (curveRadius / verticalRate) };
-      direction = -1;
-    }
-    curves.push({ start: p1, end: p2, direction });
-  }
-
   createNewRowLine = (min, max, y) => {
     const row = { start: min, end: max, y };
     rows.push(row);
     return row;
   }
 
-  createNewColLine = (col, colIndex, start = 1, prev = []) => {
-    const line = { col, colIndex, start, end: '', prev, next: [], crossingPoint: [] };
+  createNewColLine = (col, colIndex, start = 1, prev_id = []) => {
+    const line = { col, colIndex, start, end: '', prev_id, next_id: [], crossingPoint: [] };
     lines.push(line);
-    prev.forEach((prevLine) => {
-      prevLine.next.push(line);
+    prev_id.forEach((prevLine) => {
+      prevLine.next_id.push(line);
     });
     this.sortUnfinishedLines(line);
     return line;
@@ -279,7 +239,7 @@ export default class FlowChart extends Component {
   separateColLine = (prevStep, startY) => {
     const prevLine = prevStep.line;
     this.finishColLine(prevLine, startY);
-    prevStep.next.forEach((next, subIndex) => {
+    prevStep.next_id.forEach((next, subIndex) => {
       const col = prevLine.col[subIndex] = prevLine.col[subIndex] || {};
       const colIndex = `${prevLine.colIndex}${subIndex >= 10 ? subIndex : `0${subIndex}`}`;
       this.createNewColLine(col, colIndex, startY, [prevLine]);
@@ -287,7 +247,7 @@ export default class FlowChart extends Component {
   }
 
   findBasicLine = (prevLines) => {
-    const basicLines = this.findBasicLines({ prev: prevLines });
+    const basicLines = this.findBasicLines({ prev_id: prevLines });
     let response = basicLines.shift();
     basicLines.forEach((basicLine) => {
       response = basicLine.colIndex - response.colIndex >= 0 ? response : basicLine;
@@ -296,7 +256,7 @@ export default class FlowChart extends Component {
   }
 
   findBasicLines = (line, basicLines = []) => {
-    const prevLines = line.prev;
+    const prevLines = line.prev_id;
     if (prevLines.length === 0) {
       basicLines.push(line);
     } else if (prevLines.length > 1) {
@@ -305,14 +265,14 @@ export default class FlowChart extends Component {
       });
     } else if (prevLines.length === 1) {
       const prevLine = prevLines[0];
-      if (prevLine.next.length === 1) {
+      if (prevLine.next_id.length === 1) {
         basicLines = this.findBasicLines(prevLine, basicLines);
-      } else if (prevLine.next.length > 1) {
+      } else if (prevLine.next_id.length > 1) {
         let prevNextLine;
         let flag = true;
         const newBasicLines = [...basicLines];
-        for (let i = 0; i < prevLine.next.length; i += 1) {
-          prevNextLine = prevLine.next[i];
+        for (let i = 0; i < prevLine.next_id.length; i += 1) {
+          prevNextLine = prevLine.next_id[i];
           if (basicLines.indexOf(prevNextLine) === -1 && prevNextLine !== line) {
             basicLines.push(line);
             flag = false;
@@ -350,7 +310,6 @@ export default class FlowChart extends Component {
 
   fillColsIndex = (cols, colIndex = 1) => {
     const index = colIndex;
-
     Object.keys(cols).forEach((key) => {
       if (key > 0) colIndex += 1;
       colIndex = this.fillColsIndex(cols[key], colIndex);
@@ -358,6 +317,56 @@ export default class FlowChart extends Component {
     cols.index = index;
     return colIndex;
   }
+
+  recombineRows = () => {//uniqueRows
+    let obj = {};
+    rows.forEach(row => {
+      const { start, end, y } = row;
+      const [newStartLine] = lines.filter(item => item.colIndex === start);
+      const [newEndLine] = lines.filter(item => item.colIndex === end);
+      const newStart = newStartLine.col.index;
+      const newEnd = newEndLine.col.index;
+      row.start = newStart;
+      row.end = newEnd;
+      if (newStart !== newEnd) {
+        obj[y] = []
+      }
+    })
+    rows.forEach(row => {
+      const { start, end, y } = row;
+      if (start !== end) {
+        obj[y].push({ start, end, y });
+      }
+    })
+    Object.keys(obj).forEach(key => {
+      const value = obj[key];
+      let min = value[0].start;
+      let max = value[0].end;
+      value.slice(1).forEach(item => {
+        const { start, end } = item;
+        min = start - min <= 0 ? start : min;
+        max = end - max > 0 ? end : max;
+      })
+      uniqueRows.push({ start: min, end: max, y: key });
+      this.makeCurves(min, max, key)
+    })
+  }
+
+  makeCurves = (start, end, y) => {//curves 
+    const startPoint = { x: start, y };
+    const line = lines.filter(line => (`${line.col.index}` === `${end}` && (`${y}` === `${line.start}` || `${y}` === `${line.end}`)));
+    const endPoint = { x: end, y: line[0].end };
+    let p1 = { x: end - (curveRadius / colGap), y };
+    let p2 = { x: end, y: y - 0 + (curveRadius / verticalRate) };
+    let direction = 1;
+    if ((startPoint.x - endPoint.x) * (startPoint.y - endPoint.y) <= 0) {
+      p1 = { x: end - (curveRadius / colGap), y };
+      p2 = { x: end, y: y - (curveRadius / verticalRate) };
+      direction = -1;
+    }
+    curves.push({ start: p1, end: p2, direction });
+  }
+
 
   drawRect = (x, y, w, h) => {
     if (this.canvas) {
@@ -470,7 +479,7 @@ export default class FlowChart extends Component {
       const maxColIndex = lastLines ? lastLines.col.index : 0;
       const style = {
         position: 'absolute',
-        left: maxColIndex * colGap + 14,
+        left: maxColIndex * colGap + 14 + 6,
         right: 15,
         top: y * verticalRate - 11,
         height: '22px', lineHeight: '22px',
@@ -504,7 +513,7 @@ export default class FlowChart extends Component {
   render() {
     const { chartData } = this.state;
     return (
-      <div style={{ background: '#fff', position: 'relative' }}>
+      <div style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }}>
         <canvas id="myCanvas" width="300" height="600" />
         {chartData.length &&
           this.renderTimeLine()}

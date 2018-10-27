@@ -4,7 +4,6 @@ import React, {
 import { connect } from 'dva';
 import { List, Toast, TextareaItem, WhiteSpace } from 'antd-mobile';
 import { createForm } from 'rc-form';
-import moment from 'moment';
 import { makeFieldValue, getUrlParams } from '../../utils/util';
 import spin from '../../components/General/Loader';
 
@@ -62,7 +61,6 @@ class SelectStep extends Component {
     const { steps } = this.state;
     return steps.map((item, i) => {
       const idx = i;
-      console.log(item);
       return (
         <div
           className={style.step}
@@ -114,7 +112,7 @@ class SelectStep extends Component {
         data: newSteps,
       },
     });
-    history.goBack(-1);
+    history.go(-1);
   }
 
   choseApprover = (el) => { // 去选择审批人
@@ -135,35 +133,38 @@ class SelectStep extends Component {
     const { preStepData } = start;
     const [step] = (preStepData.available_steps || []).filter(item => `${item.id}` === `${id}`);
     const approverType = step.approver_type;
-    if (!approverType) {
-      const key = `approver${moment.unix()}`;
-      const obj = {
+    const key = `approver_${step.id}`;
+    const obj = {
+      key,
+      type: 0, // 单选
+    };
+    dispatch({
+      type: 'searchStaff/saveCback',
+      payload: {
         key,
-        type: 0, // 单选
-      };
-      const url = JSON.stringify(obj);
-      dispatch({
-        type: 'searchStaff/saveCback',
-        payload: {
-          key,
-          cb: (source) => {
-            this.choseCback(source, id);
-            // const urlParams = JSON.stringify(source);
-            // history.push(`/remark?params=${urlParams}`);
-            const newData = makeFieldValue(source, { staff_sn: 'value', realname: 'text' }, false);
-            dispatch({
-              type: 'searchStaff/saveSelectStaff',
-              payload: {
-                key,
-                value: newData,
-              },
-            });
-          },
+        cb: (source) => {
+          this.choseCback(source, id);
+          const newData = makeFieldValue(source, { staff_sn: 'value', realname: 'text' }, false);
+          console.log('newData', source, newData);
+          dispatch({
+            type: 'searchStaff/saveSelectStaff',
+            payload: {
+              key,
+              value: newData,
+            },
+          });
         },
-      });
+      },
+    });
+    if (!approverType) {
+      const url = JSON.stringify(obj);
       history.push(`/sel_person?params=${url}`);
     } else {
-      history.push(`/select_approver/${el.id}`);
+      const dataSource = step ? step.approvers : [];
+      obj.dataSource = dataSource;
+      const url = JSON.stringify(obj);
+      history.push(`/sel_local_person?params=${url}`);
+      // history.push(`/select_approver/${el.id}`);
     }
   }
 

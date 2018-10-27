@@ -1,7 +1,7 @@
 // 审批的表单
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Button, WhiteSpace } from 'antd-mobile';
+import { Button } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
 import { makeGridItemData } from '../../utils/util';
@@ -12,43 +12,22 @@ import styles from '../common.less';
 
 class StartDetail extends Component {
   componentWillMount() {
-    const { dispatch, match: { params } } = this.props;
+    const { match: { params }, start: { startflow } } = this.props;
     const { id } = params;
-    dispatch({
-      type: 'start/getStartDetail',
-      payload: {
-        id,
-        cb: (detail) => {
-          dispatch({
-            type: 'start/getFlowChart',
-            payload: { id: detail.step_run.id },
-          });
-        },
-      },
-    });
+    if (startflow) {
+      if (Object.keys(startflow).length && (`${startflow.step_run.flow_run_id}` !== `${id}`)) {
+        this.fetchDetail(id);
+      }
+    } else {
+      this.fetchDetail(id);
+    }
   }
 
   getGridItem = (key) => {
     const { start: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
-    // const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
-    // const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
-    //   const newObj = {
-    //     value_0: `${gridItem.name}${i + 1}`,
-    //   };
-    //   let num = 0;
-    //   item.forEach((its) => { // 取前三个字段
-    //     const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
-    //     const { type } = fieldsItem || {};
-    //     if (num < 3 && type && type !== 'file' && type !== 'array') {
-    //       newObj[`value_${num}`] = its.value;
-    //       num += 1;
-    //     }
-    //   });
-    //   return newObj;
-    // });
     const dataList = makeGridItemData(currentGridData, gridItem);
     return dataList.map((item, i) => {
       const idx = i;
@@ -88,11 +67,25 @@ class StartDetail extends Component {
           </p>
           {this.getGridItem(item.key)}
         </div>
-
       );
     });
   }
 
+  fetchDetail = (id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'start/getStartDetail',
+      payload: {
+        id,
+        cb: (detail) => {
+          dispatch({
+            type: 'start/getFlowChart',
+            payload: { id: detail.step_run.id },
+          });
+        },
+      },
+    });
+  }
   doWithDraw = () => {
     const { dispatch, start: { startflow } } = this.props;
     const flowRun = startflow.flow_run;
@@ -111,8 +104,6 @@ class StartDetail extends Component {
   render() {
     const { start, loading } = this.props;
     const { startflow, flowChart } = start;
-    console.log('flowChart:', flowChart);
-
     const formData = start.form_data;
     spin(loading);
     if (!startflow) return null;
@@ -131,13 +122,12 @@ class StartDetail extends Component {
             show_form={showForm}
             history={this.props.history}
           />
+          {this.getGridList()}
           <div style={{ marginBottom: '20px' }}>
-            {this.getGridList()}
+            <p className={style.grid_opt}>审批进程</p>
+            <FlowChart dataSource={flowChart} />
           </div>
-          <FlowChart dataSource={flowChart} />
         </div>
-        <WhiteSpace size="xl" />
-
         {flowRun && flowRun.status === 0 && (
           <div style={{ padding: '10px' }}>
             <Button
