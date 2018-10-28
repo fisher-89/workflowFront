@@ -50,7 +50,6 @@ export default class Upload extends React.Component {
     };
     const urlparams = JSON.stringify(params);
     if (evtClick) {
-      console.log(evtClick);
       evtClick();
     }
     history.push(`/imageview?params=${urlparams}`);

@@ -60,9 +60,6 @@ export default class SelPerson extends Component {
     const multiple = !!type;
     const current = currentKey[`${key}`] || {};
     const data = current.data || (multiple ? [] : {});
-    // const newData = makeFieldValue(data, { value: 'staff_sn', text: 'realname' }, multiple);
-    console.log('current', current);
-
     let newData = [];
     if (!multiple && !Object.keys(data || {}).length) {
       newData = {};
@@ -153,7 +150,6 @@ export default class SelPerson extends Component {
     const { selected, search, multiple,
       singleSelected, params: { singleDelete = true }, ableSource } = this.state;
     const selectedData = selected.data;
-    console.log('selectedData', selectedData);
     const staffSn = ableSource.map(item => `${item.staff_sn}`);
     const checkAble = selectedData.filter(item =>
       staffSn.indexOf(`${item.staff_sn}`) > -1).length === staffSn.length && staffSn.length;

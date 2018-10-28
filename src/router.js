@@ -118,12 +118,12 @@ function RouterConfig({
     component: () =>
       import('./routes/TableEdit/StartDetail'),
   },
-  {
-    path: '/test2',
-    models: ['start'],
-    component: () =>
-      import('./routes/TableEdit/flowChart'),
-  },
+  // {
+  //   path: '/test2',
+  //   models: ['start'],
+  //   component: () =>
+  //     import('./routes/TableEdit/flowChart'),
+  // },
   {
     path: '/imageview',
     models: [],

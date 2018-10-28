@@ -118,8 +118,8 @@ export default class FlowChart extends Component {
     rows = [];
     uniqueRows = [];
     curves = [];
-    // datas = [...dataSource]
-    datas = [...test]
+    datas = [...dataSource]
+    // datas = [...test]
     datas.forEach((step, index) => {
       testKeyById[step.id] = step;
       step.y = index + 1;
