@@ -37,7 +37,7 @@ class SelectStep extends Component {
             <div className={style.step_item}>
               <div className={style.step}>步骤</div>
               <div className={style.approver}>
-                <div>审批人</div>
+                <div>审批人:</div>
                 <div>
                   <PersonIcon nameKey="name" value={{ name: 'w' }} />
                   <PersonAdd />
