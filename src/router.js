@@ -94,7 +94,14 @@ function RouterConfig({
     models: ['start'],
     component: () =>
       import('./routes/TableEdit/SelectStep'),
-  }, {
+  },
+  {
+    path: '/approve_step',
+    models: ['start'],
+    component: () =>
+      import('./routes/Approved/SelectStep'),
+  },
+  {
     path: '/select_approver/:id',
     models: ['start'],
     component: () =>
