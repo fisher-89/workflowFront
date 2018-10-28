@@ -188,6 +188,7 @@ export default class Remark extends Component {
     spin(loading);
     return (
       <div className={styles.con}>
+        <WhiteSpace size="md" />
         <div className={styles.con_content}>
           {`${type}` === '1' && (
             <div className={style.players}>

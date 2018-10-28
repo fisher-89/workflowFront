@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { remove, findIndex, last } from 'lodash';
+import { remove, findIndex, last, find, has, mapValues, max, min } from 'lodash';
 import { flowchartStatus, flowchartStatusColor } from '../../utils/convert'
 import { userStorage } from '../../utils/util'
 const curveRadius = 4;
@@ -136,11 +136,8 @@ export default class FlowChart extends Component {
         prevSteps.forEach((prevStep) => {
           const { colIndex } = prevStep.line;
           this.finishColLine(prevStep.line, step.y - 0.5); //上一条线的结束点
-          // max = colIndex - max >= 0 ? colIndex : max;
-          max = this.terminalColIndex(colIndex, max);
-          // min = colIndex - min <= 0 ? colIndex : min;
-          min = this.terminalColIndex(colIndex, min, 'min')
-          console.log(max, min)
+          max = colIndex - max >= 0 ? colIndex : max;
+          min = colIndex - min <= 0 ? colIndex : min;
 
         });
         row = this.createNewRowLine(min, max, step.y - 0.5);
@@ -162,10 +159,8 @@ export default class FlowChart extends Component {
           const subIndex = prevNext.indexOf(step.id);
           prevNext.forEach((next, i) => {
             const colIndex = `${prevLine.colIndex}${i >= 10 ? i : `0${i}`}`;
-            // max = colIndex - max >= 0 ? colIndex : max;
-            max = this.terminalColIndex(colIndex, max);
-            min = this.terminalColIndex(colIndex, min, 'min')
-            // min = colIndex - min <= 0 ? colIndex : min;
+            max = colIndex - max >= 0 ? colIndex : max;
+            min = colIndex - min <= 0 ? colIndex : min;
           })
           line = prevLine.next_id[subIndex];
           row = this.createNewRowLine(min, max, prevStep.y + 0.5);
@@ -195,7 +190,13 @@ export default class FlowChart extends Component {
       this.canvas.width = width;
     }
     this.drawRect(0, 0, width, height);
+    console.log('cols:', cols);
+    console.log('lines:', lines);
+    console.log('test:', test);
+    console.log('rows:', [...rows]);
     this.recombineRows();
+
+
     this.setState({
       chartData: [...datas],
       lines: [...lines],
@@ -303,48 +304,32 @@ export default class FlowChart extends Component {
     return colIndex;
   }
 
-  terminalColIndex(start, end, type = 'max') {
-    return type === 'max' ? (start - end >= 0 ? start : end) : (start - end >= 0 ? end : start);
-  }
-
-  minColIndex(indexGroup) {
-    let min = '1';
-    indexGroup.forEach((colIndex) => {
-      min = colIndex - min <= 0 ? colIndex : min;
-    });
-  }
-
   recombineRows = () => {//uniqueRows
     let obj = {};
     rows.forEach(row => {
       const { start, end, y } = row;
-      const [newStartLine] = lines.filter(item => item.colIndex === start);
-      const [newEndLine] = lines.filter(item => item.colIndex === end);
+      const newStartLine = find(lines, (item) => item.colIndex === start);
+      const newEndLine = find(lines, (item) => item.colIndex === end);
       const newStart = newStartLine.col.index;
       const newEnd = newEndLine.col.index;
       row.start = newStart;
       row.end = newEnd;
       if (newStart !== newEnd) {
-        obj[y] = []
+        if (!has(obj, y)) obj[y] = [];
+        obj[y].push(row);
       }
     })
-    rows.forEach(row => {
-      const { start, end, y } = row;
-      if (start !== end) {
-        obj[y].push({ start, end, y });
-      }
-    })
-    Object.keys(obj).forEach(key => {
-      const value = obj[key];
-      let min = value[0].start;
-      let max = value[0].end;
-      value.slice(1).forEach(item => {
-        const { start, end } = item;
-        min = start - min <= 0 ? start : min;
-        max = end - max > 0 ? end : max;
-      })
-      uniqueRows.push({ start: min, end: max, y: key });
-      this.makeCurves(min, max, key)
+    mapValues(obj, (row) => {
+      const startArr = [];
+      const endArr = [];
+      row.forEach(item => {
+        startArr.push(item.start);
+        endArr.push(item.end);
+      });
+      const y = row[0].y;
+      const temp = { y, start: min(startArr), end: max(endArr) };
+      uniqueRows.push(temp);
+      this.makeCurves(temp.start, temp.end, temp.y);
     })
   }
 
@@ -362,7 +347,6 @@ export default class FlowChart extends Component {
     }
     curves.push({ start: p1, end: p2, direction });
   }
-
 
   drawRect = (x, y, w, h) => {
     if (this.canvas) {

@@ -145,7 +145,6 @@ class SelectStep extends Component {
         cb: (source) => {
           this.choseCback(source, id);
           const newData = makeFieldValue(source, { staff_sn: 'value', realname: 'text' }, false);
-          console.log('newData', source, newData);
           dispatch({
             type: 'searchStaff/saveSelectStaff',
             payload: {
@@ -293,6 +292,7 @@ class SelectStep extends Component {
       });
     }
   }
+
   render() {
     const { preStepData } = this.state;
     const { start: { preType }, loading, form: { getFieldProps } } = this.props;

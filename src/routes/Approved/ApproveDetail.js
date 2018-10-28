@@ -325,7 +325,7 @@ class ApproveDetail extends Component {
             step_run_id: id,
           };
           const urlParams = JSON.stringify(params);
-          history.push(`/remark?params=${urlParams}&source=${this.source}`);
+          history.push(`/remark?params=${urlParams}&source=${this.source}&type=1`);
         },
       },
     });
