@@ -94,6 +94,25 @@ class SelectStep extends Component {
   }
 
   choseCback = (el, id) => {
+    const { dispatch, history } = this.props;
+    const { steps } = this.state;
+    const newSteps = steps.map((item) => {
+      let obj = { ...item };
+      if (`${id}` === `${item.id}`) {
+        obj = {
+          ...item,
+          approvers: { ...el },
+        };
+      }
+      return obj;
+    });
+    dispatch({
+      type: 'start/save',
+      payload: {
+        store: 'steps',
+        data: newSteps,
+      },
+    });
     history.go(-1);
   }
 

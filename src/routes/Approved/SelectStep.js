@@ -326,7 +326,7 @@ class SelectStep extends Component {
 
   selectCCback = (source) => {
     const { history, start: { otherInfo: { remark } } } = this.props;
-    // console.log('selectCCback', remark, this.props.start);
+    // console.log('selectCCback', remark, this.props.start);c
     this.modalSave('otherInfo', { cc_person: source, remark });
     history.go(-1);
   }
