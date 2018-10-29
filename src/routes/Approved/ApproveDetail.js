@@ -278,7 +278,6 @@ class ApproveDetail extends Component {
         cb: (data) => {
           if (data.step_end === 1) { // 不选步骤
             const url = JSON.stringify(data);
-
             history.push(`/remark?params=${url}&type=2&source=${this.source}`);
           } else {
             history.push(`/select_step?source=${this.source}`);
@@ -416,5 +415,11 @@ export default connect(({
 }) => ({
   approve,
   start,
-  loading: loading.effects['approve/getStartFlow'] || loading.effects['api/fetchApi'] || loading.effects['start/preSet'],
+  loading: (
+    (loading.effects['start/preSet'] || false) ||
+    (loading.effects['api/fetchApi'] || false) ||
+    (loading.effects['approve/getStartFlow'] || false) ||
+    (loading.effects['approve/getFlowChart'] || false)
+
+  ),
 }))(ApproveDetail);

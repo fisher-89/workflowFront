@@ -244,6 +244,7 @@ class TableEdit extends Component {
     const { start, dispatch, loading, history } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
+    console.log('render', loading);
     spin(loading);
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
@@ -295,5 +296,9 @@ export default connect(({
   start, loading,
 }) => ({
   start,
-  loading: loading.effects['start/getStartFlow'] || loading.effects['api/fetchApi'] || loading.effects['start/preSet'],
+  loading: (
+    (loading.effects['start/preSet'] || false) ||
+    (loading.effects['api/fetchApi'] || false) ||
+    loading.effects['start/getStartFlow']
+  ),
 }))(TableEdit);

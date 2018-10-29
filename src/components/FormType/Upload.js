@@ -5,11 +5,7 @@ import { rebackImg, reAgainImg, dealThumbImg } from '../../utils/convert';
 import spin from '../General/Loader';
 import style from './index.less';
 
-@connect(
-  ({ loading }) => ({
-    loading: loading.effects['start/fileUpload'],
-  })
-)
+@connect(({ loading }) => ({ loading: loading.effects['start/fileUpload'] }))
 export default class Upload extends React.Component {
   constructor(props) {
     super(props);
@@ -119,7 +115,7 @@ export default class Upload extends React.Component {
 
   render() {
     const { loading } = this.props;
-    spin(loading, '上传中');
+    if (loading !== undefined) spin(loading, '上传中');
     return (
       <div>
         {this.renderFormFile()}

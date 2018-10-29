@@ -105,6 +105,7 @@ class StartDetail extends Component {
     const { start, loading } = this.props;
     const { startflow, flowChart } = start;
     const formData = start.form_data;
+    console.log(loading);
     spin(loading);
     if (!startflow) return null;
     const { fields: { form } } = startflow;
@@ -144,6 +145,19 @@ class StartDetail extends Component {
 }
 export default connect(({
   start, loading,
-}) => ({
-  start, loading: loading.global,
-}))(StartDetail);
+}) => {
+  console.log({ ...loading }, (loading.effects['start/doWithDraw'] || false),
+    (loading.effects['api/fetchApi'] || false),
+    (loading.effects['start/getStartFlow'] || false),
+    (loading.effects['approve/getFlowChart'] || false));
+  return ({
+    start,
+    loading: (
+      // (loading.effects['start/doWithDraw'] || false) ||
+      // (loading.effects['api/fetchApi'] || false) ||
+      // (loading.effects['start/getStartFlow'] || false) ||
+      // (loading.effects['approve/getFlowChart'] || false)
+      loading.global
+    ),
+  });
+})(StartDetail);
