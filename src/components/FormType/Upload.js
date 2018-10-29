@@ -117,10 +117,9 @@ export default class Upload extends React.Component {
     );
   }
 
-
   render() {
     const { loading } = this.props;
-    spin(loading);
+    spin(loading, '上传中');
     return (
       <div>
         {this.renderFormFile()}
@@ -128,6 +127,7 @@ export default class Upload extends React.Component {
     );
   }
 }
+
 Upload.defaultProps = {
   isEdit: true,
   data: {

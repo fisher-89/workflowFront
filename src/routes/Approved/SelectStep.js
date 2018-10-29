@@ -19,28 +19,424 @@ import styles from '../common.less';
   loading: loading.global,
 }))
 class SelectStep extends Component {
-  componentWillMount() {
-
+  state = {
+    otherInfo: {
+      remark: '',
+      cc_person: [],
+    },
   }
-  componentDidMount() {
+  componentWillMount() {
+    const { start } = this.props;
+    const urlParams = getUrlParams();
+    const { source } = urlParams;
+    const { preStepData, steps, otherInfo } = start;
+    console.log('componentWillMount', otherInfo);
+    let step = null;
+    if (steps && !steps.length) { // 当steps还没有被初始化过，里面为[]
+      step = (preStepData.available_steps || []).map((item) => {
+        const obj = {
+          id: item.id,
+          name: item.name,
+          checked: preStepData.concurrent_type === 2, // 是否被选择
+          approvers: {},
+        };
+        return obj;
+      });
+    }
+    this.setState({
+      steps: step || steps,
+      preStepData,
+      source: source || '',
+      otherInfo,
+    });
+  }
 
+  componentDidMount() {
+    const { start: { preType }, history, dispatch } = this.props;
+    if (preType) {
+      dispatch({
+        type: 'start/updateModal',
+      });
+    } else {
+      history.goBack(-1);
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    const { start: { steps, otherInfo } } = props;
+    if (JSON.stringify(steps) !== JSON.stringify(this.props.start.steps)) {
+      this.setState({
+        steps,
+      });
+    }
+    if (JSON.stringify(otherInfo) !== JSON.stringify(this.props.start.otherInfo)) {
+      this.setState({
+        otherInfo,
+      });
+    }
+  }
+
+
+  handleDelClick = (id) => {
+    const key = `approver_${id}`;
+    this.saveSelectStaff(key, {});
+    this.saveStepApprover({}, id);
+  }
+
+  choseCback = (el, id) => {
+    this.saveStepApprover(el, id);
+    history.go(-1);
+  }
+
+  saveStepApprover = (el, id) => {
+    const { steps } = this.state;
+    const newSteps = steps.map((item) => {
+      let obj = { ...item };
+      if (`${id}` === `${item.id}`) {
+        obj = {
+          ...item,
+          approvers: el,
+        };
+      }
+      return obj;
+    });
+    this.modalSave('steps', newSteps);
+  }
+
+  modalSave = (store, data) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'start/save',
+      payload: {
+        store,
+        data,
+      },
+    });
+  }
+
+  saveFormData = () => {
+    let remark = '';
+    const { otherInfo } = this.state;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        remark = values.remark || '';
+      }
+    });
+    console.log('reamrk', remark);
+    this.modalSave('otherInfo', { remark, cc_person: otherInfo.cc_person });
+  }
+
+  saveSelectStaff = (key, data) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'searchStaff/saveSelectStaff',
+      payload: {
+        key,
+        value: data,
+      },
+    });
+  }
+
+  choseApprover = (el) => { // 去选择审批人
+    const { history, dispatch, start } = this.props;
+    const {
+      steps,
+    } = this.state;
+    // dispatch({
+    //   type: 'start/save',
+    //   payload: {
+    //     store: 'steps',
+    //     data: steps,
+    //   },
+    // });
+    this.modalSave('steps', steps);
+    this.saveFormData();
+    const { id } = el;
+    const { preStepData } = start;
+    const [step] = (preStepData.available_steps || []).filter(item => `${item.id}` === `${id}`);
+    const approverType = step.approver_type;
+    const key = `approver_${id}`;
+    const obj = {
+      key,
+      type: 0, // 单选
+    };
+    dispatch({
+      type: 'searchStaff/saveCback',
+      payload: {
+        key,
+        cb: (source) => {
+          this.choseCback(source, id);
+          const newData = makeFieldValue(source, { staff_sn: 'value', realname: 'text' }, false);
+          this.saveSelectStaff(key, newData);
+        },
+      },
+    });
+    if (!approverType) {
+      const url = JSON.stringify(obj);
+      history.push(`/sel_person?params=${url}`);
+    } else {
+      const dataSource = step ? step.approvers : [];
+      obj.dataSource = dataSource;
+      const url = JSON.stringify(obj);
+      history.push(`/sel_local_person?params=${url}`);
+      // history.push(`/select_approver/${el.id}`);
+    }
+  }
+
+  choseItem = (el) => { // 选择某项
+    const { steps, preStepData } = this.state;
+    let newSteps = [...steps];
+    if (preStepData.concurrent_type === 0) {
+      newSteps = steps.map((item) => {
+        const obj = {
+          ...item,
+          checked: item.id === el.id ? !item.checked : false,
+        };
+        return obj;
+      });
+    } else if (preStepData.concurrent_type === 1) {
+      newSteps = steps.map((item) => {
+        const obj = {
+          ...item,
+          checked: item.id === el.id ? !item.checked : item.checked,
+        };
+        return obj;
+      });
+    }
+    this.setState({
+      steps: newSteps,
+    });
+  }
+
+  submitStep = (e) => { // 提交步骤
+    e.preventDefault();
+    let v = '';
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        v = values.remark || '';
+      }
+    });
+    const { dispatch, history, start: { preType },
+    } = this.props;
+    const { steps, preStepData, source } = this.state;
+    const checkedSteps = steps.filter(item => item.checked);
+    const errMsg = [];
+    const nextSteps = checkedSteps.map((item) => {
+      const obj = {};
+      if (Object.keys(item.approvers).length) {
+        obj.step_id = item.id;
+        obj.approver_sn = item.approvers.staff_sn;
+        obj.approver_name = item.approvers.realname;
+        return obj;
+      } else {
+        errMsg.push(`请选择${item.name}的审批人`);
+      }
+      return obj;
+    });
+    if (errMsg.length) {
+      errMsg.map((item, i) => {
+        setTimeout(() => {
+          Toast.fail(item, 1.5);
+        }, (i) * 1000);
+        return item;
+      });
+      return;
+    }
+    const params = {
+      step_run_id: preStepData.step_run_id,
+      timestamp: preStepData.timestamp,
+      next_step: [...nextSteps],
+      flow_id: preStepData.flow_id,
+      host: `${window.location.origin}/approve?source=dingtalk`,
+    };
+    // dispatch({
+    //   type: 'start/save',
+    //   payload: {
+    //     store: 'steps',
+    //     data: steps,
+    //   },
+    // });
+    this.modalSave('steps', steps);
+    if (preType === 'start') {
+      dispatch({
+        type: 'start/stepStart',
+        payload: {
+          data: {
+            ...params,
+          },
+          cb: () => {
+            dispatch({
+              type: 'start/resetStart',
+            });
+            history.go(-2);
+            setTimeout(() => {
+              history.push('/start_list?type=processing&page=1');
+            }, 1);
+          },
+        },
+      });
+    } else {
+      dispatch({
+        type: 'approve/getThrough',
+        payload: {
+          data: {
+            ...params,
+            remark: v,
+          },
+          id: preStepData.flow_id,
+          cb: (data) => {
+            dispatch({
+              type: 'start/resetStart',
+            });
+            dispatch({
+              type: 'list/updateLists',
+              payload: {
+                data,
+                start: '/approvelist_processing',
+                end: '/approvelist_approved',
+              },
+            });
+            if (source === 'dingtalk') {
+              history.go(-1);
+              setTimeout(() => {
+                history.replace('/approvelist?type=processing&page=1');
+              }, 1);
+            } else {
+              history.go(-2);
+            }
+          },
+        },
+      });
+    }
+  }
+
+  handleDelCC = (i) => {
+    const { otherInfo } = this.state;
+    const cc = otherInfo.cc_person;
+    let remark = '';
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        remark = values.remark || '';
+      }
+    });
+    cc.splice(i, 1);
+    this.modalSave('otherInfo', { cc_person: cc, remark });
+    this.saveSelectStaff('cc_person', cc);
+  }
+
+  selectCCback = (source) => {
+    const { history, start: { otherInfo: { remark } } } = this.props;
+    // console.log('selectCCback', remark, this.props.start);
+    this.modalSave('otherInfo', { cc_person: source, remark });
+    history.go(-1);
+  }
+
+  addCC = () => {
+    const { dispatch, history } = this.props;
+    const { steps } = this.state;
+    this.modalSave('steps', steps);
+    this.saveFormData();
+    const key = 'cc_person';
+    dispatch({
+      type: 'searchStaff/saveCback',
+      payload: {
+        key,
+        cb: (source) => {
+          this.selectCCback(source);
+          const newData = makeFieldValue(source, { staff_sn: 'value', realname: 'text' }, true);
+          this.saveSelectStaff(key, newData);
+        },
+      },
+    });
+    const obj = {
+      key,
+      type: 1, // 单选
+    };
+    const url = JSON.stringify(obj);
+    history.push(`/sel_person?params=${url}`);
+  }
+
+  renderSteps = () => { // 生成步骤
+    const { steps } = this.state;
+    return steps.map((item, i) => {
+      const idx = i;
+      const stepClassName = [style.step, item.checked ? style.step_checked : null].join(' ');
+      return (
+        <div className={style.step_item} key={idx}>
+          <div className={stepClassName}>步骤</div>
+          <div className={style.approver}>
+            <div>审批人:</div>
+            <div>
+              {item.approvers && Object.keys(item.approvers).length ? (
+                <PersonIcon
+                  nameKey="realname"
+                  value={item.approvers}
+                  handleDelClick={() => this.handleDelClick(item.id)}
+                />
+              ) :
+                <PersonAdd handleClick={() => this.choseApprover(item)} />}
+            </div>
+          </div>
+        </div>
+        // <div
+        //   className={style.step}
+        //   key={idx}
+        //   onClick={() => this.choseItem(item)}
+        // >
+        //   <span
+        //     className={[style.step_item, item.checked ? style.step_active : null].join(' ')}
+        //     onClick={() => this.choseItem(item)}
+        //   />
+        //   <div className={style.list_item}>
+        //     <List.Item
+        //       extra={item.approvers.realname ? item.approvers.realname : '请选择'}
+        //       arrow="horizontal"
+        //       onClick={() => this.choseApprover(item)}
+        //     >
+        //       <div
+        //         style={{ padding: '7px 0' }}
+        //         onClick={(e) => {
+        //           e.stopPropagation();
+        //           this.choseItem(item);
+        //         }}
+        //       >{item.name}
+        //       </div>
+        //     </List.Item>
+        //   </div>
+        // </div>
+      );
+    });
   }
 
 
   render() {
-    const { start: { preType }, loading, form: { getFieldProps } } = this.props;
+    const { loading, form: { getFieldProps }, start: { otherInfo } } = this.props;
+    const cc = otherInfo.cc_person;
+    const { remark } = otherInfo;
     spin(loading);
     return (
       <div className={styles.con}>
         <div className={[styles.con_content, style.con_step].join(' ')} >
           <List renderHeader={() => <span>执行步骤</span>}>
+            {this.renderSteps()}
+          </List>
+          <WhiteSpace size="md" />
+          <List renderHeader={() => <span>抄送人</span>}>
             <div className={style.step_item}>
-              <div className={style.step}>步骤</div>
               <div className={style.approver}>
-                <div>审批人:</div>
                 <div>
-                  <PersonIcon nameKey="name" value={{ name: 'w' }} />
-                  <PersonAdd />
+                  {(cc || []).map((c, i) => {
+                    const idx = i;
+                    return (
+                      <PersonIcon
+                        key={idx}
+                        nameKey="realname"
+                        value={c}
+                        handleDelClick={() => this.handleDelCC(idx)}
+                      />
+                    );
+                  })}
+                  <PersonAdd handleClick={this.addCC} />
                 </div>
               </div>
             </div>
@@ -50,7 +446,7 @@ class SelectStep extends Component {
             placeholder="请输入备注"
             rows={5}
             count={200}
-            {...getFieldProps('remark', { initialValue: '' })}
+            {...getFieldProps('remark', { initialValue: remark })}
           />
         </div>
         <div className={styles.footer}>

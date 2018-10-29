@@ -46,6 +46,7 @@ class SelectStep extends Component {
       source: source || '',
     });
   }
+
   componentDidMount() {
     const { start: { preType }, history, dispatch } = this.props;
     if (preType) {
@@ -93,25 +94,6 @@ class SelectStep extends Component {
   }
 
   choseCback = (el, id) => {
-    const { dispatch, history } = this.props;
-    const { steps } = this.state;
-    const newSteps = steps.map((item) => {
-      let obj = { ...item };
-      if (`${id}` === `${item.id}`) {
-        obj = {
-          ...item,
-          approvers: { ...el },
-        };
-      }
-      return obj;
-    });
-    dispatch({
-      type: 'start/save',
-      payload: {
-        store: 'steps',
-        data: newSteps,
-      },
-    });
     history.go(-1);
   }
 
@@ -129,7 +111,6 @@ class SelectStep extends Component {
     });
 
     const { id } = el;
-
     const { preStepData } = start;
     const [step] = (preStepData.available_steps || []).filter(item => `${item.id}` === `${id}`);
     const approverType = step.approver_type;

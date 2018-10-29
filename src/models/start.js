@@ -38,6 +38,7 @@ export default {
         current_page: 1,
       },
     },
+    otherInfo: { remark: '', cc_person: [] },
     preStepData: {
 
     }, // 提交是数据之后的步骤

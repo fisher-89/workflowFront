@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import CircularJSON from 'circular-json';
 import { remove, findIndex, last, find, has, mapValues, max, min } from 'lodash';
 import { flowchartStatus, flowchartStatusColor } from '../../utils/convert'
 import { userStorage } from '../../utils/util'
@@ -95,10 +96,8 @@ export default class FlowChart extends Component {
 
   componentWillReceiveProps(props) {
     const { dataSource = [] } = props;
-    if (JSON.stringify(dataSource || []) !== JSON.stringify(this.props.dataSource || []) && dataSource && dataSource.length) {
-      if (dataSource.length) {
-        this.makeChartData(dataSource)
-      }
+    if (CircularJSON.stringify(dataSource) !== CircularJSON.stringify(this.props.dataSource) && dataSource.length) {
+      this.makeChartData(dataSource)
     }
   }
 
