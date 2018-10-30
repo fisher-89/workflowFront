@@ -380,7 +380,8 @@ class SelectStep extends Component {
 
 
   render() {
-    const { loading, form: { getFieldProps }, start: { otherInfo, preStepData } } = this.props;
+    const { loading, form: { getFieldProps },
+      start: { otherInfo, preStepData, preType } } = this.props;
     const cc = otherInfo.cc_person;
     const defaultCC = preStepData.cc_person;
     const { remark } = otherInfo;
@@ -425,12 +426,15 @@ class SelectStep extends Component {
             </div>
           </List>
           <WhiteSpace size="md" />
+          {preType !== 'start' && (
           <TextareaItem
             placeholder="请输入备注"
             rows={5}
             count={200}
             {...getFieldProps('remark', { initialValue: remark })}
           />
+        ) }
+
         </div>
         <div style={{ padding: '10px' }}>
           <Button
