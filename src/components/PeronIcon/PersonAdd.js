@@ -10,7 +10,7 @@ class PersonAdd extends React.Component {
           <div className={style.name} style={{ borderRadius: '50%', border: '1px dotted rgb(136,136,136)' }}>
             <img
               style={{ width: '12px' }}
-              src="/public/img/add.png"
+              src="/img/add.png"
               alt="添加"
             />
           </div>
