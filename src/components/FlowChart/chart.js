@@ -120,6 +120,20 @@ export default class FlowChart extends Component {
     datas = [...dataSource]
     // datas = [...test]
     datas.forEach((step, index) => {
+      const nextId = step.next_id;
+      const prevId = step.prev_id;
+      nextId.forEach(id => {
+        if (datas.indexOf(id) === -1) {
+          console.log('nothas', id)
+          remove(step.next_id, ((item) => item === id))
+        }
+      });
+      prevId.forEach(id => {
+        if (datas.indexOf(id) === -1) {
+          remove(step.prev_id, ((item) => id === item))
+        }
+      })
+      console.log('nextId', step.next_id)
       testKeyById[step.id] = step;
       step.y = index + 1;
       let row = {};
@@ -207,6 +221,7 @@ export default class FlowChart extends Component {
       this.draw();
     })
   }
+
 
   createNewRowLine = (min, max, y) => {
     const row = { start: min, end: max, y };
