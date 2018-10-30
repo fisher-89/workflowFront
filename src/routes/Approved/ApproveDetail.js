@@ -280,7 +280,8 @@ class ApproveDetail extends Component {
             const url = JSON.stringify(data);
             history.push(`/remark?params=${url}&type=2&source=${this.source}`);
           } else {
-            history.push(`/select_step?source=${this.source}`);
+            // history.push(`/select_step?source=${this.source}`);
+            history.push(`/approve_step?source=${this.source}`);
           }
         },
       },

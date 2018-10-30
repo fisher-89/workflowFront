@@ -138,7 +138,6 @@ class StartDetail extends Component {
             </Button>
           </div>
         )}
-
       </div>
     );
   }

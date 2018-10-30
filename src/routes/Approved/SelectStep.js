@@ -2,7 +2,7 @@ import React, {
   Component,
 } from 'react';
 import { connect } from 'dva';
-import { List, Toast, TextareaItem, WhiteSpace } from 'antd-mobile';
+import { List, Toast, TextareaItem, WhiteSpace, Button } from 'antd-mobile';
 import { createForm } from 'rc-form';
 import { makeFieldValue, getUrlParams } from '../../utils/util';
 import spin from '../../components/General/Loader';
@@ -30,7 +30,6 @@ class SelectStep extends Component {
     const urlParams = getUrlParams();
     const { source } = urlParams;
     const { preStepData, steps, otherInfo } = start;
-    console.log('componentWillMount', otherInfo);
     let step = null;
     if (steps && !steps.length) { // 当steps还没有被初始化过，里面为[]
       step = (preStepData.available_steps || []).map((item) => {
@@ -118,12 +117,9 @@ class SelectStep extends Component {
     let remark = '';
     const { otherInfo } = this.state;
     this.props.form.validateFields((err, values) => {
-      if (!err) {
-        remark = values.remark || '';
-      }
+      remark = values.remark || '';
+      this.modalSave('otherInfo', { remark, cc_person: otherInfo.cc_person });
     });
-    console.log('reamrk', remark);
-    this.modalSave('otherInfo', { remark, cc_person: otherInfo.cc_person });
   }
 
   saveSelectStaff = (key, data) => {
@@ -142,13 +138,6 @@ class SelectStep extends Component {
     const {
       steps,
     } = this.state;
-    // dispatch({
-    //   type: 'start/save',
-    //   payload: {
-    //     store: 'steps',
-    //     data: steps,
-    //   },
-    // });
     this.modalSave('steps', steps);
     this.saveFormData();
     const { id } = el;
@@ -186,11 +175,11 @@ class SelectStep extends Component {
   choseItem = (el) => { // 选择某项
     const { steps, preStepData } = this.state;
     let newSteps = [...steps];
-    if (preStepData.concurrent_type === 0) {
+    if (preStepData.concurrent_type === 0) { // 单选
       newSteps = steps.map((item) => {
         const obj = {
           ...item,
-          checked: item.id === el.id ? !item.checked : false,
+          checked: `${item.id}` === `${el.id}`,
         };
         return obj;
       });
@@ -218,7 +207,8 @@ class SelectStep extends Component {
     });
     const { dispatch, history, start: { preType },
     } = this.props;
-    const { steps, preStepData, source } = this.state;
+    const { steps, preStepData, source, otherInfo } = this.state;
+    const ccPerson = otherInfo.cc_person;
     const checkedSteps = steps.filter(item => item.checked);
     const errMsg = [];
     const nextSteps = checkedSteps.map((item) => {
@@ -247,22 +237,17 @@ class SelectStep extends Component {
       timestamp: preStepData.timestamp,
       next_step: [...nextSteps],
       flow_id: preStepData.flow_id,
-      host: `${window.location.origin}/approve?source=dingtalk`,
+      host: `${window.location.origin}/approve?source=${source}`,
     };
-    // dispatch({
-    //   type: 'start/save',
-    //   payload: {
-    //     store: 'steps',
-    //     data: steps,
-    //   },
-    // });
-    this.modalSave('steps', steps);
+    const cc = preStepData.cc_person.concat(makeFieldValue(ccPerson, { realname: 'staff_name', staff_sn: 'staff_sn' }, true));
+    // this.modalSave('steps', steps);
     if (preType === 'start') {
       dispatch({
         type: 'start/stepStart',
         payload: {
           data: {
             ...params,
+            cc_person: cc,
           },
           cb: () => {
             dispatch({
@@ -281,6 +266,7 @@ class SelectStep extends Component {
         payload: {
           data: {
             ...params,
+            cc_person: cc,
             remark: v,
           },
           id: preStepData.flow_id,
@@ -326,7 +312,6 @@ class SelectStep extends Component {
 
   selectCCback = (source) => {
     const { history, start: { otherInfo: { remark } } } = this.props;
-    // console.log('selectCCback', remark, this.props.start);c
     this.modalSave('otherInfo', { cc_person: source, remark });
     history.go(-1);
   }
@@ -353,18 +338,27 @@ class SelectStep extends Component {
       type: 1, // 单选
     };
     const url = JSON.stringify(obj);
-    history.push(`/sel_person?params=${url}`);
+    setTimeout(() => {
+      history.push(`/sel_person?params=${url}`);
+    }, 50);
   }
 
   renderSteps = () => { // 生成步骤
-    const { steps } = this.state;
+    const { steps, preStepData } = this.state;
+    const concurrentType = preStepData.concurrent_type;
     return steps.map((item, i) => {
       const idx = i;
-      const stepClassName = [style.step, item.checked ? style.step_checked : null].join(' ');
+
+      const stepClassName = [style.step, item.checked ? (concurrentType === 0 ? style.step_singelchecked : style.step_checked) : null].join(' ');
       return (
         <div className={style.step_item} key={idx}>
-          <div className={stepClassName}>步骤</div>
-          <div className={style.approver}>
+          <div
+            className={stepClassName}
+            onClick={() => this.choseItem(item)}
+          >{item.name}
+          </div>
+          {item.checked && (
+          <div className={style.approver} style={{ borderTop: '1px solid #d8d8d8 ' }}>
             <div>审批人:</div>
             <div>
               {item.approvers && Object.keys(item.approvers).length ? (
@@ -377,41 +371,18 @@ class SelectStep extends Component {
                 <PersonAdd handleClick={() => this.choseApprover(item)} />}
             </div>
           </div>
+        )}
+
         </div>
-        // <div
-        //   className={style.step}
-        //   key={idx}
-        //   onClick={() => this.choseItem(item)}
-        // >
-        //   <span
-        //     className={[style.step_item, item.checked ? style.step_active : null].join(' ')}
-        //     onClick={() => this.choseItem(item)}
-        //   />
-        //   <div className={style.list_item}>
-        //     <List.Item
-        //       extra={item.approvers.realname ? item.approvers.realname : '请选择'}
-        //       arrow="horizontal"
-        //       onClick={() => this.choseApprover(item)}
-        //     >
-        //       <div
-        //         style={{ padding: '7px 0' }}
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           this.choseItem(item);
-        //         }}
-        //       >{item.name}
-        //       </div>
-        //     </List.Item>
-        //   </div>
-        // </div>
       );
     });
   }
 
 
   render() {
-    const { loading, form: { getFieldProps }, start: { otherInfo } } = this.props;
+    const { loading, form: { getFieldProps }, start: { otherInfo, preStepData } } = this.props;
     const cc = otherInfo.cc_person;
+    const defaultCC = preStepData.cc_person;
     const { remark } = otherInfo;
     spin(loading);
     return (
@@ -425,14 +396,26 @@ class SelectStep extends Component {
             <div className={style.step_item}>
               <div className={style.approver}>
                 <div>
+                  {(defaultCC || []).map((c, i) => {
+                    const idx = i;
+                    return (
+                      <PersonIcon
+                        key={idx}
+                        nameKey="staff_name"
+                        value={c}
+
+                      />
+                    );
+                  })}
                   {(cc || []).map((c, i) => {
                     const idx = i;
+                    const { lock } = c;
                     return (
                       <PersonIcon
                         key={idx}
                         nameKey="realname"
                         value={c}
-                        handleDelClick={() => this.handleDelCC(idx)}
+                        handleDelClick={lock ? null : () => this.handleDelCC(idx)}
                       />
                     );
                   })}
@@ -449,10 +432,15 @@ class SelectStep extends Component {
             {...getFieldProps('remark', { initialValue: remark })}
           />
         </div>
-        <div className={styles.footer}>
-          <a onClick={this.submitStep}><span>提交</span></a>
+        <div style={{ padding: '10px' }}>
+          <Button
+            type="primary"
+            onClick={this.submitStep}
+          >确定
+          </Button>
         </div>
       </div>
+
     );
   }
 }

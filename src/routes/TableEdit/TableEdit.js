@@ -234,7 +234,8 @@ class TableEdit extends Component {
         },
         preType: 'start',
         cb: () => {
-          history.push('/select_step');
+          // history.push('/select_step');
+          history.push('/approve_step');
         },
       },
     });
@@ -244,7 +245,6 @@ class TableEdit extends Component {
     const { start, dispatch, loading, history } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
-    console.log('render', loading);
     spin(loading);
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;

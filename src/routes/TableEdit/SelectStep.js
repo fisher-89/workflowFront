@@ -231,7 +231,7 @@ class SelectStep extends Component {
       timestamp: preStepData.timestamp,
       next_step: [...nextSteps],
       flow_id: preStepData.flow_id,
-      host: `${window.location.origin}/approve?source=dingtalk`,
+      host: `${window.location.origin}/approve?source=${source}`,
     };
     dispatch({
       type: 'start/save',

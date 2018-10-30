@@ -236,7 +236,8 @@ export default {
         gridformdata: [], // 列表控件里表单的数据
         form_data: null, // 表单默认值
         steps: [],
-        preStepData: {},
+        preStepData: {}, // 预提交的数据
+        otherInfo: { remark: '', cc_person: [] }, // 抄送人和备注
       };
     },
     // save(state, action) {
