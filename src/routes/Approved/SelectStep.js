@@ -210,10 +210,16 @@ class SelectStep extends Component {
     });
     const { dispatch, history, start: { preType, preStepData },
     } = this.props;
+    const stepEnd = preStepData.step_end;
+    const availableSteps = preStepData.available_steps || [];
+    const hasStep = !!(availableSteps.length && stepEnd === 0);
     const { steps, source, otherInfo } = this.state;
     const ccPerson = otherInfo.cc_person;
     const checkedSteps = steps.filter(item => item.checked);
     const errMsg = [];
+    if (hasStep && !checkedSteps.length) {
+      errMsg.push('请选择步骤');
+    }
     const nextSteps = checkedSteps.map((item) => {
       const obj = {};
       if (Object.keys(item.approvers).length) {
@@ -407,36 +413,35 @@ class SelectStep extends Component {
             </List>
           )}
           {!!isCC && (
-          <List renderHeader={() => <span>抄送人</span>}>
-            <div className={style.step_item}>
-              <div className={style.approver}>
-                {(defaultCC || []).map((c, i) => {
-                  const idx = i;
-                  return (
-                    <PersonIcon
-                      key={idx}
-                      nameKey="staff_name"
-                      value={c}
-                    />
-                  );
-                })}
-                {(cc || []).map((c, i) => {
-                  const idx = i;
-                  const { lock } = c;
-                  return (
-                    <PersonIcon
-                      key={idx}
-                      nameKey="realname"
-                      value={c}
-                      handleDelClick={lock ? null : () => this.handleDelCC(idx)}
-                    />
-                  );
-                })}
-                <PersonAdd handleClick={this.addCC} />
+            <List renderHeader={() => <span>抄送人</span>}>
+              <div className={style.step_item}>
+                <div className={style.approver}>
+                  {(defaultCC || []).map((c, i) => {
+                    const idx = i;
+                    return (
+                      <PersonIcon
+                        key={idx}
+                        nameKey="staff_name"
+                        value={c}
+                      />
+                    );
+                  })}
+                  {(cc || []).map((c, i) => {
+                    const idx = i;
+                    return (
+                      <PersonIcon
+                        key={idx}
+                        nameKey="realname"
+                        value={c}
+                        handleDelClick={() => this.handleDelCC(idx)}
+                      />
+                    );
+                  })}
+                  <PersonAdd handleClick={this.addCC} />
+                </div>
               </div>
-            </div>
-          </List>
-        )}
+            </List>
+          )}
 
           <WhiteSpace size="md" />
           {preType !== 'start' && (
