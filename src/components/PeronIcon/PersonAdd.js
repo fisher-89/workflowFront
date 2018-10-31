@@ -7,7 +7,7 @@ class PersonAdd extends React.Component {
     return (
       <div className={style.person_item}>
         <div className={[style.person_icon, style.spe].join(' ')} onClick={handleClick}>
-          <div className={style.name} style={{ borderRadius: '50%', border: '1px dotted rgb(136,136,136)' }}>
+          <div className={style.name}>
             <img
               style={{ width: '12px' }}
               src="/img/add.png"

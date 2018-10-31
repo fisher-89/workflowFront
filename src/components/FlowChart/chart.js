@@ -54,21 +54,41 @@ const node = {
 //   { id: 3, time: '2', next_id: [4], prev_id: [2] },
 //   { id: 4, next_id: [], prev_id: [3] }
 // ]
+
+// const test = [
+//   { id: 1, time: '2', next_id: [2, 3], prev_id: [] },
+//   { id: 2, time: '2', next_id: [], prev_id: [1] },
+//   { id: 3, time: '2', next_id: [4], prev_id: [1] },
+//   { id: 4, next_id: [], prev_id: [3] },
+//   // { id: 5, next_id: [], prev_id: [4] },
+// ]
+// const test = [
+//   { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [], status: 1, approver: 'xx', operate_at: 'xx', 'staff_sn': 'xxx' },
+//   { id: 2, time: '2', next_id: [5, 6], prev_id: [1] },
+//   { id: 3, time: '3', next_id: [7, 8], prev_id: [1] },
+//   { id: 4, time: '4', next_id: [9, 10], prev_id: [1] },
+//   { id: 5, time: '5', next_id: [12], prev_id: [2] },
+//   { id: 6, time: '6', next_id: [11], prev_id: [2] },
+//   { id: 7, time: '6', next_id: [13], prev_id: [3] },
+//   { id: 8, time: '6', next_id: [11], prev_id: [3] },
+//   { id: 9, time: '6', next_id: [], prev_id: [4] },
+//   { id: 10, time: '6', next_id: [11], prev_id: [4] },
+//   { id: 11, time: '6', next_id: [13], prev_id: [6, 8, 10] },
+//   { id: 12, time: '6', next_id: [13], prev_id: [5] },
+//   { id: 13, time: '6', next_id: [], prev_id: [12, 11, 7] },
+// ];
 const test = [
-  { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [], status: 1, approver: 'xx', operate_at: 'xx', 'staff_sn': 'xxx' },
-  { id: 2, time: '2', next_id: [5, 6], prev_id: [1] },
-  { id: 3, time: '3', next_id: [7, 8], prev_id: [1] },
-  { id: 4, time: '4', next_id: [9, 10], prev_id: [1] },
-  { id: 5, time: '5', next_id: [12], prev_id: [2] },
-  { id: 6, time: '6', next_id: [11], prev_id: [2] },
-  { id: 7, time: '6', next_id: [13], prev_id: [3] },
-  { id: 8, time: '6', next_id: [11], prev_id: [3] },
-  { id: 9, time: '6', next_id: [], prev_id: [4] },
-  { id: 10, time: '6', next_id: [11], prev_id: [4] },
-  { id: 11, time: '6', next_id: [13], prev_id: [6, 8, 10] },
-  { id: 12, time: '6', next_id: [13], prev_id: [5] },
-  { id: 13, time: '6', next_id: [], prev_id: [12, 11, 7] },
-];
+  { id: 1, time: '2', next_id: [2,3,4], prev_id: [] },
+  { id: 2, time: '2', next_id: [8], prev_id: [1] },
+  { id: 3, time: '2', next_id: [5], prev_id: [1] },
+  { id: 4, time: '2', next_id: [6], prev_id: [1] },
+  { id: 5, time: '2', next_id: [7], prev_id: [3] },
+  { id: 6, time: '2', next_id: [7], prev_id: [4] },
+  { id: 7, time: '2', next_id: [9], prev_id: [5,6] },
+  { id: 9, time: '2', next_id: [], prev_id: [7] },
+  { id: 8, time: '2', next_id: [], prev_id: [2] },
+
+]
 let datas = [];
 let cols = {};
 let testKeyById = {};
@@ -117,24 +137,14 @@ export default class FlowChart extends Component {
     rows = [];
     uniqueRows = [];
     curves = [];
-    datas = [...dataSource];
-    // datas = [...test];
+    // datas = [...dataSource];
+    datas = [...test];
     const pointIds = datas.map(item => item.id)
     datas.forEach((step, index) => {
       const nextId = step.next_id;
       const prevId = step.prev_id;
-      // nextId.forEach(id => {
-      //   if (pointIds.indexOf(id) === -1) {
-      //     remove(step.next_id, ((item) => item === id))
-      //   }
-      // });
-      // prevId.forEach(id => {
-      //   if (pointIds.indexOf(id) === -1) {
-      //     remove(step.prev_id, ((item) => id === item))
-      //   }
-      // })
       this.filterCanceledPoint(nextId, pointIds);
-      this.filterCanceledPoint(prevId, pointIds)
+      this.filterCanceledPoint(prevId, pointIds);
       testKeyById[step.id] = step;
       step.y = index + 1;
       let row = {};
@@ -169,6 +179,7 @@ export default class FlowChart extends Component {
         let min = '1';
         const prevNext = prevStep.next_id;
         const prevLine = prevStep.line;
+        const prevRow = prevStep.row;
         if (prevNext.length > 1) {
           const subIndex = prevNext.indexOf(step.id);
           prevNext.forEach((next, i) => {
@@ -179,20 +190,24 @@ export default class FlowChart extends Component {
           line = prevLine.next_id[subIndex];
           row = this.createNewRowLine(min, max, prevStep.y + 0.5);
         } else {
-          const { row: { start, end } } = prevStep;
-          row = this.createNewRowLine(start, end, step.y + 0.5);
+          const { row: { start, end, y } } = prevStep;
+          // row = this.createNewRowLine(start, end, y);
+          // rows.push(prevRow);
+          row = prevRow
           line = prevLine;
         }
+
       }
+      // 生成cols分支
       step.line = line;
       step.row = row;
       step.unfinishedLines = [...unfinishedLines];
-      // 生成cols分支
-      if (step.next_id.length > 1) {
+      if (nextId.length > 1) {
         this.separateColLine(step, step.y + 0.5)
       }
-      if (step.next_id.length === 0) {
+      if (nextId.length === 0) {
         this.finishColLine(step.line, step.y);
+        // this.finishRowLine(step.row, step.y);
       }
     });
     const maxIndex = this.fillColsIndex(cols);
@@ -204,13 +219,7 @@ export default class FlowChart extends Component {
       this.canvas.width = width;
     }
     this.drawRect(0, 0, width, height);
-    console.log('cols:', cols);
-    console.log('lines:', lines);
-    console.log('test:', test);
-    console.log('rows:', [...rows]);
     this.recombineRows();
-
-
     this.setState({
       chartData: [...datas],
       lines: [...lines],
@@ -316,6 +325,12 @@ export default class FlowChart extends Component {
     return line;
   }
 
+  finishRowLine = (row, y) => {
+    row.y = y;
+    remove(rows, item => item === row);
+    return row;
+  }
+
   fillColsIndex = (cols, colIndex = 1) => {
     const index = colIndex;
     Object.keys(cols).forEach((key) => {
@@ -358,6 +373,7 @@ export default class FlowChart extends Component {
   makeCurves = (start, end, y) => {//curves 
     const startPoint = { x: start, y };
     const line = lines.filter(line => (`${line.col.index}` === `${end}` && (`${y}` === `${line.start}` || `${y}` === `${line.end}`)));
+    console.log(y, end)
     const endPoint = { x: end, y: line[0].end };
     let p1 = { x: end - (curveRadius / colGap), y };
     let p2 = { x: end, y: y - 0 + (curveRadius / verticalRate) };

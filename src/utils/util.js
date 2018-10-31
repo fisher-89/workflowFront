@@ -24,7 +24,7 @@ const codeMessage = {
   504: '网关超时',
 };
 export function dealErrorData(data, code) {
-  const { errors } = data;
+  const { errors, message } = data;
   console.log('errors', errors, code)
   let msg = '网络异常';
   if (code === 422) {
@@ -37,7 +37,11 @@ export function dealErrorData(data, code) {
       }
       [msg] = errs;
     }
-  } else {
+  }
+  else if (message) {
+    msg = message
+  }
+  else {
     msg = codeMessage[code];
   }
   // console.log('msg', msg)

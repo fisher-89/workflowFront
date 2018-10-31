@@ -44,7 +44,7 @@ class SelectStep extends Component {
     }
     this.setState({
       steps: step || steps,
-      preStepData,
+      // preStepData,
       source: source || '',
       otherInfo,
     });
@@ -77,7 +77,8 @@ class SelectStep extends Component {
 
 
   handleDelClick = (id) => {
-    const key = `approver_${id}`;
+    const { start: { preStepData: { timestamp } } } = this.props;
+    const key = `approver_${id}${timestamp}`;
     this.saveSelectStaff(key, {});
     this.saveStepApprover({}, id);
   }
@@ -142,9 +143,10 @@ class SelectStep extends Component {
     this.saveFormData();
     const { id } = el;
     const { preStepData } = start;
+    const { timestamp } = preStepData;
     const [step] = (preStepData.available_steps || []).filter(item => `${item.id}` === `${id}`);
     const approverType = step.approver_type;
-    const key = `approver_${id}`;
+    const key = `approver_${id}${timestamp}`;
     const obj = {
       key,
       type: 0, // 单选
@@ -173,7 +175,8 @@ class SelectStep extends Component {
   }
 
   choseItem = (el) => { // 选择某项
-    const { steps, preStepData } = this.state;
+    const { steps } = this.state;
+    const { start: { preStepData } } = this.props;
     let newSteps = [...steps];
     if (preStepData.concurrent_type === 0) { // 单选
       newSteps = steps.map((item) => {
@@ -205,9 +208,9 @@ class SelectStep extends Component {
         v = values.remark || '';
       }
     });
-    const { dispatch, history, start: { preType },
+    const { dispatch, history, start: { preType, preStepData },
     } = this.props;
-    const { steps, preStepData, source, otherInfo } = this.state;
+    const { steps, source, otherInfo } = this.state;
     const ccPerson = otherInfo.cc_person;
     const checkedSteps = steps.filter(item => item.checked);
     const errMsg = [];
@@ -317,11 +320,11 @@ class SelectStep extends Component {
   }
 
   addCC = () => {
-    const { dispatch, history } = this.props;
+    const { dispatch, history, start: { preStepData: { timestamp } } } = this.props;
     const { steps } = this.state;
     this.modalSave('steps', steps);
     this.saveFormData();
-    const key = 'cc_person';
+    const key = `cc_person${timestamp}`;
     dispatch({
       type: 'searchStaff/saveCback',
       payload: {
@@ -344,44 +347,53 @@ class SelectStep extends Component {
   }
 
   renderSteps = () => { // 生成步骤
-    const { steps, preStepData } = this.state;
+    const { steps } = this.state;
+    const { start: { preStepData } } = this.props;
     const concurrentType = preStepData.concurrent_type;
     return steps.map((item, i) => {
       const idx = i;
-
-      const stepClassName = [style.step, item.checked ? (concurrentType === 0 ? style.step_singelchecked : style.step_checked) : null].join(' ');
+      const stepClassName = [style.step,
+        item.checked ?
+          (concurrentType === 0 ?
+            style.step_singelchecked : (concurrentType === 1 ?
+              style.step_checked : style.step_disabed_checked)) : null,
+      ].join(' ');
       return (
-        <div className={style.step_item} key={idx}>
-          <div
-            className={stepClassName}
-            onClick={() => this.choseItem(item)}
-          >{item.name}
-          </div>
-          {item.checked && (
-          <div className={style.approver} style={{ borderTop: '1px solid #d8d8d8 ' }}>
-            <div>审批人:</div>
-            <div>
-              {item.approvers && Object.keys(item.approvers).length ? (
-                <PersonIcon
-                  nameKey="realname"
-                  value={item.approvers}
-                  handleDelClick={() => this.handleDelClick(item.id)}
-                />
-              ) :
-                <PersonAdd handleClick={() => this.choseApprover(item)} />}
+        <React.Fragment>
+          <div className={style.step_item} key={idx}>
+            <div
+              className={stepClassName}
+              onClick={() => this.choseItem(item)}
+            >{item.name}
             </div>
+            {item.checked && (
+              <div className={style.approver} style={{ borderTop: '1px solid #d8d8d8 ' }}>
+                <div className={style.aside_approver}>审批人：</div>
+                <div>
+                  {item.approvers && Object.keys(item.approvers).length ? (
+                    <PersonIcon
+                      nameKey="realname"
+                      value={item.approvers}
+                      handleDelClick={() => this.handleDelClick(item.id)}
+                    />
+                  ) :
+                    <PersonAdd handleClick={() => this.choseApprover(item)} />}
+                </div>
+              </div>
+            )}
           </div>
-        )}
-
-        </div>
+          {i !== steps.length - 1 && <WhiteSpace size="md" />}
+        </React.Fragment>
       );
     });
   }
 
-
   render() {
     const { loading, form: { getFieldProps },
       start: { otherInfo, preStepData, preType } } = this.props;
+    const stepEnd = preStepData.step_end;
+    const isCC = preStepData.is_cc;
+    const availableSteps = preStepData.available_steps || [];
     const cc = otherInfo.cc_person;
     const defaultCC = preStepData.cc_person;
     const { remark } = otherInfo;
@@ -389,58 +401,59 @@ class SelectStep extends Component {
     return (
       <div className={styles.con}>
         <div className={[styles.con_content, style.con_step].join(' ')} >
-          <List renderHeader={() => <span>执行步骤</span>}>
-            {this.renderSteps()}
-          </List>
-          <WhiteSpace size="md" />
+          {!!(availableSteps.length && stepEnd === 0) && (
+            <List renderHeader={() => <span>执行步骤</span>}>
+              {this.renderSteps()}
+            </List>
+          )}
+          {!isCC && (
           <List renderHeader={() => <span>抄送人</span>}>
             <div className={style.step_item}>
               <div className={style.approver}>
-                <div>
-                  {(defaultCC || []).map((c, i) => {
-                    const idx = i;
-                    return (
-                      <PersonIcon
-                        key={idx}
-                        nameKey="staff_name"
-                        value={c}
-
-                      />
-                    );
-                  })}
-                  {(cc || []).map((c, i) => {
-                    const idx = i;
-                    const { lock } = c;
-                    return (
-                      <PersonIcon
-                        key={idx}
-                        nameKey="realname"
-                        value={c}
-                        handleDelClick={lock ? null : () => this.handleDelCC(idx)}
-                      />
-                    );
-                  })}
-                  <PersonAdd handleClick={this.addCC} />
-                </div>
+                {(defaultCC || []).map((c, i) => {
+                  const idx = i;
+                  return (
+                    <PersonIcon
+                      key={idx}
+                      nameKey="staff_name"
+                      value={c}
+                    />
+                  );
+                })}
+                {(cc || []).map((c, i) => {
+                  const idx = i;
+                  const { lock } = c;
+                  return (
+                    <PersonIcon
+                      key={idx}
+                      nameKey="realname"
+                      value={c}
+                      handleDelClick={lock ? null : () => this.handleDelCC(idx)}
+                    />
+                  );
+                })}
+                <PersonAdd handleClick={this.addCC} />
               </div>
             </div>
           </List>
+        )}
+
           <WhiteSpace size="md" />
           {preType !== 'start' && (
-          <TextareaItem
-            placeholder="请输入备注"
-            rows={5}
-            count={200}
-            {...getFieldProps('remark', { initialValue: remark })}
-          />
-        ) }
+            <TextareaItem
+              placeholder="请输入备注"
+              rows={5}
+              count={200}
+              {...getFieldProps('remark', { initialValue: remark })}
+            />
+          )}
 
         </div>
         <div style={{ padding: '10px' }}>
           <Button
             type="primary"
             onClick={this.submitStep}
-          >确定
+          >{preType !== 'start' ? '通过' : '确定'}
           </Button>
         </div>
       </div>

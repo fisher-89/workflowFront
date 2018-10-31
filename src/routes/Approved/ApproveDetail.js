@@ -276,13 +276,13 @@ class ApproveDetail extends Component {
         // id: flowRun.flow_id,
         preType: 'approve',
         cb: (data) => {
-          if (data.step_end === 1) { // 不选步骤
-            const url = JSON.stringify(data);
-            history.push(`/remark?params=${url}&type=2&source=${this.source}`);
-          } else {
-            // history.push(`/select_step?source=${this.source}`);
-            history.push(`/approve_step?source=${this.source}`);
-          }
+          // if (data.step_end === 1) { // 不选步骤
+          //   const url = JSON.stringify(data);
+          //   history.push(`/remark?params=${url}&type=2&source=${this.source}`);
+          // } else {
+          // history.push(`/select_step?source=${this.source}`);
+          history.push(`/approve_step?source=${this.source}`);
+          // }
         },
       },
     });
@@ -422,6 +422,5 @@ export default connect(({
     (loading.effects['api/fetchApi'] || false) ||
     (loading.effects['approve/getStartFlow'] || false) ||
     (loading.effects['approve/getFlowChart'] || false)
-
   ),
 }))(ApproveDetail);

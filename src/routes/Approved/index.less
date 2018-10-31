@@ -110,18 +110,23 @@
       background: url(/img/singleChecked.png) no-repeat left center;
       background-size: 44/75rem;
     }
+    &.step_disabed_checked {
+      background: url(/img/defaultChecked.png) no-repeat left center;
+      background-size: 44/75rem;
+    }
   }
   .approver {
     padding: 9px 0;
     display: flex;
-    >div:first-child {
-      flex-grow: 0;
-      flex-shrink: 0;
-      margin-right: 14px;
-    }
+    flex-wrap: wrap;
     >div:last-child {
       display: flex;
       flex-wrap: wrap;
     }
+  }
+  .aside_approver{
+    width: 138/75rem;
+    flex-grow: 0;
+    flex-shrink: 0;
   }
 }
