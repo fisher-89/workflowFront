@@ -117,23 +117,24 @@ export default class FlowChart extends Component {
     rows = [];
     uniqueRows = [];
     curves = [];
-    datas = [...dataSource]
-    // datas = [...test]
+    datas = [...dataSource];
+    // datas = [...test];
+    const pointIds = datas.map(item => item.id)
     datas.forEach((step, index) => {
       const nextId = step.next_id;
       const prevId = step.prev_id;
-      nextId.forEach(id => {
-        if (datas.indexOf(id) === -1) {
-          console.log('nothas', id)
-          remove(step.next_id, ((item) => item === id))
-        }
-      });
-      prevId.forEach(id => {
-        if (datas.indexOf(id) === -1) {
-          remove(step.prev_id, ((item) => id === item))
-        }
-      })
-      console.log('nextId', step.next_id)
+      // nextId.forEach(id => {
+      //   if (pointIds.indexOf(id) === -1) {
+      //     remove(step.next_id, ((item) => item === id))
+      //   }
+      // });
+      // prevId.forEach(id => {
+      //   if (pointIds.indexOf(id) === -1) {
+      //     remove(step.prev_id, ((item) => id === item))
+      //   }
+      // })
+      this.filterCanceledPoint(nextId, pointIds);
+      this.filterCanceledPoint(prevId, pointIds)
       testKeyById[step.id] = step;
       step.y = index + 1;
       let row = {};
@@ -222,6 +223,13 @@ export default class FlowChart extends Component {
     })
   }
 
+  filterCanceledPoint = (prevId, pointIds) => {
+    prevId.forEach(id => {
+      if (pointIds.indexOf(id) === -1) {
+        remove(prevId, ((item) => id === item))
+      }
+    })
+  }
 
   createNewRowLine = (min, max, y) => {
     const row = { start: min, end: max, y };
