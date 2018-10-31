@@ -3,7 +3,7 @@ import style from './index.less';
 
 class PersonAdd extends React.Component {
   render() {
-    const { handleClick } = this.props;
+    const { handleClick, footer = true } = this.props;
     return (
       <div className={style.person_item}>
         <div className={[style.person_icon, style.spe].join(' ')} onClick={handleClick}>
@@ -15,6 +15,8 @@ class PersonAdd extends React.Component {
             />
           </div>
         </div>
+        {footer ? <div className={style.user_info}>&nbsp;</div> : null}
+
       </div>
     );
   }

@@ -406,7 +406,7 @@ class SelectStep extends Component {
               {this.renderSteps()}
             </List>
           )}
-          {!isCC && (
+          {!!isCC && (
           <List renderHeader={() => <span>抄送人</span>}>
             <div className={style.step_item}>
               <div className={style.approver}>

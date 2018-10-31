@@ -137,8 +137,8 @@ export default class FlowChart extends Component {
     rows = [];
     uniqueRows = [];
     curves = [];
-    // datas = [...dataSource];
-    datas = [...test];
+    datas = [...dataSource];
+    // datas = [...test];
     const pointIds = datas.map(item => item.id)
     datas.forEach((step, index) => {
       const nextId = step.next_id;
