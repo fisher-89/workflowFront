@@ -6,21 +6,21 @@ import CircularJSON from 'circular-json';
 import { remove, findIndex, last, find, has, mapValues, max, min } from 'lodash';
 import { flowchartStatus, flowchartStatusColor } from '../../utils/convert'
 import { userStorage } from '../../utils/util'
-const curveRadius = 4;
-const colGap = 12;
-const verticalRate = 30;
+const curveRadius = 12;
+const colGap = 36;
+const verticalRate = 90;
 const lineStyle = {
   color: 'rgb(202,233,233)',
-  width: 2,
+  width: 6,
 };
 const firstColLineStyle = {
   color: 'rgb(202,233,233)',
-  width: 2,
+  width: 6,
 }
 const node = {
-  radius: 5,
+  radius: 15,
   color: 'rgb(89,195,195)',
-  width: 2
+  width: 6
 }
 
 // const test = [
@@ -78,13 +78,13 @@ const node = {
 //   { id: 13, time: '6', next_id: [], prev_id: [12, 11, 7] },
 // ];
 const test = [
-  { id: 1, time: '2', next_id: [2,3,4], prev_id: [] },
+  { id: 1, time: '2', next_id: [2, 3, 4], prev_id: [] },
   { id: 2, time: '2', next_id: [8], prev_id: [1] },
   { id: 3, time: '2', next_id: [5], prev_id: [1] },
   { id: 4, time: '2', next_id: [6], prev_id: [1] },
   { id: 5, time: '2', next_id: [7], prev_id: [3] },
   { id: 6, time: '2', next_id: [7], prev_id: [4] },
-  { id: 7, time: '2', next_id: [9], prev_id: [5,6] },
+  { id: 7, time: '2', next_id: [9], prev_id: [5, 6] },
   { id: 9, time: '2', next_id: [], prev_id: [7] },
   { id: 8, time: '2', next_id: [], prev_id: [2] },
 
@@ -212,11 +212,13 @@ export default class FlowChart extends Component {
     });
     const maxIndex = this.fillColsIndex(cols);
     const { y } = last(datas);
-    const width = maxIndex * colGap + 20;
-    const height = (y + 0.5) * verticalRate + 40;
+    const width = (maxIndex * colGap + 20);
+    const height = ((y + 0.5) * verticalRate + 40);
     if (this.canvas) {
-      this.canvas.height = height;
-      this.canvas.width = width;
+      this.canvas.height = height * 3;
+      this.canvas.width = width * 3;
+      this.canvas.style.width = `${width}px`;
+      this.canvas.style.height = `${height}px`;
     }
     this.drawRect(0, 0, width, height);
     this.recombineRows();
@@ -373,7 +375,6 @@ export default class FlowChart extends Component {
   makeCurves = (start, end, y) => {//curves 
     const startPoint = { x: start, y };
     const line = lines.filter(line => (`${line.col.index}` === `${end}` && (`${y}` === `${line.start}` || `${y}` === `${line.end}`)));
-    console.log(y, end)
     const endPoint = { x: end, y: line[0].end };
     let p1 = { x: end - (curveRadius / colGap), y };
     let p2 = { x: end, y: y - 0 + (curveRadius / verticalRate) };
@@ -497,9 +498,9 @@ export default class FlowChart extends Component {
       const maxColIndex = lastLines ? lastLines.col.index : 0;
       const style = {
         position: 'absolute',
-        left: maxColIndex * colGap + 14 + 6,
+        left: maxColIndex * colGap / 3 + 14 + 6,
         right: 15,
-        top: y * verticalRate - 11,
+        top: y * verticalRate / 3 - 11,
         height: '22px', lineHeight: '22px',
         display: 'flex',
         justifyContent: 'space-between',
