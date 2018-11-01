@@ -123,6 +123,7 @@ export default class FlowChart extends Component {
 
   componentDidMount() {
     this.canvas = document.getElementById('myCanvas');
+    this.canvasContain = document.getElementById('canvasContain')
     this.ctx = this.canvas.getContext('2d');
     const { dataSource } = this.props;
     if (dataSource.length) {
@@ -219,6 +220,10 @@ export default class FlowChart extends Component {
       this.canvas.width = width * 3;
       this.canvas.style.width = `${width}px`;
       this.canvas.style.height = `${height}px`;
+    }
+    if (this.canvasContain) {
+      this.canvasContain.style.height = `${height / 3 + 40}px`;
+      this.canvasContain.style.overflow = 'hidden';
     }
     this.drawRect(0, 0, width, height);
     this.recombineRows();
@@ -515,7 +520,7 @@ export default class FlowChart extends Component {
       }
       const statusMsg = flowchartStatus(line.action_type);
       const optater = line.approver_sn == userStorage('userInfo').staff_sn ? '我' : line.approver_name;
-      const statusColor = flowchartStatusColor(line.action_type)
+      const statusColor = flowchartStatusColor(line.action_type);
       return (
         <div style={{ ...style, background: '#fff' }} key={id} >
           <div>
@@ -532,7 +537,7 @@ export default class FlowChart extends Component {
   render() {
     const { chartData } = this.state;
     return (
-      <div style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }}>
+      <div style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }} id="canvasContain">
         <canvas id="myCanvas" />
         {chartData.length &&
           this.renderTimeLine()}

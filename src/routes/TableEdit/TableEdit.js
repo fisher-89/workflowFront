@@ -287,6 +287,7 @@ class TableEdit extends Component {
           <div style={{ marginBottom: '20px' }}>
             {this.getGridList()}
           </div>
+
         </div>
         <div style={{ padding: '10px' }}>
           <Button

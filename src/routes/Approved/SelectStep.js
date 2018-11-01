@@ -25,6 +25,7 @@ class SelectStep extends Component {
       cc_person: [],
     },
   }
+
   componentWillMount() {
     const { start } = this.props;
     const urlParams = getUrlParams();
@@ -74,7 +75,6 @@ class SelectStep extends Component {
       });
     }
   }
-
 
   handleDelClick = (id) => {
     const { start: { preStepData: { timestamp } } } = this.props;
@@ -412,7 +412,7 @@ class SelectStep extends Component {
               {this.renderSteps()}
             </List>
           )}
-          {!!isCC && (
+          {!isCC && (
             <List renderHeader={() => <span>抄送人</span>}>
               <div className={style.step_item}>
                 <div className={style.approver}>

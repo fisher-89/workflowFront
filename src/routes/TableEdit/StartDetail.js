@@ -126,6 +126,9 @@ class StartDetail extends Component {
           />
           {this.getGridList()}
           <div style={{ marginBottom: '20px' }}>
+            <p className={style.grid_opt}>抄送人</p>
+          </div>
+          <div style={{ marginBottom: '20px' }}>
             <p className={style.grid_opt}>审批进程</p>
             <FlowChart dataSource={flowChart} />
           </div>
