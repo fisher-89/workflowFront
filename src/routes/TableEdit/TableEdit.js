@@ -249,11 +249,16 @@ class TableEdit extends Component {
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 可编辑的form
-    const showForm = form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
-    const editableForm = form.filter(item =>
+    // const showForm = form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
+    const availableForm = form.filter(item =>
+      startflow.step.available_fields.indexOf(item.key) !== -1);
+    const showForm = availableForm.filter(item =>
+      startflow.step.hidden_fields.indexOf(item.key) === -1);
+    const editableForm = availableForm.filter(item =>
       startflow.step.editable_fields.indexOf(item.key) !== -1);
-    const requiredForm = form.filter(item =>
+    const requiredForm = availableForm.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
+
     const requiredGrid = grid.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)
@@ -271,6 +276,7 @@ class TableEdit extends Component {
             onChange={this.handleOnchange}
             dispatch={dispatch}
             show_form={showForm}
+            availableForm={availableForm}
             editable_form={editableForm}
             required_form={requiredForm}
             form_data={formData}

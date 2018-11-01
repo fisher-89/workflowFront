@@ -183,19 +183,50 @@ export const flowchartStatusColor = (status) => {
       return 'rgb(245,34,45)';
   }
 };
+
+export function getGridFilter1(fields, name, step, flag) {
+  return fields.map((item) => {
+    let str = '';
+    const newFields = [];
+    item.fields.forEach((its) => {
+      str = `${item.key}.*.${its.key}`;
+      if (flag === 1 ?
+        step.hidden_fields.indexOf(str) === -1 &&
+        step[name].indexOf(str) === -1 :
+        step.hidden_fields.indexOf(str) === -1 &&
+        step[name].indexOf(str) !== -1) {
+        newFields.push(its);
+      }
+    });
+    return { ...item, newFields };
+  });
+}
+
 export function getGridFilter(fields, name, step, flag) {
   return fields.map((item) => {
     let str = '';
     const newFields = [];
     item.fields.forEach((its) => {
       str = `${item.key}.*.${its.key}`;
-      if (flag === 1 ? step.hidden_fields.indexOf(str) === -1 && step[name].indexOf(str) === -1 :
-        step.hidden_fields.indexOf(str) === -1 && step[name].indexOf(str) !== -1) {
+      if (step[name].indexOf(str) !== -1) {
         newFields.push(its);
       }
     });
     return { ...item, newFields };
   });
+}
+
+export function availableFormFilter(key, available, name, step, flag) {
+  let str = '';
+  const newFields = [];
+  available.forEach((its) => {
+    str = `${key}.*.${its.key}`;
+    if (flag === 1 ? step.hidden_fields.indexOf(str) === -1 && step[name].indexOf(str) === -1 :
+      step.hidden_fields.indexOf(str) === -1 && step[name].indexOf(str) !== -1) {
+      newFields.push(its);
+    }
+  });
+  return newFields;
 }
 
 export function dealThumbImg(url, str) {

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Toast, Button, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
-import { getGridFilter } from '../../utils/convert';
+import { getGridFilter, availableFormFilter } from '../../utils/convert';
 import { isableSubmit, initFormdata } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import styles from '../common.less';
@@ -172,15 +172,17 @@ class AddGridList extends Component {
     let editableForm = [];
     let requireForm = [];
     let newFormData = {};
+    let availableFeilds = [];
     if (startflow && key) {
       const { fields: { grid } } = startflow;
       newFormData = startflow.form_data;
-      const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
-      showGrid = showGridObj.newFields;
-      const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === key);
-      editableForm = editableFormObj.newFields;
-      const [requireFormObj] = getGridFilter(grid, 'required_fields', startflow.step).filter(item => item.key === key);
-      requireForm = requireFormObj.newFields;
+      const [availableForm] = getGridFilter(grid, 'available_fields', startflow.step).filter(item => item.key === key);
+      availableFeilds = availableForm.newFields;
+      const gridKey = availableForm.key;
+      showGrid = availableFormFilter(gridKey, availableFeilds, 'hidden_fields', startflow.step, 1);
+      editableForm = availableFormFilter(gridKey, availableFeilds, 'editable_fields', startflow.step);
+      requireForm = availableFormFilter(gridKey, availableFeilds, 'required_fields', startflow.step);
+
       if (`${index}` === '-1') {
         const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${key}`);
         newFormData = gridItemDefault.fieldDefault || {};
@@ -205,6 +207,7 @@ class AddGridList extends Component {
             form_data={newFormData}
             editable_form={editableForm}
             show_form={showGrid}
+            availableForm={availableFeilds}
           />
         </div>
         <div style={{ padding: '10px' }}>

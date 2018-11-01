@@ -340,15 +340,19 @@ class ApproveDetail extends Component {
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 只需要展示的（不包括可编辑的）
-    const showForm = form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
-
+    // const showForm =
+    //  form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
+    const availableForm = form.filter(item =>
+      startflow.step.available_fields.indexOf(item.key) !== -1);
+    const showForm = availableForm.filter(item =>
+      startflow.step.hidden_fields.indexOf(item.key) === -1);
     // 可编辑的
-    const editableForm = form.filter((item) => {
+    const editableForm = availableForm.filter((item) => {
       return startflow.step.editable_fields.indexOf(item.key) !== -1;
     });
-    const requiredForm = form.filter(item =>
+    const requiredForm = availableForm.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
-    const requiredGrid = grid.filter(item =>
+    const requiredGrid = availableForm.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
 
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)
@@ -368,6 +372,7 @@ class ApproveDetail extends Component {
               history={history}
               show_form={showForm}
               editable_form={editableForm}
+              availableForm={availableForm}
               form_data={newFormData}
               onRef={(comp) => { this.childComp = comp; }}
             />

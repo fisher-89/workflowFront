@@ -22,7 +22,7 @@ class CreateForm extends Component {
     this.props.onRef(this);
   }
   componentWillReceiveProps(nextprops) {
-    const { formdata } = nextprops;
+    const { formdata, availableForm } = nextprops;
     const showForm = nextprops.show_form;
     const editableForm = nextprops.editable_form;
     const requiredForm = nextprops.required_form;
@@ -31,29 +31,9 @@ class CreateForm extends Component {
       const formData = { ...newFormData };
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {
-        editableForm.map((item) => {
-          // const formatStr = formatDate(item.type);
+        availableForm.map((item) => {
           const currentValue = newFormData[item.key];
           const value = currentValue;
-          // if (item.type === 'array') {
-          //   const reg = /^\[|\]$/g;
-          //   if (typeof (currentValue) === 'string') {
-          //     const str = currentValue.replace(reg, '');
-          //     currentValue = str.split(',');
-          //   }
-          //   value = currentValue;
-          // }
-          // if (item.type === 'time') {
-          //   const nowTime = moment().format(formatStr);
-          //   value = moment(`2018-01-01 ${currentValue || nowTime}`).format(formatStr);
-          // }
-          // if (item.type === 'date' || item.type === 'datetime') {
-          //   if (currentValue) {
-          //     value = moment(currentValue).format(formatStr);
-          //   } else {
-          //     value = moment().format(formatStr);
-          //   }
-          // }
           formData[item.key] = value;
           const obj = {
             key: item.key,

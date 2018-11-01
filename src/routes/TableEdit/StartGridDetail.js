@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { WhiteSpace } from 'antd-mobile';
 import { FormDetail } from '../../components';
-import { getGridFilter } from '../../utils/convert';
+import { getGridFilter, availableFormFilter } from '../../utils/convert';
 import styles from '../common.less';
 
 class StartGridDetail extends Component {
@@ -41,10 +41,16 @@ class StartGridDetail extends Component {
       return '暂无信息';
     }
     let showGrid = [];
+    let availableFeilds = [];
     if (startflow && key) {
       const { fields: { grid } } = startflow;
-      const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
-      showGrid = showGridObj.newFields;
+      // const [showGridObj] =
+      // getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
+      // showGrid = showGridObj.newFields;
+      const [availableForm] = getGridFilter(grid, 'available_fields', startflow.step).filter(item => item.key === key);
+      availableFeilds = availableForm.newFields;
+      const gridKey = availableForm.key;
+      showGrid = availableFormFilter(gridKey, availableFeilds, 'hidden_fields', startflow.step, 1);
     }
     return (
       <div className={styles.con}>

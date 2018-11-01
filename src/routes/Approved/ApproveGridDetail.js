@@ -54,10 +54,18 @@ class ApproveGridDetail extends Component {
       return '暂无信息';
     }
     let showGrid = [];
+    let availableFeilds = [];
+
     if (startflow && key) {
       const { fields: { grid } } = startflow;
-      const [showGridObj] = getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
-      showGrid = showGridObj.newFields;
+      // const [showGridObj] =
+      // getGridFilter(grid, 'hidden_fields', startflow.step, 1).filter(item => item.key === key);
+      // showGrid = showGridObj.newFields;
+
+      const [availableForm] = getGridFilter(grid, 'available_fields', startflow.step).filter(item => item.key === key);
+      availableFeilds = availableForm.newFields;
+      const gridKey = availableForm.key;
+      showGrid = availableFormFilter(gridKey, availableFeilds, 'hidden_fields', startflow.step, 1);
     }
     return (
       <div className={styles.con}>

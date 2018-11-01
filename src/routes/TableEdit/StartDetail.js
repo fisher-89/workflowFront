@@ -110,8 +110,10 @@ class StartDetail extends Component {
     const { fields: { form } } = startflow;
     const flowRun = startflow.flow_run;
     // 只需要展示的（不包括可编辑的）
-    const showForm = form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
-
+    const availableForm = form.filter(item =>
+      startflow.step.available_fields.indexOf(item.key) !== -1);
+    const showForm =
+      availableForm.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
     // 可编辑的
 
     return (
