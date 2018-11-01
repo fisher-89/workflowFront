@@ -1,17 +1,9 @@
 // 审批的控件详情
 
-import React, {
-  Component,
-} from 'react';
-import {
-  connect,
-} from 'dva';
-import {
-  FormDetail,
-} from '../../components';
-import {
-  getGridFilter,
-} from '../../utils/convert';
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import { FormDetail } from '../../components';
+import { getGridFilter, availableFormFilter } from '../../utils/convert';
 import styles from '../common.less';
 
 class ApproveGridDetail extends Component {

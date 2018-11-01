@@ -41,7 +41,6 @@ class SelectCheckbox extends React.Component {
     );
   }
 
-
   render() {
     const { isEdit, field, data: { value },
       field: { name, max, min }, options, defaultValue, onChange } = this.props;

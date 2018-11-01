@@ -4,7 +4,9 @@ import { connect } from 'dva';
 import { Button } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
+import CCPerson from '../../components/CCPerson';
 import { makeGridItemData } from '../../utils/util';
+
 import FlowChart from '../../components/FlowChart/chart';
 
 import style from './index.less';
@@ -101,13 +103,17 @@ class StartDetail extends Component {
     const { history } = this.props;
     history.push(url);
   }
+
   render() {
     const { start, loading } = this.props;
     const { startflow, flowChart } = start;
     const formData = start.form_data;
+
     spin(loading);
     if (!startflow) return null;
     const { fields: { form } } = startflow;
+    const cc = startflow.cc_person;
+
     const flowRun = startflow.flow_run;
     // 只需要展示的（不包括可编辑的）
     const availableForm = form.filter(item =>
@@ -125,9 +131,7 @@ class StartDetail extends Component {
             history={this.props.history}
           />
           {this.getGridList()}
-          <div style={{ marginBottom: '20px' }}>
-            <p className={style.grid_opt}>抄送人</p>
-          </div>
+          <CCPerson cc={cc} />
           <div style={{ marginBottom: '20px' }}>
             <p className={style.grid_opt}>审批进程</p>
             <FlowChart dataSource={flowChart} />

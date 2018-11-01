@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
+import CCPerson from '../../components/CCPerson';
+
 import {
   initFormdata, isableSubmit, dealGridData, judgeGridSubmit,
   makeGridItemData, makeFieldValue, getUrlParams,
@@ -339,6 +341,8 @@ class ApproveDetail extends Component {
     spin(loading);
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
+    const cc = startflow.cc_person;
+
     // 只需要展示的（不包括可编辑的）
     // const showForm =
     //  form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
@@ -385,6 +389,7 @@ class ApproveDetail extends Component {
             />
             )}
           {this.getGridList()}
+          <CCPerson cc={cc} />
           <p className={style.grid_opt}>审批流程</p>
           <div style={{ margin: '20px 0' }}>
             <FlowChart dataSource={flowChart} />

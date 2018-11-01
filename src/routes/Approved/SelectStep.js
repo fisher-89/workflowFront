@@ -365,7 +365,7 @@ class SelectStep extends Component {
               style.step_checked : style.step_disabed_checked)) : null,
       ].join(' ');
       return (
-        <React.Fragment>
+        <React.Fragment key={idx}>
           <div className={style.step_item} key={idx}>
             <div
               className={stepClassName}
@@ -412,7 +412,7 @@ class SelectStep extends Component {
               {this.renderSteps()}
             </List>
           )}
-          {!isCC && (
+          {isCC === '1' && (
             <List renderHeader={() => <span>抄送人</span>}>
               <div className={style.step_item}>
                 <div className={style.approver}>
