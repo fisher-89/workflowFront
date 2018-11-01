@@ -352,7 +352,8 @@ class ApproveDetail extends Component {
     });
     const requiredForm = availableForm.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
-    const requiredGrid = availableForm.filter(item =>
+
+    const requiredGrid = grid.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
 
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)

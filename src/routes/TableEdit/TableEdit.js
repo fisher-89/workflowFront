@@ -261,8 +261,10 @@ class TableEdit extends Component {
 
     const requiredGrid = grid.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
+
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)
       && judgeGridSubmit(requiredGrid, this.state.griddata);
+
     ableSubmit = true;
     return (
       <div className={styles.con}>
