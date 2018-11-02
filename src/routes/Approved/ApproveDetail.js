@@ -52,10 +52,12 @@ class ApproveDetail extends Component {
     if (startflow && JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) {
       const formData = startflow.form_data;
       const { fields: { form } } = startflow;
-      // 可编辑的form
-      const editableForm = form.filter(item =>
-        startflow.step.editable_fields.indexOf(item.key) !== -1);
-      const formdata = initFormdata(formData, editableForm);
+      // 可用的form
+
+      const availableForm = form.filter(item =>
+        startflow.step.available_fields.indexOf(item.key) !== -1);
+
+      const formdata = initFormdata(formData, availableForm);
       const griddata = dealGridData(gridformdata);
       this.setState({
         formdata,
@@ -358,7 +360,12 @@ class ApproveDetail extends Component {
     const requiredForm = availableForm.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
 
-    const requiredGrid = grid.filter(item =>
+    // const requiredGrid = grid.filter(item =>
+    //   startflow.step.required_fields.indexOf(item.key) !== -1);
+
+    const availableGrid = grid.filter(item =>
+      startflow.step.available_fields.indexOf(item.key) !== -1);
+    const requiredGrid = availableGrid.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
 
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)

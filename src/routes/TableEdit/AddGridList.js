@@ -182,7 +182,6 @@ class AddGridList extends Component {
       showGrid = availableFormFilter(gridKey, availableFeilds, 'hidden_fields', startflow.step, 1);
       editableForm = availableFormFilter(gridKey, availableFeilds, 'editable_fields', startflow.step);
       requireForm = availableFormFilter(gridKey, availableFeilds, 'required_fields', startflow.step);
-
       if (`${index}` === '-1') {
         const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${key}`);
         newFormData = gridItemDefault.fieldDefault || {};
@@ -190,7 +189,7 @@ class AddGridList extends Component {
     }
     let ableSubmit = isableSubmit(requireForm, this.state.formdata);
     ableSubmit = true;
-    console.log('this.state.formdata', this.state.formdata);
+
     return (
       <div className={styles.con}>
         <WhiteSpace size="xl" />

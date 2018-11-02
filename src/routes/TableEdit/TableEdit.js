@@ -44,9 +44,14 @@ class TableEdit extends Component {
       const formData = startflow.form_data;
       const { fields: { form } } = startflow;
       // 可编辑的form
-      const editableForm = form.filter(item =>
-        startflow.step.editable_fields.indexOf(item.key) !== -1);
-      const formdata = initFormdata(formData, editableForm);
+      // const editableForm = form.filter(item =>
+      //   startflow.step.editable_fields.indexOf(item.key) !== -1);
+      // 可用
+      const availableForm = form.filter(item =>
+        startflow.step.available_fields.indexOf(item.key) !== -1);
+      // const formdata = initFormdata(formData, editableForm);
+      console.log('availableForm', availableForm);
+      const formdata = initFormdata(formData, availableForm);
       const griddata = dealGridData(gridformdata);
       this.setState({
         formdata,
@@ -249,7 +254,8 @@ class TableEdit extends Component {
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 可编辑的form
-    // const showForm = form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
+    // const showForm =
+    // form.filter(item => startflow.step.hidden_fields.indexOf(item.key) === -1);
     const availableForm = form.filter(item =>
       startflow.step.available_fields.indexOf(item.key) !== -1);
     const showForm = availableForm.filter(item =>
@@ -259,7 +265,11 @@ class TableEdit extends Component {
     const requiredForm = availableForm.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
 
-    const requiredGrid = grid.filter(item =>
+    // const requiredGrid = grid.filter(item =>
+    //   startflow.step.required_fields.indexOf(item.key) !== -1);
+    const availableGrid = grid.filter(item =>
+      startflow.step.available_fields.indexOf(item.key) !== -1);
+    const requiredGrid = availableGrid.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
 
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)
