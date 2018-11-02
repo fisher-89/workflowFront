@@ -10,6 +10,7 @@ import FinalStaff from './FinalStaff';
 import SelDep from './SelDep';
 import Shop from './Shop';
 import ApiItem from './ApiItem';
+import CC from './CC';
 
 export {
   Department,
@@ -22,4 +23,5 @@ export {
   FinalStaff,
   SelDep,
   Shop,
+  CC,
 };

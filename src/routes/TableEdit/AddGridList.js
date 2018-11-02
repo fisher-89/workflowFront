@@ -193,7 +193,6 @@ class AddGridList extends Component {
     return (
       <div className={styles.con}>
         <WhiteSpace size="xl" />
-
         <div className={styles.con_content}>
           <CreateForm
             history={history}

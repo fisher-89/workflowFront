@@ -21,7 +21,10 @@ export default {
     };
     const gridDefault = [];
     const grid = [...action.payload.fields.grid];
-    const gridformdata = grid.map((item) => { // 最外层key
+    const availableGrid = grid.filter(item =>
+      action.payload.step.available_fields.indexOf(item.key) !== -1);
+
+    const gridformdata = availableGrid.map((item) => { // 最外层key
       const gridItem = newFormData[item.key];
       const fieldDefault = item.field_default_value;
       const obj = {

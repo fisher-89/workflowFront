@@ -43,7 +43,6 @@ class CreateForm extends Component {
             msg: '',
           };
           tempFormdata.push(obj);
-          console.log('tempFormdata', tempFormdata);
 
           this.setState({
             [item.key]: {

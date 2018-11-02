@@ -40,6 +40,13 @@ class IndexPage extends React.Component {
         id: '2',
         description: '审批列表',
       },
+      {
+        text: '抄送人列表',
+        url: '/cclist?page=1',
+        icon: '/img/Approval1.png',
+        id: '3',
+        description: '抄送列表',
+      },
     ];
 
     return (

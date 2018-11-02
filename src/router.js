@@ -84,6 +84,24 @@ function RouterConfig({
       import('./routes/Approved/ApproveEditGrid'),
   },
   {
+    path: '/cclist',
+    models: ['ccperson', 'list'],
+    component: () =>
+      import('./routes/CC/CCList'),
+  },
+  {
+    path: '/cc_detail/:id',
+    models: ['ccperson', 'list', 'start'],
+    component: () =>
+      import('./routes/CC/CCDetail'),
+  },
+  {
+    path: '/cc_grid/:type/:index',
+    models: ['ccperson', 'list', 'start'],
+    component: () =>
+      import('./routes/CC/GridDetail'),
+  },
+  {
     path: '/remark',
     models: [],
     component: () =>

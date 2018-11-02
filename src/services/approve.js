@@ -11,6 +11,17 @@ export function getApproList(data) {
     body: data,
   });
 }
+// 抄送列表
+export function getCCList(data) {
+  return request('/api/cc', {
+    method: 'GET',
+    body: data,
+  });
+}
+export function getCCDetail(id) {
+  return request(`/api/cc/${id}`);
+}
+
 
 // 审批同意
 export function getThrough(data) {

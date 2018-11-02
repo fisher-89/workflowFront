@@ -121,12 +121,16 @@ class ApproveDetail extends Component {
   getGridList = () => {
     const { approve } = this.props;
     const { startflow } = approve;
-
     const { fields: { grid } } = startflow;
-    const editableGrid = grid.filter(item =>
+
+    const availableGrid = grid.filter(item =>
+      startflow.step.available_fields.indexOf(item.key) !== -1);
+
+    const editableGrid = availableGrid.filter(item =>
       startflow.step.editable_fields.indexOf(item.key) !== -1);
+
     const gridKey = editableGrid.map(item => item.key);
-    return grid.map((item, i) => {
+    return availableGrid.map((item, i) => {
       const index = i;
       const { key, name } = item;
       const ableAdd = gridKey.indexOf(item.key) > -1 && startflow.step_run.action_type === 0;

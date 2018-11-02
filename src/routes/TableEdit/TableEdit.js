@@ -50,7 +50,6 @@ class TableEdit extends Component {
       const availableForm = form.filter(item =>
         startflow.step.available_fields.indexOf(item.key) !== -1);
       // const formdata = initFormdata(formData, editableForm);
-      console.log('availableForm', availableForm);
       const formdata = initFormdata(formData, availableForm);
       const griddata = dealGridData(gridformdata);
       this.setState({
@@ -65,24 +64,7 @@ class TableEdit extends Component {
     const { start: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
-    // const gridFields = gridItem.fields;
     const [currentGridData] = (gridformdata || []).filter(item => `${item.key}` === `${key}`);
-    // const dataList = (currentGridData ? currentGridData.fields : []).map((item, i) => {
-    //   const newObj = {
-    //     value_0: `${gridItem.name}${i + 1}`,
-    //   };
-    //   let num = 0;
-    //   item.map((its) => { // 取前三个字段
-    //     const [fieldsItem] = gridFields.filter(_ => `${_.key}` === `${its.key}`);
-    //     const { type } = fieldsItem || {};
-    //     if (num < 3 && type && type !== 'file' && type !== 'array') {
-    //       newObj[`value_${num}`] = its.value;
-    //       num += 1;
-    //     }
-    //     return true;
-    //   });
-    //   return newObj;
-    // });
     const dataList = makeGridItemData(currentGridData, gridItem);
     const extra = ableAdd ? [
       {
@@ -122,10 +104,15 @@ class TableEdit extends Component {
     const { start } = this.props;
     const { startflow } = start;
     const { fields: { grid } } = startflow;
-    const editableGrid = grid.filter(item =>
+
+    const availableGrid = grid.filter(item =>
+      startflow.step.available_fields.indexOf(item.key) !== -1);
+    const editableGrid = availableGrid.filter(item =>
       startflow.step.editable_fields.indexOf(item.key) !== -1);
+
     const gridKey = editableGrid.map(item => item.key);
-    return grid.map((item, i) => {
+
+    return availableGrid.map((item, i) => {
       const index = i;
       const { key, name } = item;
       const ableAdd = gridKey.indexOf(item.key) > -1;

@@ -97,6 +97,14 @@ const initLists = {
     },
     datas: { ...initDatas },
   },
+  '/cclist_all': {
+    type: 'all',
+    url: {
+      type: 'all',
+      page: 1,
+    },
+    datas: { ...initDatas },
+  },
 };
 export default {
   namespace: 'list',
@@ -137,6 +145,19 @@ export default {
       }
     },
 
+    * getCCList({ payload }, { call, put }) {
+      const data = yield call(a.getCCList, payload.parms);
+      if (data && !data.error) {
+        yield put({
+          type: 'saveList',
+          payload: {
+            data,
+            type: payload.parms.type || 'all',
+            path: payload.path,
+          },
+        });
+      }
+    },
   },
 
   reducers: {

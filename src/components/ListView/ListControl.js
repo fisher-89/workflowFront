@@ -44,6 +44,7 @@ export default class ListControl extends Component {
       filters: this.filterUrl || '',
     };
     const current = lists[`${pathname}_${type}`];
+
     const { url, datas } = current;
     const { data } = datas;
 

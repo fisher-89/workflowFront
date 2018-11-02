@@ -241,6 +241,7 @@ class SelectStep extends Component {
       });
       return;
     }
+    const cchost = `${window.location.origin}/cclist?source=${source}`;
     const params = {
       step_run_id: preStepData.step_run_id,
       timestamp: preStepData.timestamp,
@@ -257,6 +258,7 @@ class SelectStep extends Component {
           data: {
             ...params,
             cc_person: cc,
+            cc_host: cchost,
           },
           cb: () => {
             dispatch({
@@ -276,6 +278,7 @@ class SelectStep extends Component {
           data: {
             ...params,
             cc_person: cc,
+            cc_host: cchost,
             remark: v,
           },
           id: preStepData.flow_id,

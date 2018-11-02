@@ -2,7 +2,7 @@ import React from 'react';
 import { PersonIcon } from '../index';
 import style from './index.less';
 
-export default class Footer extends React.Component {
+export default class CCPerson extends React.Component {
   render() {
     const { cc } = this.props;
     if (cc.length === 0) return null;
@@ -25,3 +25,7 @@ export default class Footer extends React.Component {
     );
   }
 }
+CCPerson.defaultProps = {
+  cc: [],
+};
+
