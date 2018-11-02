@@ -8,24 +8,6 @@ import style from './index.less';
 
 @ListView
 export default class CC extends Component {
-  renderFormData = () => {
-    const { value } = this.props;
-    const formdata = value.form_data || [];
-    const arrayData = formdata.map((item) => {
-      const text = Object.keys(item).map(key => (`${key}：${item[key]}`));
-      return text.join('\n');
-    });
-    return arrayData.map((item, i) => {
-      const idx = i;
-      return (
-        <div
-          className={style.form_desc}
-          key={idx}
-        >{item}
-        </div>
-      );
-    });
-  }
   render() {
     const {
       value,
@@ -45,7 +27,10 @@ export default class CC extends Component {
             {value && `${value.staff_name}的`}{value.flow_name}
           </span>
         </div>
-        {this.renderFormData()}
+        <div
+          className={style.form_desc}
+        >步骤名称：{value.step_name}
+        </div>
         <div className={style.desc}>{time}</div>
       </div>
     );
