@@ -27,6 +27,7 @@ class CreateForm extends Component {
     const editableForm = nextprops.editable_form;
     const requiredForm = nextprops.required_form;
     const newFormData = nextprops.form_data;
+
     if (newFormData && (!this.state.init)) {
       const formData = { ...newFormData };
       const tempFormdata = [...formdata];
@@ -42,6 +43,8 @@ class CreateForm extends Component {
             msg: '',
           };
           tempFormdata.push(obj);
+          console.log('tempFormdata', tempFormdata);
+
           this.setState({
             [item.key]: {
               ...obj,

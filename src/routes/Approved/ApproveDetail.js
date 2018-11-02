@@ -119,6 +119,7 @@ class ApproveDetail extends Component {
   getGridList = () => {
     const { approve } = this.props;
     const { startflow } = approve;
+
     const { fields: { grid } } = startflow;
     const editableGrid = grid.filter(item =>
       startflow.step.editable_fields.indexOf(item.key) !== -1);
@@ -126,7 +127,7 @@ class ApproveDetail extends Component {
     return grid.map((item, i) => {
       const index = i;
       const { key, name } = item;
-      const ableAdd = gridKey.indexOf(item.key) > -1;
+      const ableAdd = gridKey.indexOf(item.key) > -1 && startflow.step_run.action_type === 0;
       return (
         <div key={index} className={style.grid_item}>
           <p className={style.grid_opt}>

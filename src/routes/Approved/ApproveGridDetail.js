@@ -12,12 +12,14 @@ class ApproveGridDetail extends Component {
     key: '',
     index: '0',
   }
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'approve/updateModal',
     });
   }
+
   componentWillReceiveProps(nextprops) {
     const { match: { params } } = nextprops;
     const { flag, key } = this.state;
@@ -33,10 +35,7 @@ class ApproveGridDetail extends Component {
       });
     }
   }
-  csoLog = () => {
-    this.childComp.saveData();
-    this.props.history.goBack(-1);
-  }
+
   render() {
     const { approve } = this.props;
     const { key, index } = this.state;

@@ -30,30 +30,20 @@ class AddGridList extends Component {
     const { flag, key } = this.state;
 
     if (!key && flag && startflow) {
-      // const { type, index } = params;
-      // const { fields: { grid } } = startflow;
-      // const [editableFormObj] =
-      // getGridFilter(grid, 'editable_fields', startflow.step).filter(item => item.key === type);
-      // const editableForm = editableFormObj.newFields;
-      // const newFormData = approve.form_data;
-      // const formdata = initFormdata(newFormData, editableForm);
-      // this.setState({
-      //   key: type,
-      //   index,
-      //   flag: false,
-      //   formdata,
-      // });
       const { type, index } = params;
       const { fields: { grid } } = startflow;
-      const [editableFormObj] =
-       getGridFilter(grid, 'editable_fields', startflow.step).filter(item => `${item.key}` === `${type}`);
-      const editableForm = editableFormObj.newFields;
+      // const [editableFormObj] = getGridFilter(grid, 'editable_fields', startflow.step).
+      // filter(item => `${item.key}` === `${type}`);
+      // const editableForm = editableFormObj.newFields;
+      const [availableForm] = getGridFilter(grid, 'available_fields', startflow.step).filter(item => `${item.key}` === `${type}`);
+      const availableFeilds = availableForm.newFields;
       let newFormData = approve.form_data;
       let formdata = [];
       if (`${index}` === '-1') {
         const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${type}`);
         newFormData = gridItemDefault.fieldDefault || {};
-        formdata = initFormdata(newFormData, editableForm);
+        // formdata = initFormdata(newFormData, editableForm);
+        formdata = initFormdata(newFormData, availableFeilds);
       } else {
         const [current] = gridformdata.filter(item => `${item.key}` === `${type}`);
         formdata = current.fields[Number(index)];

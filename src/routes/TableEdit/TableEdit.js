@@ -264,7 +264,6 @@ class TableEdit extends Component {
 
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)
       && judgeGridSubmit(requiredGrid, this.state.griddata);
-
     ableSubmit = true;
     return (
       <div className={styles.con}>
