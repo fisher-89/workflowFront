@@ -241,7 +241,7 @@ class SelectStep extends Component {
       });
       return;
     }
-    const cchost = `${window.location.origin}/cclist?source=dingtalk`;
+    const cchost = `${window.location.origin}/cc_detail?source=dingtalk`;
     const params = {
       step_run_id: preStepData.step_run_id,
       timestamp: preStepData.timestamp,
@@ -257,7 +257,7 @@ class SelectStep extends Component {
         payload: {
           data: {
             ...params,
-            cc_person: cc,
+            cc_person: cc || [],
             cc_host: cchost,
           },
           cb: () => {
@@ -277,7 +277,7 @@ class SelectStep extends Component {
         payload: {
           data: {
             ...params,
-            cc_person: cc,
+            cc_person: cc || [],
             cc_host: cchost,
             remark: v,
           },
