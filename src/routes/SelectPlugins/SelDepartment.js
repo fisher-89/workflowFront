@@ -69,6 +69,23 @@ export default class SelDepartment extends Component {
     });
   }
 
+
+  onDeleteItem = (result) => {
+    const { selected, multiple } = this.state;
+    if (multiple) {
+      const data = result.unique('id');
+      this.setState({
+        selected: {
+          ...selected,
+          data,
+          num: data.length,
+        },
+      });
+    } else {
+      this.getSingleSelect(result);
+    }
+  }
+
   getSelectResult = (result, current) => {
     const { selected, multiple, switchState } = this.state;
     const oldData = selected.data;
@@ -97,6 +114,7 @@ export default class SelDepartment extends Component {
       this.getSingleSelect(result);
     }
   }
+
 
   getChildrenArray = (result) => {
     const { currentDep } = this.state;
@@ -338,7 +356,7 @@ export default class SelDepartment extends Component {
           selectOk={this.selectOk}
           onSwitchChange={(check) => { this.setState({ switchState: check }); }}
           searchOncancel={this.searchOncancel}
-          handleDelete={this.getSelectResult}
+          handleDelete={this.onDeleteItem}
         >
 
           {!currentDep.length && !loading && (

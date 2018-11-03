@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import ListView from '../../components/ListView';
-import { Label } from '../../components/General';
-import { getApprState } from '../../utils/convert.js';
 import { converseTime } from '../../utils/util.js';
 
 import style from './index.less';
@@ -15,7 +13,6 @@ export default class CC extends Component {
       onHandleClick,
     } = this.props;
     const time = converseTime(value[timeKey]);
-    // <div className={style.desc}>{value && value.flow_run ? value.flow_run.name : ''}</div>
     return (
       <div
         className={style.list_item}
