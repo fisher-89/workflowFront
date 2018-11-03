@@ -358,7 +358,6 @@ export default class SelDepartment extends Component {
           searchOncancel={this.searchOncancel}
           handleDelete={this.onDeleteItem}
         >
-
           {!currentDep.length && !loading && (
           <Nothing />
           )}

@@ -53,7 +53,10 @@ export default class SelectComp extends React.Component {
       payload: {
         key: newKey,
         cb: (source) => {
+          console.log('source', source);
           const newSource = isMuti ? source.map(item => item.value) : source.value;
+          console.log('newSource', newSource);
+
           selComponentCb(data, newSource);
         },
       },
@@ -95,15 +98,20 @@ export default class SelectComp extends React.Component {
     const curData = dataSource[this.id] || [];
     let readValue;
     let editValue;
+    let newValue;
+    let newData;
     if (isMuti) {
       readValue = (defaultValue || []).map(item => `${item}`);
       editValue = (value || []).map(item => `${item}`);
+      newValue = curData.filter(item => readValue.indexOf(`${item.value}`) > -1);
+      newData = curData.filter(item => editValue.indexOf(`${item.value}`) > -1);
     } else {
       readValue = `${defaultValue}`;
       editValue = `${value}`;
+      newValue = curData.filter(item => `${readValue}` === `${item.value}`);
+      newData = curData.filter(item => `${editValue}` === `${item.value}`);
     }
-    const newValue = curData.filter(item => readValue.indexOf(`${item.value}`) > -1);
-    const newData = curData.filter(item => editValue.indexOf(`${item.value}`) > -1);
+
     if (isEdit) {
       return (
         <List.Item

@@ -55,6 +55,7 @@ export default class SelDataSource extends Component {
   }
 
   getSelectResult = (result) => {
+    console.log('result', result);
     const { selected, multiple } = this.state;
     if (multiple) {
       this.setState({
@@ -78,6 +79,7 @@ export default class SelDataSource extends Component {
     if (cb) {
       cb(newSelectstaff);
     }
+    console.log('result', result);
     history.goBack(-1);
   }
 
