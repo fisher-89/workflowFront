@@ -179,6 +179,7 @@ class AddGridList extends Component {
       const [availableForm] = getGridFilter(grid, 'available_fields', startflow.step).filter(item => item.key === key);
       availableFeilds = availableForm.newFields;
       const gridKey = availableForm.key;
+      newFormData = startflow.form_data[gridKey][index];
       showGrid = availableFormFilter(gridKey, availableFeilds, 'hidden_fields', startflow.step, 1);
       editableForm = availableFormFilter(gridKey, availableFeilds, 'editable_fields', startflow.step);
       requireForm = availableFormFilter(gridKey, availableFeilds, 'required_fields', startflow.step);

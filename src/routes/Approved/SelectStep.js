@@ -241,13 +241,13 @@ class SelectStep extends Component {
       });
       return;
     }
-    const cchost = `${window.location.origin}/cclist?source=${source}`;
+    const cchost = `${window.location.origin}/cclist?source=dingtalk`;
     const params = {
       step_run_id: preStepData.step_run_id,
       timestamp: preStepData.timestamp,
       next_step: [...nextSteps],
       flow_id: preStepData.flow_id,
-      host: `${window.location.origin}/approve?source=${source}`,
+      host: `${window.location.origin}/approve?source=dingtalk`,
     };
     const cc = preStepData.cc_person.concat(makeFieldValue(ccPerson, { realname: 'staff_name', staff_sn: 'staff_sn' }, true));
     // this.modalSave('steps', steps);
