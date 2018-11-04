@@ -32,7 +32,7 @@ const tabs = {
       { name: '发起时间升序', value: 'created_at-asc', icon: '/filter/asc.svg' },
       { name: '发起时间降序', value: 'created_at-desc', icon: '/filter/desc.svg' },
     ],
-    defaultSort: 'created_at-asc',
+    defaultSort: 'created_at-desc',
     showTime: 'created_at',
   },
 

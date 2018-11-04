@@ -20,6 +20,7 @@ class ApproveGridDetail extends Component {
     });
   }
 
+
   componentWillReceiveProps(nextprops) {
     const { match: { params } } = nextprops;
     const { flag, key } = this.state;

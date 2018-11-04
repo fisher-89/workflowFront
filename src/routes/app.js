@@ -1,8 +1,7 @@
 /* global window */
 import React from 'react';
-import {
-  connect,
-} from 'dva';
+import { connect } from 'dva';
+
 import QueueAnim from 'rc-queue-anim';
 import {
   withRouter,
@@ -34,7 +33,6 @@ class App extends React.Component {
       window.location.href =
      `${OA_PATH}/oauth/authorize?client_id=${OA_CLIENT_ID}&response_type=code`;
     }
-
     document.body.style.margin = '0px';
   }
 

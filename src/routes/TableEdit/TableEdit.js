@@ -1,14 +1,16 @@
 // 发起页面
-import React, { Component } from 'react';
-import { Button, SwipeAction, WhiteSpace } from 'antd-mobile';
+import React from 'react';
 import { connect } from 'dva';
+import { Button, SwipeAction, WhiteSpace } from 'antd-mobile';
+
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
 import { initFormdata, isableSubmit, judgeGridSubmit, dealGridData, makeGridItemData } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
+import scrollInfo from './ScrollInfo';
 
-class TableEdit extends Component {
+class TableEdit extends scrollInfo {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,6 +19,7 @@ class TableEdit extends Component {
       griddata: [],
     };
   }
+
   componentWillMount() {
     const { start: { gridformdata, startflow, formdata } } = this.props;
     let griddata = [];
@@ -35,11 +38,13 @@ class TableEdit extends Component {
       type: 'start/getStartFlow',
       payload: this.state.flowId,
     });
+    this.excuteScrollTo();
   }
 
   componentWillReceiveProps(props) {
     const { start: { startflow, gridformdata } } = props;
     const oldstartflow = this.props.start.startflow;
+    this.excuteScrollTo();
     if ((JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) && startflow) {
       const formData = startflow.form_data;
       const { fields: { form } } = startflow;
@@ -133,6 +138,39 @@ class TableEdit extends Component {
     });
   }
 
+  excuteScrollTo = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTopDetails, location: { pathname } } = this.props;
+      const scrollTop = scrollTopDetails[pathname];
+      content.scrollTop = scrollTop;
+    }
+  }
+
+  saveScrollTop = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTop } = content;
+      this.saveScrolModal(scrollTop);
+    }
+  }
+
+  saveScrolModal = (scrollTop) => {
+    const { dispatch, location: { pathname } } = this.props;
+    dispatch({
+      type: 'common/save',
+      payload: {
+        store: 'scrollTop',
+        id: pathname,
+        data: scrollTop,
+      },
+    });
+  }
+
+  clearScrollTop = () => {
+    sessionStorage.scrollTop = 0;
+  }
+
   handleOnchange = (formdata) => {
     this.setState({
       formdata,
@@ -194,8 +232,10 @@ class TableEdit extends Component {
         data: newFormData,
       },
     });
+    this.saveScrollTop(document.getElementById('con_content'));
     return newFormData;
   };
+
 
   // 提交数据
   submitData = (e) => {
@@ -234,7 +274,7 @@ class TableEdit extends Component {
   };
 
   render() {
-    const { start, dispatch, loading, history } = this.props;
+    const { start, dispatch, loading, history, location } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
     spin(loading);
@@ -265,13 +305,15 @@ class TableEdit extends Component {
     return (
       <div className={styles.con}>
         <WhiteSpace size="xl" />
-        <div className={styles.con_content}>
+        <div className={styles.con_content} id="con_content">
           <CreateForm
             history={history}
+            location={location}
             startflow={startflow}
             formdata={formdata}
             evtClick={this.saveData}
             onChange={this.handleOnchange}
+            saveScrollTop={() => this.saveScrollTop(document.getElementById('con_content'))}
             dispatch={dispatch}
             show_form={showForm}
             availableForm={availableForm}
@@ -298,9 +340,10 @@ class TableEdit extends Component {
   }
 }
 export default connect(({
-  start, loading,
+  start, loading, common,
 }) => ({
   start,
+  scrollTopDetails: common.scrollTopDetails,
   loading: (
     (loading.effects['start/preSet'] || false) ||
     (loading.effects['api/fetchApi'] || false) ||

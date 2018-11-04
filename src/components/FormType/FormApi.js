@@ -41,6 +41,7 @@ export default class SelectComp extends React.Component {
     const curDispath = dispatchColumn[type];
     const { modal, reduce, to } = curDispath;
     evtClick();
+    // saveScrollTop();
     dispatch({
       type: `${modal}/${reduce}`,
       payload: {
@@ -53,10 +54,7 @@ export default class SelectComp extends React.Component {
       payload: {
         key: newKey,
         cb: (source) => {
-          console.log('source', source);
           const newSource = isMuti ? source.map(item => item.value) : source.value;
-          console.log('newSource', newSource);
-
           selComponentCb(data, newSource);
         },
       },
@@ -70,7 +68,6 @@ export default class SelectComp extends React.Component {
       fetchId: field.field_api_configuration_id,
     };
     const urlParams = JSON.stringify(params);
-    // history.push(`/${to}/${newKey}/${isMuti}/${id}`);
     history.push(`/${to}?params=${urlParams}`);
   }
 
@@ -114,17 +111,19 @@ export default class SelectComp extends React.Component {
 
     if (isEdit) {
       return (
-        <List.Item
-          arrow="horizontal"
-          extra={this.renderCurrent(newData, 'text', isMuti)}
-          onClick={() => this.toChoose(field, data, isMuti)}
-        >
-          {field.name}
-        </List.Item>
+        <div id={field.key}>
+          <List.Item
+            arrow="horizontal"
+            extra={this.renderCurrent(newData, 'text', isMuti)}
+            onClick={() => this.toChoose(field, data, isMuti)}
+          >
+            {field.name}
+          </List.Item>
+        </div>
       );
     }
     return (
-      <div className={style.readonly}>
+      <div className={style.readonly} id={field.key}>
         <TextareaItem
           title={field.name}
           autoHeight

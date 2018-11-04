@@ -1,10 +1,10 @@
 // 审批的表单
-import React, { Component } from 'react';
+import React from 'react';
 import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
+import scrollInfo from '../TableEdit/ScrollInfo';
 import { CreateForm, FormDetail } from '../../components';
 import CCPerson from '../../components/CCPerson';
-
 import {
   initFormdata, isableSubmit, dealGridData, judgeGridSubmit,
   makeGridItemData, makeFieldValue, getUrlParams,
@@ -14,7 +14,7 @@ import FlowChart from '../../components/FlowChart/chart';
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
 
-class ApproveDetail extends Component {
+class ApproveDetail extends scrollInfo {
   state = {
     flowId: '',
     formdata: [],
@@ -45,10 +45,14 @@ class ApproveDetail extends Component {
       payload: { id },
     });
   }
+  componentDidMount() {
+    this.excuteScrollTo();
+  }
 
   componentWillReceiveProps(props) {
     const { approve: { startflow, gridformdata } } = props;
     const oldstartflow = this.props.approve.startflow;
+    this.excuteScrollTo();
     if (startflow && JSON.stringify(startflow) !== JSON.stringify(oldstartflow)) {
       const formData = startflow.form_data;
       const { fields: { form } } = startflow;
@@ -151,6 +155,37 @@ class ApproveDetail extends Component {
     });
   }
 
+  excuteScrollTo = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTopDetails, location: { pathname } } = this.props;
+
+      const scrollTop = scrollTopDetails[pathname];
+      content.scrollTop = scrollTop;
+    }
+  }
+
+  saveScrollTop = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTop } = content;
+      this.saveScrolModal(scrollTop);
+    }
+  }
+
+  saveScrolModal = (scrollTop) => {
+    const { dispatch, location: { pathname } } = this.props;
+    dispatch({
+      type: 'common/save',
+      payload: {
+        store: 'scrollTop',
+        id: pathname,
+        data: scrollTop,
+      },
+    });
+  }
+
+
   handleOnchange = (formdata) => {
     this.setState({
       formdata,
@@ -211,6 +246,7 @@ class ApproveDetail extends Component {
       newFormData = this.childComp.state.formdata;
     }
     const { dispatch } = this.props;
+    this.saveScrollTop(document.getElementById('con_content'));
     dispatch({
       type: 'approve/save',
       payload: {
@@ -378,7 +414,7 @@ class ApproveDetail extends Component {
     return (
       <div className={styles.con}>
         <WhiteSpace size="xl" />
-        <div className={styles.con_content} >
+        <div className={styles.con_content} id="con_content">
           {startflow.step_run.action_type === 0 ? (
             <CreateForm
               startflow={startflow}
@@ -436,9 +472,10 @@ class ApproveDetail extends Component {
   }
 }
 export default connect(({
-  approve, start, loading,
+  approve, start, loading, common,
 }) => ({
   approve,
+  scrollTopDetails: common.scrollTopDetails,
   start,
   loading: (
     (loading.effects['start/preSet'] || false) ||

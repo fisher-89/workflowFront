@@ -20,6 +20,8 @@ class CreateForm extends Component {
   }
   componentDidMount() {
     this.props.onRef(this);
+    const { scrollTop } = localStorage;
+    document.getElementById('edit_form').scrollTop = scrollTop;
   }
   componentWillReceiveProps(nextprops) {
     const { formdata, availableForm } = nextprops;
@@ -119,12 +121,13 @@ class CreateForm extends Component {
         );
       }
       if (item.type === 'department' || item.type === 'staff' || item.type === 'shop') {
-        const { evtClick, history } = this.props;
+        const { evtClick, history, saveScrollTop } = this.props;
         return (
           <SelectComp
             history={history}
             isEdit={isEdit}
             evtClick={evtClick}
+            saveScrollTop={saveScrollTop}
             field={item}
             defaultValue={newFormData[item.key]}
             data={itemkey}
@@ -134,12 +137,14 @@ class CreateForm extends Component {
         );
       }
       if (item.type === 'api') {
-        const { evtClick, history } = this.props;
+        const { evtClick, history, saveScrollTop } = this.props;
         return (
           <FormApi
             history={history}
+            location={location}
             isEdit={isEdit}
             evtClick={evtClick}
+            saveScrollTop={saveScrollTop}
             field={item}
             defaultValue={newFormData[item.key]}
             data={itemkey}
@@ -274,7 +279,11 @@ class CreateForm extends Component {
     const { startflow } = this.props;
     if (!startflow) return null;
     return (
-      <div className={[style.edit_form, style.form].join(' ')} style={{ background: '#fff' }}>
+      <div
+        className={[style.edit_form, style.form].join(' ')}
+        style={{ background: '#fff' }}
+        id="edit_form"
+      >
         <List>
           {this.getFormList()}
         </List>

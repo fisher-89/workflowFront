@@ -17,6 +17,7 @@ class IndexPage extends React.Component {
     this.props.dispatch({
       type: 'list/resetModal',
     });
+    sessionStorage.scrollTop = 0;
   }
   render() {
     const { history } = this.props;

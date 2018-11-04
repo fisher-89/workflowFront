@@ -191,9 +191,6 @@ export default class FlowChart extends Component {
           line = prevLine.next_id[subIndex];
           row = this.createNewRowLine(min, max, prevStep.y + 0.5);
         } else {
-          const { row: { start, end, y } } = prevStep;
-          // row = this.createNewRowLine(start, end, y);
-          // rows.push(prevRow);
           row = prevRow
           line = prevLine;
         }
@@ -208,7 +205,6 @@ export default class FlowChart extends Component {
       }
       if (nextId.length === 0) {
         this.finishColLine(step.line, step.y);
-        // this.finishRowLine(step.row, step.y);
       }
     });
     const maxIndex = this.fillColsIndex(cols);
@@ -330,12 +326,6 @@ export default class FlowChart extends Component {
     line.end = endY;
     remove(unfinishedLines, item => item === line);
     return line;
-  }
-
-  finishRowLine = (row, y) => {
-    row.y = y;
-    remove(rows, item => item === row);
-    return row;
   }
 
   fillColsIndex = (cols, colIndex = 1) => {

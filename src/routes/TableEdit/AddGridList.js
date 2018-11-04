@@ -1,5 +1,5 @@
 // 编辑或新增列表控件数据页面
-import React, { Component } from 'react';
+import React from 'react';
 import { Toast, Button, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
@@ -7,8 +7,9 @@ import { getGridFilter, availableFormFilter } from '../../utils/convert';
 import { isableSubmit, initFormdata } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import styles from '../common.less';
+import scrollInfo from './ScrollInfo';
 
-class AddGridList extends Component {
+class AddGridList extends scrollInfo {
   state = {
     flag: true,
     key: '',
@@ -21,12 +22,14 @@ class AddGridList extends Component {
     dispatch({
       type: 'start/updateModal',
     });
+    this.excuteScrollTo();
   }
 
   componentWillReceiveProps(nextprops) {
     const { match: { params }, start } = nextprops;
     const { startflow, gridDefault, gridformdata } = start;
     const { flag, key } = this.state;
+    this.excuteScrollTo();
     if (!key && flag && startflow) {
       const { type, index } = params;
       const { fields: { grid } } = startflow;
@@ -52,6 +55,36 @@ class AddGridList extends Component {
     }
   }
 
+  excuteScrollTo = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTopDetails, location: { pathname } } = this.props;
+      const scrollTop = scrollTopDetails[pathname];
+      content.scrollTop = scrollTop;
+    }
+  }
+
+  saveScrollTop = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTop } = content;
+      this.saveScrolModal(scrollTop);
+    }
+  }
+
+  saveScrolModal = (scrollTop) => {
+    const { dispatch, location: { pathname } } = this.props;
+    dispatch({
+      type: 'common/save',
+      payload: {
+        store: 'scrollTop',
+        id: pathname,
+        data: scrollTop,
+      },
+    });
+  }
+
+
   handleOnchange = (formdata) => {
     this.setState({
       formdata,
@@ -61,6 +94,7 @@ class AddGridList extends Component {
   saveFormData = (formdata) => {
     const { index } = this.state;
     const { dispatch, start: { gridDefault } } = this.props;
+    this.saveScrollTop();
     if (`${index}` !== '-1') {
       this.saveData(formdata);
     } else {
@@ -95,6 +129,7 @@ class AddGridList extends Component {
   // 将数据保存到modal的gridformdata中
   saveData = (formdata) => {
     // const { formdata } = this.childComp.state;
+    this.saveScrollTop(document.getElementById('con_content'));
     let newFormData = formdata;
     if (newFormData === undefined) {
       newFormData = this.childComp.state.formdata;
@@ -190,11 +225,10 @@ class AddGridList extends Component {
     }
     let ableSubmit = isableSubmit(requireForm, this.state.formdata);
     ableSubmit = true;
-
     return (
       <div className={styles.con}>
         <WhiteSpace size="xl" />
-        <div className={styles.con_content}>
+        <div className={styles.con_content} id="con_content">
           <CreateForm
             history={history}
             onRef={(comp) => { this.childComp = comp; }}
@@ -225,7 +259,9 @@ class AddGridList extends Component {
 export default connect(({
   start,
   loading,
+  common,
 }) => ({
+  scrollTopDetails: common.scrollTopDetails,
   start,
   loading: loading.global,
 }))(AddGridList);

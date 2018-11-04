@@ -634,3 +634,22 @@ export function dealCheckAll(selects, snArr, name, selectAll, source, max) {
 String.prototype.trim = function () {
   return this.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
 }
+
+export function scrollToAnchor(anchorName) {
+  if (anchorName) {
+    // 找到锚点
+    const anchorElement = document.getElementById(anchorName);
+    // 如果对应id的锚点存在，就跳转到锚点
+    if (anchorElement) { anchorElement.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+  }
+}
+
+export function getScrollTop() {
+  var scrollTop = 0;
+  if (document.documentElement && document.documentElement.scrollTop) {
+    scrollTop = document.documentElement.scrollTop;
+  } else if (document.body) {
+    scrollTop = document.body.scrollTop;
+  }
+  return scrollTop;
+}

@@ -8,6 +8,9 @@ export default {
     flowList: [], // 可发起的列表
     footStyle: {},
     userInfo: {},
+    scrollTopDetails: {
+
+    },
   },
 
   subscriptions: {
@@ -59,6 +62,12 @@ export default {
 
   reducers: {
     ...defaultReducers,
+    saveScroll(state, action) {
+      return {
+        ...state,
+        scrollTop: action.payload,
+      };
+    },
   },
 
 };

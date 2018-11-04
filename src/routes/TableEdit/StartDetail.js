@@ -25,6 +25,10 @@ class StartDetail extends Component {
     }
   }
 
+  componentDidMount() {
+    this.excuteScrollTo();
+  }
+
   getGridItem = (key) => {
     const { start: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
@@ -73,6 +77,35 @@ class StartDetail extends Component {
     });
   }
 
+  excuteScrollTo = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTopDetails, location: { pathname } } = this.props;
+      const scrollTop = scrollTopDetails[pathname];
+      content.scrollTop = scrollTop;
+    }
+  }
+
+  saveScrollTop = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTop } = content;
+      this.saveScrolModal(scrollTop);
+    }
+  }
+
+  saveScrolModal = (scrollTop) => {
+    const { dispatch, location: { pathname } } = this.props;
+    dispatch({
+      type: 'common/save',
+      payload: {
+        store: 'scrollTop',
+        id: pathname,
+        data: scrollTop,
+      },
+    });
+  }
+
   fetchDetail = (id) => {
     const { dispatch } = this.props;
     dispatch({
@@ -88,6 +121,7 @@ class StartDetail extends Component {
       },
     });
   }
+
   doWithDraw = () => {
     const { dispatch, start: { startflow } } = this.props;
     const flowRun = startflow.flow_run;
@@ -101,6 +135,7 @@ class StartDetail extends Component {
 
   toEditGrid = (url) => {
     const { history } = this.props;
+    this.saveScrollTop();
     history.push(url);
   }
 
@@ -124,7 +159,7 @@ class StartDetail extends Component {
 
     return (
       <div className={styles.con}>
-        <div className={styles.con_content}>
+        <div className={styles.con_content} id="con_content">
           <FormDetail
             form_data={formData}
             show_form={showForm}
@@ -151,10 +186,12 @@ class StartDetail extends Component {
   }
 }
 export default connect(({
-  start, loading,
+  start, loading, common,
 }) => {
   return ({
     start,
+    scrollTopDetails: common.scrollTopDetails,
+
     loading: (
       // (loading.effects['start/doWithDraw'] || false) ||
       // (loading.effects['api/fetchApi'] || false) ||
