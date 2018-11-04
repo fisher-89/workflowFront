@@ -1,8 +1,7 @@
 // 审批的表单
-import React from 'react';
+import React, { Component } from 'react';
 import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
-import scrollInfo from '../TableEdit/ScrollInfo';
 import { CreateForm, FormDetail } from '../../components';
 import CCPerson from '../../components/CCPerson';
 import {
@@ -14,7 +13,7 @@ import FlowChart from '../../components/FlowChart/chart';
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
 
-class ApproveDetail extends scrollInfo {
+class ApproveDetail extends Component {
   state = {
     flowId: '',
     formdata: [],
@@ -230,6 +229,7 @@ class ApproveDetail extends scrollInfo {
     const { approve, history } = this.props;
     const { startflow } = approve;
     let url = `/approve_grid/${key}/${i}`;
+    this.saveScrollTop();
     if (startflow.step_run.action_type === 0) {
       // this.childComp.saveData();
       this.saveData();
@@ -246,7 +246,7 @@ class ApproveDetail extends scrollInfo {
       newFormData = this.childComp.state.formdata;
     }
     const { dispatch } = this.props;
-    this.saveScrollTop(document.getElementById('con_content'));
+    this.saveScrollTop();
     dispatch({
       type: 'approve/save',
       payload: {

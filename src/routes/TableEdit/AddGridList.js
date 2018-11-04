@@ -1,5 +1,5 @@
 // 编辑或新增列表控件数据页面
-import React from 'react';
+import React, { Component } from 'react';
 import { Toast, Button, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
@@ -7,9 +7,8 @@ import { getGridFilter, availableFormFilter } from '../../utils/convert';
 import { isableSubmit, initFormdata } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import styles from '../common.less';
-import scrollInfo from './ScrollInfo';
 
-class AddGridList extends scrollInfo {
+class AddGridList extends Component {
   state = {
     flag: true,
     key: '',

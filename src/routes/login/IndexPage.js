@@ -17,7 +17,13 @@ class IndexPage extends React.Component {
     this.props.dispatch({
       type: 'list/resetModal',
     });
-    sessionStorage.scrollTop = 0;
+    // this.props.dispatch({
+    //   type: 'common/save',
+    //   paylaod: {
+    //     store: 'scrollTopDetails',
+    //     data: {},
+    //   },
+    // });
   }
   render() {
     const { history } = this.props;

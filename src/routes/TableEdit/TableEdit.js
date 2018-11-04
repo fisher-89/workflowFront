@@ -1,5 +1,5 @@
 // 发起页面
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Button, SwipeAction, WhiteSpace } from 'antd-mobile';
 
@@ -8,9 +8,8 @@ import { CreateForm } from '../../components';
 import { initFormdata, isableSubmit, judgeGridSubmit, dealGridData, makeGridItemData } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
-import scrollInfo from './ScrollInfo';
 
-class TableEdit extends scrollInfo {
+class TableEdit extends Component {
   constructor(props) {
     super(props);
     this.state = {
