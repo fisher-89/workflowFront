@@ -17,13 +17,13 @@ class IndexPage extends React.Component {
     this.props.dispatch({
       type: 'list/resetModal',
     });
-    // this.props.dispatch({
-    //   type: 'common/save',
-    //   paylaod: {
-    //     store: 'scrollTopDetails',
-    //     data: {},
-    //   },
-    // });
+    this.props.dispatch({
+      type: 'common/save',
+      payload: {
+        store: 'scrollTopDetails',
+        data: {},
+      },
+    });
   }
   render() {
     const { history } = this.props;
