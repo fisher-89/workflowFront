@@ -150,6 +150,7 @@ const defaultType = 'processing';
 @connect(({ loading, list, common }) => ({
   loading,
   common,
+  scrollTopDetails: common.scrollTopDetails,
   lists: list.lists,
 }))
 export default class StartList extends Component {
@@ -221,6 +222,7 @@ export default class StartList extends Component {
         defaultSort={defaultSort}
         offetTop={88}
         {...someProps}
+        anchor
         fetchDataSource={this.fetchDataSource}
         type={type}
         timeKey={showTime}

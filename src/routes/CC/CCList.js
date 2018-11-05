@@ -90,6 +90,7 @@ export default class CCList extends Component {
         defaultSort={defaultSort}
         dataSource={data}
         offetTop={44}
+        anchor
         fetchDataSource={this.fetchDataSource}
         type={type}
         {...someProps}

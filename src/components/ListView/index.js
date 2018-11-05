@@ -22,7 +22,7 @@ multiple   false 是否多选
 name       require
  */
 export default function ListView(ListItem) {
-  @connect(({ loading }) => ({ loading }))
+  @connect(({ loading, common }) => ({ loading, scrollTopDetails: common.scrollTopDetails }))
   class NewItem extends PureComponent {
     constructor(props) {
       super(props);
@@ -30,31 +30,30 @@ export default function ListView(ListItem) {
         muti: props.selected || [],
         height: document.documentElement.clientHeight,
       };
+      this.scrollTimer = setTimeout(this.excuteScrollTo, 100);
     }
 
     componentDidMount() {
       if (this.ptr) {
-        // const htmlDom = ReactDOM.findDOMNode(this.ptr);
-        // const offetTop = htmlDom.getBoundingClientRect().top;
-        // const hei = this.state.height - offetTop;
-        // setTimeout(() => this.setState({
-        //   height: hei,
-        // }), 0);
         this.getElementHeight();
       }
     }
 
     componentWillReceiveProps(nextProps) {
-      const { selected, dataSource } = nextProps;
+      const { selected, dataSource, type } = nextProps;
       if (selected && JSON.stringify(selected) !== JSON.stringify(this.state.muti)) {
         this.setState({
           muti: [...nextProps.selected],
         });
       }
       if (JSON.stringify(dataSource) !== JSON.stringify(this.props.dataSource) && this.ptr) {
-        // const htmlDom = ReactDOM.findDOMNode(this.ptr);
-        // const offetTop = htmlDom.getBoundingClientRect().top;
         this.getElementHeight();
+        if (this.props.dataSource.length === 0) {
+          this.excuteScrollTo();
+        }
+      }
+      if (type !== this.props.type) {
+        // this.excuteScrollTo();
       }
     }
 
@@ -205,9 +204,39 @@ export default function ListView(ListItem) {
       });
     }
 
+    excuteScrollTo = () => {
+      const content = document.getElementById('con_content');
+      if (content) {
+        const { scrollTopDetails, location: { pathname } } = this.props;
+        const scrollTop = scrollTopDetails[pathname];
+        document.getElementById('con_content').scrollTop = scrollTop;
+      }
+      this.scrollTimer = null;
+    }
+
+    saveScrollTop = () => {
+      const content = document.getElementById('con_content');
+      if (content) {
+        const { scrollTop } = content;
+        this.saveScrolModal(scrollTop);
+      }
+    }
+
+    saveScrolModal = (scrollTop) => {
+      const { dispatch, location: { pathname } } = this.props;
+      dispatch({
+        type: 'common/save',
+        payload: {
+          store: 'scrollTop',
+          id: pathname,
+          data: scrollTop,
+        },
+      });
+    }
+
     makeListItemProps = (item) => {
       const { muti } = this.state;
-      const { multiple, onChange, name, singleSelected = {} } = this.props;
+      const { multiple, onChange, name, singleSelected = {}, anchor } = this.props;
       const response = {
         ...this.props,
         value: item,
@@ -217,6 +246,12 @@ export default function ListView(ListItem) {
         const dataId = muti.map(m => `${m[name]}`);
         response.checked = multiple ?
           dataId.indexOf(`${item[name]}`) !== -1 : `${singleSelected[name]}` === `${item[name]}`;
+      }
+      if (anchor) {
+        response.onHandleClick = (v) => {
+          this.saveScrollTop();
+          this.props.onHandleClick(v);
+        };
       }
       return response;
     }
@@ -228,6 +263,8 @@ export default function ListView(ListItem) {
         <PullToRefresh
           onRefresh={this.onRefresh}
           style={{ overflow: 'auto', height }}
+          ref={(el) => { this.pull = el; }}
+          id="con_content"
         >
           {this.renderList()}
         </PullToRefresh>
@@ -289,6 +326,10 @@ export default function ListView(ListItem) {
 
     render() {
       const { onRefresh } = this.props;
+      if (this.scrollTimer) {
+        clearTimeout(this.scrollTimer);
+        this.scrollTimer = setTimeout(this.excuteScrollTo, 100);
+      }
       return (
         <React.Fragment>
           {onRefresh ? this.pullDownToRefresh() : this.renderList()}

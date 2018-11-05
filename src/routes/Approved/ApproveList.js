@@ -157,6 +157,7 @@ export default class StartList extends Component {
           defaultSort={defaultSort}
           dataSource={data}
           offetTop={88}
+          anchor
           fetchDataSource={this.fetchDataSource}
           type={type}
           {...someProps}
@@ -166,6 +167,7 @@ export default class StartList extends Component {
             totalpage={totalpage}
             timeKey={showTime}
             offetTop={88}
+            anchor
             defaultSort={defaultSort}
             dataSource={data}
             fetchDataSource={this.fetchDataSource}

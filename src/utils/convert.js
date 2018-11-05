@@ -66,6 +66,7 @@ export const startState = [
   { title: '已完成', type: 'finished' },
   { title: '被驳回', type: 'rejected' },
   { title: '撤回', type: 'withdraw' },
+
 ];
 export const startConverSta = [
   { title: '已撤回', type: -2 },
