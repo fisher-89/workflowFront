@@ -3,9 +3,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import CircularJSON from 'circular-json';
-import { remove, findIndex, last, find, has, mapValues, max, min } from 'lodash';
-import { flowchartStatus, flowchartStatusColor } from '../../utils/convert'
-import { userStorage } from '../../utils/util'
+import { remove, findIndex, last, find, has, mapValues, max, min, difference } from 'lodash';
+import { flowchartStatus, flowchartStatusColor } from '../../utils/convert';
+import { userStorage } from '../../utils/util';
+
 const curveRadius = 12;
 const colGap = 36;
 const verticalRate = 90;
@@ -16,12 +17,12 @@ const lineStyle = {
 const firstColLineStyle = {
   color: 'rgb(202,233,233)',
   width: 6,
-}
+};
 const node = {
   radius: 15,
   color: 'rgb(89,195,195)',
-  width: 6
-}
+  width: 6,
+};
 
 // const test = [
 //   { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [] },
@@ -62,39 +63,37 @@ const node = {
 //   { id: 4, next_id: [], prev_id: [3] },
 //   // { id: 5, next_id: [], prev_id: [4] },
 // ]
-// const test = [
-//   { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [], status: 1, approver: 'xx', operate_at: 'xx', 'staff_sn': 'xxx' },
-//   { id: 2, time: '2', next_id: [5, 6], prev_id: [1] },
-//   { id: 3, time: '3', next_id: [7, 8], prev_id: [1] },
-//   { id: 4, time: '4', next_id: [9, 10], prev_id: [1] },
-//   { id: 5, time: '5', next_id: [12], prev_id: [2] },
-//   { id: 6, time: '6', next_id: [11], prev_id: [2] },
-//   { id: 7, time: '6', next_id: [13], prev_id: [3] },
-//   { id: 8, time: '6', next_id: [11], prev_id: [3] },
-//   { id: 9, time: '6', next_id: [], prev_id: [4] },
-//   { id: 10, time: '6', next_id: [11], prev_id: [4] },
-//   { id: 11, time: '6', next_id: [13], prev_id: [6, 8, 10] },
-//   { id: 12, time: '6', next_id: [13], prev_id: [5] },
-//   { id: 13, time: '6', next_id: [], prev_id: [12, 11, 7] },
-// ];
 const test = [
-  { id: 1, time: '2', next_id: [2, 3, 4], prev_id: [] },
-  { id: 2, time: '2', next_id: [8], prev_id: [1] },
-  { id: 3, time: '2', next_id: [5], prev_id: [1] },
-  { id: 4, time: '2', next_id: [6], prev_id: [1] },
-  { id: 5, time: '2', next_id: [7], prev_id: [3] },
-  { id: 6, time: '2', next_id: [7], prev_id: [4] },
-  { id: 7, time: '2', next_id: [9], prev_id: [5, 6] },
-  { id: 9, time: '2', next_id: [], prev_id: [7] },
-  { id: 8, time: '2', next_id: [], prev_id: [2] },
-
-]
+  { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [], status: 1, approver: 'xx', operate_at: 'xx', 'staff_sn': 'xxx' },
+  { id: 2, time: '2', next_id: [5, 6], prev_id: [1] },
+  { id: 3, time: '3', next_id: [7, 8], prev_id: [1] },
+  { id: 4, time: '4', next_id: [9, 10], prev_id: [1] },
+  { id: 5, time: '5', next_id: [12], prev_id: [2] },
+  { id: 6, time: '6', next_id: [11], prev_id: [2] },
+  { id: 7, time: '6', next_id: [13], prev_id: [3] },
+  { id: 8, time: '6', next_id: [11], prev_id: [3] },
+  { id: 9, time: '6', next_id: [], prev_id: [4] },
+  { id: 10, time: '6', next_id: [11], prev_id: [4] },
+  { id: 11, time: '6', next_id: [13], prev_id: [6, 8, 10] },
+  { id: 12, time: '6', next_id: [13], prev_id: [5] },
+  { id: 13, time: '6', next_id: [], prev_id: [12, 11, 7] },
+];
+// const test = [
+//   { id: 1, time: '2', next_id: [2, 3, 4], prev_id: [] },
+//   { id: 2, time: '2', next_id: [8], prev_id: [1] },
+//   { id: 3, time: '2', next_id: [5], prev_id: [1] },
+//   { id: 4, time: '2', next_id: [6], prev_id: [1] },
+//   { id: 5, time: '2', next_id: [7], prev_id: [3] },
+//   { id: 6, time: '2', next_id: [7], prev_id: [4] },
+//   { id: 7, time: '2', next_id: [9], prev_id: [5, 6] },
+//   { id: 9, time: '2', next_id: [], prev_id: [7] },
+//   { id: 8, time: '2', next_id: [], prev_id: [2] },
+// ]
 let datas = [];
 let cols = {};
 let testKeyById = {};
 let lines = [];
 let rows = [];
-let uniqueRows = [];
 let curves = [];
 const unfinishedLines = [];
 @connect()
@@ -105,29 +104,27 @@ export default class FlowChart extends Component {
       chartData: [],
       lines: [],
       rows: [],
-      cols: {},
-      uniqueRows: [],
-    }
+    };
 
     // if (dataSource.length) {
     //   this.makeChartData(props.dataSource)
     // }
   }
 
-  componentWillReceiveProps(props) {
-    const { dataSource = [] } = props;
-    if (CircularJSON.stringify(dataSource) !== CircularJSON.stringify(this.props.dataSource) && dataSource.length) {
-      this.makeChartData(dataSource)
-    }
-  }
-
   componentDidMount() {
     this.canvas = document.getElementById('myCanvas');
-    this.canvasContain = document.getElementById('canvasContain')
+    this.canvasContain = document.getElementById('canvasContain');
     this.ctx = this.canvas.getContext('2d');
     const { dataSource } = this.props;
     if (dataSource.length) {
-      this.makeChartData(dataSource)
+      this.makeChartData(dataSource);
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    const { dataSource = [] } = props;
+    if (CircularJSON.stringify(dataSource) !== CircularJSON.stringify(this.props.dataSource) && dataSource.length) {
+      this.makeChartData(dataSource);
     }
   }
 
@@ -136,11 +133,10 @@ export default class FlowChart extends Component {
     testKeyById = {};
     lines = [];
     rows = [];
-    uniqueRows = [];
     curves = [];
     datas = [...dataSource];
-    // datas = [...test];
-    const pointIds = datas.map(item => item.id)
+    datas = [...test];
+    const pointIds = datas.map(item => item.id);
     datas.forEach((step, index) => {
       const nextId = step.next_id;
       const prevId = step.prev_id;
@@ -148,69 +144,59 @@ export default class FlowChart extends Component {
       this.filterCanceledPoint(prevId, pointIds);
       testKeyById[step.id] = step;
       step.y = index + 1;
-      let row = {};
       let line = {};
-      //绑定点的X坐标
-      if (step.prev_id.length === 0) {//主节点
+      // 绑定点的X坐标
+      if (step.prev_id.length === 0) { // 主节点
         line = this.createNewColLine(cols, '0.');
-        row = this.createNewRowLine('0.', '0.', step.y + 0.5);
-      } else if (step.prev_id.length > 1) {//合并
+      } else if (step.prev_id.length > 1) {// 合并
         const prevSteps = datas.filter(item => step.prev_id.indexOf(item.id) !== -1);
         let max = '0';
         let min = '1';
+        let minCol = {};
+        let maxCol = {};
         prevSteps.forEach((prevStep) => {
-          const { colIndex } = prevStep.line;
-          this.finishColLine(prevStep.line, step.y - 0.5); //上一条线的结束点
+          const { col, colIndex } = prevStep.line;
+          this.finishColLine(prevStep.line, step.y - 0.5); // 上一条线的结束点
           max = colIndex - max >= 0 ? colIndex : max;
+          maxCol = colIndex - max >= 0 ? col : maxCol;
           min = colIndex - min <= 0 ? colIndex : min;
-
+          minCol = colIndex - min <= 0 ? col : minCol;
         });
-        row = this.createNewRowLine(min, max, step.y - 0.5);
-        unfinishedLines.forEach((unline) => {//交叉
+        this.createNewRowLine(minCol, maxCol, step.y - 0.5);
+        unfinishedLines.forEach((unline) => { // 交叉
           if (unline.colIndex > min && unline.colIndex < max) {
-            unline.crossingPoint.push(step.y - 0.5);//交叉点
+            unline.crossingPoint.push(step.y - 0.5);// 交叉点
           }
         });
         const prevLines = prevSteps.map(item => item.line);
         const basicLine = this.findBasicLine(prevLines);
         line = this.createNewColLine(basicLine.col, basicLine.colIndex, step.y - 0.5, prevLines);
-      } else {//不分叉
+      } else { // 不分叉
         const prevStep = testKeyById[step.prev_id[0]];
-        let max = '0';
-        let min = '1';
         const prevNext = prevStep.next_id;
         const prevLine = prevStep.line;
-        const prevRow = prevStep.row;
         if (prevNext.length > 1) {
           const subIndex = prevNext.indexOf(step.id);
-          prevNext.forEach((next, i) => {
-            const colIndex = `${prevLine.colIndex}${i >= 10 ? i : `0${i}`}`;
-            max = colIndex - max >= 0 ? colIndex : max;
-            min = colIndex - min <= 0 ? colIndex : min;
-          })
           line = prevLine.next_id[subIndex];
-          row = this.createNewRowLine(min, max, prevStep.y + 0.5);
         } else {
-          row = prevRow
           line = prevLine;
         }
-
       }
       // 生成cols分支
       step.line = line;
-      step.row = row;
       step.unfinishedLines = [...unfinishedLines];
       if (nextId.length > 1) {
-        this.separateColLine(step, step.y + 0.5)
+        const subLines = this.separateColLine(step, step.y + 0.5);
+        this.createNewRowLine(subLines[0].col, last(subLines).col, step.y + 0.5);
       }
       if (nextId.length === 0) {
         this.finishColLine(step.line, step.y);
       }
     });
-    const maxIndex = this.fillColsIndex(cols);
+    const maxIndex = this.fillColsIndex(cols); // 生成index
     const { y } = last(datas);
-    const width = (maxIndex * colGap + 20);
-    const height = ((y + 0.5) * verticalRate + 40);
+    const width = (maxIndex * colGap) + 20;
+    const height = ((y + 0.5) * verticalRate) + 40;
     if (this.canvas) {
       this.canvas.height = height * 3;
       this.canvas.width = width * 3;
@@ -218,33 +204,31 @@ export default class FlowChart extends Component {
       this.canvas.style.height = `${height}px`;
     }
     if (this.canvasContain) {
-      this.canvasContain.style.height = `${height / 3 + 40}px`;
+      this.canvasContain.style.height = `${(height / 3) + 40}px`;
       this.canvasContain.style.overflow = 'hidden';
     }
     this.drawRect(0, 0, width, height);
-    this.recombineRows();
+    this.makeCurves();
     this.setState({
       chartData: [...datas],
       lines: [...lines],
       rows: [...rows],
-      uniqueRows: [...uniqueRows],
-      cols: { ...cols },
-      curves: [...curves]
+      curves: [...curves],
     }, () => {
       this.draw();
-    })
+    });
   }
 
   filterCanceledPoint = (prevId, pointIds) => {
-    prevId.forEach(id => {
+    prevId.forEach((id) => {
       if (pointIds.indexOf(id) === -1) {
-        remove(prevId, ((item) => id === item))
+        remove(prevId, (item => id === item));
       }
-    })
+    });
   }
 
-  createNewRowLine = (min, max, y) => {
-    const row = { start: min, end: max, y };
+  createNewRowLine = (minCol, maxCol, y) => {
+    const row = { start: minCol, end: maxCol, y };
     rows.push(row);
     return row;
   }
@@ -272,10 +256,11 @@ export default class FlowChart extends Component {
   separateColLine = (prevStep, startY) => {
     const prevLine = prevStep.line;
     this.finishColLine(prevLine, startY);
-    prevStep.next_id.forEach((next, subIndex) => {
-      const col = prevLine.col[subIndex] = prevLine.col[subIndex] || {};
+    return prevStep.next_id.map((next, subIndex) => {
+      prevLine.col[subIndex] = prevLine.col[subIndex] || {};
+      const col = prevLine.col[subIndex];
       const colIndex = `${prevLine.colIndex}${subIndex >= 10 ? subIndex : `0${subIndex}`}`;
-      this.createNewColLine(col, colIndex, startY, [prevLine]);
+      return this.createNewColLine(col, colIndex, startY, [prevLine]);
     });
   }
 
@@ -288,8 +273,9 @@ export default class FlowChart extends Component {
     return response;
   }
 
-  findBasicLines = (line, basicLines = []) => {
+  findBasicLines = (line, _basicLines = []) => {
     const prevLines = line.prev_id;
+    let basicLines = [..._basicLines];
     if (prevLines.length === 0) {
       basicLines.push(line);
     } else if (prevLines.length > 1) {
@@ -302,20 +288,12 @@ export default class FlowChart extends Component {
       if (prevLineNext.length === 1) {
         basicLines = this.findBasicLines(prevLine, basicLines);
       } else if (prevLineNext.length > 1) {
-        let prevNextLine;
-        let flag = true;
-        const newBasicLines = [...basicLines];
-        for (let i = 0; i < prevLineNext.length; i += 1) {
-          prevNextLine = prevLineNext[i];
-          if (basicLines.indexOf(prevNextLine) === -1 && prevNextLine !== line) {
-            basicLines.push(line);
-            flag = false;
-            break;
-          }
-          remove(newBasicLines, (item => item === prevNextLine));
-        }
-        if (flag) {
-          basicLines = this.findBasicLines(prevLine, newBasicLines);
+        const extraNext = difference(prevLineNext, basicLines);
+        if (extraNext.length === 1 && extraNext[0] === line) {
+          basicLines = difference(basicLines, prevLineNext);
+          basicLines = this.findBasicLines(prevLine, basicLines);
+        } else {
+          basicLines.push(line);
         }
       }
     }
@@ -338,55 +316,28 @@ export default class FlowChart extends Component {
     return colIndex;
   }
 
-  recombineRows = () => {//uniqueRows
-    let obj = {};
-    rows.forEach(row => {
-      const { start, end, y } = row;
-      const newStartLine = find(lines, (item) => item.colIndex === start);
-      const newEndLine = find(lines, (item) => item.colIndex === end);
-      const newStart = newStartLine.col.index;
-      const newEnd = newEndLine.col.index;
-      row.start = newStart;
-      row.end = newEnd;
-      if (newStart !== newEnd) {
-        if (!has(obj, y)) obj[y] = [];
-        obj[y].push(row);
+  makeCurves = () => { // curves
+    rows.forEach((row) => {
+      const { end: { index }, y } = row;
+      const line = lines.filter(line => (`${line.col.index}` === `${index}` && (`${y}` === `${line.start}` || `${y}` === `${line.end}`)));
+      const endPoint = { x: index, y: line[0].end };
+      let p1 = { x: index - (curveRadius / colGap), y };
+      let p2 = { x: index, y: y + (curveRadius / verticalRate) };
+      let direction = 1;
+      if ((y - endPoint.y) >= 0) {
+        p1 = { x: index - (curveRadius / colGap), y };
+        p2 = { x: index, y: y - (curveRadius / verticalRate) };
+        direction = -1;
       }
-    })
-    mapValues(obj, (row) => {
-      const startArr = [];
-      const endArr = [];
-      row.forEach(item => {
-        startArr.push(item.start);
-        endArr.push(item.end);
-      });
-      const y = row[0].y;
-      const temp = { y, start: min(startArr), end: max(endArr) };
-      uniqueRows.push(temp);
-      this.makeCurves(temp.start, temp.end, temp.y);
-    })
-  }
-
-  makeCurves = (start, end, y) => {//curves 
-    const startPoint = { x: start, y };
-    const line = lines.filter(line => (`${line.col.index}` === `${end}` && (`${y}` === `${line.start}` || `${y}` === `${line.end}`)));
-    const endPoint = { x: end, y: line[0].end };
-    let p1 = { x: end - (curveRadius / colGap), y };
-    let p2 = { x: end, y: y - 0 + (curveRadius / verticalRate) };
-    let direction = 1;
-    if ((startPoint.x - endPoint.x) * (startPoint.y - endPoint.y) <= 0) {
-      p1 = { x: end - (curveRadius / colGap), y };
-      p2 = { x: end, y: y - (curveRadius / verticalRate) };
-      direction = -1;
-    }
-    curves.push({ start: p1, end: p2, direction });
+      curves.push({ start: p1, end: p2, direction });
+    });
   }
 
   drawRect = (x, y, w, h) => {
     if (this.canvas) {
       const { ctx } = this;
       ctx.beginPath();
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = '#fff';
       ctx.fillRect(x, y, w, h);
     }
   }
@@ -412,8 +363,7 @@ export default class FlowChart extends Component {
       ctx.fillStyle = color;
       ctx.lineWidth = width;
       ctx.fill();
-    }
-    else {
+    } else {
       ctx.strokeStyle = color;
       ctx.lineWidth = width;
       ctx.stroke();
@@ -433,7 +383,7 @@ export default class FlowChart extends Component {
     crossingPoint.forEach(point => {
       this.drawArc((index * colGap) - 1, point * verticalRate, 5, -0.5 * Math.PI, 0.5 * Math.PI, c1);
       this.drawArc((index * colGap) - 1, point * verticalRate, 3, -0.5 * Math.PI, 0.5 * Math.PI, c2);
-    })
+    });
   }
 
   drawRing = (x, y, r1, r2, c1, c2) => {
@@ -456,11 +406,11 @@ export default class FlowChart extends Component {
   }
 
   draw = () => {
-    const { uniqueRows, chartData, lines, curves } = this.state
-    uniqueRows.forEach((row) => {
+    const { rows, chartData, lines, curves } = this.state
+    rows.forEach((row) => {
       const { start, end, y } = row;
-      this.drawLine(start * colGap, y * verticalRate, end * colGap, y * verticalRate, lineStyle.color);
-    })
+      this.drawLine(start.index * colGap, y * verticalRate, end.index * colGap, y * verticalRate, lineStyle.color);
+    });
     lines.forEach((line, i) => {
       const { col: { index }, start, end, crossingPoint } = line;
       const color = index === 1 ? firstColLineStyle.color : lineStyle.color;
@@ -468,7 +418,7 @@ export default class FlowChart extends Component {
       if (crossingPoint.length) {
         this.drawCrossPoint(crossingPoint, index, lineStyle.color, '#fff');
       }
-    })
+    });
     chartData.forEach((point) => {
       const { line: { col: { index } }, y } = point;
       if (y === 1) {
@@ -482,7 +432,7 @@ export default class FlowChart extends Component {
     curves.forEach((p) => {
       const { start, end, direction } = p;
       this.drawCurve(start.x, start.y, end.x, end.y, direction)
-    })
+    });
   }
 
   renderTimeLine = () => {
@@ -512,16 +462,16 @@ export default class FlowChart extends Component {
       const optater = line.approver_sn == userStorage('userInfo').staff_sn ? '我' : line.approver_name;
       const statusColor = flowchartStatusColor(line.action_type);
       return (
-        <div style={{ ...style, background: '#fff' }} key={id} >
+        <div style={{ ...style, background: '#fff' }} key={id}>
           <div>
             <span style={{ ...fisrtDivStyle }}>{optater}</span>
             <span style={{ ...fisrtDivStyle, marginLeft: '10px', color: statusColor }}>{statusMsg}</span>
           </div>
-          <div style={{ ...timeStyle }} >{line.acted_at}</div>
+          <div style={{ ...timeStyle }}>{line.acted_at}</div>
         </div>
-      )
+      );
     })
-    return timelines
+    return timelines;
   }
 
   render() {
@@ -530,12 +480,12 @@ export default class FlowChart extends Component {
       <div style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }} id="canvasContain">
         <canvas id="myCanvas" />
         {chartData.length &&
-          this.renderTimeLine()}
+        this.renderTimeLine()}
       </div>
     );
   }
 }
 
 FlowChart.defaultProps = {
-  dataSource: []
+  dataSource: [],
 }
