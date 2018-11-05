@@ -166,10 +166,6 @@ class TableEdit extends Component {
     });
   }
 
-  clearScrollTop = () => {
-    sessionStorage.scrollTop = 0;
-  }
-
   handleOnchange = (formdata) => {
     this.setState({
       formdata,
@@ -297,7 +293,6 @@ class TableEdit extends Component {
       startflow.step.available_fields.indexOf(item.key) !== -1);
     const requiredGrid = availableGrid.filter(item =>
       startflow.step.required_fields.indexOf(item.key) !== -1);
-
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)
       && judgeGridSubmit(requiredGrid, this.state.griddata);
     ableSubmit = true;

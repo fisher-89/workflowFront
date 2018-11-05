@@ -32,7 +32,6 @@ class AddGridList extends Component {
     if (!key && flag && startflow) {
       const { type, index } = params;
       const { fields: { grid } } = startflow;
-
       const [availableForm] = getGridFilter(grid, 'available_fields', startflow.step).filter(item => `${item.key}` === `${type}`);
       const availableFeilds = availableForm.newFields;
       let newFormData = start.form_data;
@@ -185,19 +184,10 @@ class AddGridList extends Component {
 
   render() {
     const { start, dispatch, loading, history } = this.props;
-    const { key, index, formdata } = this.state;
+    const { key, formdata } = this.state;
     const { startflow, gridDefault } = start;
     spin(loading);
 
-    // let formdata = [];
-    // const formdata = ((gridformdata && !gridformdata.length) || !key || index === '-1') ?
-    //   [] : gridformdata.find(item => item.key === key).fields[Number(index)];
-    // if ((gridformdata && !gridformdata.length) || !key || `${index}` === '-1') {
-    //   formdata = [];
-    // } else {
-    //   const [current] = gridformdata.filter(item => `${item.key}` === `${key}`);
-    //   formdata = current.fields[Number(index)];
-    // }
     if (!startflow) {
       return <p style={{ textAlign: 'center' }}>暂无信息</p>;
     }
@@ -209,18 +199,14 @@ class AddGridList extends Component {
     let availableFeilds = [];
     if (startflow && key) {
       const { fields: { grid } } = startflow;
-      newFormData = startflow.form_data;
       const [availableForm] = getGridFilter(grid, 'available_fields', startflow.step).filter(item => item.key === key);
       availableFeilds = availableForm.newFields;
       const gridKey = availableForm.key;
-      newFormData = startflow.form_data[gridKey][index];
       showGrid = availableFormFilter(gridKey, availableFeilds, 'hidden_fields', startflow.step, 1);
       editableForm = availableFormFilter(gridKey, availableFeilds, 'editable_fields', startflow.step);
       requireForm = availableFormFilter(gridKey, availableFeilds, 'required_fields', startflow.step);
-      if (`${index}` === '-1') {
-        const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${key}`);
-        newFormData = gridItemDefault.fieldDefault || {};
-      }
+      const [gridItemDefault] = gridDefault.filter(item => `${item.key}` === `${key}`);
+      newFormData = gridItemDefault.fieldDefault || {};
     }
     let ableSubmit = isableSubmit(requireForm, this.state.formdata);
     ableSubmit = true;

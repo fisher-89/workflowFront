@@ -29,9 +29,8 @@ class CreateForm extends Component {
     const editableForm = nextprops.editable_form;
     const requiredForm = nextprops.required_form;
     const newFormData = nextprops.form_data;
-
-    if (newFormData && (!this.state.init)) {
-      const formData = { ...newFormData };
+    if (!this.state.init) {
+      const formData = { ...(newFormData || {}) };
       const tempFormdata = [...formdata];
       if (tempFormdata && !tempFormdata.length) {
         availableForm.map((item) => {
