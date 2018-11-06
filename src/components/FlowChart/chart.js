@@ -93,7 +93,6 @@ let cols = {};
 let testKeyById = {};
 let lines = [];
 let rows = [];
-let curves = [];
 let unfinishedLines = [];
 @connect()
 export default class FlowChart extends Component {
@@ -129,7 +128,6 @@ export default class FlowChart extends Component {
     testKeyById = {};
     lines = [];
     rows = [];
-    curves = [];
     unfinishedLines = [];
     datas = [...dataSource];
     const maxIndex = this.makeChartData();
