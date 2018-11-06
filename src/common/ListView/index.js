@@ -11,6 +11,7 @@ import SelDep from './SelDep';
 import Shop from './Shop';
 import ApiItem from './ApiItem';
 import CC from './CC';
+import ApproveHeader from './ApproveHeader';
 
 export {
   Department,
@@ -24,4 +25,5 @@ export {
   SelDep,
   Shop,
   CC,
+  ApproveHeader,
 };

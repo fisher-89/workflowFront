@@ -4,6 +4,7 @@ import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
 import CCPerson from '../../components/CCPerson';
+import { ApproveHeader } from '../../common/ListView';
 import {
   initFormdata, isableSubmit, dealGridData, judgeGridSubmit,
   makeGridItemData, makeFieldValue, getUrlParams,
@@ -385,7 +386,6 @@ class ApproveDetail extends Component {
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     const cc = startflow.cc_person;
-
     // 只需要展示的（不包括可编辑的）
     // const showForm =
     //  form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
@@ -411,8 +411,16 @@ class ApproveDetail extends Component {
     let ableSubmit = isableSubmit(requiredForm, this.state.formdata)
       && judgeGridSubmit(requiredGrid, this.state.griddata);
     ableSubmit = true;
+    const haederInfo = {
+      time: startflow.flow_run.created_at,
+      person: startflow.flow_run.creator_name,
+      name: startflow.flow_run.name,
+      action_type: startflow.step_run.action_type,
+    };
     return (
       <div className={styles.con}>
+        <WhiteSpace size="xl" />
+        <ApproveHeader value={haederInfo} />
         <WhiteSpace size="xl" />
         <div className={styles.con_content} id="con_content">
           {startflow.step_run.action_type === 0 ? (

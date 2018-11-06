@@ -71,11 +71,11 @@ const test = [
   { id: 6, time: '6', next_id: [11], prev_id: [2] },
   { id: 7, time: '6', next_id: [13], prev_id: [3] },
   { id: 8, time: '6', next_id: [11], prev_id: [3] },
-  { id: 9, time: '6', next_id: [], prev_id: [4] },
+  { id: 9, time: '6', next_id: [13], prev_id: [4] },
   { id: 10, time: '6', next_id: [11], prev_id: [4] },
   { id: 11, time: '6', next_id: [13], prev_id: [6, 8, 10] },
   { id: 12, time: '6', next_id: [13], prev_id: [5] },
-  { id: 13, time: '6', next_id: [], prev_id: [12, 11, 7] },
+  { id: 13, time: '6', next_id: [], prev_id: [12, 9, 11, 7] },
 ];
 // const test = [
 //   { id: 1, time: '2', next_id: [2, 3, 4], prev_id: [] },
