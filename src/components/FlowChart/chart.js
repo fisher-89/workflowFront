@@ -1,9 +1,8 @@
-/* eslint-disable */
-
+/* eslint-disable  no-param-reassign , no-shadow */
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import CircularJSON from 'circular-json';
-import { remove, findIndex, last, find, has, mapValues, max, min, difference } from 'lodash';
+import { remove, findIndex, last, difference } from 'lodash';
 import { flowchartStatus, flowchartStatusColor } from '../../utils/convert';
 import { userStorage } from '../../utils/util';
 
@@ -64,7 +63,7 @@ const node = {
 //   // { id: 5, next_id: [], prev_id: [4] },
 // ]
 const test = [
-  { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [], status: 1, approver: 'xx', operate_at: 'xx', 'staff_sn': 'xxx' },
+  { id: 1, time: '1', next_id: [2, 3, 4], prev_id: [], status: 1, approver: 'xx', operate_at: 'xx', staff_sn: 'xxx' },
   { id: 2, time: '2', next_id: [5, 6], prev_id: [1] },
   { id: 3, time: '3', next_id: [7, 8], prev_id: [1] },
   { id: 4, time: '4', next_id: [9, 10], prev_id: [1] },
@@ -102,8 +101,8 @@ export default class FlowChart extends Component {
     super(props);
     this.state = {
       chartData: [],
-      lines: [],
-      rows: [],
+      chartLines: [],
+      chartRows: [],
     };
   }
 
@@ -119,7 +118,8 @@ export default class FlowChart extends Component {
 
   componentWillReceiveProps(props) {
     const { dataSource = [] } = props;
-    if (CircularJSON.stringify(dataSource) !== CircularJSON.stringify(this.props.dataSource) && dataSource.length) {
+    if (CircularJSON.stringify(dataSource) !== CircularJSON.stringify(this.props.dataSource)
+      && dataSource.length) {
       this.makeCanvasData(dataSource);
     }
   }
@@ -136,9 +136,8 @@ export default class FlowChart extends Component {
     this.makeCanvasSize(maxIndex);
     this.setState({
       chartData: [...datas],
-      lines: [...lines],
-      rows: [...rows],
-      curves: [...curves],
+      chartLines: [...lines],
+      chartRows: [...rows],
     }, () => {
       this.draw();
     });
@@ -157,8 +156,8 @@ export default class FlowChart extends Component {
       // 绑定点的X坐标
       if (step.prev_id.length === 0) { // 主节点
         line = this.createNewColLine(cols, '0.');
-      } else if (step.prev_id.length > 1) {// 合并
-        line = this.mergeLine(step)
+      } else if (step.prev_id.length > 1) { // 合并
+        line = this.mergeLine(step);
       } else { // 不分叉
         const prevStep = testKeyById[step.prev_id[0]];
         const prevNext = prevStep.next_id;
@@ -209,7 +208,8 @@ export default class FlowChart extends Component {
     });
   }
 
-  createNewRowLine = (minCol, maxCol, y, direction, crossingPoint = []) => {//direction为1，则圆弧向上，为负则向下
+  createNewRowLine = (minCol, maxCol, y, direction, crossingPoint = []) => {
+    // direction为1，则圆弧向上，为负则向下
     const row = { start: minCol, end: maxCol, y, direction, crossingPoint };
     rows.push(row);
     return row;
@@ -227,11 +227,10 @@ export default class FlowChart extends Component {
 
   sortUnfinishedLines = (line) => {
     const index = findIndex(unfinishedLines, (item) => {
-      return item.colIndex > line.colIndex
+      return item.colIndex > line.colIndex;
     });
     unfinishedLines.splice(index === -1 ? unfinishedLines.length : index, 0, line);
   }
-
   /**
    * 生成线分支
    */
@@ -260,7 +259,7 @@ export default class FlowChart extends Component {
       min = colIndex - min <= 0 ? colIndex : min;
       minCol = colIndex - min <= 0 ? col : minCol;
     });
-    const crossingPoint = []
+    const crossingPoint = [];
     this.createNewRowLine(minCol, maxCol, step.y - 0.5, -1);
     unfinishedLines.forEach((unline) => { // 交叉
       if (unline.colIndex > min && unline.colIndex < max) {
@@ -348,7 +347,8 @@ export default class FlowChart extends Component {
     }
   }
 
-  drawArc = (x, y, r, sAngle = 0, eAngle = 2 * Math.PI, color, counterclockwise = false, fill = true, width = lineStyle.width) => {
+  drawArc = (x, y, r, sAngle = 0, eAngle = 2 * Math.PI, color,
+    counterclockwise = false, fill = true, width = lineStyle.width) => {
     const { ctx } = this;
     ctx.beginPath();
     ctx.arc(x, y, r, sAngle, eAngle, counterclockwise);
@@ -374,9 +374,9 @@ export default class FlowChart extends Component {
   }
 
   drawCrossPoint = (crossingPoint, y, c1, c2) => {
-    crossingPoint.forEach(point => {
-      this.drawArc(point * colGap - 3, (y * verticalRate), 15, -0.5 * Math.PI, 0.5 * Math.PI, c1);
-      this.drawArc(point * colGap - 3, (y * verticalRate), 9, -0.5 * Math.PI, 0.5 * Math.PI, c2);
+    crossingPoint.forEach((point) => {
+      this.drawArc((point * colGap) - 3, (y * verticalRate), 15, -0.5 * Math.PI, 0.5 * Math.PI, c1);
+      this.drawArc((point * colGap) - 3, (y * verticalRate), 9, -0.5 * Math.PI, 0.5 * Math.PI, c2);
     });
   }
 
@@ -386,34 +386,37 @@ export default class FlowChart extends Component {
   }
 
   drawGeneralArc = (x, y, r, color) => {
-    this.drawArc(x, y, r, 0, 2 * Math.PI, color, false)
+    this.drawArc(x, y, r, 0, 2 * Math.PI, color, false);
   }
 
   drawCurve = (x1, y1, x2, y2, direction, r = curveRadius) => {
-    let c = { x: x1, y: y1 - 0 + (r / verticalRate) };
+    let c = { x: x1, y: (y1 - 0) + (r / verticalRate) };
     if (direction < 0) {
       c = { x: x1, y: y1 - (r / verticalRate) };
     }
     this.drawLine(x1 * colGap, y1 * verticalRate, x2 * colGap, y1 * verticalRate, '#fff');
     this.drawLine(x2 * colGap, y1 * verticalRate, x2 * colGap, y2 * verticalRate, '#fff');
-    this.drawArc(c.x * colGap, c.y * verticalRate, r, 0, direction > 0 ? -0.5 * Math.PI : 0.5 * Math.PI, lineStyle.color, !!(direction > 0), false);
+    this.drawArc(c.x * colGap, c.y * verticalRate, r, 0,
+      direction > 0 ? -0.5 * Math.PI : 0.5 * Math.PI, lineStyle.color, !!(direction > 0), false);
   }
 
   draw = () => {
-    const { rows, chartData, lines } = this.state;
-    lines.forEach((line, i) => {
-      const { col: { index }, start, end, crossingPoint } = line;
+    const { chartRows, chartData, chartLines } = this.state;
+    chartLines.forEach((line, i) => {
+      const { col: { index }, start, end } = line;
       const color = index === 1 ? firstColLineStyle.color : lineStyle.color;
-      this.drawLine(index * colGap, start * verticalRate, index * colGap, end * verticalRate, color);
+      this.drawLine(index * colGap, start * verticalRate,
+        index * colGap, end * verticalRate, color);
     });
-    rows.forEach((row) => {
+    chartRows.forEach((row) => {
       const { start, end, y, direction, crossingPoint } = row;
-      this.drawLine(start.index * colGap, y * verticalRate, end.index * colGap, y * verticalRate, lineStyle.color);
-      let p1 = { x: end.index - (curveRadius / colGap), y };
-      let p2 = { x: end.index, y: y + direction * (curveRadius / verticalRate) };
+      this.drawLine(start.index * colGap, y * verticalRate,
+        end.index * colGap, y * verticalRate, lineStyle.color);
+      const p1 = { x: end.index - (curveRadius / colGap), y };
+      const p2 = { x: end.index, y: y + (direction * (curveRadius / verticalRate)) };
       this.drawCurve(p1.x, p1.y, p2.x, p2.y, direction);
       if (crossingPoint.length) {
-        const crossing = crossingPoint.map(item => item.index)
+        const crossing = crossingPoint.map(item => item.index);
         this.drawCrossPoint(crossing, y, lineStyle.color, '#fff');
       }
     });
@@ -421,39 +424,39 @@ export default class FlowChart extends Component {
       const { line: { col: { index } }, y } = point;
       if (y === 1) {
         this.drawRing(index * colGap, y * verticalRate, node.radius, node.radius - 1, node.color, '#fff');
-      }
-      else {
-        const color = `${point.action_type}` === '0' ? 'rgb(245,166,35)' : node.color
-        this.drawGeneralArc(index * colGap, y * verticalRate, node.radius, color)
+      } else {
+        const color = `${point.action_type}` === '0' ? 'rgb(245,166,35)' : node.color;
+        this.drawGeneralArc(index * colGap, y * verticalRate, node.radius, color);
       }
     });
   }
 
   renderTimeLine = () => {
     const { chartData } = this.state;
-    const timelines = chartData.map(line => {
-      const { unfinishedLines = [], y, id, } = line;
-      const lastLines = last(unfinishedLines)
+    const timelines = chartData.map((line) => {
+      const { y, id } = line;
+      const lastLines = last(line.unfinishedLines || []);
       const maxColIndex = lastLines ? lastLines.col.index : 0;
       const style = {
         position: 'absolute',
-        left: maxColIndex * colGap / 3 + 14 + 6,
+        left: ((maxColIndex * colGap) / 3) + 14 + 6,
         right: 15,
-        top: y * verticalRate / 3 - 11,
-        height: '22px', lineHeight: '22px',
+        top: ((y * verticalRate) / 3) - 11,
+        height: '22px',
+        lineHeight: '22px',
         display: 'flex',
         justifyContent: 'space-between',
-      }
+      };
       const fisrtDivStyle = {
         fontSize: '14px',
-        color: 'rgb(102,102,102)'
-      }
+        color: 'rgb(102,102,102)',
+      };
       const timeStyle = {
         fontSize: '12px',
         color: 'rgb(136,136,136)',
-      }
+      };
       const statusMsg = flowchartStatus(line.action_type);
-      const optater = line.approver_sn == userStorage('userInfo').staff_sn ? '我' : line.approver_name;
+      const optater = `${line.approver_sn}` === `${userStorage('userInfo').staff_sn}` ? '我' : line.approver_name;
       const statusColor = flowchartStatusColor(line.action_type);
       return (
         <div style={{ ...style, background: '#fff' }} key={id}>
@@ -464,7 +467,7 @@ export default class FlowChart extends Component {
           <div style={{ ...timeStyle }}>{line.acted_at}</div>
         </div>
       );
-    })
+    });
     return timelines;
   }
 
@@ -482,4 +485,4 @@ export default class FlowChart extends Component {
 
 FlowChart.defaultProps = {
   dataSource: [],
-}
+};
