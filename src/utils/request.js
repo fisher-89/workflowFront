@@ -36,17 +36,6 @@ const fetch = (url, options) => {
   }
 };
 
-function checkStatus(response) {
-  // Toast.hide();
-  return response;
-  // status === 422 表单验证
-  // const errortext = codeMessage[status] || response.statusText;
-  // Toast.fail(`请求错误 ${status}: ${response.url}`)
-  // const error = new Error(errortext);
-  // error.name = status;
-  // error.response = response;
-  // throw error;
-}
 export default function request(uri, params) {
   let urlParam = uri;
 
@@ -91,7 +80,7 @@ export default function request(uri, params) {
     }
   }
   return fetch(urlParam, newOptions)
-    .then(checkStatus)
+    // .then(checkStatus)
     .then((response) => {
       if (newOptions.method === 'DELETE' && response.status === 204) {
         const obj = { status: '204', message: '删除成功' };

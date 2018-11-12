@@ -1,7 +1,7 @@
 // 审批的表单
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { FormDetail } from '../../components';
+import { FormDetail, WhiteSpace } from '../../components';
 import spin from '../../components/General/Loader';
 import CCPerson from '../../components/CCPerson';
 import { makeGridItemData } from '../../utils/util';
@@ -112,6 +112,8 @@ class CCDetail extends Component {
 
     return (
       <div className={styles.con}>
+        <WhiteSpace size="xl" />
+
         <div className={styles.con_content}>
           <FormDetail
             form_data={formData}

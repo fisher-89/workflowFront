@@ -53,6 +53,7 @@ export default class Approve extends Component {
           </span>
         </div>
         {this.renderFormData()}
+        <div className={style.desc}>步骤名称：{value.step_name}</div>
         <div className={style.desc}>{time}</div>
       </div>
     );
