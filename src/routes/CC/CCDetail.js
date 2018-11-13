@@ -121,7 +121,7 @@ class CCDetail extends Component {
             history={this.props.history}
           />
           {this.getGridList()}
-          <CCPerson cc={cc} />
+          <CCPerson cc={cc || []} />
           <div style={{ marginBottom: '20px' }}>
             <p className={style.grid_opt}>审批进程</p>
             <FlowChart dataSource={flowChart} />
@@ -134,16 +134,8 @@ class CCDetail extends Component {
 }
 export default connect(({
   start, loading, ccperson,
-}) => {
-  return ({
-    ccperson,
-    start,
-    loading: (
-      // (loading.effects['start/doWithDraw'] || false) ||
-      // (loading.effects['api/fetchApi'] || false) ||
-      // (loading.effects['start/getStartFlow'] || false) ||
-      // (loading.effects['approve/getFlowChart'] || false)
-      loading.global
-    ),
-  });
-})(CCDetail);
+}) => ({
+  ccperson,
+  start,
+  loading: loading.global,
+})(CCDetail));

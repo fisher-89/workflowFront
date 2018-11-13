@@ -168,7 +168,7 @@ class StartDetail extends Component {
             history={this.props.history}
           />
           {this.getGridList()}
-          <CCPerson cc={cc} />
+          <CCPerson cc={cc || []} />
           <div style={{ marginBottom: '20px' }}>
             <p className={style.grid_opt}>审批进程</p>
             <FlowChart dataSource={flowChart} />
@@ -193,7 +193,6 @@ export default connect(({
   return ({
     start,
     scrollTopDetails: common.scrollTopDetails,
-
     loading: (
       // (loading.effects['start/doWithDraw'] || false) ||
       // (loading.effects['api/fetchApi'] || false) ||

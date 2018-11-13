@@ -182,9 +182,15 @@ export default class SelPerson extends Component {
   }
 
   fetchSearchStaff = (params) => {
+    console.log(params);
     const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'searchStaff/fetchSearchStaff',
+    //   payload: params,
+    // });
+
     dispatch({
-      type: 'searchStaff/fetchSearchStaff',
+      type: 'searchStaff/fetchFirstDepartment',
       payload: params,
     });
   }
@@ -213,7 +219,8 @@ export default class SelPerson extends Component {
       this.fetchStaffs();
     } else {
       this.fetchSearchStaff({
-        parentId,
+        // parentId,
+        search: `department_id=${parentId}`,
         breadCrumb: newBread,
       });
     }
