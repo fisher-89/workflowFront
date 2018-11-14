@@ -97,6 +97,7 @@ class Region extends React.Component {
     };
     this.onChangeCallback(newAddress);
   }
+
   renderFormRegion = (value, field) => {
     const areaValue = this.makeValidValue(value);
     const { address } = value;
@@ -157,7 +158,7 @@ class Region extends React.Component {
       const addrSnArray = this.makeValidValue(newData);
       const lastSn = addrSnArray[addrSnArray.length - 1];
       const [lastName] = district.filter(item => `${item.id}` === `${lastSn}`);
-      return lastName ? lastName.full_name : '';
+      return (lastName ? lastName.full_name : '') + (`${data.address}` ? `-${data.address}` : '');
     }
     return '';
   }
