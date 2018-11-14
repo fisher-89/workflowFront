@@ -1,19 +1,60 @@
 .error {
-  color: black;
-  text-align: center;
-  position: absolute;
-  top: 30%;
-  margin-top: -50px;
-  left: 50%;
-  margin-left: -100px;
-  width: 200px;
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background: #fff;
+  background: #fff url(/public/img/404.png) no-repeat ;
+  background-size: contain;
+}
+.error_400{
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background: #fff;
+  background: #fff url(/img/400.png) no-repeat center 20px;
+}
 
-  :global .anticon {
-    font-size: 48px;
-    margin-bottom: 16px;
-  }
+.error_500{
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  background: #fff;
+  color:rgb(129, 130, 132);
+  background: #eef1f7 url(/img/500.png) no-repeat center 20px;
+}
 
-  h1 {
-    font-family: cursive;
-  }
+.error_503{
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color:#565353;
+  background: #f4f6f8 url(/img/503.png) no-repeat center 20px;
+}
+
+.error_overtime{
+  height: 100%;
+  width: 100%;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color:#565353;
+  background: #fff url(/img/overtime.png) no-repeat center 20px;
 }

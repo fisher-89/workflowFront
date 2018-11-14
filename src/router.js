@@ -205,36 +205,61 @@ function RouterConfig({
   },
 
   ];
-  const speRoutes = [{
-    path: '/extrance',
-    models: [],
-    component: () =>
+  const speRoutes = [
+    {
+      path: '/400',
+      models: [],
+      component: () =>
+        import('./routes/error/400.js'),
+    },
+    {
+      path: '/500',
+      models: [],
+      component: () =>
+        import('./routes/error/500.js'),
+    },
+    {
+      path: '/503',
+      models: [],
+      component: () =>
+        import('./routes/error/503.js'),
+    },
+    {
+      path: '/overtime',
+      models: [],
+      component: () =>
+        import('./routes/error/overtime.js'),
+    },
+    {
+      path: '/extrance',
+      models: [],
+      component: () =>
       import('./routes/login/Extrance'),
-  }, {
-    path: '/get_access_token',
-    models: ['oauth'],
+    }, {
+      path: '/get_access_token',
+      models: ['oauth'],
 
-    component: () =>
+      component: () =>
       import('./routes/Oauth/GetAccessToken'),
-  },
-  {
-    path: '/refresh_access_token',
-    // models: () => [
-    //   import('./models/oauth'),
-    // ],
-    models: ['oauth'],
-    component: () =>
+    },
+    {
+      path: '/refresh_access_token',
+      // models: () => [
+      //   import('./models/oauth'),
+      // ],
+      models: ['oauth'],
+      component: () =>
       import('./routes/Oauth/RefreshAccessToken'),
-  },
-  {
-    path: '/redirect_to_authorize',
-    // models: () => [
-    //   import('./models/oauth'),
-    // ],
-    models: ['oauth'],
-    component: () =>
+    },
+    {
+      path: '/redirect_to_authorize',
+      // models: () => [
+      //   import('./models/oauth'),
+      // ],
+      models: ['oauth'],
+      component: () =>
       import('./routes/Oauth/RedirectToAuthorize'),
-  }];
+    }];
   return (
     <ConnectedRouter history={history}>
       <Switch>

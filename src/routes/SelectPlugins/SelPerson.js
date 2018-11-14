@@ -28,6 +28,7 @@ export default class SelPerson extends Component {
       ...state,
     };
   }
+
   componentWillMount() {
     const { params: { key } } = this.state;
     if (key === 'final') { // 终审人
@@ -182,7 +183,6 @@ export default class SelPerson extends Component {
   }
 
   fetchSearchStaff = (params) => {
-    console.log(params);
     const { dispatch } = this.props;
     // dispatch({
     //   type: 'searchStaff/fetchSearchStaff',

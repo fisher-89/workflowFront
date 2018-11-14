@@ -104,6 +104,7 @@ export default function request(uri, params) {
           error: true, message: dealErrorData(data, status),
         };
       } else {
+        // location.replace('/overtime');
         return {
           error: true, message: '网络错误',
         };

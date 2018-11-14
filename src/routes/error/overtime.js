@@ -3,7 +3,7 @@ import React from 'react';
 import styles from './index.less';
 
 const Error = () => (
-  <div className={styles.error} />
+  <div className={styles.error_overtime} />
 );
 
 export default Error;
