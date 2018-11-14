@@ -67,11 +67,11 @@ class AddGridList extends Component {
     }
   }
 
-  saveScrollTop = () => {
+  saveScrollTop = (height = 0) => {
     const content = document.getElementById('con_content');
     if (content) {
       const { scrollTop } = content;
-      this.saveScrolModal(scrollTop);
+      this.saveScrolModal((scrollTop - 0) + height);
     }
   }
 

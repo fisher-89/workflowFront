@@ -1,7 +1,8 @@
 // 审批的表单
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { FormDetail, WhiteSpace } from '../../components';
+import { WhiteSpace } from 'antd-mobile';
+import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
 import CCPerson from '../../components/CCPerson';
 import { makeGridItemData } from '../../utils/util';
@@ -11,6 +12,13 @@ import FlowChart from '../../components/FlowChart/chart';
 import style from '../TableEdit/index.less';
 import styles from '../common.less';
 
+// @connect(({
+//   start, loading, ccperson,
+// }) => ({
+//   ccperson,
+//   start,
+//   loading: loading.global,
+// }))
 class CCDetail extends Component {
   componentWillMount() {
     const { match: { params }, ccperson: { startflow } } = this.props;
@@ -22,6 +30,10 @@ class CCDetail extends Component {
     } else {
       this.fetchDetail(id);
     }
+  }
+
+  componentDidMount() {
+    this.excuteScrollTo();
   }
 
   getGridItem = (key) => {
@@ -72,6 +84,35 @@ class CCDetail extends Component {
     });
   }
 
+  excuteScrollTo = () => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTopDetails, location: { pathname } } = this.props;
+      const scrollTop = scrollTopDetails[pathname];
+      content.scrollTop = scrollTop;
+    }
+  }
+
+  saveScrollTop = (height = 0) => {
+    const content = document.getElementById('con_content');
+    if (content) {
+      const { scrollTop } = content;
+      this.saveScrolModal((scrollTop - 0) + height);
+    }
+  }
+
+  saveScrolModal = (scrollTop) => {
+    const { dispatch, location: { pathname } } = this.props;
+    dispatch({
+      type: 'common/save',
+      payload: {
+        store: 'scrollTop',
+        id: pathname,
+        data: scrollTop,
+      },
+    });
+  }
+
   fetchDetail = (id) => {
     const { dispatch } = this.props;
     dispatch({
@@ -90,6 +131,7 @@ class CCDetail extends Component {
 
   toEditGrid = (url) => {
     const { history } = this.props;
+    this.saveScrollTop();
     history.push(url);
   }
 
@@ -113,7 +155,6 @@ class CCDetail extends Component {
     return (
       <div className={styles.con}>
         <WhiteSpace size="xl" />
-
         <div className={styles.con_content}>
           <FormDetail
             form_data={formData}
@@ -132,10 +173,11 @@ class CCDetail extends Component {
     );
   }
 }
+
 export default connect(({
   start, loading, ccperson,
 }) => ({
   ccperson,
   start,
   loading: loading.global,
-})(CCDetail));
+}))(CCDetail);

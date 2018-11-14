@@ -121,7 +121,7 @@ class TableEdit extends Component {
       const { key, name } = item;
       const ableAdd = gridKey.indexOf(item.key) > -1;
       return (
-        <div key={index} className={style.grid_item}>
+        <div key={index} className={style.grid_item} id={key}>
           <p className={style.grid_opt}>
             <span>{name}</span>
             {ableAdd && (
@@ -146,11 +146,11 @@ class TableEdit extends Component {
     }
   }
 
-  saveScrollTop = () => {
+  saveScrollTop = (height) => {
     const content = document.getElementById('con_content');
     if (content) {
       const { scrollTop } = content;
-      this.saveScrolModal(scrollTop);
+      this.saveScrolModal((scrollTop - 0) + height);
     }
   }
 
@@ -206,7 +206,8 @@ class TableEdit extends Component {
   // 给列表控件追加item
   addGridList = (key) => {
     const { history, dispatch } = this.props;
-    this.saveData();
+    const height = document.getElementById(key).offsetHeight;
+    this.saveData(undefined, height);
     dispatch({
       type: 'start/resetGridDefault',
     });
@@ -230,7 +231,6 @@ class TableEdit extends Component {
     this.saveScrollTop(document.getElementById('con_content'));
     return newFormData;
   };
-
 
   // 提交数据
   submitData = (e) => {

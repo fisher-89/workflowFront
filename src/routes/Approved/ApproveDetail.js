@@ -20,6 +20,7 @@ class ApproveDetail extends Component {
     formdata: [],
     griddata: [],
   }
+
   componentWillMount() {
     const { approve: { gridformdata, startflow, formdata }, dispatch,
       match: { params } } = this.props;
@@ -45,6 +46,7 @@ class ApproveDetail extends Component {
       payload: { id },
     });
   }
+
   componentDidMount() {
     this.excuteScrollTo();
   }
@@ -139,7 +141,7 @@ class ApproveDetail extends Component {
       const { key, name } = item;
       const ableAdd = gridKey.indexOf(item.key) > -1 && startflow.step_run.action_type === 0;
       return (
-        <div key={index} className={style.grid_item}>
+        <div key={index} className={style.grid_item} id={key}>
           <p className={style.grid_opt}>
             <span>{name}</span>
             {ableAdd && (
@@ -165,11 +167,11 @@ class ApproveDetail extends Component {
     }
   }
 
-  saveScrollTop = () => {
+  saveScrollTop = (height) => {
     const content = document.getElementById('con_content');
     if (content) {
       const { scrollTop } = content;
-      this.saveScrolModal(scrollTop);
+      this.saveScrolModal((scrollTop - 0) + height);
     }
   }
 
@@ -184,7 +186,6 @@ class ApproveDetail extends Component {
       },
     });
   }
-
 
   handleOnchange = (formdata) => {
     this.setState({
@@ -219,7 +220,8 @@ class ApproveDetail extends Component {
   // 给列表控件追加item
   addGridList = (key) => {
     const { history, dispatch } = this.props;
-    this.saveData();
+    const height = document.getElementById(key).offsetHeight;
+    this.saveData(undefined, height);
     dispatch({
       type: 'approve/resetGridDefault',
     });
@@ -240,14 +242,14 @@ class ApproveDetail extends Component {
   }
 
   // 保存到modal
-  saveData = (formdata) => {
+  saveData = (formdata, height = 0) => {
     // const { formdata } = this.childComp.state;
     let newFormData = formdata;
     if (newFormData === undefined) {
       newFormData = this.childComp.state.formdata;
     }
     const { dispatch } = this.props;
-    this.saveScrollTop();
+    this.saveScrollTop(height);
     dispatch({
       type: 'approve/save',
       payload: {

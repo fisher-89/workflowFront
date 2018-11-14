@@ -15,14 +15,17 @@ export default class ApproveHeader extends Component {
         className={style.list_item}
       >
         <div className={style.label_title}>
+          {value.action_type !== 0 && (
           <Label
             content={getApprState(value ? value.action_type : '')}
             styles={{
-            borderRadius: '0.05333rem',
-            margin: 0,
-            marginRight: '10px',
-           }}
+          borderRadius: '0.05333rem',
+          margin: 0,
+          marginRight: '10px',
+         }}
           />
+        ) }
+
           <span className={style.title_name}>
             {value.name}
           </span>
