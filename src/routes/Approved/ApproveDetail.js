@@ -5,6 +5,8 @@ import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
 import CCPerson from '../../components/CCPerson';
 import { ApproveHeader } from '../../common/ListView';
+import Page400 from '../error/page400';
+
 import {
   initFormdata, isableSubmit, dealGridData, judgeGridSubmit,
   makeGridItemData, makeFieldValue, getUrlParams,
@@ -381,10 +383,15 @@ class ApproveDetail extends Component {
   }
 
   render() {
-    const { approve, dispatch, loading, history } = this.props;
+    const { approve, dispatch, loading, history, flowCodeDetails } = this.props;
     const { startflow, formdata, flowChart } = approve;
     const newFormData = approve.form_data;
     spin(loading);
+    const curCode = flowCodeDetails ? flowCodeDetails[params.id] : {};
+
+    if (!loading && curCode && curCode.code === 400) {
+      return (<Page400 message={curCode.message} />);
+    }
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     const cc = startflow.cc_person;
@@ -487,6 +494,7 @@ export default connect(({
   approve,
   scrollTopDetails: common.scrollTopDetails,
   start,
+  flowCodeDetails: approve.flowCodeDetails,
   loading: (
     (loading.effects['start/preSet'] || false) ||
     (loading.effects['api/fetchApi'] || false) ||

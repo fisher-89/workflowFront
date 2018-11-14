@@ -210,7 +210,7 @@ function RouterConfig({
       path: '/400',
       models: [],
       component: () =>
-        import('./routes/error/400.js'),
+        import('./routes/error/page400.js'),
     },
     {
       path: '/500',

@@ -49,9 +49,6 @@ export function dealErrorData(data, code) {
   if (code === 404) {
     location.replace('/error')
   }
-  if (code === 400) {
-    location.replace('/400')
-  }
   if (code === 500) {
     location.replace('/500')
   }

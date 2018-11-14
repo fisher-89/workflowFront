@@ -101,7 +101,7 @@ export default function request(uri, params) {
           status,
         } = response;
         return {
-          error: true, message: dealErrorData(data, status),
+          error: true, message: dealErrorData(data, status), status,
         };
       } else {
         // location.replace('/overtime');

@@ -5,6 +5,7 @@ import { Button, SwipeAction, WhiteSpace } from 'antd-mobile';
 
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
+import Page400 from '../error/page400';
 import { initFormdata, isableSubmit, judgeGridSubmit, dealGridData, makeGridItemData } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
@@ -269,10 +270,15 @@ class TableEdit extends Component {
   };
 
   render() {
-    const { start, dispatch, loading, history, location } = this.props;
+    const { start, dispatch, loading, history, location,
+      flowCodeDetails, match: { params } } = this.props;
     const { startflow, formdata } = start;
     const formData = start.form_data;
+    const curCode = flowCodeDetails ? flowCodeDetails[params.id] : {};
     spin(loading);
+    if (!loading && curCode && curCode.code === 400) {
+      return (<Page400 message={curCode.message} />);
+    }
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
     // 可编辑的form
@@ -337,6 +343,7 @@ export default connect(({
   start, loading, common,
 }) => ({
   start,
+  flowCodeDetails: start.flowCodeDetails,
   scrollTopDetails: common.scrollTopDetails,
   loading: (
     (loading.effects['start/preSet'] || false) ||

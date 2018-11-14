@@ -94,7 +94,14 @@ export default {
         type: 'resetStart',
       });
       const data = yield call(c.getStartFlow, payload);
-
+      yield put({
+        type: 'save',
+        payload: {
+          store: 'flowCode',
+          data: { code: data.status, message: data.message },
+          id: payload,
+        },
+      });
       if (data && !data.error) {
         yield put({
           type: 'saveFlow',
@@ -156,6 +163,7 @@ export default {
         type: 'resetStart',
       });
       const data = yield call(c.startDetail, id);
+
       if (data && !data.error) {
         yield put({
           type: 'saveFlow',
