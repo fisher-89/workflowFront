@@ -237,9 +237,10 @@ class TableEdit extends Component {
   submitData = (e) => {
     e.preventDefault();
     this.saveData();
-    const { flowId } = this.state;
-    const { dispatch, history } = this.props;
-    const { start: { gridformdata } } = this.props;
+    // const { flowId } = this.state;
+    const { dispatch, history, start: { gridformdata, startflow: { step } } } = this.props;
+    const flowId = step.flow_id;
+    // const { s} = this.props;
     const { formdata } = this.childComp.state;
     // 整理formdata数据
     const formObj = {};

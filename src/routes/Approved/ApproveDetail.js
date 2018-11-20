@@ -383,7 +383,7 @@ class ApproveDetail extends Component {
   }
 
   render() {
-    const { approve, dispatch, loading, history, flowCodeDetails } = this.props;
+    const { approve, dispatch, loading, history, flowCodeDetails, match: { params } } = this.props;
     const { startflow, formdata, flowChart } = approve;
     const newFormData = approve.form_data;
     spin(loading);

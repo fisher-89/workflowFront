@@ -78,6 +78,7 @@ class IndexPage extends React.Component {
               obj.text = i.name;
               obj.id = i.id;
               obj.description = i.description;
+              obj.number = i.number;
               return obj;
             });
             return (
@@ -90,7 +91,7 @@ class IndexPage extends React.Component {
                       data={data}
                       square={false}
                       isCarousel
-                      onClick={el => history.push(`/table_edit/${el.id}`)}
+                      onClick={el => history.push(`/table_edit/${el.number}`)}
                       activeStyle={{ background: '#f5f5f5' }}
                       hasLine={false}
                     />
