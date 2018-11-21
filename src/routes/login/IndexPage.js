@@ -74,7 +74,7 @@ class IndexPage extends React.Component {
           (flowListData || []).map((item) => {
             const data = item.flow.map((i) => {
               const obj = {};
-              obj.icon = '/img/icon.png';
+              obj.icon = i.icon || '/img/icon.png';
               obj.text = i.name;
               obj.id = i.id;
               obj.description = i.description;
