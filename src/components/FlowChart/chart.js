@@ -6,7 +6,7 @@ import { Modal } from 'antd-mobile';
 import { remove, findIndex, last, difference } from 'lodash';
 import { flowchartStatus, flowchartStatusColor } from '../../utils/convert';
 import { userStorage } from '../../utils/util';
-import './index.less';
+import style from './index.less';
 
 const curveRadius = 12;
 const colGap = 36;
@@ -105,6 +105,7 @@ export default class FlowChart extends Component {
       chartLines: [],
       chartRows: [],
       visible: false,
+      modalInfo: {},
     };
   }
 
@@ -478,7 +479,12 @@ export default class FlowChart extends Component {
                 onClick={() => {
                   this.setState({
                     visible: true,
-                    remark: line.remark,
+                    modalInfo: {
+                      remark: line.remark,
+                      statusMsg,
+                      approverName: line.approver_name,
+                      statusColor,
+                    },
                   });
                 }}
 
@@ -494,7 +500,7 @@ export default class FlowChart extends Component {
   }
 
   render() {
-    const { chartData } = this.state;
+    const { chartData, modalInfo: { remark, statusMsg, approverName, statusColor } } = this.state;
     return (
       <div
         style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }}
@@ -517,7 +523,16 @@ export default class FlowChart extends Component {
           animationType="slide-down"
         >
           <div >
-            {this.state.remark}
+            <div className={style.remark_title}>
+              <div className={style.title}><span>审批人</span><span>{approverName}</span></div>
+              <div className={style.title}>
+                <span>审批结果</span><span style={{ color: statusColor }}>{statusMsg}</span>
+              </div>
+            </div>
+            <div className={style.remark}>
+              <span>备注</span>
+              <div>{remark}</div>
+            </div>
           </div>
         </Modal>
       </div >

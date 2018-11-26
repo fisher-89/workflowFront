@@ -1,0 +1,44 @@
+.remark_title {
+  margin: 0 auto;
+  width: 345*2/75rem;
+  display: flex;
+  height: 42px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(204, 204, 204);
+  .title {
+    span {
+      display: inline-block;
+      font-size: 14px;
+      &:first-child {
+        min-width: 42px;
+        color: #000;
+        text-align: right;
+        margin-right: 15px;
+      }
+    }
+    span+span {
+      color: rgb(136, 136, 136)
+    }
+  }
+}
+
+.remark {
+  padding:10px 15px 15px;
+  display: flex;
+  span {
+    width: 42px;
+    margin-right: 15px;
+    font-size: 14px;
+    color: #000;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  div {
+    line-height: 22px;
+    font-size: 14px;
+    color: rgb(136, 136, 136);
+    flex-grow: 1;
+    text-align: left;
+  }
+}
