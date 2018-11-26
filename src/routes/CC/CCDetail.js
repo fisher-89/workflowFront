@@ -165,7 +165,10 @@ class CCDetail extends Component {
           <CCPerson cc={cc || []} />
           <div style={{ marginBottom: '20px' }}>
             <p className={style.grid_opt}>审批进程</p>
-            <FlowChart dataSource={flowChart} />
+            <FlowChart
+              dataSource={flowChart}
+              detail={startflow}
+            />
           </div>
         </div>
 

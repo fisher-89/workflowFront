@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import CircularJSON from 'circular-json';
+import { Modal } from 'antd-mobile';
 import { remove, findIndex, last, difference } from 'lodash';
 import { flowchartStatus, flowchartStatusColor } from '../../utils/convert';
 import { userStorage } from '../../utils/util';
+import './index.less';
 
 const curveRadius = 12;
 const colGap = 36;
@@ -102,6 +104,7 @@ export default class FlowChart extends Component {
       chartData: [],
       chartLines: [],
       chartRows: [],
+      visible: false,
     };
   }
 
@@ -431,8 +434,10 @@ export default class FlowChart extends Component {
   }
 
   renderTimeLine = () => {
+    const { detail } = this.props;
+    const { status } = detail.flow_run;
     const { chartData } = this.state;
-    const timelines = chartData.map((line) => {
+    const timelines = chartData.map((line, i) => {
       const { y, id } = line;
       const lastLines = last(line.unfinishedLines || []);
       const maxColIndex = lastLines ? lastLines.col.index : 0;
@@ -454,14 +459,33 @@ export default class FlowChart extends Component {
         fontSize: '12px',
         color: 'rgb(136,136,136)',
       };
-      const statusMsg = flowchartStatus(line.action_type);
+      const statusMsg = (i === chartData.length - 1 && status === 1) ? '完成' : flowchartStatus(line.action_type);
       const optater = `${line.approver_sn}` === `${userStorage('userInfo').staff_sn}` ? '我' : line.approver_name;
       const statusColor = flowchartStatusColor(line.action_type);
+      const remarkBtnStyle = {
+        ...fisrtDivStyle,
+        marginLeft: '20px',
+        border: `1px solid ${statusColor}`,
+        padding: '0 5px',
+      };
       return (
         <div style={{ ...style, background: '#fff' }} key={id}>
-          <div>
+          <div style={{ display: 'flex' }}>
             <span style={{ ...fisrtDivStyle }}>{optater}</span>
             <span style={{ ...fisrtDivStyle, marginLeft: '10px', color: statusColor }}>{statusMsg}</span>
+            {line.remark && (
+              <span
+                style={{ ...remarkBtnStyle }}
+                onClick={() => {
+                  this.setState({
+                    visible: true,
+                    remark: line.remark,
+                  });
+                }}
+
+              >查看备注
+              </span>
+            )}
           </div>
           <div style={{ ...timeStyle }}>{line.acted_at}</div>
         </div>
@@ -473,11 +497,31 @@ export default class FlowChart extends Component {
   render() {
     const { chartData } = this.state;
     return (
-      <div style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }} id="canvasContain">
+      <div
+        style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }}
+        id="canvasContain"
+        onClick={this.visible ? this.setState({ visible: false }) : () => { }}
+      >
         <canvas id="myCanvas" />
-        {chartData.length &&
-          this.renderTimeLine()}
-      </div>
+        {
+          chartData.length &&
+          this.renderTimeLine()
+        }
+        <Modal
+          popup
+          visible={this.state.visible}
+          maskClosable
+          className="modal_style"
+          onClose={() => this.setState({
+            visible: false,
+          })}
+          animationType="slide-down"
+        >
+          <div >
+            {this.state.remark}
+          </div>
+        </Modal>
+      </div >
     );
   }
 }

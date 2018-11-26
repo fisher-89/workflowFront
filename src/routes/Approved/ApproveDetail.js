@@ -457,7 +457,10 @@ class ApproveDetail extends Component {
           <CCPerson cc={cc} />
           <p className={style.grid_opt}>审批流程</p>
           <div style={{ margin: '20px 0' }}>
-            <FlowChart dataSource={flowChart} />
+            <FlowChart
+              dataSource={flowChart}
+              detail={startflow}
+            />
           </div>
         </div>
         <div className={styles.footer}>
