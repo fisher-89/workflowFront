@@ -459,7 +459,7 @@ class ApproveDetail extends Component {
           <div style={{ margin: '20px 0' }}>
             <FlowChart
               dataSource={flowChart}
-              detail={startflow}
+              status={startflow.flow_run.status}
             />
           </div>
         </div>

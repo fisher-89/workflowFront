@@ -434,8 +434,7 @@ export default class FlowChart extends Component {
   }
 
   renderTimeLine = () => {
-    const { detail } = this.props;
-    const { status } = detail.flow_run;
+    const { status } = this.props;
     const { chartData } = this.state;
     const timelines = chartData.map((line, i) => {
       const { y, id } = line;

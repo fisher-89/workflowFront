@@ -167,7 +167,7 @@ class CCDetail extends Component {
             <p className={style.grid_opt}>审批进程</p>
             <FlowChart
               dataSource={flowChart}
-              detail={startflow}
+              status={startflow.flow_run.status}
             />
           </div>
         </div>
