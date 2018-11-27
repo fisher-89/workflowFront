@@ -168,7 +168,6 @@ class StartDetail extends Component {
             history={this.props.history}
           />
           {this.getGridList()}
-          <CCPerson cc={cc || []} />
           <div style={{ marginBottom: '20px' }}>
             <p className={style.grid_opt}>审批进程</p>
             <FlowChart

@@ -473,7 +473,7 @@ export default class FlowChart extends Component {
           <div style={{ display: 'flex' }}>
             <span style={{ ...fisrtDivStyle }}>{optater}</span>
             <span style={{ ...fisrtDivStyle, marginLeft: '10px', color: statusColor }}>{statusMsg}</span>
-            {line.remark && (
+            {!!(line.remark || line.step_cc.length) && (
               <span
                 style={{ ...remarkBtnStyle }}
                 onClick={() => {
@@ -484,11 +484,12 @@ export default class FlowChart extends Component {
                       statusMsg,
                       approverName: line.approver_name,
                       statusColor,
+                      cc: line.step_cc,
                     },
                   });
                 }}
 
-              >查看备注
+              >查看详情
               </span>
             )}
           </div>
@@ -500,7 +501,8 @@ export default class FlowChart extends Component {
   }
 
   render() {
-    const { chartData, modalInfo: { remark, statusMsg, approverName, statusColor } } = this.state;
+    const { chartData,
+      modalInfo: { remark, statusMsg, approverName, statusColor, cc } } = this.state;
     return (
       <div
         style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }}
@@ -522,16 +524,22 @@ export default class FlowChart extends Component {
           })}
           animationType="slide-down"
         >
-          <div >
-            <div className={style.remark_title}>
-              <div className={style.title}><span>审批人</span><span>{approverName}</span></div>
-              <div className={style.title}>
-                <span>审批结果</span><span style={{ color: statusColor }}>{statusMsg}</span>
-              </div>
+          <div>
+            <div className={style.remark}>
+              <span>审批人</span>
+              <div>{approverName}</div>
+            </div>
+            <div className={style.remark}>
+              <span>审批结果</span>
+              <div style={{ color: statusColor }}>{statusMsg}</div>
             </div>
             <div className={style.remark}>
               <span>备注</span>
-              <div>{remark}</div>
+              <div>{remark || '无'}</div>
+            </div>
+            <div className={style.remark}>
+              <span>抄送人</span>
+              <div>{cc && cc.length ? cc.map(c => `${c.staff_name}`).join('、') : '无'}</div>
             </div>
           </div>
         </Modal>

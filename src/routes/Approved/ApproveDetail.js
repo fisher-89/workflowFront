@@ -454,7 +454,6 @@ class ApproveDetail extends Component {
             />
             )}
           {this.getGridList()}
-          <CCPerson cc={cc} />
           <p className={style.grid_opt}>审批流程</p>
           <div style={{ margin: '20px 0' }}>
             <FlowChart
