@@ -4,7 +4,6 @@ import { connect } from 'dva';
 import { Button, WhiteSpace } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
-import CCPerson from '../../components/CCPerson';
 import { makeGridItemData } from '../../utils/util';
 
 import FlowChart from '../../components/FlowChart/chart';
@@ -147,7 +146,6 @@ class StartDetail extends Component {
     spin(loading);
     if (!startflow) return null;
     const { fields: { form } } = startflow;
-    const cc = startflow.cc_person;
 
     const flowRun = startflow.flow_run;
     // 只需要展示的（不包括可编辑的）

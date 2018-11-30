@@ -485,6 +485,7 @@ export default class FlowChart extends Component {
                       approverName: line.approver_name,
                       statusColor,
                       cc: line.step_cc,
+                      optTime: line.acted_at,
                     },
                   });
                 }}
@@ -502,7 +503,7 @@ export default class FlowChart extends Component {
 
   render() {
     const { chartData,
-      modalInfo: { remark, statusMsg, approverName, statusColor, cc } } = this.state;
+      modalInfo: { remark, statusMsg, approverName, statusColor, cc, optTime } } = this.state;
     return (
       <div
         style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }}
@@ -530,12 +531,16 @@ export default class FlowChart extends Component {
               <div>{approverName}</div>
             </div>
             <div className={style.remark}>
-              <span>审批结果</span>
+              <span>操作</span>
               <div style={{ color: statusColor }}>{statusMsg}</div>
             </div>
             <div className={style.remark}>
               <span>备注</span>
               <div>{remark || '无'}</div>
+            </div>
+            <div className={style.remark}>
+              <span>操作时间</span>
+              <div>{optTime || '无'}</div>
             </div>
             <div className={style.remark}>
               <span>抄送人</span>

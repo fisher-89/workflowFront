@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm, FormDetail } from '../../components';
-import CCPerson from '../../components/CCPerson';
 import { ApproveHeader } from '../../common/ListView';
 import Page400 from '../error/page400';
 
@@ -394,7 +393,6 @@ class ApproveDetail extends Component {
     }
     if (!startflow) return null;
     const { fields: { form, grid } } = startflow;
-    const cc = startflow.cc_person;
     // 只需要展示的（不包括可编辑的）
     // const showForm =
     //  form.filter(item => !(startflow.step.hidden_fields.indexOf(item.key) !== -1));
