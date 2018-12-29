@@ -69,8 +69,8 @@ export const startState = [
 
 ];
 export const startConverSta = [
-  { title: '已撤回', type: -2 },
-  { title: '被驳回', type: -1 },
+  { title: '已撤回', value: -2 },
+  { title: '被驳回', value: -1 },
   { title: '进行中', value: 0 },
   { title: '已完成', value: 1 },
 ];
@@ -87,13 +87,10 @@ export const getStartState = (state) => {
 export const approvalState = [
   { title: '待审批', type: 'processing' },
   { title: '已审批', type: 'approved' },
-  // { title: '已通过', type: 'approved' },
-  // { title: '已转交', type: 'deliver' },
-  // { title: '已驳回', type: 'rejected' },
 ];
 export const approConverSta = [
-  { title: '已驳回', type: -1 },
-  { title: '待审批', type: 0 },
+  { title: '已驳回', value: -1 },
+  { title: '待审批', value: 0 },
   { title: '已通过', value: 2 },
   { title: '已转交', value: 3 },
 ];

@@ -84,10 +84,9 @@ export default {
      */
     * getStartFlow({ payload }, { call, put, select }) {
       const {
-        gridformdata,
         startflow,
       } = yield select(_ => _.start);
-      if ((gridformdata && gridformdata.length) || (startflow && `${startflow.step.flow_id}` === `${payload}`)) {
+      if (startflow && `${startflow.flow.number}` === `${payload}`) {
         return;
       }
       yield put({
