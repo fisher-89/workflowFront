@@ -16,6 +16,7 @@
         "dva": "^2.2.2",
         "dva-loading": "^2.0.0",
         "js-cookie": "^2.2.0",
+        "laravel-echo": "^1.5.2",
         "lrz": "^4.9.40",
         "moment": "^2.22.1",
         "query-string": "^5.1.1",
@@ -26,6 +27,7 @@
         "react": "^16.3.2",
         "react-dom": "^16.3.2",
         "react-wx-images-viewer": "^1.0.6",
+        "socket.io-client": "^2.2.0",
         "velocity-animate": "^1.5.1"
     },
     "devDependencies": {

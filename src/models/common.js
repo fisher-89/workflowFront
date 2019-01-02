@@ -23,10 +23,10 @@ export default {
       call,
       put, select,
     }) {
-      const { flowList } = yield select(_ => _.common);
-      if (flowList && flowList.length) {
-        return;
-      }
+      // const { flowList } = yield select(_ => _.common);
+      // if (flowList && flowList.length) {
+      //   return;
+      // }
       const data = yield call(c.getFlowList);
       if (data && !data.error) {
         const newFlowlist = [...data];

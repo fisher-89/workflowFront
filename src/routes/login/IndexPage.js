@@ -5,8 +5,28 @@ import {
 } from 'antd-mobile';
 import style from './index.less';
 import { userStorage } from '../../utils/util';
+import { echo } from '../../utils/echo';
 
 class IndexPage extends React.Component {
+  componentWillMount() {
+    echo.channel('flow')
+      .listen('FlowUpdateEvent', () => {
+        this.props.dispatch({
+          type: 'common/getFlowList',
+        });
+      })
+      .listen('FlowAddEvent', () => {
+        this.props.dispatch({
+          type: 'common/getFlowList',
+        });
+      })
+      .listen('FlowDeleteEvent', () => {
+        this.props.dispatch({
+          type: 'common/getFlowList',
+        });
+      });
+  }
+
   componentDidMount() {
     this.props.dispatch({
       type: 'start/resetStart',
@@ -25,13 +45,16 @@ class IndexPage extends React.Component {
       },
     });
   }
+
   render() {
     const { history } = this.props;
-    let flowList = userStorage('flowList');
-    if (!(flowList instanceof Array)) {
-      flowList = [];
-    }
-    const flowListData = [...flowList];// 可发起的流程列表数据
+    // let flowList = userStorage('flowList');
+    const list = this.props.common.flowList;
+    // if (!(flowList instanceof Array)) {
+    //   flowList = [];
+    // }
+    // const flowListData = [...flowList];// 可发起的流程列表数据
+    const flowListData = [...list];// 可发起的流程列表数据
     const startList = [
       {
         text: '我发起的',
