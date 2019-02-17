@@ -103,7 +103,6 @@ class Region extends React.Component {
     const { address } = value;
     const cols = `${field.region_level}` === '4' ? 3 : field.region_level;
     const { name } = field;
-    console.log(areaValue);
     return (
       <div>
         {this.renderFormArea(areaValue, name, cols)}

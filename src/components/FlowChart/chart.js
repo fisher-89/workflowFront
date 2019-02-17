@@ -11,6 +11,8 @@ import style from './index.less';
 const curveRadius = 12;
 const colGap = 36;
 const verticalRate = 90;
+const disableColor = 'rgb(153, 153, 153)';
+
 const lineStyle = {
   color: 'rgb(202,233,233)',
   width: 6,
@@ -392,7 +394,7 @@ export default class FlowChart extends Component {
     this.drawArc(x, y, r, 0, 2 * Math.PI, color, false);
   }
 
-  drawCurve = (x1, y1, x2, y2, direction, r = curveRadius) => {
+  drawCurve = (x1, y1, x2, y2, direction, r = curveRadius, color) => {
     let c = { x: x1, y: (y1 - 0) + (r / verticalRate) };
     if (direction < 0) {
       c = { x: x1, y: y1 - (r / verticalRate) };
@@ -400,36 +402,42 @@ export default class FlowChart extends Component {
     this.drawLine(x1 * colGap, y1 * verticalRate, x2 * colGap, y1 * verticalRate, '#fff');
     this.drawLine(x2 * colGap, y1 * verticalRate, x2 * colGap, y2 * verticalRate, '#fff');
     this.drawArc(c.x * colGap, c.y * verticalRate, r, 0,
-      direction > 0 ? -0.5 * Math.PI : 0.5 * Math.PI, lineStyle.color, !!(direction > 0), false);
+      direction > 0 ? -0.5 * Math.PI : 0.5 * Math.PI, color, !!(direction > 0), false);
   }
 
   draw = () => {
     const { chartRows, chartData, chartLines } = this.state;
+    const { status } = this.props;
     chartLines.forEach((line, i) => {
       const { col: { index }, start, end } = line;
-      const color = index === 1 ? firstColLineStyle.color : lineStyle.color;
+      let color = index === 1 ? firstColLineStyle.color : lineStyle.color;
+      if (status === -2) {
+        color = disableColor;
+      }
       this.drawLine(index * colGap, start * verticalRate,
         index * colGap, end * verticalRate, color);
     });
     chartRows.forEach((row) => {
       const { start, end, y, direction, crossingPoint } = row;
       this.drawLine(start.index * colGap, y * verticalRate,
-        end.index * colGap, y * verticalRate, lineStyle.color);
+        end.index * colGap, y * verticalRate, status === -2 ? disableColor : lineStyle.color);
       const p1 = { x: end.index - (curveRadius / colGap), y };
       const p2 = { x: end.index, y: y + (direction * (curveRadius / verticalRate)) };
-      this.drawCurve(p1.x, p1.y, p2.x, p2.y, direction);
+      this.drawCurve(p1.x, p1.y, p2.x, p2.y, direction, curveRadius,
+        status === -2 ? disableColor : lineStyle.color);
       if (crossingPoint.length) {
         const crossing = crossingPoint.map(item => item.index);
-        this.drawCrossPoint(crossing, y, lineStyle.color, '#fff');
+        this.drawCrossPoint(crossing, y, status === -2 ? disableColor : lineStyle.color, '#fff');
       }
     });
     chartData.forEach((point) => {
       const { line: { col: { index } }, y } = point;
       if (y === 1) {
-        this.drawRing(index * colGap, y * verticalRate, node.radius, node.radius - 1, node.color, '#fff');
+        this.drawRing(index * colGap, y * verticalRate, node.radius, node.radius - 1, status === -2 ? disableColor : node.color, '#fff');
       } else {
         const color = `${point.action_type}` === '0' ? 'rgb(245,166,35)' : node.color;
-        this.drawGeneralArc(index * colGap, y * verticalRate, node.radius, color);
+        this.drawGeneralArc(index * colGap, y * verticalRate, node.radius,
+          status === -2 ? disableColor : color);
       }
     });
   }
@@ -459,9 +467,14 @@ export default class FlowChart extends Component {
         fontSize: '12px',
         color: 'rgb(136,136,136)',
       };
-      const statusMsg = (i === chartData.length - 1 && status === 1) ? '完成' : flowchartStatus(line.action_type);
-      const optater = `${line.approver_sn}` === `${userStorage('userInfo').staff_sn}` ? '我' : line.approver_name;
-      const statusColor = flowchartStatusColor(line.action_type);
+      let statusMsg = (i === chartData.length - 1 && status === 1) ? '完成' : flowchartStatus(line.action_type);
+      if (status === -2 && i === 0) {
+        statusMsg = '发起（撤回）';
+      } else if (line.action_type === -2) {
+        statusMsg = '';
+      }
+      const optater = (`${line.approver_sn}` === `${userStorage('userInfo').staff_sn}`) ? '我' : line.approver_name;
+      const statusColor = status === -2 ? disableColor : flowchartStatusColor(line.action_type);
       const remarkBtnStyle = {
         ...fisrtDivStyle,
         marginLeft: '20px',
@@ -473,7 +486,7 @@ export default class FlowChart extends Component {
           <div style={{ display: 'flex' }}>
             <span style={{ ...fisrtDivStyle }}>{optater}</span>
             <span style={{ ...fisrtDivStyle, marginLeft: '10px', color: statusColor }}>{statusMsg}</span>
-            {!!(line.remark || line.step_cc.length) && (
+            {line.remark || line.step_cc.length ? (
               <span
                 style={{ ...remarkBtnStyle }}
                 onClick={() => {
@@ -486,15 +499,17 @@ export default class FlowChart extends Component {
                       statusColor,
                       cc: line.step_cc,
                       optTime: line.acted_at,
+                      withdrawTime: i === 0 && status === -2 ? chartData[chartData.length - 1].acted_at : '',
                     },
                   });
                 }}
 
               >查看详情
               </span>
-            )}
+            ) : null}
           </div>
-          <div style={{ ...timeStyle }}>{line.acted_at}</div>
+          {line.action_type === -2 ? null : <div style={{ ...timeStyle }}>{line.acted_at}</div>}
+
         </div>
       );
     });
@@ -503,7 +518,9 @@ export default class FlowChart extends Component {
 
   render() {
     const { chartData,
-      modalInfo: { remark, statusMsg, approverName, statusColor, cc, optTime } } = this.state;
+      modalInfo: {
+        remark, statusMsg, approverName, statusColor, cc, optTime, withdrawTime,
+      } } = this.state;
     return (
       <div
         style={{ background: '#fff', position: 'relative', paddingLeft: '6px' }}
@@ -542,6 +559,13 @@ export default class FlowChart extends Component {
               <span>操作时间</span>
               <div>{optTime || '无'}</div>
             </div>
+            {withdrawTime ? (
+              <div className={style.remark}>
+                <span>撤回时间</span>
+                <div>{withdrawTime }</div>
+              </div>
+            ) : null}
+
             <div className={style.remark}>
               <span>抄送人</span>
               <div>{cc && cc.length ? cc.map(c => `${c.staff_name}`).join('、') : '无'}</div>
