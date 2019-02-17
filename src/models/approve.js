@@ -109,7 +109,7 @@ export default {
       const {
         startflow,
       } = yield select(_ => _.approve);
-      if (startflow && (`${startflow.flow.number}` === `${payload}`)) {
+      if (startflow && (`${startflow.step_run.id}` === `${payload}`)) {
         return;
       }
       yield put({

@@ -100,9 +100,17 @@ export default function request(uri, params) {
           data,
           status,
         } = response;
-        return {
-          error: true, message: dealErrorData(data, status), status,
-        };
+        if (status === 401) {
+          localStorage.clear();
+          window.location.href = `${OA_PATH}/logout?redirect_uri=${OA_PATH}/home`;
+          return {
+            error: true, message: dealErrorData(data, status), status,
+          };
+        } else {
+          return {
+            error: true, message: dealErrorData(data, status), status,
+          };
+        }
       } else {
         // location.replace('/overtime');
         return {

@@ -45,7 +45,7 @@ class TextInput extends React.Component {
 
   formatIntValue = (v, field) => {
     const { scale, min } = field;
-    const value = (v !== '' && (min - v > 0)) ? min : v;
+    const value = (v !== '' && min !== '' && (min - v > 0)) ? min : v;
     const idx = value.indexOf('.');
     const curScale = idx > -1 ? value.slice(idx + 1).length : 0;
     // const newValue = curScale > scale ? (value.slice(0, value.indexOf('.') + (scale - 0) + 1))
@@ -77,23 +77,24 @@ class TextInput extends React.Component {
         newValue = parseFloat(v);
       }
     }
+    console.log(newValue);
     this.setState({
       value: newValue,
     }, () => {
-      onChange(newValue);
+      // onChange(newValue);
     });
   }
 
   renderFormInput = () => {
     const { data: { hasError }, field } = this.props;
     const { value } = this.state;
-    const { name, description, max, type } = field;
+    const { name, description, type } = field;
 
-    return ((max && max < 10) || type === 'int') ?
+    return (type === 'int') ?
       (
         <InputItem
           clear
-          maxLength={max || (type === 'int' ? 16 : max)}
+          // maxLength={max || (type === 'int' ? 16 : max)}
           placeholder={description}
           error={hasError}
           onChange={e => this.handleOnChange(e, field)}

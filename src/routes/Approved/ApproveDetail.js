@@ -453,7 +453,7 @@ class ApproveDetail extends Component {
             )}
           {this.getGridList()}
           <p className={style.grid_opt}>审批流程</p>
-          <div style={{ margin: '20px 0' }}>
+          <div style={{ marginBottom: '20px' }}>
             <FlowChart
               dataSource={flowChart}
               status={startflow.flow_run.status}

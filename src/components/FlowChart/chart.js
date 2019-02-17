@@ -465,7 +465,7 @@ export default class FlowChart extends Component {
       const remarkBtnStyle = {
         ...fisrtDivStyle,
         marginLeft: '20px',
-        border: `1px solid ${statusColor}`,
+        border: '1px solid rgb(102, 102, 102)',
         padding: '0 5px',
       };
       return (
