@@ -69,7 +69,7 @@ class Region extends React.Component {
     const keys = Object.keys(value);
     const newValue = [];
     keys.forEach((key) => {
-      const text = value[key];
+      const text = value[key] - 0;
       const index = regionSelect.indexOf(key);
       if (index > -1 && text) {
         newValue.splice(index, 0, text);
@@ -103,6 +103,7 @@ class Region extends React.Component {
     const { address } = value;
     const cols = `${field.region_level}` === '4' ? 3 : field.region_level;
     const { name } = field;
+    console.log(areaValue);
     return (
       <div>
         {this.renderFormArea(areaValue, name, cols)}

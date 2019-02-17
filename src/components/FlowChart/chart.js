@@ -512,8 +512,8 @@ export default class FlowChart extends Component {
       >
         <canvas id="myCanvas" />
         {
-          chartData.length &&
-          this.renderTimeLine()
+          chartData.length > 0 ?
+          this.renderTimeLine() : null
         }
         <Modal
           popup

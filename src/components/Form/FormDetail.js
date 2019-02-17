@@ -6,7 +6,7 @@ import {
   connect,
 } from 'dva';
 import { dealThumbImg } from '../../utils/convert';
-import { SelectComp, SelectCheckbox, Region, TextInput, Upload, FormArray, FormApi } from '../FormType';
+import { SelectComp, SelectCheckbox, Region, TextInput, Upload, FormArray, FormApi, FormDate } from '../FormType';
 import style from '../FormType/index.less';
 
 class FormDetail extends Component {
@@ -85,6 +85,15 @@ class FormDetail extends Component {
             isEdit={false}
             defaultValue={formData[item.key]}
             options={options}
+          />
+        );
+      } else if (item.type === 'datetime' || item.type === 'date' || item.type === 'time') {
+        return (
+          <FormDate
+            key={idx}
+            field={item}
+            isEdit={false}
+            defaultValue={formData[item.key]}
           />
         );
       }

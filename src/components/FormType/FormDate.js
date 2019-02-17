@@ -56,14 +56,15 @@ export default class FormDate extends React.Component {
   }
 
   render() {
-    const { isEdit, field: { name }, defaultValue } = this.props;
+    const { isEdit, field: { name, type }, defaultValue } = this.props;
+    const value = (defaultValue && type !== 'date') ? defaultValue.slice(0, -3) : defaultValue;
     return isEdit ? (this.renderFormDate()) : (
       <div className={style.readonly} >
         <TextareaItem
           title={name}
           autoHeight
           editable={false}
-          value={`${defaultValue || ''}`}
+          value={`${value || ''}`}
         />
       </div>
     );
