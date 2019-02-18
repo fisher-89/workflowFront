@@ -486,7 +486,7 @@ export default class FlowChart extends Component {
           <div style={{ display: 'flex' }}>
             <span style={{ ...fisrtDivStyle }}>{optater}</span>
             <span style={{ ...fisrtDivStyle, marginLeft: '10px', color: statusColor }}>{statusMsg}</span>
-            {line.remark || line.step_cc.length ? (
+            {(line.remark || line.step_cc.length || i === 0) ? (
               <span
                 style={{ ...remarkBtnStyle }}
                 onClick={() => {
