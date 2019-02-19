@@ -62,7 +62,7 @@ class AddGridList extends Component {
     }
   }
 
-  saveScrollTop = (height) => {
+  saveScrollTop = (height = 0) => {
     const content = document.getElementById('con_content');
     if (content) {
       const { scrollTop } = content;
@@ -127,7 +127,7 @@ class AddGridList extends Component {
   // 将数据保存到modal的gridformdata中
   saveData = (formdata) => {
     // const { formdata } = this.childComp.state;
-    this.saveScrollTop(document.getElementById('con_content'));
+    this.saveScrollTop();
     let newFormData = formdata;
     if (newFormData === undefined) {
       newFormData = this.childComp.state.formdata;

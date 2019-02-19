@@ -168,7 +168,7 @@ class ApproveDetail extends Component {
     }
   }
 
-  saveScrollTop = (height) => {
+  saveScrollTop = (height = 0) => {
     const content = document.getElementById('con_content');
     if (content) {
       const { scrollTop } = content;

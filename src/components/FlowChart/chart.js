@@ -486,7 +486,7 @@ export default class FlowChart extends Component {
           <div style={{ display: 'flex' }}>
             <span style={{ ...fisrtDivStyle }}>{optater}</span>
             <span style={{ ...fisrtDivStyle, marginLeft: '10px', color: statusColor }}>{statusMsg}</span>
-            {(line.remark || line.step_cc.length || i === 0) ? (
+            {(line.remark || line.step_cc.length || (status === -2 && i === 0)) ? (
               <span
                 style={{ ...remarkBtnStyle }}
                 onClick={() => {
@@ -499,7 +499,7 @@ export default class FlowChart extends Component {
                       statusColor,
                       cc: line.step_cc,
                       optTime: line.acted_at,
-                      withdrawTime: i === 0 && status === -2 ? chartData[chartData.length - 1].acted_at : '',
+                      withdrawTime: statusMsg ? chartData[chartData.length - 1].acted_at : '',
                     },
                   });
                 }}

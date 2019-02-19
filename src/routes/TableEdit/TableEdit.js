@@ -147,7 +147,7 @@ class TableEdit extends Component {
     }
   }
 
-  saveScrollTop = (height) => {
+  saveScrollTop = (height = 0) => {
     const content = document.getElementById('con_content');
     if (content) {
       const { scrollTop } = content;
@@ -216,7 +216,7 @@ class TableEdit extends Component {
   };
 
   // 每次跳页面保存到modal
-  saveData = (formdata) => {
+  saveData = (formdata, height) => {
     let newFormData = formdata;
     if (newFormData === undefined) {
       newFormData = this.childComp.state.formdata;
@@ -229,7 +229,7 @@ class TableEdit extends Component {
         data: newFormData,
       },
     });
-    this.saveScrollTop(document.getElementById('con_content'));
+    this.saveScrollTop(height);
     return newFormData;
   };
 
@@ -314,7 +314,7 @@ class TableEdit extends Component {
             formdata={formdata}
             evtClick={this.saveData}
             onChange={this.handleOnchange}
-            saveScrollTop={() => this.saveScrollTop(document.getElementById('con_content'))}
+            saveScrollTop={() => this.saveScrollTop()}
             dispatch={dispatch}
             show_form={showForm}
             availableForm={availableForm}
