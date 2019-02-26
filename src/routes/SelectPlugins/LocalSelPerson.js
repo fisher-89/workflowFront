@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Staff } from '../../common/ListView/index.js';
-import { isArray, dealCheckAll, getUrlParams, makeFieldValue } from '../../utils/util';
+import { isArray, dealCheckAll, getUrlParams, makeFieldValue, setNavTitle } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -24,6 +24,7 @@ export default class SelPerson extends Component {
     if (this.timer) {
       clearInterval(this.timer);
     }
+    setNavTitle('选择员工');
   }
 
   onFinalSearch = (search) => {

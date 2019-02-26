@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { WhiteSpace } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import { getGridFilter, availableFormFilter } from '../../utils/convert';
+import { setNavTitle } from '../../utils/util';
 import styles from '../common.less';
 
 class StartGridDetail extends Component {
@@ -23,12 +24,13 @@ class StartGridDetail extends Component {
     const { match: { params } } = nextprops;
     const { flag, key } = this.state;
     if (!key && flag) {
-      const { type, index } = params;
+      const { type, index, title } = params;
       this.setState({
         key: type,
         index,
         flag: false,
       });
+      setNavTitle(title);
     }
   }
 

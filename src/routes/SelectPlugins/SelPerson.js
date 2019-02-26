@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff, FinalStaff } from '../../common/ListView/index.js';
-import { userStorage, isArray, dealCheckAll, getUrlParams, makeFieldValue } from '../../utils/util';
+import { userStorage, isArray, dealCheckAll, getUrlParams, makeFieldValue, setNavTitle } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -36,6 +36,7 @@ export default class SelPerson extends Component {
     } else {
       this.fetchStaffs();
     }
+    setNavTitle('选择员工');
   }
 
   componentWillUnmount() {

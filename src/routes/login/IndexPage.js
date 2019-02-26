@@ -4,7 +4,7 @@ import {
   Grid, WhiteSpace, WingBlank,
 } from 'antd-mobile';
 import style from './index.less';
-import { userStorage } from '../../utils/util';
+import { userStorage, setNavTitle } from '../../utils/util';
 import { echo } from '../../utils/echo';
 
 class IndexPage extends React.Component {
@@ -25,6 +25,7 @@ class IndexPage extends React.Component {
           type: 'common/getFlowList',
         });
       });
+    setNavTitle('首页首页首页首页首页首页首页首页首页首页首页首页首页首页首页首页');
   }
 
   componentDidMount() {

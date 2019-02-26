@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { PersonContainer } from '../../components/index';
 import { ApiItem } from '../../common/ListView/index.js';
-import { getUrlParams, dealCheckAll } from '../../utils/util';
+import { getUrlParams, dealCheckAll, setNavTitle } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -87,7 +87,8 @@ export default class SelDataSource extends Component {
     const urlParams = getUrlParams();
     const paramsValue = urlParams.params;
     const params = JSON.parse(paramsValue);
-    const { key, type, max, min, fetchId } = params;
+    const { key, type, max, min, fetchId, title } = params;
+    setNavTitle(title);
     const current = currentKey[key] || {};
     const multiple = !!type;
     const data = current.data || (multiple ? [] : {});

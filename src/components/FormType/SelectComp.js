@@ -78,6 +78,7 @@ class SelectComp extends React.Component {
       max: max || 50,
       min: min || 1,
       fetchId: field.field_api_configuration_id,
+      title: `选择${field.name}`,
     };
     const urlParams = JSON.stringify(params);
     // history.push(`/${to}/${newKey}/${isMuti}/${id}`);

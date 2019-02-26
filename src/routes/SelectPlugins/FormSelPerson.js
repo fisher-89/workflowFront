@@ -30,6 +30,7 @@ export default class SelPerson extends Component {
 
   componentWillMount() {
     this.fetchDataSource();
+    setNavTitle('选择员工');
   }
 
   componentWillUnmount() {

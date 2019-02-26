@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { List, SearchBar } from 'antd-mobile';
 import { Nothing } from '../../components/index';
+import { setNavTitle } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
@@ -22,6 +23,7 @@ class SelectStep extends Component {
         type: 'start/updateModal',
       });
     }
+    setNavTitle('审批');
   }
 
   componentWillReceiveProps(nextprops) {

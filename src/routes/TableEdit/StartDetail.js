@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { Button, WhiteSpace } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import spin from '../../components/General/Loader';
-import { makeGridItemData } from '../../utils/util';
+import { makeGridItemData, setNavTitle } from '../../utils/util';
 
 import FlowChart from '../../components/FlowChart/chart';
 
@@ -28,7 +28,7 @@ class StartDetail extends Component {
     this.excuteScrollTo();
   }
 
-  getGridItem = (key) => {
+  getGridItem = (key, title) => {
     const { start: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
@@ -40,7 +40,7 @@ class StartDetail extends Component {
         <div
           key={idx}
           className={style.grid_list_item}
-          onClick={() => this.toEditGrid(`/start_grid/${key}/${i}`)}
+          onClick={() => this.toEditGrid(`/start_grid/${key}/${i}/${title}`)}
         >
           {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
           {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
@@ -70,7 +70,7 @@ class StartDetail extends Component {
           <p className={style.grid_opt}>
             <span>{item.name}</span>
           </p>
-          {this.getGridItem(item.key)}
+          {this.getGridItem(item.key, item.name)}
         </div>
       );
     });
@@ -112,6 +112,7 @@ class StartDetail extends Component {
       payload: {
         id,
         cb: (detail) => {
+          setNavTitle(detail.flow_run.name);
           dispatch({
             type: 'start/getFlowChart',
             payload: { id: detail.step_run.id },

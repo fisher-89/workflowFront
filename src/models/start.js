@@ -82,23 +82,29 @@ export default {
     /*
      * 请求获取发起数据
      */
-    * getStartFlow({ payload }, { call, put, select }) {
+    * getStartFlow({ payload: { number, cb } }, { call, put, select }) {
       const {
         startflow,
       } = yield select(_ => _.start);
-      if (startflow && `${startflow.flow.number}` === `${payload}`) {
+      if (startflow && `${startflow.flow.number}` === `${number}`) {
+        if (cb) {
+          cb(startflow);
+        }
         return;
       }
       yield put({
         type: 'resetStart',
       });
-      const data = yield call(c.getStartFlow, payload);
+      const data = yield call(c.getStartFlow, number);
+      if (cb) {
+        cb(data);
+      }
       yield put({
         type: 'save',
         payload: {
           store: 'flowCode',
           data: { code: data.status, message: data.message },
-          id: payload,
+          id: number,
         },
       });
       if (data && !data.error) {

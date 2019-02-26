@@ -4,7 +4,7 @@ import { Toast, Button, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
 import { CreateForm } from '../../components';
 import { getGridFilter, availableFormFilter } from '../../utils/convert';
-import { isableSubmit, initFormdata } from '../../utils/util';
+import { isableSubmit, initFormdata, setNavTitle } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import styles from '../common.less';
 
@@ -30,7 +30,8 @@ class AddGridList extends Component {
     const { flag, key } = this.state;
     this.excuteScrollTo();
     if (!key && flag && startflow) {
-      const { type, index } = params;
+      const { type, index, title } = params;
+      setNavTitle(title);
       const { fields: { grid } } = startflow;
       const [availableForm] = getGridFilter(grid, 'available_fields', startflow.step).filter(item => `${item.key}` === `${type}`);
       const availableFeilds = availableForm.newFields;
@@ -50,6 +51,7 @@ class AddGridList extends Component {
         flag: false,
         formdata,
       });
+      setNavTitle(title);
     }
   }
 

@@ -1,8 +1,10 @@
 import React from 'react';
 import { connect } from 'dva';
+import { setNavTitle } from '../../utils/util';
 
 class Entrance extends React.Component {
   componentDidMount() {
+    setNavTitle('登录中...');
     if (localStorage.getItem('OA_access_token') &&
       localStorage.getItem('OA_access_token_expires_in') > new Date().getTime()) {
       window.location.href = '/home';

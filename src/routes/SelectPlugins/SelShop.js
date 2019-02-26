@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { PersonContainer } from '../../components/index';
 import { Shop } from '../../common/ListView/index.js';
-import { makeFieldValue, getUrlParams, dealCheckAll } from '../../utils/util';
+import { makeFieldValue, getUrlParams, dealCheckAll, setNavTitle } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -27,6 +27,7 @@ export default class SelPerson extends Component {
     this.fetchDataSource({
       page: 1, pagesize: 15, field_id: id,
     });
+    setNavTitle('选择店铺');
   }
 
   componentWillUnmount() {

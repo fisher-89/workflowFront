@@ -1,12 +1,15 @@
 import React from 'react';
 import { Button, WhiteSpace, WingBlank, Flex, List } from 'antd-mobile';
 import PersonInfo from '../../components/PersonInfo';
-import { userStorage } from '../../utils/util';
+import { userStorage, setNavTitle } from '../../utils/util';
 import style from './index.less';
 import styles from '../TableEdit/index.less';
 
 
 class My extends React.Component {
+  componentWillMount() {
+    setNavTitle('个人中心');
+  }
   toExit = (e) => {
     e.preventDefault();
     localStorage.clear();

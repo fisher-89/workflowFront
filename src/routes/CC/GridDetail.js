@@ -6,12 +6,14 @@ import { WhiteSpace } from 'antd-mobile';
 import { FormDetail } from '../../components';
 import { getGridFilter, availableFormFilter } from '../../utils/convert';
 import styles from '../common.less';
+import { setNavTitle } from '../../utils/util';
 
 class CCGridDetail extends Component {
   constructor(props) {
     super(props);
     const { match: { params } } = props;
-    const { type, index } = params;
+    const { type, index, title } = params;
+    setNavTitle(title);
     this.state = {
       key: type,
       index,

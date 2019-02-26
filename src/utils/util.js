@@ -4,6 +4,8 @@
 import { Toast } from 'antd-mobile';
 import moment from 'moment'
 import 'moment/locale/zh-cn'
+import * as dd from 'dingtalk-jsapi';
+
 import district from '../../public/district.js'
 
 const codeMessage = {
@@ -661,4 +663,16 @@ export function getScrollTop() {
     scrollTop = document.body.scrollTop;
   }
   return scrollTop;
+}
+
+export function setNavTitle(title,succb=()=>{},errcb=()=>{}){
+  dd.biz.navigation.setTitle({
+    title : title,//控制标题文本，空字符串表示显示默认文本
+    onSuccess : function(result) {
+      succb(result);
+    },
+    onFail : function(err) {
+      errcb(err);
+    }
+});
 }

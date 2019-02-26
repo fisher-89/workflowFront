@@ -2,12 +2,11 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Button, SwipeAction, WhiteSpace } from 'antd-mobile';
-import * as dd from 'dingtalk-jsapi';
 
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
 import Page400 from '../error/page400';
-import { initFormdata, isableSubmit, judgeGridSubmit, dealGridData, makeGridItemData } from '../../utils/util';
+import { initFormdata, isableSubmit, judgeGridSubmit, dealGridData, makeGridItemData, setNavTitle } from '../../utils/util';
 import style from './index.less';
 import styles from '../common.less';
 
@@ -34,17 +33,15 @@ class TableEdit extends Component {
   }
 
   componentDidMount() {
-    dd.biz.navigation.setTitle({
-      title: '邮箱正文', // 控制标题文本，空字符串表示显示默认文本
-      onSuccess(result) {
-
-      },
-      onFail(err) {},
-    });
     // 获取流程发起的数据
     this.props.dispatch({
       type: 'start/getStartFlow',
-      payload: this.state.flowId,
+      payload: {
+        number: this.state.flowId,
+        cb: (data) => {
+          setNavTitle(data.flow.name);
+        },
+      },
     });
     this.excuteScrollTo();
   }
@@ -73,7 +70,7 @@ class TableEdit extends Component {
   }
 
   // 列表控件内部fields
-  getGridItem = (key, ableAdd) => {
+  getGridItem = (key, ableAdd, title) => {
     const { start: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
@@ -101,7 +98,7 @@ class TableEdit extends Component {
         >
           <div
             className={style.grid_list_item}
-            onClick={() => this.toEditGrid(`/addgridlist/${key}/${i}`)}
+            onClick={() => this.toEditGrid(`/addgridlist/${key}/${i}/${title}`)}
           >
             {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
             {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
@@ -135,12 +132,12 @@ class TableEdit extends Component {
             <span>{name}</span>
             {ableAdd && (
               <a
-                onClick={() => this.addGridList(key)}
+                onClick={() => this.addGridList(key, name)}
               >+添加{name}
               </a>
             )}
           </p>
-          {this.getGridItem(key, ableAdd)}
+          {this.getGridItem(key, ableAdd, name)}
         </div>
       );
     });
@@ -213,14 +210,14 @@ class TableEdit extends Component {
   }
 
   // 给列表控件追加item
-  addGridList = (key) => {
+  addGridList = (key, title) => {
     const { history, dispatch } = this.props;
     const height = document.getElementById(key).offsetHeight;
     this.saveData(undefined, height);
     dispatch({
       type: 'start/resetGridDefault',
     });
-    history.push(`/addgridlist/${key}/-1`);
+    history.push(`/addgridlist/${key}/-1/${title}`);
   };
 
   // 每次跳页面保存到modal

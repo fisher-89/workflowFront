@@ -10,6 +10,7 @@ export default class ImagesViewer extends React.Component {
     const urlParams = getUrlParams();
     const { params } = urlParams;
     const { reviewImg, curIndex } = JSON.parse(params);
+    setNavTitle('图片预览');
     this.setState({
       reviewImg,
       curIndex,

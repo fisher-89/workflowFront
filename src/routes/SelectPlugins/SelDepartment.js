@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { DepContainer, Nothing } from '../../components/index';
 import { SelDep } from '../../common/ListView/index.js';
-import { markTreeData, getOriginTree, makeFieldValue, makeBreadCrumbData, getUrlParams } from '../../utils/util';
+import { markTreeData, getOriginTree, makeFieldValue, makeBreadCrumbData, getUrlParams, setNavTitle } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 
@@ -24,6 +24,7 @@ export default class SelDepartment extends Component {
 
   componentWillMount() {
     this.fetchDataSource();
+    setNavTitle('选择部门');
   }
 
   componentWillReceiveProps(nextProps) {

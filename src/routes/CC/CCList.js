@@ -8,6 +8,7 @@ import styles from '../common.less';
 import style from '../Approved/index.less';
 import '../Approved/reset.less';
 import { CC } from '../../common/ListView';
+import { setNavTitle } from '../../utils/util';
 
 const defaultType = 'all';
 const tabs = {
@@ -41,6 +42,8 @@ const searchColumns = {
   name: 'flow_name',
   defaultValue: '',
 };
+setNavTitle('抄送列表');
+
 @connect(({ loading, list, common }) => ({
   loading,
   common,

@@ -45,7 +45,7 @@ function RouterConfig({
       import('./routes/TableEdit/TableEdit'),
   },
   {
-    path: '/start_grid/:type/:index',
+    path: '/start_grid/:type/:index/:title',
     // models: () => [
     //   import('./models/start'),
     // ],
@@ -54,7 +54,7 @@ function RouterConfig({
       import('./routes/TableEdit/StartGridDetail'),
   },
   {
-    path: '/addgridlist/:type/:index',
+    path: '/addgridlist/:type/:index/:title',
     // models: () => [import('./models/start')],
     models: ['start'],
     component: () =>
@@ -96,7 +96,7 @@ function RouterConfig({
       import('./routes/CC/CCDetail'),
   },
   {
-    path: '/cc_grid/:type/:index',
+    path: '/cc_grid/:type/:index/:title',
     models: ['ccperson', 'list', 'start'],
     component: () =>
       import('./routes/CC/GridDetail'),
