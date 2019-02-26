@@ -4,7 +4,7 @@ import {
 } from 'dva';
 import { PersonContainer, Nothing } from '../../components/index';
 import { Department, Staff, SeStaff } from '../../common/ListView/index.js';
-import { makeFieldValue, makeBreadCrumbData, getUrlParams, dealCheckAll } from '../../utils/util';
+import { makeFieldValue, makeBreadCrumbData, getUrlParams, dealCheckAll, setNavTitle } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 

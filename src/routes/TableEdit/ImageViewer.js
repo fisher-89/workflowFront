@@ -1,6 +1,6 @@
 import React from 'react';
 import ImageViewer from 'react-wx-images-viewer';
-import { getUrlParams } from '../../utils/util';
+import { getUrlParams, setNavTitle } from '../../utils/util';
 
 export default class ImagesViewer extends React.Component {
   state={

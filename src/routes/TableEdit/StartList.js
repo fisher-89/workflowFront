@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { startState } from '../../utils/convert';
 import ListControl from '../../components/ListView/ListControl';
-import { userStorage, dealFlowTypeOptions, getUrlParams } from '../../utils/util';
+import { userStorage, dealFlowTypeOptions, getUrlParams, setNavTitle } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
 import './reset.less';
@@ -161,6 +161,7 @@ export default class StartList extends Component {
 
   componentWillMount() {
     const { location: { search } } = this.props;
+    setNavTitle('发起列表');
     const urlParams = getUrlParams(search);
     const { type = defaultType } = urlParams;
     this.setState({
