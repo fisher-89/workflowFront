@@ -6,7 +6,7 @@ import moment from 'moment';
 import { approvalState } from '../../utils/convert';
 import ListControl from '../../components/ListView/ListControl';
 import {
-  userStorage, getUrlParams, dealFlowTypeOptions,
+  userStorage, getUrlParams, dealFlowTypeOptions, setNavTitle,
 } from '../../utils/util';
 import styles from '../common.less';
 import style from './index.less';
@@ -105,6 +105,9 @@ export default class StartList extends Component {
   state = {
     type: defaultType,
     // shortModal: false,
+  }
+  componentWillMount() {
+    setNavTitle('审批列表');
   }
   componentWillReceiveProps(nextProps) {
     const { location: { search } } = nextProps;

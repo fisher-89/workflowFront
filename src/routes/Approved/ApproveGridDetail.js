@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import { FormDetail } from '../../components';
 import { getGridFilter, availableFormFilter } from '../../utils/convert';
 import styles from '../common.less';
+import { setNavTitle } from '../../utils/util';
 
 class ApproveGridDetail extends Component {
   state = {
@@ -25,8 +26,8 @@ class ApproveGridDetail extends Component {
     const { match: { params } } = nextprops;
     const { flag, key } = this.state;
     if (!key && flag) {
-      const { type, index } = params;
-
+      const { type, index, title } = params;
+      setNavTitle(title);
       // const newKey = analyzePath(location.pathname, 1);
       // const index = analyzePath(location.pathname, 2);
       this.setState({

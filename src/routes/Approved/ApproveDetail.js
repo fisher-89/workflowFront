@@ -2,13 +2,14 @@
 import React, { Component } from 'react';
 import { SwipeAction, WhiteSpace } from 'antd-mobile';
 import { connect } from 'dva';
+
 import { CreateForm, FormDetail } from '../../components';
 import { ApproveHeader } from '../../common/ListView';
 import Page400 from '../error/page400';
 
 import {
   initFormdata, isableSubmit, dealGridData, judgeGridSubmit,
-  makeGridItemData, makeFieldValue, getUrlParams,
+  makeGridItemData, makeFieldValue, getUrlParams, setNavTitle,
 } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import FlowChart from '../../components/FlowChart/chart';
@@ -40,7 +41,8 @@ class ApproveDetail extends Component {
     });
     dispatch({
       type: 'approve/getStartFlow',
-      payload: id,
+      payload: { id, cb: (detail) => { setNavTitle(`${detail.flow_run.creator_name}的${detail.flow_run.name}`); },
+      },
     });
     dispatch({
       type: 'approve/getFlowChart',
@@ -73,7 +75,7 @@ class ApproveDetail extends Component {
     }
   }
 
-  getGridItem = (key, ableAdd) => {
+  getGridItem = (key, ableAdd, title) => {
     const { approve: { gridformdata, startflow } } = this.props;
     const { fields: { grid } } = startflow;
     const [gridItem] = (grid || []).filter(item => `${item.key}` === `${key}`);
@@ -103,7 +105,7 @@ class ApproveDetail extends Component {
           <div
             className={style.grid_list_item}
             key={idx}
-            onClick={() => this.toEditGrid(key, idx)}
+            onClick={() => this.toEditGrid(key, idx, title)}
           >
             {item.value_0 && <div className={style.main_info}>{item.value_0}</div>}
             {item.value_1 && <div className={style.desc}>{item.value_1}</div>}
@@ -147,12 +149,12 @@ class ApproveDetail extends Component {
             <span>{name}</span>
             {ableAdd && (
               <a
-                onClick={() => this.addGridList(key)}
+                onClick={() => this.addGridList(key, name)}
               >+添加{name}
               </a>
             )}
           </p>
-          {this.getGridItem(key, ableAdd)}
+          {this.getGridItem(key, ableAdd, name)}
         </div>
       );
     });
@@ -219,25 +221,25 @@ class ApproveDetail extends Component {
   }
 
   // 给列表控件追加item
-  addGridList = (key) => {
+  addGridList = (key, title) => {
     const { history, dispatch } = this.props;
     const height = document.getElementById(key).offsetHeight;
     this.saveData(undefined, height);
     dispatch({
       type: 'approve/resetGridDefault',
     });
-    history.push(`/approve_grid_edit/${key}/-1`);
+    history.push(`/approve_grid_edit/${key}/-1/${title}`);
   };
 
-  toEditGrid = (key, i) => {
+  toEditGrid = (key, i, title) => {
     const { approve, history } = this.props;
     const { startflow } = approve;
-    let url = `/approve_grid/${key}/${i}`;
+    let url = `/approve_grid/${key}/${i}/${title}`;
     this.saveScrollTop();
     if (startflow.step_run.action_type === 0) {
       // this.childComp.saveData();
       this.saveData();
-      url = `/approve_grid_edit/${key}/${i}`;
+      url = `/approve_grid_edit/${key}/${i}/${title}`;
     }
     history.push(url);
   }

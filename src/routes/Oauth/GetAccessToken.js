@@ -4,10 +4,12 @@ import React, {
 import {
   connect,
 } from 'dva';
+import { setNavTitle } from '../../utils/util';
 
 class GetAccessToken extends Component {
   componentDidMount() {
     this.getAccessToken();
+    setNavTitle('登录中...');
   }
 
   // UNSAFE_componentWillUpdate(nextProps) {

@@ -42,7 +42,6 @@ const searchColumns = {
   name: 'flow_name',
   defaultValue: '',
 };
-setNavTitle('抄送列表');
 
 @connect(({ loading, list, common }) => ({
   loading,
@@ -53,7 +52,9 @@ export default class CCList extends Component {
   state = {
     type: defaultType,
   }
-
+  componentWillMount() {
+    setNavTitle('抄送列表');
+  }
   fetchDataSource = (params) => {
     const {
       dispatch,

@@ -25,7 +25,7 @@ class IndexPage extends React.Component {
           type: 'common/getFlowList',
         });
       });
-    setNavTitle('首页首页首页首页首页首页首页首页首页首页首页首页首页首页首页首页');
+    setNavTitle('工作流');
   }
 
   componentDidMount() {

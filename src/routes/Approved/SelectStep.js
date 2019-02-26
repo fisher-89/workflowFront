@@ -4,7 +4,7 @@ import React, {
 import { connect } from 'dva';
 import { List, Toast, TextareaItem, WhiteSpace, Button } from 'antd-mobile';
 import { createForm } from 'rc-form';
-import { makeFieldValue, getUrlParams } from '../../utils/util';
+import { makeFieldValue, getUrlParams, setNavTitle } from '../../utils/util';
 import spin from '../../components/General/Loader';
 import { PersonAdd, PersonIcon } from '../../components';
 
@@ -27,8 +27,9 @@ class SelectStep extends Component {
   }
 
   componentWillMount() {
-    const { start } = this.props;
+    const { start, start: { preType } } = this.props;
     const urlParams = getUrlParams();
+    setNavTitle(preType === 'start' ? '执行步骤' : '审批');
     const { source } = urlParams;
     const { preStepData, steps, otherInfo } = start;
     let step = null;

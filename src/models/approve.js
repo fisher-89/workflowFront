@@ -105,23 +105,29 @@ export default {
       }
     },
 
-    * getStartFlow({ payload }, { call, put, select }) {
+    * getStartFlow({ payload: { id, cb } }, { call, put, select }) {
       const {
         startflow,
       } = yield select(_ => _.approve);
-      if (startflow && (`${startflow.step_run.id}` === `${payload}`)) {
+      if (startflow && (`${startflow.step_run.id}` === `${id}`)) {
+        if (cb) {
+          cb(startflow);
+        }
         return;
       }
       yield put({
         type: 'resetStart',
       });
-      const data = yield call(a.getStartFlow, payload);
+      const data = yield call(a.getStartFlow, id);
+      if (cb) {
+        cb(data);
+      }
       yield put({
         type: 'save',
         payload: {
           store: 'flowCode',
           data: { code: data.status, message: data.message },
-          id: payload,
+          id,
         },
       });
       if (data && !data.error) {

@@ -72,13 +72,13 @@ function RouterConfig({
     component: () =>
       import('./routes/Approved/ApproveDetail'),
   }, {
-    path: '/approve_grid/:type/:index',
+    path: '/approve_grid/:type/:index/:title',
     models: ['approve'],
     component: () =>
       import('./routes/Approved/ApproveGridDetail'),
   },
   {
-    path: '/approve_grid_edit/:type/:index',
+    path: '/approve_grid_edit/:type/:index/:title',
     models: ['approve'],
     component: () =>
       import('./routes/Approved/ApproveEditGrid'),

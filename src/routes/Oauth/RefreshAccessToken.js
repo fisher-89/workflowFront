@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import { setNavTitle } from '../../utils/util';
 
 class RefreshAccessToken extends Component {
   componentDidMount() {
+    setNavTitle('登陆中...');
     this.props.dispatch({
       type: 'oauth/refreshAccessToken',
     });

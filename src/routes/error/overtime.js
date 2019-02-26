@@ -3,10 +3,11 @@ import React from 'react';
 import styles from './index.less';
 import { setNavTitle } from '../../utils/util';
 
-setNavTitle('网络超时');
 
-const Error = () => (
-  <div className={styles.error_overtime} />
-);
-
+const Error = () => {
+  setNavTitle('网络超时');
+  return (
+    <div className={styles.error_overtime} />
+  );
+};
 export default Error;
