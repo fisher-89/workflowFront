@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Button, SwipeAction, WhiteSpace } from 'antd-mobile';
+import * as dd from 'dingtalk-jsapi';
 
 import spin from '../../components/General/Loader';
 import { CreateForm } from '../../components';
@@ -33,6 +34,13 @@ class TableEdit extends Component {
   }
 
   componentDidMount() {
+    dd.biz.navigation.setTitle({
+      title: '邮箱正文', // 控制标题文本，空字符串表示显示默认文本
+      onSuccess(result) {
+
+      },
+      onFail(err) {},
+    });
     // 获取流程发起的数据
     this.props.dispatch({
       type: 'start/getStartFlow',

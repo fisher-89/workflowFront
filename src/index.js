@@ -4,7 +4,8 @@ import {
 import dva from 'dva';
 import createLoading from 'dva-loading';
 import createHistory from 'history/createBrowserHistory';
-import './utils/dingtalk';
+// import './utils/dingtalk';
+import * as dd from 'dingtalk-jsapi';
 import './index.css';
 
 dd.ready(() => {
