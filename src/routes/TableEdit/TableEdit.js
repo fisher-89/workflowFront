@@ -149,6 +149,7 @@ class TableEdit extends Component {
       const { scrollTopDetails, location: { pathname } } = this.props;
       const scrollTop = scrollTopDetails[pathname];
       content.scrollTop = scrollTop;
+      console.log('excuteScrollTo:', scrollTop);
     }
   }
 
@@ -162,6 +163,7 @@ class TableEdit extends Component {
 
   saveScrolModal = (scrollTop) => {
     const { dispatch, location: { pathname } } = this.props;
+    console.log('scrollTop:', scrollTop);
     dispatch({
       type: 'common/save',
       payload: {
@@ -221,7 +223,7 @@ class TableEdit extends Component {
   };
 
   // 每次跳页面保存到modal
-  saveData = (formdata, height) => {
+  saveData = (formdata) => {
     let newFormData = formdata;
     if (newFormData === undefined) {
       newFormData = this.childComp.state.formdata;
@@ -234,7 +236,7 @@ class TableEdit extends Component {
         data: newFormData,
       },
     });
-    this.saveScrollTop(height);
+    this.saveScrollTop();
     return newFormData;
   };
 
