@@ -120,13 +120,12 @@ class CreateForm extends Component {
         );
       }
       if (item.type === 'department' || item.type === 'staff' || item.type === 'shop') {
-        const { evtClick, history, saveScrollTop } = this.props;
+        const { evtClick, history } = this.props;
         return (
           <SelectComp
             history={history}
             isEdit={isEdit}
             evtClick={evtClick}
-            saveScrollTop={saveScrollTop}
             field={item}
             defaultValue={newFormData[item.key]}
             data={itemkey}
@@ -136,14 +135,13 @@ class CreateForm extends Component {
         );
       }
       if (item.type === 'api') {
-        const { evtClick, history, saveScrollTop } = this.props;
+        const { evtClick, history } = this.props;
         return (
           <FormApi
             history={history}
             location={location}
             isEdit={isEdit}
             evtClick={evtClick}
-            saveScrollTop={saveScrollTop}
             field={item}
             defaultValue={newFormData[item.key]}
             data={itemkey}

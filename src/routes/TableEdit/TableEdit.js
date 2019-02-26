@@ -149,7 +149,6 @@ class TableEdit extends Component {
       const { scrollTopDetails, location: { pathname } } = this.props;
       const scrollTop = scrollTopDetails[pathname];
       content.scrollTop = scrollTop;
-      console.log('excuteScrollTo:', scrollTop);
     }
   }
 
@@ -163,7 +162,6 @@ class TableEdit extends Component {
 
   saveScrolModal = (scrollTop) => {
     const { dispatch, location: { pathname } } = this.props;
-    console.log('scrollTop:', scrollTop);
     dispatch({
       type: 'common/save',
       payload: {
@@ -321,7 +319,6 @@ class TableEdit extends Component {
             formdata={formdata}
             evtClick={this.saveData}
             onChange={this.handleOnchange}
-            saveScrollTop={() => this.saveScrollTop()}
             dispatch={dispatch}
             show_form={showForm}
             availableForm={availableForm}

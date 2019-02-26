@@ -41,7 +41,6 @@ export default class SelectComp extends React.Component {
     const curDispath = dispatchColumn[type];
     const { modal, reduce, to } = curDispath;
     evtClick();
-    // saveScrollTop();
     dispatch({
       type: `${modal}/${reduce}`,
       payload: {
