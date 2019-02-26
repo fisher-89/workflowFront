@@ -41,7 +41,11 @@ class ApproveDetail extends Component {
     });
     dispatch({
       type: 'approve/getStartFlow',
-      payload: { id, cb: (detail) => { setNavTitle(`${detail.flow_run.creator_name}的${detail.flow_run.name}`); },
+      payload: {
+        id,
+        // cb: (detail) => {
+        //   setNavTitle(`${detail.flow_run.creator_name}的${detail.flow_run.name}`);
+        // },
       },
     });
     dispatch({
