@@ -18,6 +18,8 @@ class StartDetail extends Component {
     if (startflow) {
       if (Object.keys(startflow).length && (`${startflow.step_run.flow_run_id}` !== `${id}`)) {
         this.fetchDetail(id);
+      } else {
+        setNavTitle(startflow.flow_run.name);
       }
     } else {
       this.fetchDetail(id);

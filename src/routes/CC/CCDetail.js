@@ -25,6 +25,8 @@ class CCDetail extends Component {
     if (startflow) {
       if (Object.keys(startflow).length && (`${startflow.id}` !== `${id}`)) {
         this.fetchDetail(id);
+      } else {
+        setNavTitle(`${startflow.staff_name}的${startflow.flow_name}`);
       }
     } else {
       this.fetchDetail(id);
