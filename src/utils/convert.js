@@ -30,13 +30,15 @@ export const tabbar = [{
   to: '/approvelist?type=processing&page=1',
   icon: appro_,
   selIcon: appro,
-}, {
-  title: '统计',
-  key: 'statistics',
-  to: '/statistics',
-  icon: stastic_,
-  selIcon: stastic,
-}, {
+},
+//  {
+//   title: '统计',
+//   key: 'statistics',
+//   to: '/statistics',
+//   icon: stastic_,
+//   selIcon: stastic,
+// }, 
+{
   title: '我的',
   key: 'my',
   to: '/my',
