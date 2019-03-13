@@ -37,7 +37,7 @@ export const tabbar = [{
 //   to: '/statistics',
 //   icon: stastic_,
 //   selIcon: stastic,
-// }, 
+// },
 {
   title: '我的',
   key: 'my',
