@@ -499,7 +499,7 @@ export default class FlowChart extends Component {
                       statusColor,
                       cc: line.step_cc,
                       optTime: line.acted_at,
-                      withdrawTime: statusMsg ? chartData[chartData.length - 1].acted_at : '',
+                      withdrawTime: (status === -2 && i === 0) ? chartData[chartData.length - 1].acted_at : '',
                     },
                   });
                 }}
