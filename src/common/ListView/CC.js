@@ -21,7 +21,7 @@ export default class CC extends Component {
         <div className={style.label_title}>
 
           <span className={style.title_name}>
-            {value && `${value.staff_name}的`}{value.flow_name}
+            {value && value.flow_run ? `${value.flow_run.creator_name}的${value.flow_run.name}` : ''}
           </span>
         </div>
         <div

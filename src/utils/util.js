@@ -57,6 +57,9 @@ export function dealErrorData(data, code) {
   if (code === 503) {
     location.replace('/503')
   }
+  if (code === 400) {
+    location.replace('/400')
+  }
   return msg;
 }
 
@@ -666,13 +669,14 @@ export function getScrollTop() {
 }
 
 export function setNavTitle(title,succb=()=>{},errcb=()=>{}){
-  dd.biz.navigation.setTitle({
-    title : title,//控制标题文本，空字符串表示显示默认文本
-    onSuccess : function(result) {
-      succb(result);
-    },
-    onFail : function(err) {
-      errcb(err);
-    }
-});
+  console.log(1)
+//   dd.biz.navigation.setTitle({
+//     title : title,//控制标题文本，空字符串表示显示默认文本
+//     onSuccess : function(result) {
+//       succb(result);
+//     },
+//     onFail : function(err) {
+//       errcb(err);
+//     }
+// });
 }
