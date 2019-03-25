@@ -150,6 +150,7 @@ const whereConfig = {
 };
 
 export function dotWheresValue(fields) {
+
   let fieldsWhere = '';
   Object.keys(fields || {}).forEach((key) => {
     const name = key;
@@ -669,14 +670,13 @@ export function getScrollTop() {
 }
 
 export function setNavTitle(title,succb=()=>{},errcb=()=>{}){
-  console.log(1)
-//   dd.biz.navigation.setTitle({
-//     title : title,//控制标题文本，空字符串表示显示默认文本
-//     onSuccess : function(result) {
-//       succb(result);
-//     },
-//     onFail : function(err) {
-//       errcb(err);
-//     }
-// });
+  dd.biz.navigation.setTitle({
+    title : title,//控制标题文本，空字符串表示显示默认文本
+    onSuccess : function(result) {
+      succb(result);
+    },
+    onFail : function(err) {
+      errcb(err);
+    }
+});
 }

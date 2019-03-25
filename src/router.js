@@ -107,12 +107,7 @@ function RouterConfig({
     component: () =>
       import('./routes/Approved/Remark'),
   },
-  {
-    path: '/select_step',
-    models: ['start'],
-    component: () =>
-      import('./routes/TableEdit/SelectStep'),
-  },
+
   {
     path: '/approve_step',
     models: ['start'],
