@@ -1,3 +1,5 @@
+
+// 类型为staff的选人
 import React, { Component } from 'react';
 import {
   connect,

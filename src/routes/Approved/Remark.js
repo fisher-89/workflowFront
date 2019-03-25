@@ -1,4 +1,6 @@
 
+
+// 驳回或转交的备注
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Button, TextareaItem, WhiteSpace, Flex } from 'antd-mobile';

@@ -1,3 +1,5 @@
+
+// 预提交之后步骤里无可选项的选人
 import React, { Component } from 'react';
 import {
   connect,

@@ -77,7 +77,6 @@ class TextInput extends React.Component {
         newValue = parseFloat(v);
       }
     }
-    console.log(newValue);
     this.setState({
       value: newValue,
     }, () => {

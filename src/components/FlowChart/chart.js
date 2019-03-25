@@ -139,6 +139,7 @@ export default class FlowChart extends Component {
     // datas = [...test];
     const maxIndex = this.makeChartData();
     this.makeCanvasSize(maxIndex);
+
     this.setState({
       chartData: [...datas],
       chartLines: [...lines],

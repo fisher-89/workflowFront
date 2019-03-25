@@ -1,3 +1,5 @@
+
+// 选择店铺
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { PersonContainer } from '../../components/index';

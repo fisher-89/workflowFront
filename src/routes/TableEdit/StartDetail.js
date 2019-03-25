@@ -1,4 +1,4 @@
-// 审批的表单
+// 发起详情
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Button, WhiteSpace } from 'antd-mobile';

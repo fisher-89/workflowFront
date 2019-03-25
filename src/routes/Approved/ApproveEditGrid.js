@@ -13,7 +13,7 @@ class AddGridList extends Component {
   state = {
     flag: true,
     key: '',
-    index: '-1',
+    index: '-1', // 默认为新增
     formdata: [],
 
   }

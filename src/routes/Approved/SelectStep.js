@@ -1,3 +1,5 @@
+
+// 预提交之后的页面，选步骤
 import React, {
   Component,
 } from 'react';

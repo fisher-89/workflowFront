@@ -1,4 +1,4 @@
-// 审批的控件详情
+// 发起的控件详情
 
 import React, { Component } from 'react';
 import { connect } from 'dva';

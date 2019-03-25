@@ -1,3 +1,4 @@
+// 预提交之后步骤里有可选项的选人
 import React, { Component } from 'react';
 import {
   connect,

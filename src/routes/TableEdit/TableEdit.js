@@ -1,4 +1,4 @@
-// 发起页面
+// 发起流程填表单页面
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Button, SwipeAction, WhiteSpace } from 'antd-mobile';

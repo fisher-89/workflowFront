@@ -114,12 +114,7 @@ function RouterConfig({
     component: () =>
       import('./routes/Approved/SelectStep'),
   },
-  {
-    path: '/select_approver/:id',
-    models: ['start'],
-    component: () =>
-      import('./routes/TableEdit/SelectApprover'),
-  },
+
   {
     path: '/start_list',
     models: ['list', 'start'],
